@@ -2,343 +2,749 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AutoTube Pro — 상세 사용 설명서</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoTube Pro — 사용 설명서</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* Reset & Tokens */
 :root {
-  --bg: #f8fafc; --white: #ffffff; --ink: #0f172a; --gray: #475569;
-  --muted: #64748b; --line: #cbd5e1; --red: #c8321e; --blue: #1d4ed8;
-  --sans: 'Noto Sans KR', sans-serif;
+  --bg:    #f7f5f0;
+  --white: #ffffff;
+  --ink:   #0f0f14;
+  --ink2:  #2a2a35;
+  --gray:  #3d3d4a;
+  --muted: #7a7a8a;
+  --line:  #e2dfd8;
+  --red:   #c8321e;
+  --red2:  #e03d27;
+  --blue:  #1847d4;
+  --sans:  'Noto Sans KR', sans-serif;
+  --mono:  'DM Mono', monospace;
+  --sw: 252px;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--sans); background: var(--bg); color: var(--ink); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 19px;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  overflow-x: hidden;
+}
 
-/* Layout */
-header { background: var(--white); border-bottom: 1px solid var(--line); padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-.logo { font-size: 20px; font-weight: 900; color: var(--ink); text-decoration: none; }
-.logo span { color: var(--red); }
-.back-btn { display: inline-block; background: var(--ink); color: #fff; padding: 8px 16px; border-radius: 6px; font-weight: 700; text-decoration: none; font-size: 14px; transition: background 0.2s; }
-.back-btn:hover { background: var(--gray); }
+/* ════ SIDEBAR ════ */
+.sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: var(--sw); background: var(--white);
+  border-right: 1px solid var(--line);
+  box-shadow: 2px 0 16px rgba(0,0,0,0.06);
+  display: flex; flex-direction: column;
+  overflow: hidden; z-index: 200;
+}
+.sb-head {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--ink);
+  flex-shrink: 0;
+}
+.sb-logo {
+  font-size: 17px; font-weight: 900; color: #f7f5f0;
+  text-decoration: none; letter-spacing: -0.02em;
+  display: flex; align-items: center; gap: 8px;
+}
+.sb-logo span { color: #ff6b5b; }
+.sb-sub { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 3px; font-weight: 500; }
 
-.container { max-width: 900px; margin: 0 auto; padding: 60px 24px 120px; }
-.page-title { font-size: 36px; font-weight: 900; margin-bottom: 12px; letter-spacing: -0.02em; }
-.page-desc { font-size: 17px; color: var(--muted); margin-bottom: 48px; }
+.sb-scroll { flex: 1; overflow-y: auto; padding: 8px 0 20px; }
+.sb-scroll::-webkit-scrollbar { width: 4px; }
+.sb-scroll::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
 
-/* Sections */
-.section { background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 40px; margin-bottom: 40px; box-shadow: 0 4px 16px rgba(0,0,0,0.03); }
-.section h2 { font-size: 24px; font-weight: 800; margin-bottom: 24px; color: var(--ink); border-bottom: 2px solid var(--ink); padding-bottom: 12px; }
+/* ── nav 그룹 ── */
+.nav-grp { margin-top: 20px; margin-bottom: 2px; }
+.nav-grp:first-child { margin-top: 6px; }
 
-/* Images & Badges */
-.img-wrap { position: relative; width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #f1f5f9; margin-bottom: 32px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
-.img-wrap img { display: block; width: 100%; height: auto; }
-.badge {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  width: 28px; height: 28px;
-  background-color: var(--red); color: var(--white);
-  border-radius: 50%; font-weight: 900; font-size: 14px;
+.nav-grp-lbl {
+  font-size: 13px; font-weight: 800; letter-spacing: 0.01em;
+  color: var(--ink); padding: 0 18px 8px;
+}
+
+/* ── nav 항목: 숫자 배지 없이 심플하게 ── */
+.nav-a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 14px 9px 22px;
+  font-size: 13.5px; font-weight: 500; color: var(--gray);
+  text-decoration: none; cursor: pointer; transition: all 0.12s;
+  border-left: 3px solid transparent; line-height: 1.4;
+}
+.nav-a:hover { background: var(--bg); color: var(--ink); }
+.nav-a.on {
+  background: rgba(200,50,30,0.06);
+  color: var(--red); border-left-color: var(--red);
+  font-weight: 700;
+}
+/* 항목 앞 작은 점 */
+.nav-a::before {
+  content: '';
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--line); flex-shrink: 0;
+  transition: background 0.12s;
+}
+.nav-a.on::before { background: var(--red); }
+.nav-txt { flex: 1; font-size: 13.5px; }
+
+.sb-foot { padding: 12px 16px; border-top: 1px solid var(--line); flex-shrink: 0; background: var(--bg); }
+.sb-back { display: block; text-align: center; background: var(--white); border: 1px solid var(--line); color: var(--muted); padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.12s; }
+.sb-back:hover { border-color: var(--red); color: var(--red); }
+
+/* ════ MAIN ════ */
+.main { margin-left: var(--sw); min-height: 100vh; }
+.top-bar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(247,245,240,0.96); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  padding: 0 48px; height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.top-bar-left { display: flex; align-items: center; gap: 14px; }
+.top-bar-title { font-size: 17px; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; }
+.top-bar-divider { width: 1px; height: 20px; background: var(--line); }
+.breadcrumb { font-size: 14px; color: var(--muted); font-weight: 500; }
+.breadcrumb strong { color: var(--red); font-weight: 700; }
+.top-bar-ver { font-size: 11.5px; color: var(--muted); font-family: var(--mono); background: var(--bg); border: 1px solid var(--line); padding: 3px 8px; border-radius: 4px; }
+
+.content { padding: 48px 48px 120px; max-width: 880px; }
+
+/* ════ STEP 구분 배너 ════ */
+.step-banner {
+  display: flex; align-items: center; gap: 20px;
+  margin: 64px 0 44px;
+  padding: 20px 26px;
+  background: var(--ink);
+  border-radius: 10px;
+}
+.step-banner:first-of-type { margin-top: 0; }
+.step-banner-badge {
+  background: var(--red); color: #fff;
+  font-size: 12px; font-weight: 900;
+  font-family: var(--mono); letter-spacing: 0.08em;
+  padding: 6px 14px; border-radius: 6px;
+  flex-shrink: 0; white-space: nowrap;
+}
+.step-banner-divider {
+  width: 1px; height: 36px; background: rgba(255,255,255,0.12); flex-shrink: 0;
+}
+.step-banner-info { flex: 1; }
+.step-banner-title {
+  font-size: 19px; font-weight: 900; color: #fff;
+  letter-spacing: -0.02em; line-height: 1.2;
+}
+.step-banner-sub {
+  font-size: 13px; color: rgba(255,255,255,0.4);
+  margin-top: 3px; font-weight: 500;
+}
+
+/* ════ SECTION ════ */
+.section { margin-bottom: 72px; scroll-margin-top: 80px; }
+.sec-hd { display: flex; align-items: stretch; gap: 18px; margin-bottom: 14px; }
+.step-chip {
+  width: 5px; min-width: 5px; border-radius: 3px;
+  align-self: stretch; flex-shrink: 0;
+  margin-top: 4px; margin-bottom: 4px;
+}
+.sec-title { font-size: 26px; font-weight: 900; color: var(--ink); letter-spacing: -0.025em; line-height: 1.35; }
+.sec-desc {
+  font-size: 17px; color: var(--gray); line-height: 1.9;
+  margin-left: 64px; margin-bottom: 28px;
+  padding-bottom: 22px; border-bottom: 1px solid var(--line);
+  max-width: 700px;
+}
+
+/* ════ IMAGE BOX ════ */
+.img-box { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-bottom: 32px; box-shadow: 0 6px 24px rgba(0,0,0,0.07); }
+.img-box img { display: block; width: 100%; height: auto; }
+.img-cap { background: #f3f1ec; border-top: 1px solid var(--line); padding: 8px 16px; font-size: 14px; color: var(--muted); font-weight: 600; }
+
+/* ════ BADGE DESC LIST ════ */
+.desc-sec-title {
+  font-size: 13px; font-weight: 800; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+}
+.desc-sec-title::before { content:''; width: 18px; height: 2px; background: var(--line); }
+.desc-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; }
+.desc-row {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: var(--white); border: 1px solid var(--line);
+  border-radius: 9px; padding: 18px 20px; transition: border-color 0.12s;
+}
+.desc-row:hover { border-color: #ccc8c0; }
+.dbadge {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--red);
   display: flex; align-items: center; justify-content: center;
-  border: 2px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-  z-index: 10;
+  font-size: 15px; font-weight: 900; color: white; flex-shrink: 0;
+  margin-top: 1px; font-family: var(--mono);
+  box-shadow: 0 2px 6px rgba(200,50,30,0.3);
+}
+.dc { flex: 1; min-width: 0; }
+.dt { font-size: 19px; font-weight: 800; color: var(--ink); margin-bottom: 5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; line-height: 1.4; }
+.dd { font-size: 17px; color: var(--gray); line-height: 1.85; word-break: keep-all; overflow-wrap: break-word; }
+.dd ul { padding-left: 0; list-style: none; margin-top: 4px; display: flex; flex-direction: column; gap: 3px; }
+.dd li { display: flex; align-items: flex-start; gap: 8px; font-size: 17px; line-height: 1.7; }
+.dd li::before { content: '·'; color: var(--red); font-weight: 900; flex-shrink: 0; }
+.dd code { background: #f3f1ec; color: var(--red); padding: 1px 6px; border-radius: 4px; font-family: var(--mono); font-size: 14.5px; }
+.dd strong { color: var(--ink); font-weight: 700; }
+.dd em { font-style: normal; color: var(--muted); font-size: 15px; }
+
+/* ════ FILL BADGE ════ */
+.fill-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--red); color: #fff;
+  font-size: 13px; font-weight: 800;
+  padding: 4px 12px; border-radius: 5px;
+  letter-spacing: 0.04em; vertical-align: middle;
+  animation: fill-pulse 1.8s ease-in-out infinite;
+  white-space: nowrap;
+}
+.fill-badge::before { content: '✏'; font-size: 13px; }
+@keyframes fill-pulse {
+  0%, 100% { box-shadow: 0 2px 8px rgba(200,50,30,0.4); }
+  50% { box-shadow: 0 2px 16px rgba(200,50,30,0.75); }
 }
 
-/* Tooltip for user adjustment */
-.img-note { font-size: 13px; color: var(--muted); margin-top: -24px; margin-bottom: 32px; text-align: center; }
+/* ════ 핵심설명 BOX ════ */
+.key-box { background: #fff5f3; border: 1.5px solid #f5bdb5; border-radius: 10px; padding: 18px 22px; margin-top: 8px; }
+.key-box-title { font-size: 15px; font-weight: 900; color: var(--red); letter-spacing: 0.04em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.key-box-title::before { content: ''; width: 16px; height: 3px; background: var(--red); border-radius: 2px; flex-shrink: 0; }
+.key-list { display: flex; flex-direction: column; gap: 8px; }
+.key-item { display: flex; align-items: flex-start; gap: 10px; font-size: 17px; color: var(--ink2); line-height: 1.75; word-break: keep-all; }
+.key-item::before { content: '✓'; color: var(--red); font-weight: 900; flex-shrink: 0; font-size: 15px; margin-top: 2px; }
+.key-item strong { color: var(--red); font-weight: 800; }
+.key-item em { font-style: normal; color: var(--gray); font-size: 15px; }
 
-/* Lists */
-.desc-list { list-style: none; margin-bottom: 20px; }
-.desc-list li { position: relative; padding-left: 40px; margin-bottom: 24px; font-size: 16px; color: var(--gray); }
-.desc-list li:last-child { margin-bottom: 0; }
-.desc-list .inline-badge { position: absolute; left: 0; top: 0; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; background: var(--ink); color: #fff; border-radius: 50%; font-size: 13px; font-weight: 900; }
-.desc-list strong { font-weight: 800; color: var(--ink); font-size: 17px; display: block; margin-bottom: 6px; }
+/* ════ TAGS ════ */
+.tag { display: inline-flex; align-items: center; font-size: 13px; font-weight: 800; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.03em; vertical-align: middle; }
+.tag-req { background: rgba(200,50,30,0.10); color: var(--red); }
+.tag-once { background: rgba(232,124,30,0.10); color: #b85f10; }
+.tag-order { background: rgba(13,148,136,0.08); color: #0d9488; }
 
-.callout { background: rgba(200,50,30,0.05); border-left: 4px solid var(--red); padding: 16px 20px; border-radius: 0 8px 8px 0; margin-top: 16px; font-size: 15px; color: var(--ink); font-weight: 600; }
-
-@media (max-width: 640px) {
-  header { padding: 16px 20px; }
-  .container { padding: 40px 20px 80px; }
-  .section { padding: 24px; }
-}
+/* ════ OVERVIEW GRID ════ */
+.ov-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; background: var(--line); border-radius: 10px; overflow: hidden; border: 1px solid var(--line); margin-bottom: 32px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); }
+.ov-cell { background: var(--white); padding: 20px 14px; text-align: center; }
+.ov-icon { font-size: 24px; margin-bottom: 6px; }
+.ov-num { font-size: 10px; font-weight: 700; color: var(--muted); font-family: var(--mono); letter-spacing: 0.05em; margin-bottom: 4px; }
+.ov-name { font-size: 15px; font-weight: 800; color: var(--ink); line-height: 1.35; }
+.ov-sub { font-size: 13px; color: var(--muted); margin-top: 4px; line-height: 1.45; }
 </style>
 </head>
 <body>
 
-<header>
-  <a href="autotube.html" class="logo">AutoTube <span>Pro</span></a>
-  <a href="autotube.html" class="back-btn">← 랜딩페이지로 돌아가기</a>
-</header>
-
-<div class="container">
-  <h1 class="page-title">AutoTube Pro 상세 사용설명서</h1>
-  <p class="page-desc">프로그램 설치 후 첫 구동부터 캡컷 렌더링까지의 전체 워크플로우를 실제 화면과 함께 안내합니다.<br>(* 안내된 번호표의 좌표는 해상도에 따라 미세 오차가 있을 수 있습니다.)</p>
-
-  <!-- Step 1 -->
-  <div class="section">
-    <h2>1. 대본 및 기획 탭 (프롬프트 제어)</h2>
-    
-    <div class="img-wrap">
-      <img src="그림1.png" alt="대본기획 탭 화면 1">
-      <div class="badge" style="top: 20%; left: 16%;">1</div>
-      <div class="badge" style="top: 20%; left: 34%;">2</div>
-      <div class="badge" style="top: 20%; left: 45%;">3</div>
-    </div>
-    
-    <ul class="desc-list">
-      <li>
-        <span class="inline-badge">1</span>
-        <strong>파일 탐색기 및 폴더 이동</strong>
-        사용자만의 AI 대본 생성 프롬프트가 보관된 로컬 폴더 경로를 지정합니다. 텍스트 파일(.txt)을 더블 클릭하면 화면 우측 에디터로 즉시 불러옵니다.
-      </li>
-      <li>
-        <span class="inline-badge">2</span>
-        <strong>에디터 수정 및 저장</strong>
-        불러온 프롬프트의 주제나 키워드를 에디터 내에서 가볍게 수정한 뒤, '저장' 버튼을 눌러 원본 파일에 업데이트합니다.
-      </li>
-      <li>
-        <span class="inline-badge">3</span>
-        <strong>전체 복사 후 AI 프롬프팅</strong>
-        수정이 끝난 텍스트를 '전체 복사' 버튼으로 클립보드에 담은 뒤, ChatGPT나 Claude 등에 붙여넣기하여 실제 영상 대본을 생성하도록 유도합니다.
-      </li>
-    </ul>
+<!-- ═══════ SIDEBAR ═══════ -->
+<aside class="sidebar">
+  <div class="sb-head">
+    <a href="index.html" class="sb-logo">AutoTube <span>Pro</span></a>
+    <div class="sb-sub">사용 설명서 v1.0</div>
   </div>
 
-  <div class="section">
-    <h2>2. 내장 그리드 검토 및 마스터 엑셀 규칙</h2>
-    
-    <div class="img-wrap">
-      <img src="그림2.jpg" alt="대본기획 탭 엑셀 그리드">
-      <div class="badge" style="top: 24%; left: 33%;">1</div>
-      <div class="badge" style="top: 36%; left: 48%;">2</div>
+  <div class="sb-scroll">
+    <div class="nav-grp">
+      <div class="nav-grp-lbl">전체 워크플로우</div>
+      <a href="#s-ov" class="nav-a on" data-sid="s-ov">
+        <span class="nav-txt">전체 공정 개요</span>
+      </a>
     </div>
 
-    <ul class="desc-list">
-      <li>
-        <span class="inline-badge">1</span>
-        <strong>엑셀 저장 후 탐색기에서 불러오기</strong>
-        AI가 생성해 준 대본 표를 엑셀(.xlsx) 파일로 저장한 뒤, 오토튜브 탐색기에서 해당 파일을 더블 클릭하여 내장 그리드 코어로 로드합니다.
-      </li>
-      <li>
-        <span class="inline-badge">2</span>
-        <strong>그리드 검토 및 사후 보정</strong>
-        불러온 대본을 읽어보며 필요시 셀을 더블 클릭하여 내용을 직접 수정하고 저장합니다. (대량의 대본 작성은 MS 엑셀에서, 이곳에서는 가벼운 검수만 진행하는 것을 권장합니다.)
-      </li>
-    </ul>
-
-    <div class="img-wrap">
-      <img src="그림3.jpg" alt="엑셀 프롬프트 제목 규칙">
-      <div class="badge" style="top: 23%; left: 63%;">1</div>
+    <div class="nav-grp">
+      <div class="nav-grp-lbl">STEP 1 — 대본/기획</div>
+      <a href="#s1a" class="nav-a" data-sid="s1a">
+        <span class="nav-txt">파일 탐색기 &amp; 텍스트 에디터</span>
+      </a>
+      <a href="#s1b" class="nav-a" data-sid="s1b">
+        <span class="nav-txt">엑셀 그리드 편집</span>
+      </a>
     </div>
-    <ul class="desc-list">
-      <li>
-        <span class="inline-badge">1</span>
-        <strong>스마트 매핑 열 제목 규칙 (★초특급 중요)</strong>
-        로컬 PC에 보관된 엑셀 파일 내에서, 이미지를 생성할 프롬프트가 적힌 열의 가장 상단(1행) 제목은 반드시 <strong>"이미지 생성 프롬프트"</strong>라고 기입되어 있어야 합니다.<br>열의 위치(A열인지 C열인지)는 상관없습니다. 프로그램이 이 제목을 스캔하여 해당 열의 데이터만 추적하기 때문입니다.
-      </li>
-    </ul>
+
+    <div class="nav-grp">
+      <div class="nav-grp-lbl">STEP 2 — 파일 구조 규칙 ★</div>
+      <a href="#s2" class="nav-a" data-sid="s2">
+        <span class="nav-txt">엑셀 파일 필수 구조 규칙</span>
+      </a>
+    </div>
+
+    <div class="nav-grp">
+      <div class="nav-grp-lbl">STEP 3 — 이미지 생성</div>
+      <a href="#s3" class="nav-a" data-sid="s3">
+        <span class="nav-txt">이미지 자동 생성</span>
+      </a>
+    </div>
+
+    <div class="nav-grp">
+      <div class="nav-grp-lbl">STEP 4 — 오디오 생성</div>
+      <a href="#s4a" class="nav-a" data-sid="s4a">
+        <span class="nav-txt">TTS 서버 준비 (Colab)</span>
+      </a>
+      <a href="#s4b" class="nav-a" data-sid="s4b">
+        <span class="nav-txt">오디오 자동 생성</span>
+      </a>
+    </div>
+
+    <div class="nav-grp">
+      <div class="nav-grp-lbl">STEP 5 — 자막 생성</div>
+      <a href="#s5" class="nav-a" data-sid="s5">
+        <span class="nav-txt">자막 자동 생성 &amp; 보정</span>
+      </a>
+    </div>
+
+    <div class="nav-grp">
+      <div class="nav-grp-lbl">STEP 6 — 검증 &amp; 완성</div>
+      <a href="#s6a" class="nav-a" data-sid="s6a">
+        <span class="nav-txt">영상 리소스 검증 (QC)</span>
+      </a>
+      <a href="#s6b" class="nav-a" data-sid="s6b">
+        <span class="nav-txt">CapCut 프로젝트 조립</span>
+      </a>
+    </div>
   </div>
 
-  <div class="section">
-    <h2>3. 비주얼 이미지 대량 생산</h2>
-    
-    <div class="img-wrap">
-      <img src="그림4.jpg" alt="이미지 생성 빌더">
-      <div class="badge" style="top: 25%; left: 52%;">1</div>
-      <div class="badge" style="top: 30%; left: 52%;">2</div>
-      <div class="badge" style="top: 48%; left: 43%;">3</div>
-      <div class="badge" style="top: 76%; left: 48%;">4</div>
-    </div>
+  <div class="sb-foot">
+    <a href="index.html" class="sb-back">← 랜딩페이지로 돌아가기</a>
+  </div>
+</aside>
 
-    <ul class="desc-list">
-      <li>
-        <span class="inline-badge">1</span>
-        <strong>작업 대본 파일 찾기</strong>
-        이미지 생성의 기준이 될 엑셀 대본 파일을 '찾기'를 눌러 매핑합니다.
-      </li>
-      <li>
-        <span class="inline-badge">2</span>
-        <strong>캐릭터 시트 파일 지정</strong>
-        영상 내내 일관된 화풍을 유지하기 위해 사전에 생성해 둔 캐릭터 가이드 시트 이미지를 지정합니다.
-      </li>
-      <li>
-        <span class="inline-badge">3</span>
-        <strong>생성 범위 및 진행률 확인</strong>
-        생성할 컷의 범위(예: 1~60)를 지정하고 생성을 시작하면, 진행률 백분율(%)과 완료 수량이 동적으로 갱신됩니다.
-      </li>
-      <li>
-        <span class="inline-badge">4</span>
-        <strong>스크린 호스트 미리보기</strong>
-        백그라운드에서 실시간으로 생성되어 로컬에 저장되는 이미지를 스크린 뷰어를 통해 즉시 확인합니다.
-      </li>
-    </ul>
+<!-- ═══════ MAIN ═══════ -->
+<div class="main">
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <span class="top-bar-title">AutoTube Pro 사용 설명서</span>
+      <div class="top-bar-divider"></div>
+      <span class="breadcrumb" id="bc"><strong>전체 공정 개요</strong></span>
+    </div>
+    <span class="top-bar-ver">v1.0.5</span>
   </div>
 
-  <div class="section">
-    <h2>4. 개인 전용 독립형 TTS 서버 인스턴스 구축</h2>
-    <p style="margin-bottom: 24px; color: var(--muted);">음성 생성을 위해 구글 코랩(Colab)을 활용하여 무료로 무제한 TTS 서버를 가동하는 과정입니다.</p>
-    
-    <div class="img-wrap">
-      <img src="그림6.png" alt="오디오 탭 서버 구동 명령">
-      <div class="badge" style="top: 48%; left: 77%;">1</div>
-      <div class="badge" style="top: 48%; left: 88%;">2</div>
-      <div class="badge" style="top: 48%; left: 95%;">3</div>
-    </div>
+  <div class="content">
 
-    <ul class="desc-list">
-      <li>
-        <span class="inline-badge">1</span>
-        <strong>1) 주소복사 게이트웨이</strong>
-        버튼을 클릭하면 구글 코랩(Colab) 가상 인프라 웹페이지로 자동 접속됩니다.
-      </li>
-      <li>
-        <span class="inline-badge">2&3</span>
-        <strong>2) 및 3) 명령코드 부팅 트리거</strong>
-        해당 코랩 환경 내에서 프로그램이 제공하는 2)번, 3)번 명령 코드를 순서대로 붙여넣고 실행하여 가상 서버 인스턴스를 부팅시킵니다.
-      </li>
-    </ul>
-
-    <div class="img-wrap">
-      <img src="그림5.png" alt="구동 완료된 코랩 서버 화면">
-      <div class="badge" style="top: 14%; left: 24%;">4</div>
-    </div>
-
-    <ul class="desc-list">
-      <li>
-        <span class="inline-badge">4</span>
-        <strong>가상 퍼블릭 링크 인출 주소</strong>
-        코랩 명령 스크립트 실행이 완료되면 하단에 생성되는 `https://...gradio.live` 형식의 퍼블릭 주소를 마우스로 전체 복사해 둡니다.
-      </li>
-    </ul>
-
-    <div class="img-wrap">
-      <img src="그림6.png" alt="오디오 대량 인출 세팅">
-      <div class="badge" style="top: 25%; left: 63%;">5</div>
-      <div class="badge" style="top: 36%; left: 63%;">6</div>
-      <div class="badge" style="top: 48%; left: 63%;">7</div>
-      <div class="badge" style="top: 60%; left: 63%;">8</div>
-    </div>
-
-    <ul class="desc-list">
-      <li>
-        <span class="inline-badge">5</span>
-        <strong>목소리 원본 및 텍스트 매핑</strong>
-        복제할 성우(또는 본인)의 샘플 음원 파일(.wav)과 그 음원이 말하고 있는 대본 텍스트 내용을 정확히 입력합니다.
-      </li>
-      <li>
-        <span class="inline-badge">6</span>
-        <strong>TTS 서버 주소 입력</strong>
-        코랩에서 복사해 온 가상 서버 주소(퍼블릭 링크)를 붙여넣어 통신 라인을 개통합니다.
-      </li>
-      <li>
-        <span class="inline-badge">7</span>
-        <strong>엑셀 선택 (성우녹음 시트 규칙)</strong>
-        작업 대상 엑셀 파일을 선택합니다.<br>
-        <div class="callout">
-          ★ 고품질 녹음을 위한 필수 규칙: 일반 대본을 그대로 AI에게 읽히면 로봇처럼 부자연스럽습니다. 반드시 엑셀 파일 내에 "성우녹음"이라는 이름의 시트를 따로 만들어, 성우 어조로 치환된 텍스트를 담아 두어야 프로그램이 최적의 품질로 음성을 인출해냅니다.
+    <!-- OVERVIEW -->
+    <section id="s-ov" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#334155; font-size:16px;"></div>
+        <div class="sec-title">전체 공정 개요</div>
+      </div>
+      <div class="sec-desc">
+        엑셀 대본 파일 하나에서 시작하여 CapCut 완성 타임라인까지,<br>
+        6단계 자동화 공정을 순서대로 진행합니다.
+      </div>
+      <div class="ov-grid">
+        <div class="ov-cell"><div class="ov-icon">📄</div><div class="ov-num">STEP 1</div><div class="ov-name">대본/기획</div><div class="ov-sub">프롬프트 편집<br>엑셀 그리드 검토</div></div>
+        <div class="ov-cell"><div class="ov-icon">📋</div><div class="ov-num">STEP 2</div><div class="ov-name">파일 구조 규칙</div><div class="ov-sub">필수 시트·열 이름<br>작업 전 반드시 확인</div></div>
+        <div class="ov-cell"><div class="ov-icon">🖼️</div><div class="ov-num">STEP 3</div><div class="ov-name">이미지 자동 생성</div><div class="ov-sub">Gemini 무인 자동화<br>자동 리네이밍 저장</div></div>
+        <div class="ov-cell"><div class="ov-icon">🎙️</div><div class="ov-num">STEP 4</div><div class="ov-name">오디오 자동 생성</div><div class="ov-sub">Colab TTS 서버<br>음성 복제·파형 분석</div></div>
+        <div class="ov-cell"><div class="ov-icon">💬</div><div class="ov-num">STEP 5</div><div class="ov-name">자막 자동 생성</div><div class="ov-sub">SRT 추출<br>타임코드 동기화</div></div>
+        <div class="ov-cell"><div class="ov-icon">✅</div><div class="ov-num">STEP 6</div><div class="ov-name">검증 &amp; 완성</div><div class="ov-sub">통합 QC 검수<br>CapCut 1초 조립</div></div>
+      </div>
+      <div class="key-box">
+        <div class="key-box-title">핵심설명</div>
+        <div class="key-list">
+          <div class="key-item">STEP 3 이미지 생성과 STEP 4 오디오 생성은 <strong>동시 진행 가능</strong>합니다. <em>병렬 실행 시 전체 작업 시간을 절반으로 단축합니다.</em></div>
+          <div class="key-item">STEP 2 파일 구조 규칙을 먼저 확인한 후 리소스 생성을 시작하세요. <em>규칙 미준수 시 이미지·오디오 생성이 동작하지 않습니다.</em></div>
         </div>
-      </li>
-      <li>
-        <span class="inline-badge">8</span>
-        <strong>오디오 생성 및 합치기</strong>
-        생성을 시작하고, 모든 음성이 완료되면 전체 합치기를 눌러 하나의 통짜 오디오 파일로 병합합니다.
-      </li>
-    </ul>
-  </div>
+      </div>
+    </section>
 
-  <div class="section">
-    <h2>5. 자막 생성 및 타임코드 동기화</h2>
-    
-    <div class="img-wrap">
-      <img src="그림7.png" alt="자막 동기화 공정">
-      <div class="badge" style="top: 25%; left: 63%;">1</div>
-      <div class="badge" style="top: 38%; left: 63%;">2</div>
-      <div class="badge" style="top: 52%; left: 53%;">3</div>
-      <div class="badge" style="top: 75%; left: 33%;">4</div>
-      <div class="badge" style="top: 75%; left: 54%;">5</div>
+    <!-- ██ STEP 1 배너 ██ -->
+    <div class="step-banner">
+      <span class="step-banner-badge">STEP 1</span>
+      <div class="step-banner-divider"></div>
+      <div class="step-banner-info">
+        <div class="step-banner-title">대본 / 기획</div>
+        <div class="step-banner-sub">프롬프트 편집 · 엑셀 그리드 검토</div>
+      </div>
     </div>
 
-    <ul class="desc-list">
-      <li>
-        <span class="inline-badge">1&2</span>
-        <strong>대본 및 오디오 파일 지정</strong>
-        타임스탬프를 계산할 원본 대본 파일과 앞서 병합된 최종 오디오 파일을 각각 링커로 지정합니다.
-      </li>
-      <li>
-        <span class="inline-badge">3</span>
-        <strong>자막 만들기 진행 상황</strong>
-        자막 행 빌드 스캔 진행률 바를 통해 분석 현황을 모니터링합니다.
-      </li>
-      <li>
-        <span class="inline-badge">4</span>
-        <strong>전체 자막 SRT 만들기</strong>
-        버튼을 눌러 완벽한 싱크를 가진 온전한 .srt 자막 파일을 추출합니다.
-      </li>
-      <li>
-        <span class="inline-badge">5</span>
-        <strong>엑셀에 타임 적용 (★영상 제작 싱크의 핵심)</strong>
-        자막 생성이 끝나면 <strong>반드시 이 버튼을 클릭해야 합니다.</strong> 클릭 즉시 오디오의 재생 절대 시간(ms)이 마스터 엑셀 내부에 스탬프 코드로 기록되어, 이후 캡컷 조립 시 1픽셀의 오차도 없는 완벽한 배열을 가능하게 합니다.
-      </li>
-    </ul>
-  </div>
+    <!-- S1-A -->
+    <section id="s1a" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#1d4ed8;"></div>
+        <div class="sec-title">파일 탐색기 &amp; 텍스트 에디터</div>
+      </div>
+      <div class="sec-desc">
+        프로그램 실행 후 첫 번째 탭입니다.<br>
+        AI 대본 생성용 프롬프트 파일(.txt)을 불러와 편집하고,<br>
+        완성된 내용을 ChatGPT·Claude에 복사하여 대본을 추출합니다.
+      </div>
+      <div class="img-box">
+        <img src="그림1.png" alt="파일 탐색기 및 텍스트 에디터">
+        <div class="img-cap">▲ 대본/기획 탭 — 텍스트 에디터 화면 (그림1)</div>
+      </div>
+      <div class="desc-sec-title">각 번호별 기능 설명</div>
+      <div class="desc-list">
+        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">대본/기획 메인 탭</div><div class="dd"><ul><li>상단 탭 바에서 <strong>대본/기획</strong> 탭이 선택된 상태입니다.</li><li>이미지·오디오 생성은 <strong>리소스 제작</strong> 탭, 최종 검수는 <strong>영상 검증</strong> 탭에서 진행합니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">프롬프트 폴더 경로 입력</div><div class="dd"><ul><li>프롬프트 .txt 파일이 보관된 폴더 경로를 입력합니다.</li><li><strong>찾기</strong> 버튼으로 폴더 탐색, 또는 경로를 직접 타이핑합니다.</li><li>경로 변경 시 하단 파일 목록이 자동으로 갱신됩니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">파일 탐색기 목록</div><div class="dd"><ul><li><strong>.txt 파일 더블클릭</strong> → 오른쪽 텍스트 에디터에 내용 로드</li><li>📁 폴더 더블클릭 → 해당 폴더로 이동</li><li><strong>...</strong> 항목 더블클릭 → 상위 폴더로 이동</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">텍스트 에디터 / 엑셀 그리드 이너 탭</div><div class="dd"><ul><li>오른쪽 패널을 두 가지 모드로 전환합니다.</li><li>📄 <strong>텍스트 에디터</strong>: 프롬프트 파일 편집 및 전체 복사</li><li>📊 <strong>엑셀 그리드</strong>: 대본 xlsx 파일 내용 확인 및 편집</li></ul></div></div></div>
+      </div>
+      <div class="key-box">
+        <div class="key-box-title">핵심설명</div>
+        <div class="key-list">
+          <div class="key-item"><strong>전체 복사</strong> 버튼 클릭 → AI에 붙여넣기 → 대본 생성 흐름으로 활용합니다.</div>
+          <div class="key-item"><strong>💾 저장</strong> 버튼으로 편집 내용을 원본 파일에 반영합니다. 저장하지 않으면 변경사항이 사라집니다.</div>
+          <div class="key-item">폰트 종류 및 크기(10~28px)를 화면에서 직접 조절할 수 있습니다.</div>
+        </div>
+      </div>
+    </section>
 
-  <div class="section">
-    <h2>6. 캡컷 타임라인 병합 전 최종 검수 (QC)</h2>
-    <p style="margin-bottom: 24px; color: var(--muted);">조립을 앞두고 불량 리소스를 걸러내어 부분 재생성을 수행하는 압도적 효율의 모니터링 구역입니다.</p>
+    <!-- S1-B -->
+    <section id="s1b" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#1d4ed8;"></div>
+        <div class="sec-title">엑셀 그리드 편집</div>
+      </div>
+      <div class="sec-desc">
+        AI가 생성한 대본 .xlsx 파일을 내장 그리드(Tabulator)에 로드하여<br>
+        검토·보정하는 작업 공간입니다.<br>
+        탐색기에서 <strong>.xlsx 파일을 더블클릭</strong>하면 이 탭으로 자동 전환됩니다.
+      </div>
+      <div class="img-box">
+        <img src="그림2.png" alt="엑셀 그리드 편집">
+        <div class="img-cap">▲ 대본/기획 탭 — 엑셀 그리드 화면 (그림2)</div>
+      </div>
+      <div class="desc-sec-title">각 번호별 기능 설명</div>
+      <div class="desc-list">
+        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">엑셀 그리드 탭 활성화</div><div class="dd"><ul><li>탐색기에서 xlsx 파일 더블클릭 시 자동으로 이 탭이 선택됩니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">정렬 기준 열 선택 + ↔ 자동 맞춤</div><div class="dd"><ul><li>드롭다운에서 기준 열 선택(예: 성우녹음대본) → <strong>↔ 자동 맞춤</strong> 클릭</li><li>해당 열의 텍스트 길이에 맞게 <strong>열 너비·행 높이가 자동 최적화</strong>됩니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">🔢 번호 정렬 버튼</div><div class="dd"><ul><li>행 추가·삭제 후 어긋난 순번을 1부터 재정렬합니다.</li><li>단, <strong>첫 번째 열 이름에 '번호' 또는 'no'가 포함</strong>된 경우에만 작동합니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">자막수정필요 입력 필드</div><div class="dd"><ul><li>자막 보정이 필요한 컷 번호를 기록합니다. <em>(예: 3, 7, 12)</em></li><li>이후 자막 탭 및 영상 검증 탭에서 해당 컷만 재작업할 때 참조됩니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">5</div><div class="dc"><div class="dt">하단 시트 탭 (Sheet1 / 성우녹음)</div><div class="dd"><ul><li>엑셀 파일의 시트 목록이 하단에 표시됩니다.</li><li><strong>성우녹음</strong> 시트: TTS 녹음의 필수 시트입니다. <em>(→ STEP 2 참고)</em></li></ul></div></div></div>
+      </div>
+      <div class="key-box">
+        <div class="key-box-title">핵심설명</div>
+        <div class="key-list">
+          <div class="key-item"><strong>셀 편집</strong>: 더블클릭 / <strong>Ctrl+C·X·V</strong>: 복사·잘라내기·붙여넣기 / <strong>Ctrl+Z·Y</strong>: 실행취소·다시실행</div>
+          <div class="key-item">행 하단 경계선을 드래그하면 <strong>행 높이를 수동 조절</strong>(24~300px)할 수 있습니다.</div>
+          <div class="key-item"><strong>우클릭 컨텍스트 메뉴</strong>에서 행·열 추가·삭제가 가능합니다.</div>
+          <div class="key-item">🔢 번호 정렬은 <strong>첫 열 이름에 '번호' 또는 'no'가 반드시 포함</strong>되어야 작동합니다.</div>
+        </div>
+      </div>
+    </section>
 
-    <div class="img-wrap">
-      <img src="그림8.jpg" alt="영상 검증 통합 패널">
-      <div class="badge" style="top: 25%; left: 45%;">1</div>
-      <div class="badge" style="top: 33%; left: 45%;">2</div>
-      <div class="badge" style="top: 60%; left: 82%;">3</div>
-      <div class="badge" style="top: 74%; left: 74%;">4</div>
+    <!-- ██ STEP 2 배너 ██ -->
+    <div class="step-banner">
+      <span class="step-banner-badge">STEP 2</span>
+      <div class="step-banner-divider"></div>
+      <div class="step-banner-info">
+        <div class="step-banner-title">파일 구조 규칙 ★</div>
+        <div class="step-banner-sub">작업 전 반드시 확인 · 필수 시트명 · 열 제목</div>
+      </div>
     </div>
 
-    <ul class="desc-list">
-      <li>
-        <span class="inline-badge">1&2</span>
-        <strong>일렬 매칭 검증 그리드 & 렌더 스코프</strong>
-        대본, 자막 시간, 썸네일, 플레이어가 일렬로 나열됩니다. 우측 하단의 <span class="man-num-kbd">자동 재생</span> 버튼을 누르면 1번 행부터 순차적으로 사운드와 이미지가 동기화되어 상영됩니다.
-      </li>
-      <li>
-        <span class="inline-badge">3&4</span>
-        <strong>타겟 마킹 및 개별 재생성 장치</strong>
-        자동 검수 중 AI 성우의 억양이 튀거나 이미지가 어색한 행을 발견하면 해당 라인의 체크박스를 마킹(분홍색 반전)해 둡니다. 검수가 끝난 후 전 과정을 다시 돌릴 필요 없이 <strong>체크박스 마킹이 찍힌 행들만 추려 초고속으로 개별 재생성 및 재검증</strong>을 수행하면 사후 교정 노가다가 압도적으로 단축됩니다.
-      </li>
-    </ul>
-  </div>
+    <!-- S2 -->
+    <section id="s2" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#7c3aed;"></div>
+        <div class="sec-title">엑셀 파일 필수 구조 규칙 <span class="tag tag-req">★ 절대 필수</span></div>
+      </div>
+      <div class="sec-desc">
+        이미지 자동 생성과 TTS 오디오 녹음이 정상 동작하려면<br>
+        아래 두 가지 규칙을 반드시 준수해야 합니다.<br>
+        작업 시작 전 MS Excel에서 직접 확인하세요.
+      </div>
+      <div class="img-box">
+        <img src="그림3.png" alt="엑셀 파일 필수 구조 규칙">
+        <div class="img-cap">▲ MS Excel — 필수 시트명 및 열 제목 확인 화면 (그림3)</div>
+      </div>
+      <div class="desc-sec-title">각 번호별 기능 설명</div>
+      <div class="desc-list">
+        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">Sheet1 — 일반 대본 데이터 시트</div><div class="dd"><ul><li>영상 대본 전체 내용이 담긴 기본 시트입니다.</li><li>No, 주제분류, 시간, 핵심키워드, 이미지 생성 프롬프트 등의 열이 포함됩니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">성우녹음 시트 <span class="tag tag-req">★ 필수</span></div><div class="dd"><ul><li>TTS 오디오 녹음 시 이 시트의 텍스트를 읽어 음성을 생성합니다.</li><li>시트 이름은 반드시 <strong>"성우녹음"</strong> 4글자여야 합니다.</li><li>"성우 녹음", "성우녹음본", "녹음" 등 유사 이름은 인식되지 않습니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">"이미지 생성 프롬프트" 열 제목 <span class="tag tag-req">★ 필수</span></div><div class="dd"><ul><li>이미지 자동 생성 시 프로그램이 이 열에서 프롬프트를 읽습니다.</li><li>열의 <strong>위치(A열·H열 등)는 무관</strong>하지만, <strong>열 제목은 정확히 "이미지 생성 프롬프트"</strong>여야 합니다.</li></ul></div></div></div>
+      </div>
+      <div class="key-box">
+        <div class="key-box-title">핵심설명</div>
+        <div class="key-list">
+          <div class="key-item">시트 이름은 반드시 <strong>"성우녹음"</strong> — 글자 수·띄어쓰기 모두 정확해야 합니다.</div>
+          <div class="key-item">열 제목은 반드시 <strong>"이미지 생성 프롬프트"</strong> — 유사 표현은 인식 불가입니다.</div>
+          <div class="key-item">위 두 조건 미충족 시 <strong>이미지·오디오 생성이 전혀 동작하지 않습니다.</strong></div>
+        </div>
+      </div>
+    </section>
 
-  <div class="section">
-    <h2>7. 캡컷(CapCut) 프로젝트 최종 조립</h2>
-    
-    <div class="img-wrap">
-      <img src="그림9.png" alt="캡컷 조립 완료 팝업">
-      <div class="badge" style="top: 45%; left: 50%;">1</div>
+    <!-- ██ STEP 3 배너 ██ -->
+    <div class="step-banner">
+      <span class="step-banner-badge">STEP 3</span>
+      <div class="step-banner-divider"></div>
+      <div class="step-banner-info">
+        <div class="step-banner-title">이미지 자동 생성</div>
+        <div class="step-banner-sub">Gemini 무인 자동화 · 자동 리네이밍 저장</div>
+      </div>
     </div>
-    
-    <ul class="desc-list">
-      <li>
-        <span class="inline-badge">1</span>
-        <strong>프로젝트 렌더링 레일 JSON 주입</strong>
-        검증을 마친 후 '캡컷 프로젝트 자동 생성 실행' 버튼을 누르면 캡컷 타임라인 내부 구성 파일에 모든 리소스 정보가 다이렉트로 강제 조립 주입되며 성공 팝업이 출력됩니다.
-      </li>
-    </ul>
 
-    <div class="img-wrap">
-      <img src="그림10.jpg" alt="캡컷 화면 최종 확인">
-      <div class="badge" style="top: 68%; left: 50%;">2</div>
+    <!-- S3 -->
+    <section id="s3" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#b45309;"></div>
+        <div class="sec-title">이미지 자동 생성</div>
+      </div>
+      <div class="sec-desc">
+        <strong>리소스 제작</strong> 탭 → <strong>[1] 이미지 자동 생성</strong> 섹션입니다.<br>
+        엑셀의 "이미지 생성 프롬프트" 열 내용을 기반으로 Gemini가<br>
+        이미지를 순차적으로 자동 생성하고 저장합니다.
+      </div>
+      <div class="img-box">
+        <img src="그림4.png" alt="이미지 자동 생성 패널">
+        <div class="img-cap">▲ [1] 이미지 자동 생성 패널 — 16% 진행 중 (그림4)</div>
+      </div>
+      <div class="desc-sec-title">각 번호별 기능 설명</div>
+      <div class="desc-list">
+        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">작업 파일 경로 &amp; 캐릭터 이미지 경로</div><div class="dd"><ul><li><strong>상단 경로</strong>: 이미지를 저장할 작업 폴더 및 대본 파일 경로</li><li><strong>캐릭터 이미지</strong>: 영상 전체 화풍을 통일하기 위한 캐릭터 시트(.png)</li><li>각 항목 오른쪽 <strong>찾기</strong> 버튼으로 파일·폴더를 선택합니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">생성 범위 설정 &amp; 끝번호 확인</div><div class="dd"><ul><li>생성할 이미지의 <strong>시작 ~ 끝 번호</strong>를 지정합니다.</li><li><strong>끝번호 확인</strong>: 엑셀 파일에서 전체 컷 수를 자동으로 읽어 끝 번호를 채웁니다.</li><li><strong>개별생성</strong> 체크 → 특정 번호만 재생성 가능합니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">구글 로그인 / 이미지 자동 생성 시작 / 작업 중지</div><div class="dd"><ul><li><strong>구글 로그인</strong>: 최초 1회만 필요합니다. 이후 자동 유지됩니다.</li><li><strong>이미지 자동 생성 시작</strong>: 설정 범위의 이미지를 순차 자동 생성합니다.</li><li>완성 이미지는 <code>01.png</code>, <code>02.png</code> 형식으로 자동 리네이밍 저장됩니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">진행상태 패널</div><div class="dd"><ul><li>전체 작업 수 / 현재 진행 / 남은 작업 / 진행률(%)을 실시간 표시합니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">5</div><div class="dc"><div class="dt">실시간 이미지 미리보기</div><div class="dd"><ul><li>순차적으로 생성 완료된 이미지가 하단 미리보기 영역에 즉시 표시됩니다.</li></ul></div></div></div>
+      </div>
+      <div class="key-box">
+        <div class="key-box-title">핵심설명</div>
+        <div class="key-list">
+          <div class="key-item">구글 로그인은 <strong>최초 1회만</strong> 필요합니다. 이후 자동 유지됩니다.</div>
+          <div class="key-item">이미지 생성 중에 <strong>오디오 생성(STEP 4)을 동시에 진행</strong>하면 전체 시간을 단축할 수 있습니다.</div>
+          <div class="key-item">생성 완료 이미지는 <code>01.png</code>, <code>02.png</code> 형식으로 자동 저장됩니다.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ██ STEP 4 배너 ██ -->
+    <div class="step-banner">
+      <span class="step-banner-badge">STEP 4</span>
+      <div class="step-banner-divider"></div>
+      <div class="step-banner-info">
+        <div class="step-banner-title">오디오 자동 생성</div>
+        <div class="step-banner-sub">Colab TTS 서버 준비 · 음성 복제 · 전체 합치기</div>
+      </div>
     </div>
-    
-    <ul class="desc-list">
-      <li>
-        <span class="inline-badge">2</span>
-        <strong>캡컷 타임라인 피날레 확인</strong>
-        PC에서 캡컷을 켜면, 방금 조립된 이미지, 오디오, 1줄 자막 컷팅이 <strong>한 치의 오차 없이 완벽하게 배열</strong>되어 있는 것을 확인할 수 있습니다. 이제 배경음악이나 트랜지션만 가볍게 얹어 최종 렌더링(Export) 하시면 됩니다.
-      </li>
-    </ul>
-  </div>
 
+    <!-- S4-A -->
+    <section id="s4a" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#c2410c;"></div>
+        <div class="sec-title">TTS 서버 준비 — Google Colab</div>
+      </div>
+      <div class="sec-desc">
+        오디오 자동 생성을 위한 개인 전용 <strong>무료 TTS 서버</strong>를<br>
+        Google Colab에서 가동하는 단계입니다.<br>
+        아래 화면의 배지 번호 <strong>④ → ⑤ → ⑦ → ⑧ → ⑨</strong> 순서로 진행합니다.
+      </div>
+      <div class="img-box">
+        <img src="그림6.png" alt="Google Colab TTS 서버 가동">
+        <div class="img-cap">▲ Google Colab — Qwen3-TTS 서버 가동 화면 (그림6)</div>
+      </div>
+      <div class="desc-sec-title">각 번호별 기능 설명</div>
+      <div class="desc-list">
+        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">Colab 노트북 파일 열기</div><div class="dd"><ul><li>오디오 탭의 <strong>1) 주소복사</strong> 버튼 클릭 → Colab 노트북 URL이 복사됩니다.</li><li>브라우저 주소창에 붙여넣어 노트북을 엽니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">5</div><div class="dc"><div class="dt">런타임 연결 상태 (RAM/Disk 아이콘)</div><div class="dd"><ul><li>우측 상단 <strong>RAM/Disk 아이콘이 초록색</strong>이면 서버 연결 완료 상태입니다.</li><li>연결 전이라면 <strong>런타임 &gt; 연결</strong>을 클릭하여 가상 서버를 할당받습니다.</li></ul></div></div></div>
+        <!-- 배지 ⑥ — 내용 입력 후 fill-badge span 한 줄만 삭제하세요 -->
+        <div class="desc-row"><div class="dbadge">6</div><div class="dc"><div class="dt"><span class="fill-badge">대표님이 입력해 주세요</span> 제목을 입력해 주세요</div><div class="dd"><ul><li>설명을 입력해 주세요</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">7</div><div class="dc"><div class="dt">Colab 왼쪽 사이드바 탐색</div><div class="dd"><ul><li>좌측 아이콘 패널에서 목차(리스트) 아이콘을 클릭하면 셀 구조를 확인합니다.</li><li>실행해야 할 주요 셀이 두 개 있습니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">8</div><div class="dc"><div class="dt">셀1 — 필수 패키지 설치 <span class="tag tag-once">1회만 실행</span></div><div class="dd"><ul><li>첫 번째 셀의 <strong>▶ 실행</strong> 버튼을 클릭합니다. <em>(약 1분 소요)</em></li><li>"설치가 완료되었습니다!" 메시지 확인 후 다음 단계로 진행합니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">9</div><div class="dc"><div class="dt">셀2 — Qwen3-TTS 실행기</div><div class="dd"><ul><li>오른쪽 <strong>모드 선택</strong> 드롭다운에서 <code>2. 🎤 음성 복제 (Voice Clone / Base)</code>를 선택합니다.</li><li><strong>▶ 실행</strong> 클릭 → 약 2~3분 후 <code>https://...gradio.live</code> 주소가 출력됩니다.</li><li>이 주소를 복사하여 오디오 탭의 <strong>TTS 서버주소</strong>에 붙여넣습니다.</li></ul></div></div></div>
+      </div>
+      <div class="key-box">
+        <div class="key-box-title">핵심설명</div>
+        <div class="key-list">
+          <div class="key-item">셀1 패키지 설치는 <strong>최초 1회만</strong> 실행합니다.</div>
+          <div class="key-item">셀2는 모드를 반드시 <strong>"2. 음성 복제"로 선택</strong>한 후 실행합니다.</div>
+          <div class="key-item">출력된 <code>gradio.live</code> 주소 → 오디오 탭 <strong>TTS 서버주소</strong>에 붙여넣기합니다. <em>이 주소는 세션 종료 시 만료됩니다.</em></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S4-B -->
+    <section id="s4b" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#c2410c;"></div>
+        <div class="sec-title">오디오 자동 생성</div>
+      </div>
+      <div class="sec-desc">
+        Colab 서버 가동 후 AutoTube Pro <strong>[2] 오디오 자동 생성</strong> 패널에서 진행합니다.<br>
+        아래 배지 번호는 Colab 단계(④~⑨)와 연결되는 연속 흐름입니다.
+      </div>
+      <div class="img-box">
+        <img src="그림5.png" alt="오디오 자동 생성 패널">
+        <div class="img-cap">▲ [2] 오디오 자동 생성 패널 — 184컷 중 3% 진행 중 (그림5)</div>
+      </div>
+      <div class="desc-sec-title">각 번호별 기능 설명</div>
+      <div class="desc-list">
+        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">목소리 원본 &amp; 복사할 내용</div><div class="dd"><ul><li><strong>목소리 원본(.wav)</strong>: AI가 억양을 복제할 기준 음성 파일을 지정합니다. <em>(5~15초 권장)</em></li><li><strong>복사할 내용</strong>: 해당 음성 파일에서 성우가 실제로 발화하는 텍스트를 정확히 입력합니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">TTS 서버주소 &amp; 1) 주소복사 버튼</div><div class="dd"><ul><li>Colab에서 발급받은 <code>gradio.live</code> 주소를 <strong>TTS 서버주소</strong> 입력란에 붙여넣습니다.</li><li><strong>1) 주소복사</strong>: Colab 노트북 URL을 클립보드에 복사합니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">2) 명령코드 / 3) 명령코드 버튼</div><div class="dd"><ul><li>Colab 각 셀에 입력해야 하는 실행 명령 코드를 클립보드에 복사합니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">9</div><div class="dc"><div class="dt">대본 파일 경로 설정</div><div class="dd"><ul><li>TTS 녹음을 실행할 엑셀 파일을 지정합니다.</li><li>이 파일 내에 <strong>"성우녹음" 시트가 반드시 존재</strong>해야 합니다. <em>(→ STEP 2 참고)</em></li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">10</div><div class="dc"><div class="dt">녹음 범위 &amp; 개별생성 설정</div><div class="dd"><ul><li>녹음할 컷의 <strong>시작 ~ 끝 번호</strong>를 지정합니다.</li><li><strong>개별생성</strong> 체크 → 특정 번호만 재녹음 가능합니다. <em>(예: 1,2,3,4,5)</em></li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">11</div><div class="dc"><div class="dt">대본 녹음 시작 / 녹음 중지</div><div class="dd"><ul><li><strong>대본 녹음 시작</strong>: 성우녹음 시트의 텍스트를 읽어 개별 WAV 파일을 생성합니다.</li><li><strong>녹음 중지</strong>: 진행 중인 녹음 작업을 중단합니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">12</div><div class="dc"><div class="dt">오디오 진행상태 &amp; 파형 시각화</div><div class="dd"><ul><li>전체·현재·남은 작업 수와 진행률(%)을 실시간 표시합니다.</li><li><strong>파형 캔버스</strong>: 앞무음(빨간)·발화(파란)·뒤무음(초록)을 색상으로 구분하여 품질 확인</li></ul></div></div></div>
+        <!-- 배지 ⑬ — 내용 입력 후 fill-badge span 한 줄만 삭제하세요 -->
+        <div class="desc-row"><div class="dbadge">13</div><div class="dc"><div class="dt"><span class="fill-badge">대표님이 입력해 주세요</span> 제목을 입력해 주세요</div><div class="dd"><ul><li>설명을 입력해 주세요</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">14</div><div class="dc"><div class="dt">녹음 전체 합치기 <span class="tag tag-req">★ 필수</span></div><div class="dd"><ul><li>모든 컷의 개별 녹음 완료 후 클릭하여 마스터 오디오 파일(<code>합본.wav</code>)을 생성합니다.</li><li>이 파일이 이후 자막 타임코드 생성의 기준이 됩니다.</li></ul></div></div></div>
+      </div>
+      <div class="key-box">
+        <div class="key-box-title">핵심설명</div>
+        <div class="key-list">
+          <div class="key-item"><strong>목소리 원본</strong>과 <strong>복사할 내용</strong>(텍스트)을 정확히 입력해야 자연스러운 억양이 복제됩니다.</div>
+          <div class="key-item">모든 컷 녹음 후 반드시 <strong>"녹음 전체 합치기"</strong>를 실행합니다. <em>이 버튼을 누르지 않으면 자막 생성이 불가합니다.</em></div>
+          <div class="key-item">Colab 세션 만료 시 오류 발생 → 셀2를 재실행하여 새 주소를 발급받으세요.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ██ STEP 5 배너 ██ -->
+    <div class="step-banner">
+      <span class="step-banner-badge">STEP 5</span>
+      <div class="step-banner-divider"></div>
+      <div class="step-banner-info">
+        <div class="step-banner-title">자막 자동 생성</div>
+        <div class="step-banner-sub">SRT 추출 · 타임코드 동기화 · 엑셀 자동 기록</div>
+      </div>
+    </div>
+
+    <!-- S5 -->
+    <section id="s5" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#0d9488;"></div>
+        <div class="sec-title">자막 자동 생성 &amp; 타임코드 동기화</div>
+      </div>
+      <div class="sec-desc">
+        <strong>리소스 제작</strong> 탭 → <strong>[3] 자막 자동 생성 및 보정</strong> 섹션입니다.<br>
+        합쳐진 마스터 오디오를 분석하여 각 컷의 자막 시간대를 추출하고,<br>
+        엑셀 타임스탬프 열에 자동으로 기록합니다.
+      </div>
+      <div class="img-box">
+        <img src="그림7.png" alt="자막 자동 생성 패널">
+        <div class="img-cap">▲ [3] 자막 자동 생성 및 보정 패널 — 33% 진행 중 (그림7)</div>
+      </div>
+      <div class="desc-sec-title">각 번호별 기능 설명</div>
+      <div class="desc-list">
+        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">원본 대본 &amp; 합친 녹음 경로 지정</div><div class="dd"><ul><li><strong>원본 대본</strong>: 자막 기준이 될 엑셀 파일(.xlsx)을 지정합니다.</li><li><strong>합친 녹음</strong>: "녹음 전체 합치기"로 생성된 마스터 오디오(<code>합본.wav</code>)를 지정합니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">전체 자막 SRT 만들기 + 엑셀에 이미지 배치 타임 적용 <span class="tag tag-order">★ 순서 중요</span></div><div class="dd"><ul><li><strong>1단계 — 전체 자막 SRT 만들기</strong>: 오디오를 분석해 각 컷의 타임코드가 담긴 SRT 파일을 생성합니다.</li><li><strong>2단계 — 엑셀에 이미지 배치 타임 적용</strong>: 추출된 타임스탬프를 엑셀 타임 열(J열)에 자동 기록합니다.</li><li>두 번째 버튼을 <strong>반드시 클릭</strong>해야 합니다. 미클릭 시 CapCut 이미지 타이밍이 잘못 배치됩니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">자막 작업 진행상태 패널</div><div class="dd"><ul><li>진행률(%)과 현재 처리 중인 자막 텍스트를 실시간으로 표시합니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">자막수정필요 입력 필드</div><div class="dd"><ul><li>자막 보정이 필요한 컷 번호를 쉼표로 구분해 입력합니다. <em>(예: 1, 3, 5)</em></li><li>영상 검증 탭에서 해당 컷만 재작업할 때 참조됩니다.</li></ul></div></div></div>
+      </div>
+      <div class="key-box">
+        <div class="key-box-title">핵심설명</div>
+        <div class="key-list">
+          <div class="key-item">SRT 만들기 후 반드시 <strong>"엑셀에 이미지 배치 타임 적용"</strong>도 클릭해야 합니다.</div>
+          <div class="key-item">두 번째 버튼 미클릭 시 <strong>CapCut 이미지 클립 타이밍이 잘못 배치</strong>됩니다. 이 단계를 건너뛰지 마세요.</div>
+          <div class="key-item">자막수정필요에 번호를 기록해두면 이후 개별 재작업 시 정확히 해당 컷만 처리할 수 있습니다.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ██ STEP 6 배너 ██ -->
+    <div class="step-banner">
+      <span class="step-banner-badge">STEP 6</span>
+      <div class="step-banner-divider"></div>
+      <div class="step-banner-info">
+        <div class="step-banner-title">검증 &amp; 완성</div>
+        <div class="step-banner-sub">통합 QC 검수 · CapCut 1초 조립</div>
+      </div>
+    </div>
+
+    <!-- S6-A -->
+    <section id="s6a" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#16a34a;"></div>
+        <div class="sec-title">영상 리소스 검증 (QC)</div>
+      </div>
+      <div class="sec-desc">
+        <strong>영상 검증</strong> 탭입니다.<br>
+        이미지·오디오·자막을 한 화면에서 동기화 재생하며 검수하고,<br>
+        문제가 있는 컷만 선택적으로 재작업합니다.
+      </div>
+      <div class="img-box">
+        <img src="그림8.png" alt="영상 검증 탭 — 통합 QC">
+        <div class="img-cap">▲ 영상 검증 탭 — 통합 QC &amp; CapCut 조립 화면 (그림8)</div>
+      </div>
+      <div class="desc-sec-title">각 번호별 기능 설명</div>
+      <div class="desc-list">
+        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">영상 검증 메인 탭 선택</div><div class="dd"><ul><li>상단 탭 바에서 <strong>영상 검증</strong> 탭을 선택합니다.</li><li>이미지·오디오·자막 생성이 모두 완료된 후 사용하는 탭입니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">대본 불러오기</div><div class="dd"><ul><li>엑셀 파일 경로 입력 후 <strong>대본 불러오기</strong>를 클릭합니다.</li><li>각 컷의 대본·자막 시간·썸네일 이미지·오디오 재생 버튼이 그리드에 표시됩니다.</li><li>이미지 누락 → 빨간 "없음" 뱃지, 자막 누락 → "자막없음" 뱃지로 즉시 식별합니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">재생 구간 설정 &amp; 끝번호 확인</div><div class="dd"><ul><li>자동 재생의 시작~끝 컷 번호를 지정합니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">자동 재생 / 재생 초기화 / 변경된 대본·자막 저장</div><div class="dd"><ul><li><strong>자동 재생</strong>: 지정 범위의 컷을 순서대로 재생합니다. 우측 패널에서 이미지·파형·자막이 동기화 갱신됩니다.</li><li><strong>변경된 대본/자막 저장</strong>: 검수 중 수정한 내용을 엑셀 파일에 저장합니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">5</div><div class="dc"><div class="dt">체크박스 초기화</div><div class="dd"><ul><li>마킹된 체크박스를 일괄 초기화합니다.</li><li>대상(모두 / 대본 / 자막 / 이미지 / 오디오)을 선택 후 <strong>체크항목 초기화</strong>를 클릭합니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">6</div><div class="dc"><div class="dt">CapCut 프로젝트 생성 경로</div><div class="dd"><ul><li>CapCut 프로젝트 파일이 저장될 경로를 지정합니다.</li><li>기본값은 CapCut의 기본 프로젝트 폴더입니다. <strong>찾기</strong>로 변경 가능합니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">7</div><div class="dc"><div class="dt">캡컷 프로젝트 자동 생성 실행 <span class="tag tag-req">★ 최종 단계</span></div><div class="dd"><ul><li>모든 검수 완료 후 이 버튼을 클릭합니다.</li><li><strong>단 1초</strong> 안에 이미지·오디오·SRT 자막 타임코드가 CapCut 프로젝트 파일에 자동 주입됩니다.</li></ul></div></div></div>
+      </div>
+      <div class="key-box">
+        <div class="key-box-title">핵심설명</div>
+        <div class="key-list">
+          <div class="key-item">문제 발견 시 해당 컷 체크박스를 클릭 → <strong>분홍색으로 마킹</strong>합니다. 검수 후 마킹된 컷만 개별 재작업하면 됩니다.</div>
+          <div class="key-item">전체 공정을 처음부터 재실행할 필요가 없습니다. <strong>선택적 재작업</strong>으로 효율을 높이세요.</div>
+          <div class="key-item">CapCut 실행 버튼(⑦) 클릭 전에 <strong>생성 경로(⑥)를 반드시 확인</strong>하세요.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S6-B -->
+    <section id="s6b" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#c8321e;"></div>
+        <div class="sec-title">CapCut 완성 타임라인</div>
+      </div>
+      <div class="sec-desc">
+        캡컷 프로젝트 자동 생성이 완료되면 CapCut을 실행합니다.<br>
+        수십 개의 이미지 클립·오디오·SRT 자막이 한 치 오차 없이<br>
+        배치된 완성형 타임라인을 바로 확인할 수 있습니다.
+      </div>
+      <div class="img-box">
+        <img src="그림9.png" alt="CapCut 완성 타임라인">
+        <div class="img-cap">▲ CapCut — 자동 조립 완성 타임라인 화면 (그림9)</div>
+      </div>
+      <div class="key-box">
+        <div class="key-box-title">핵심설명</div>
+        <div class="key-list">
+          <div class="key-item">이미지 클립이 오디오 싱크에 맞춰 자동 배치되고, <strong>SRT 자막도 정확한 타임코드에 삽입</strong>된 상태입니다.</div>
+          <div class="key-item">이후 작업은 <strong>트랜지션 효과, 배경음악 레벨, 브랜딩 요소</strong> 등 연출 디테일만 마무리하면 됩니다.</div>
+          <div class="key-item">배치 노동에서 완전히 해방됩니다. 진짜 중요한 창작 작업에만 집중하세요.</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
 </div>
+
+<script>
+const sections = document.querySelectorAll('.section[id]');
+const navLinks = document.querySelectorAll('.nav-a[data-sid]');
+const bc = document.getElementById('bc');
+const bcMap = {
+  's-ov': '전체 공정 개요',
+  's1a':  'STEP 1 · 파일 탐색기 &amp; 텍스트 에디터',
+  's1b':  'STEP 1 · 엑셀 그리드 편집',
+  's2':   'STEP 2 · 엑셀 파일 필수 구조 규칙',
+  's3':   'STEP 3 · 이미지 자동 생성',
+  's4a':  'STEP 4 · TTS 서버 준비 (Colab)',
+  's4b':  'STEP 4 · 오디오 자동 생성',
+  's5':   'STEP 5 · 자막 자동 생성 &amp; 보정',
+  's6a':  'STEP 6 · 영상 리소스 검증 (QC)',
+  's6b':  'STEP 6 · CapCut 프로젝트 조립',
+};
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const sid = e.target.id;
+      navLinks.forEach(a => a.classList.toggle('on', a.dataset.sid === sid));
+      if (bc) bc.innerHTML = '<strong>' + (bcMap[sid] || sid) + '</strong>';
+    }
+  });
+}, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
+sections.forEach(s => io.observe(s));
+navLinks.forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const el = document.getElementById(a.dataset.sid);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
 </body>
 </html>
