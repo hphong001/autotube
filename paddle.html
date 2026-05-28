@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>AutoTube 결제 테스트</title>
+
+    <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+    <script>
+        // ✅ Environment 설정은 반드시 Initialize 전에
+        Paddle.Environment.set("sandbox");
+
+        Paddle.Initialize({
+            token: 'test_266d3d196de0bb5ea52e4be3325'
+        });
+    </script>
+</head>
+<body style="padding: 50px; text-align: center;">
+
+    <h2>비즈니스 자동화 툴 - 오토튜브 (1년권)</h2>
+    <p>아래 버튼을 눌러 결제창 테스트를 진행해 보세요.</p>
+
+    <!-- ✅ v2 방식: onclick으로 Paddle.Checkout.open() 직접 호출 -->
+    <button
+        onclick="openCheckout()"
+        style="padding: 15px 30px; font-size: 18px; cursor: pointer;">
+        신용카드로 구매하기 ($99)
+    </button>
+
+    <script>
+        function openCheckout() {
+            Paddle.Checkout.open({
+                items: [
+                    {
+                        priceId: 'pri_01ksqh22r1zsfchwc0d0nsc1gg',
+                        quantity: 1
+                    }
+                ]
+            });
+        }
+    </script>
+
+</body>
+</html>
