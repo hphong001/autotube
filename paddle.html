@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoTube 결제</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+    <script>
+        Paddle.Environment.set("sandbox");
+        Paddle.Initialize({
+            token: 'test_266d3d196de0bb5ea52e4be3325'
+        });
+    </script>
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: rgba(15,23,42,0.55);
+            backdrop-filter: blur(6px);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 440px;
+            overflow: hidden;
+            animation: rise .35s cubic-bezier(.34,1.56,.64,1);
+        }
+
+        @keyframes rise {
+            from { transform: translateY(28px); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+
+        /* 헤더 */
+        .modal-head {
+            background: #1a202c;
+            padding: 32px 32px 26px;
+            text-align: center;
+        }
+
+        .icon-wrap {
+            width: 64px;
+            height: 64px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 28px;
+        }
+
+        .modal-head h2 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 8px;
+            letter-spacing: -0.3px;
+        }
+
+        .modal-head p {
+            font-size: 16px;
+            color: #61e461;
+            line-height: 1.65;
+        }
+
+        /* 바디 */
+        .modal-body {
+            padding: 24px 28px 28px;
+        }
+
+        .notice-item {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            padding: 14px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .notice-item:last-of-type { border-bottom: none; }
+
+        .badge {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: 1px;
+        }
+
+        .badge.red   { background: #fff5f5; color: #e53e3e; }
+        .badge.blue  { background: #eff6ff; color: #3b82f6; }
+        .badge.green { background: #f0fdf4; color: #16a34a; }
+
+        .notice-txt h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 3px;
+        }
+
+        .notice-txt p {
+            font-size: 16px;
+            color: #64748b;
+            line-height: 1.65;
+        }
+
+        /* 버튼 */
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all .15s;
+        }
+
+        .btn-cancel:hover { background: #f8fafc; color: #64748b; }
+
+        .btn-go {
+            flex: 2;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: #3b82f6;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: background .15s;
+        }
+
+        .btn-go:hover { background: #2563eb; }
+    </style>
+</head>
+<body>
+
+  <div class="modal">
+
+    <div class="modal-head">
+      <div class="icon-wrap">📧</div>
+      <h2>결제 전 꼭 확인해 주세요</h2>
+      <p>중요) 결제창에 이메일 주소를 정확하게 입력하셔야<br>라이선스 키를 오류없이 받으실 수 있습니다.</p>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="notice-item">
+        <div class="badge red">!</div>
+        <div class="notice-txt">
+          <h4>이메일로 라이선스 키 자동 발송</h4>
+          <p>결제 시 입력한 이메일로<br>1년 라이선스 키가 발송됩니다.</p>
+        </div>
+      </div>
+
+      <div class="notice-item">
+        <div class="badge blue">✓</div>
+        <div class="notice-txt">
+          <h4>재설치 불필요</h4>
+          <p>기존 체험판 그대로 사용하시면 됩니다.<br>새 라이선스 키만 입력하시면 1년간 사용이 가능 합니다.</p>
+        </div>
+      </div>
+
+      <div class="notice-item">
+        <div class="badge green">i</div>
+        <div class="notice-txt">
+          <h4>이메일 오입력 시</h4>
+          <p>hp.biz001@gmail.com 으로<br>결제 영수증과 함께 문의해 주세요.</p>
+        </div>
+      </div>
+
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="history.back()">취소</button>
+        <button class="btn-go" onclick="openCheckout()">확인 · 결제창으로 이동 →</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+      function openCheckout() {
+          Paddle.Checkout.open({
+              items: [{ priceId: 'pri_01ksqh22r1zsfchwc0d0nsc1gg', quantity: 1 }],
+              settings: {
+                  successUrl: 'https://aibaselab.com/thankyou.html'
+                  locale: 'ko'  // ← 한국어 고정
+              }
+          });
+      }
+  </script>
+
+</body>
+</html>
