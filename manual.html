@@ -1164,11 +1164,10 @@ body {
       <div class="desc-row"> <div class="dbadge">3</div><div class="dc"><div class="dt">현재는 한글만 지원 합니다.</div></div></div>
       <div class="desc-row"> <div class="dbadge">4</div><div class="dc"><div class="dt">TTS로 생성할 대본이 저장된 엑셀 파일을 선택 합니다.</div></div></div>
       <div class="desc-row"> <div class="dbadge">5</div><div class="dc"><div class="dt">TTS로 생성할 대본행의 번호를 지정 합니다.(자동 생성 범위) </div></div></div>
-      <div class="desc-row"> <div class="dbadge">6</div><div class="dc"><div class="dt">개별 생성이 필요할때 대본의 행 번호를 콤마(,)로 구분해서 입력 합니다.</div></div></div>
-      <div class="desc-row"> <div class="dbadge">7 </div><div class="dc"><div class="dt">녹음범위 자동생성 또는 개별 생성 시작 버튼 입니다.</div></div></div>
-      <div class="desc-row"> <div class="dbadge">8 </div><div class="dc"><div class="dt">녹음 진행중 녹음을 중지하는 기능 입니다.</div></div></div>
-      <div class="desc-row"> <div class="dbadge">9 </div><div class="dc"><div class="dt">엑셀 대본의 모든 행은 개별 파일로 녹음됩니다. <br>자막 생성을 위해 1개의 파일로 합치는 기능 입니다. </div></div></div>
-      </div>
+      <div class="desc-row"> <div class="dbadge">6</div><div class="dc"><div class="dt">개별 생성이 필요할때만 체크 표시를 ON하여 사용 합니다.<br>대본의 행 번호를 콤마(,)로 구분해서 입력 합니다.</div></div></div>
+      <div class="desc-row"> <div class="dbadge">7 </div><div class="dc"><div class="dt">위의 내용을 모두 설정하신 후 TTS 서버를 열어 녹음 준비를 합니다.<br>버튼을 누른 후 아래의 서버 설정 설명을 참고 하시기 바랍니다.</div></div></div>
+  
+    </div>
     </section>
 
     <section id="s4c" class="section">
@@ -1179,32 +1178,22 @@ body {
       <div class="sec-desc">
         <strong>Google Colab</strong>은 구글이 제공하는 무료 클라우드 컴퓨팅 환경입니다.<br>
         내 PC 성능에 영향을 주지 않고 TTS(음성 합성) 서버를 무료로 가동할 수 있습니다.<br>
-        배지 번호 <strong>④ → ⑤ → ⑥ → ⑦</strong> 순서로 진행합니다.
       </div>
-      <div class="io-box">
-        <div class="io-half io-in"><div class="io-lbl">📥 이 단계를 시작하기 전에</div><div class="io-val">AutoTube Pro에서 "코랩 열기" 버튼 클릭</div></div>
-        <div class="io-half io-out"><div class="io-lbl">📤 이 단계가 끝나면</div><div class="io-val">gradio.live TTS 서버 주소 발급 및 복사 완료</div></div>
-      </div>
+     
       <div class="img-box">
         <img src="그림6.png" alt="Google Colab TTS 서버 가동">
         <div class="img-cap">▲ Google Colab — Qwen3-TTS 서버 가동 화면 (그림6)</div>
       </div>
       <div class="desc-sec-title">각 번호별 기능 설명</div>
       <div class="desc-list">
-        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">AutoTube Pro "코랩 열기" 버튼 클릭</div><div class="dd"><ul><li>AutoTube Pro의 <strong>"코랩 열기"</strong> 버튼을 클릭하면 브라우저에서 노트북이 자동으로 열립니다.</li><li>노트북을 열 때 아래와 같은 경고 메시지가 표시될 수 있습니다.<br><em style="color:#b45309;font-size:15px;">"이 노트북은 Google에서 작성하지 않았습니다"</em><br><strong>이는 GitHub에서 불러올 때 구글이 표시하는 정상적인 보안 안내입니다. 무시하고 계속 진행하세요.</strong></li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">5</div><div class="dc"><div class="dt">T4 GPU 설정 확인 <span class="tag tag-once">매번 확인</span></div><div class="dd"><ul><li>상단 메뉴 <strong>수정 → 노트북 설정</strong>을 클릭합니다.</li><li>하드웨어 가속기가 <strong>T4 GPU</strong>로 설정되어 있는지 확인합니다.</li><li>T4 GPU가 아닌 경우 선택 후 저장하세요. <em>CPU로 실행 시 속도가 매우 느립니다.</em></li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">6</div><div class="dc"><div class="dt">셀1 — 필수 패키지 설치 <span class="tag tag-once">최초 1회</span></div><div class="dd"><ul><li>첫 번째 셀의 <strong>▶ 실행</strong>을 클릭합니다.</li><li>실행 직후 바로 메시지가 출력될 수 있으나 <strong>아직 설치 중인 상태</strong>입니다. 바로 다음 셀을 실행하지 마세요.</li><li><strong>약 30초~1분 후</strong> 셀 하단에 최종 <strong>"✅ 설치가 완료되었습니다!"</strong> 메시지가 다시 출력됩니다.</li><li>이 최종 완료 메시지를 반드시 확인한 후에만 셀2를 실행하세요. <em>너무 빨리 셀2를 누르면 오류가 발생합니다.</em></li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">7</div><div class="dc"><div class="dt">셀2 — Qwen3-TTS 서버 실행</div><div class="dd"><ul><li>두 번째 셀의 <strong>▶ 실행</strong>을 클릭합니다.</li><li>약 2~3분 후 셀 하단에 초록색 주소창과 <strong>📋 복사 버튼</strong>이 나타납니다.</li><li><strong>복사 버튼</strong>을 클릭하면 주소가 클립보드에 복사됩니다.</li><li>AutoTube Pro의 <strong>TTS 서버주소</strong> 칸에 붙여넣기 하면 연결 완료입니다.</li><li><em>이 주소는 Colab 세션 종료 시 만료됩니다. 재시작 시 셀2만 다시 실행하면 됩니다.</em></li></ul></div></div></div>
-      </div>
-      <div class="key-box">
-        <div class="key-box-title">핵심설명</div>
-        <div class="key-list">
-          <div class="key-item">셀1 설치는 <strong>최초 1회만</strong> 실행합니다. 이후에는 셀2만 실행하면 됩니다.</div>
-          <div class="key-item"><strong>셀1 완료 메시지를 반드시 확인 후 셀2를 실행하세요.</strong> 실행 직후 바로 보이는 메시지는 최종 완료가 아닐 수 있습니다.</div>
-          <div class="key-item">복사 버튼으로 주소를 복사하여 AutoTube Pro TTS 서버주소 칸에 붙여넣으면 연결 완료입니다.</div>
-          <div class="key-item">Colab 세션 만료 시 → <strong>셀2만 재실행</strong>하여 새 주소를 받아 붙여넣으세요.</div>
-        </div>
-      </div>
+        <div class="desc-row"> <div class="dbadge">1</div><div class="dc"><div class="dt">"TTS 서버 열기 버튼"을 누르면 자동으로 이 화면이 열립니다.</div></div></div>
+      <div class="desc-row"> <div class="dbadge">2</div><div class="dc"><div class="dt">TTS 서버를 가동할 시스템을 선택 해야 됩니다.<br> 수정 -> 노트설정 -> T4 GPU -> 적용 순으로 선택 합니다.</div></div></div>
+      <div class="desc-row"> <div class="dbadge">3</div><div class="dc"><div class="dt">화살표를 눌러 서버 기동 명령을 실행 합니다.</div></div></div>
+      <div class="desc-row"> <div class="dbadge">4</div><div class="dc"><div class="dt">10초~수십초 후 설치 완료 메세지 출력이 나오는지 확인 합니다. </div></div></div>
+      <div class="desc-row"> <div class="dbadge">5</div><div class="dc"><div class="dt">화살표 실행 버튼을 눌러 서버에 AI TTS를 실행 시킵니다.</div></div></div>
+      <div class="desc-row"> <div class="dbadge">6</div><div class="dc"><div class="dt">서버가 준비될때 까지 기다립니다. (1~3분)<br>대기후 URL이 출력되면 서버 준비가 완료된 것입니다.<br>2번째 서버접속용 URL을 마우스를 이용해 정확하게 복사 합니다<div class=""></div>  </div></div></div>
+    </div>
+     
     </section>
 
     <section id="s4b" class="section">
@@ -1214,35 +1203,38 @@ body {
       </div>
       <div class="sec-desc">
         Colab 서버 가동 후 <strong>AutoTube Pro로 돌아와</strong> 오디오 녹음을 실행합니다.<br>
-        아래는 STEP 4-①과 같은 화면입니다. 이번에는 <strong>하단 녹음 영역(배지 ⑨~⑭)</strong>을 사용합니다.
       </div>
-      <div class="io-box">
-        <div class="io-half io-in"><div class="io-lbl">📥 이 단계를 시작하기 전에</div><div class="io-val">엑셀 대본 (성우녹음 시트) + gradio.live 주소</div></div>
-        <div class="io-half io-out"><div class="io-lbl">📤 이 단계가 끝나면</div><div class="io-val">3_오디오_자막\ 폴더에 합본.wav 생성</div></div>
-      </div>
+     
       <div class="img-box">
-        <img src="그림5.png" alt="오디오 자동 생성 패널 하단 녹음 실행">
-        <div class="img-cap">▲ [2] 오디오 자동 생성 패널 — 하단 녹음 실행 영역 (그림5)</div>
+        <img src="그림5-1.png" alt="오디오 자동 생성 패널 하단 녹음 실행">
+        <div class="img-cap">▲ [2] 오디오 자동 생성 패널 — 녹음 실행 영역</div>
       </div>
-      <div class="img-note">💡 STEP 4-①과 동일한 화면입니다. 이번에는 <strong>하단 녹음 영역(배지 ⑨⑩⑪⑫⑭)</strong>에 집중합니다.</div>
+     
       <div class="desc-sec-title">각 번호별 기능 설명</div>
       <div class="desc-list">
-        <div class="desc-row"><div class="dbadge">9</div><div class="dc"><div class="dt">대본 파일 경로 설정</div><div class="dd"><ul><li>TTS 녹음할 엑셀 파일을 지정합니다. <em>(<code>1_대본\</code> 폴더의 .xlsx 파일)</em></li><li>이 파일 내에 <strong>"성우녹음" 시트가 반드시 존재</strong>해야 합니다.</li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">10</div><div class="dc"><div class="dt">녹음 범위 &amp; 개별생성 설정</div><div class="dd"><ul><li>엑셀 파일 지정 시 전체 컷 수가 자동으로 채워집니다.</li><li><strong>개별생성</strong>: 특정 컷만 재녹음할 때 번호를 직접 입력합니다. <em>(예: 1,2,3,4,5)</em></li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">11</div><div class="dc"><div class="dt">대본 녹음 시작 / 녹음 중지</div><div class="dd"><ul><li><strong>대본 녹음 시작</strong>: 성우녹음 시트의 텍스트를 순서대로 읽어 개별 WAV 파일을 생성합니다.</li><li><strong>녹음 중지</strong>: 진행 중인 녹음을 중단합니다.</li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">12</div><div class="dc"><div class="dt">오디오 진행상태 &amp; 파형 시각화</div><div class="dd"><ul><li>전체·현재·남은 작업 수와 진행률(%)을 실시간 표시합니다.</li><li><strong>파형 캔버스</strong>: 앞무음(빨간)·발화(파란)·뒤무음(초록)으로 각 녹음의 품질을 확인합니다.</li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">13</div><div class="dc"><div class="dt"><span class="fill-badge">대표님이 입력해 주세요</span> 제목을 입력해 주세요</div><div class="dd"><ul><li>설명을 입력해 주세요</li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">14</div><div class="dc"><div class="dt">녹음 전체 합치기 <span class="tag tag-req">★ 필수</span></div><div class="dd"><ul><li>모든 컷 녹음 완료 후 클릭하면 <code>3_오디오_자막\</code> 폴더에 <code>합본.wav</code> 파일이 생성됩니다.</li><li>이 파일이 STEP 5 자막 생성의 기준이 됩니다. <strong>반드시 실행해야 합니다.</strong></li></ul></div></div></div>
-      </div>
+        <div class="desc-row"> <div class="dbadge">1</div><div class="dc"><div class="dt">위에서 복사한 TTS 서버 접속용 주소를 입력 합니다.<br> 참고) 서버 생성시 마다 매번 변경 됩니다.</div></div></div>
+      <div class="desc-row"> <div class="dbadge">2</div><div class="dc"><div class="dt">모든 설정이 완료된후 녹음을 시작 합니다. <br>(녹음 범위 설정후 자동생성 또는 개별생성 녹음)</div></div></div>
+      <div class="desc-row"> <div class="dbadge">3</div><div class="dc"><div class="dt">녹음중 중지하는 기능이며, 중지후 이어서 녹음이 안되니 참고 하세요.</div></div></div>
+      <div class="desc-row"> <div class="dbadge">4</div><div class="dc"><div class="dt">엑셀 대본의 모든 행은 개별 파일로 녹음됩니다. <br>자막 생성을 위해 1개의 파일로 합치는 기능 입니다.</div></div></div>
+   </div>
       <div class="key-box">
         <div class="key-box-title">핵심설명</div>
         <div class="key-list">
           <div class="key-item"><strong>목소리 원본</strong>과 <strong>복사할 내용</strong>을 정확히 입력해야 자연스러운 억양이 생성됩니다.</div>
-          <div class="key-item">모든 컷 녹음 완료 후 반드시 <strong>"녹음 전체 합치기"</strong>를 실행합니다. <em>이 버튼을 누르지 않으면 STEP 5 자막 생성이 불가합니다.</em></div>
+          <div class="key-item">모든 컷 녹음 완료 후 반드시 <strong>"녹음 전체 합치기"</strong>를 실행합니다.<br> <em>이 버튼을 누르지 않으면 STEP 5 자막 생성이 불가합니다.</em></div>
           <div class="key-item">Colab 세션 만료 시 오류 발생 → 셀2를 재실행하여 새 주소를 발급받아 붙여넣으세요.</div>
         </div>
       </div>
     </section>
+
+    <div class="sec-desc" style="background-color: #fff8e1; color: #d32f2f; padding: 15px 20px; border-left: 5px solid #d32f2f; border-radius: 4px; font-family: sans-serif; line-height: 1.6;">
+  <strong style="font-size: 1.1em;">🚨 [중요] TTS 서버 수동 종료 필수 안내</strong><br>
+  <strong>오토튜브는 사용자의 연속적인 작업을 고려하여 서버를 자동으로 종료하지 않습니다.</strong><br>
+  따라서 TTS 생성 완료 후 또는 더 이상 사용하지 않을 때는 <strong>반드시 직접 서버를 종료</strong>해 주시기 바랍니다.<br>
+  <span style="font-size: 0.95em; color: #555;">(무료 사용자: 사용 제한 불이익 방지 / 유료 사용자: 불필요한 비용 차감 방지)</span><br><br>
+  👉 <strong>종료 방법:</strong> 상단 메뉴 <strong>[런타임] ➔ [런타임 연결 해제 및 삭제]</strong>
+</div>
+
 
     <!-- ██ STEP 5 배너 ██ -->
     <div class="step-banner">
@@ -1264,10 +1256,7 @@ body {
         합본.wav 오디오를 AI가 분석하여 각 컷의 정확한 시작·끝 시간을 추출하고,<br>
         SRT 자막 파일과 엑셀 타임스탬프를 자동으로 생성합니다.
       </div>
-      <div class="io-box">
-        <div class="io-half io-in"><div class="io-lbl">📥 이 단계를 시작하기 전에</div><div class="io-val">엑셀 대본 파일 + 합본.wav</div></div>
-        <div class="io-half io-out"><div class="io-lbl">📤 이 단계가 끝나면</div><div class="io-val">자막.srt + 엑셀 타임코드 (J열)</div></div>
-      </div>
+     
       <div class="img-box">
         <img src="그림7.png" alt="자막 자동 생성 패널">
         <div class="img-cap">▲ [3] 자막 자동 생성 및 보정 패널 — 33% 진행 중 (그림7)</div>
