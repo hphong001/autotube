@@ -777,7 +777,7 @@ body {
             <div class="pipe-name">대본 / 기획</div>
             <div class="pipe-sub">프롬프트 편집 · 엑셀 파일 확인</div>
           </div>
-          <div class="pipe-arrow-h">→</div>
+          <div class="pipe-arrow-h"> </div>
           <div class="pipe-card">
             <div class="pipe-badge" style="background:#4f46e5;color:#fff;">STEP 2</div>
             <div class="pipe-icon">📋</div>
@@ -965,7 +965,7 @@ body {
       </div>
       <div class="desc-sec-title">각 번호별 기능 설명</div>
       <div class="desc-list">
-        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">대본 시트 — 메인 대본 내용 구성</div><div class="dd"><ul><li>영상의 메인 대본 내용이 담긴 기본 시트입니다.</li><li>사용자가 관리하는 내용으로 자유롭게 구성하시면 됩니다.</li><li>단, 자동 이미지 생성을 위해 <strong>"이미지 생성 프롬프트"</strong> 열은 반드시 포함되어야 합니다. <span class="tag tag-req">★</span></li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">대본 시트 — 메인 대본 내용 구성</div><div class="dd"><ul><li>영상의 메인 대본 내용이 담긴 기본 시트입니다.</li><li>사용자가 관리하는 내용으로 자유롭게 구성하시면 됩니다.</li><li>단, 자동 이미지 생성을 위해 <strong>"이미지 생성 프롬프트"</strong> 열은 반드시 포함되어야 합니다. </li></ul></div></div></div>
         <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">"이미지 생성 프롬프트" 열 제목 <span class="tag tag-req">★ 필수</span></div><div class="dd"><ul><li>이미지 자동 생성 시 프로그램이 이 열에서 프롬프트를 읽습니다.</li><li>열의 위치는 어디든 상관없지만, <strong>열 제목은 정확히 "이미지 생성 프롬프트"</strong>여야 합니다.</li></ul></div></div></div>
         <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">성우녹음 시트 <span class="tag tag-req">★ 필수</span></div><div class="dd"><ul><li>TTS 오디오 생성 시 이 시트의 텍스트를 읽어 음성을 생성합니다.</li><li>시트 이름은 반드시 <strong>"성우녹음"</strong> 4글자여야 합니다.</li><li>TTS 오디오를 생성할 열 이름은 반드시 <strong>"성우녹음대본"</strong>으로 설정하세요.</li><li>제공되는 <code>AI성우_녹음대본_생성프롬프트.txt</code> 파일을 참고하세요.</li></ul></div></div></div>
       </div>
@@ -1141,57 +1141,40 @@ body {
       </div>
     </div>
 
-    <!-- STEP4 흐름도 -->
-    <div class="step4-flow">
-      <div class="s4f-item active">
-        <div class="s4f-num">STEP 4 · ①</div>
-        <div class="s4f-where app">AutoTube Pro</div>
-        <div class="s4f-title">준비<br>URL·명령코드 복사</div>
-      </div>
-      <div class="s4f-arrow">→</div>
-      <div class="s4f-item colab-s">
-        <div class="s4f-num">STEP 4 · ②</div>
-        <div class="s4f-where colab">브라우저 (Colab)</div>
-        <div class="s4f-title">TTS 서버 가동<br>주소 발급</div>
-      </div>
-      <div class="s4f-arrow">→</div>
-      <div class="s4f-item">
-        <div class="s4f-num">STEP 4 · ③</div>
-        <div class="s4f-where app">AutoTube Pro</div>
-        <div class="s4f-title">녹음 실행<br>합본.wav 생성</div>
-      </div>
-    </div>
-
+    
     <section id="s4a" class="section">
       <div class="sec-hd">
         <div class="step-chip" style="background:#c2410c;"></div>
-        <div class="sec-title">① AutoTube Pro — 오디오 준비 설정</div>
+        <div class="sec-title">1) AutoTube Pro — 오디오 준비 설정</div>
       </div>
       <div class="sec-desc">
         오디오 생성 전 AutoTube Pro에서 먼저 필요한 정보를 설정하는 단계입니다.<br>
-        목소리 샘플 파일과 복사할 내용을 지정하고, Colab 접속에 필요한 정보를 복사합니다.
+        시작전에 10초 정도의 깨끗하게 녹음된 자신의 목소리를 WAV 파일로 준비 합니다.
       </div>
-      <div class="io-box">
-        <div class="io-half io-in"><div class="io-lbl">📥 이 단계를 시작하기 전에</div><div class="io-val">목소리 샘플 .wav 파일 (5~15초)</div></div>
-        <div class="io-half io-out"><div class="io-lbl">📤 이 단계가 끝나면</div><div class="io-val">Colab URL + 명령코드 복사 완료</div></div>
-      </div>
+      
       <div class="img-box">
         <img src="그림5.png" alt="오디오 자동 생성 패널 상단 설정">
         <div class="img-cap">▲ [2] 오디오 자동 생성 패널 — 상단 설정 영역 (그림5)</div>
       </div>
-      <div class="img-note">💡 이 단계에서는 화면 <strong>상단 영역(배지 ①②③)</strong>만 설정합니다. 하단 녹음 버튼은 STEP 4-③에서 사용합니다.</div>
+
       <div class="desc-sec-title">각 번호별 기능 설명</div>
       <div class="desc-list">
-        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">목소리 원본 &amp; 복사할 내용</div><div class="dd"><ul><li><strong>목소리 원본(.wav)</strong>: AI가 억양·톤 스타일을 참고할 기준 음성 파일입니다. <em>5~15초 분량의 깨끗한 목소리 샘플을 권장합니다.</em></li><li><strong>복사할 내용</strong>: 해당 음성 파일 안에서 성우가 실제로 말하는 텍스트를 <strong>그대로 입력</strong>합니다. AI가 목소리와 텍스트를 대응시켜 억양 패턴을 학습합니다.</li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">1) 주소복사 버튼</div><div class="dd"><ul><li>Google Colab 노트북 URL을 클립보드에 복사합니다.</li><li>복사 후 브라우저 주소창에 붙여넣어 Colab 노트북을 엽니다.</li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">2) 명령코드 / 3) 명령코드 버튼</div><div class="dd"><ul><li>Colab 각 셀에서 실행해야 하는 명령 코드를 클립보드에 복사합니다.</li><li>STEP 4-②에서 Colab 화면에 순서대로 붙여넣어 실행합니다.</li></ul></div></div></div>
+       <div class="desc-row"> <div class="dbadge">1</div><div class="dc"><div class="dt">TTS 생성에 필요한 학습용 목소리 샘플 파일을 선택 합니다.</div></div></div>
+      <div class="desc-row"> <div class="dbadge">2</div><div class="dc"><div class="dt">샘플 파일 녹음 내용이 기입된 텍스트 파일을 선택 합니다.</div></div></div>
+      <div class="desc-row"> <div class="dbadge">3</div><div class="dc"><div class="dt">현재는 한글만 지원 합니다.</div></div></div>
+      <div class="desc-row"> <div class="dbadge">4</div><div class="dc"><div class="dt">TTS로 생성할 대본이 저장된 엑셀 파일을 선택 합니다.</div></div></div>
+      <div class="desc-row"> <div class="dbadge">5</div><div class="dc"><div class="dt">TTS로 생성할 대본행의 번호를 지정 합니다.(자동 생성 범위) </div></div></div>
+      <div class="desc-row"> <div class="dbadge">6</div><div class="dc"><div class="dt">개별 생성이 필요할때 대본의 행 번호를 콤마(,)로 구분해서 입력 합니다.</div></div></div>
+      <div class="desc-row"> <div class="dbadge">7 </div><div class="dc"><div class="dt">녹음범위 자동생성 또는 개별 생성 시작 버튼 입니다.</div></div></div>
+      <div class="desc-row"> <div class="dbadge">8 </div><div class="dc"><div class="dt">녹음 진행중 녹음을 중지하는 기능 입니다.</div></div></div>
+      <div class="desc-row"> <div class="dbadge">9 </div><div class="dc"><div class="dt">엑셀 대본의 모든 행은 개별 파일로 녹음됩니다. <br>자막 생성을 위해 1개의 파일로 합치는 기능 입니다. </div></div></div>
       </div>
     </section>
 
     <section id="s4c" class="section">
       <div class="sec-hd">
         <div class="step-chip" style="background:#c2410c;"></div>
-        <div class="sec-title">② Google Colab — TTS 서버 가동</div>
+        <div class="sec-title">2) Google Colab — TTS 서버 가동</div>
       </div>
       <div class="sec-desc">
         <strong>Google Colab</strong>은 구글이 제공하는 무료 클라우드 컴퓨팅 환경입니다.<br>
@@ -1227,7 +1210,7 @@ body {
     <section id="s4b" class="section">
       <div class="sec-hd">
         <div class="step-chip" style="background:#c2410c;"></div>
-        <div class="sec-title">③ AutoTube Pro — 오디오 녹음 실행</div>
+        <div class="sec-title">3) AutoTube Pro — 오디오 녹음 실행</div>
       </div>
       <div class="sec-desc">
         Colab 서버 가동 후 <strong>AutoTube Pro로 돌아와</strong> 오디오 녹음을 실행합니다.<br>
