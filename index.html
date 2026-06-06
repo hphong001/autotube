@@ -1,0 +1,3561 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="format-detection" content="telephone=no">
+<title>AutoTube Pro — 대본이 영상이 되는 자동화 파이프라인</title>
+
+<meta name="description" content="대본 엑셀 한 장에서 완성 CapCut 타임라인까지. Gemini 이미지 자동 생성 · AI 음성 생성 · SRT 자막 추출 · CapCut 1초 조립. 유튜브 크리에이터 전용 영상 제작 자동화 소프트웨어. Windows 전용 PC 설치형.">
+<meta name="keywords" content="유튜브 자동화, 영상 제작 자동화, AutoTube Pro, CapCut 자동화, AI 음성 생성, Gemini 이미지 생성, 유튜브 크리에이터 툴, 자막 자동 추출, TTS 자동화, 유튜브 편집 자동화">
+<meta name="robots" content="index, follow">
+<meta name="author" content="AutoTube Pro">
+<link rel="canonical" href="https://aibaselab.com/">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="AutoTube Pro — 대본이 영상이 되는 자동화 파이프라인">
+<meta property="og:description" content="대본 엑셀 한 장에서 완성 CapCut 타임라인까지. Gemini 이미지 자동 생성 · AI 음성 생성 · SRT 자막 추출 · CapCut 1초 조립.">
+<meta property="og:url" content="https://aibaselab.com/">
+<meta property="og:site_name" content="AutoTube Pro">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://aibaselab.com/그림8.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AutoTube Pro 영상 제작 자동화 소프트웨어 화면">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AutoTube Pro — 대본이 영상이 되는 자동화 파이프라인">
+<meta name="twitter:description" content="대본 엑셀 한 장에서 완성 CapCut 타임라인까지. Gemini 이미지 자동 생성 · AI 음성 생성 · SRT 자막 추출 · CapCut 1초 조립. 유튜브 크리에이터 전용 영상 제작 자동화 소프트웨어.">
+<meta name="twitter:image" content="https://aibaselab.com/그림8.png">
+
+<meta name="theme-color" content="#4f46e5">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "AutoTube Pro",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Windows",
+  "description": "대본 엑셀 한 장에서 완성 CapCut 타임라인까지. Gemini 이미지 자동 생성·AI 음성 생성·SRT 자막 추출·CapCut 1초 조립. 유튜브 크리에이터 전용 영상 제작 자동화 소프트웨어.",
+  "url": "https://aibaselab.com/",
+  "offers": {
+    "@type": "Offer",
+    "price": "980000",
+    "priceCurrency": "KRW",
+    "availability": "https://schema.org/InStock"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "AutoTube Pro"
+  }
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+<style>
+/* ────────────────────────────────────
+   TOKENS & BASE — C: Deep Navy
+──────────────────────────────────── */
+:root {
+  --bg:    #f0f4ff; --white: #ffffff; --ink: #1e1b4b; --ink2: #312e81; --gray: #4b5563;
+  --muted: #6b7280; --line: #c7d2fe; --red: #4f46e5; --red2: #6366f1; --amber: #7c3aed;
+  --blue:  #4f46e5; --green: #059669;
+  --tinted: #e8edff;
+  --sans:  'Pretendard', 'Noto Sans KR', sans-serif;
+  --body:  'Noto Sans KR', 'Pretendard', sans-serif;
+  --mono:  'DM Mono', monospace;
+  --num:   'Inter', 'DM Mono', monospace;
+  --w: 800px; --gap: clamp(20px, 5vw, 60px); --section: 110px;
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; overflow-x: hidden; }
+body { font-family: var(--body); background: var(--bg); color: var(--ink); font-size: 19px; line-height: 1.8; -webkit-font-smoothing: antialiased; overflow-x: hidden; word-break: keep-all; overflow-wrap: break-word; }
+
+.price-period, .compare-time, .as-val, .ui-progress-label, .auto-tag, .step-badge, .pcard-label, .pc-label, .hero-notice, .final-note, .foot-copy, .topbar, .ui-section-label, .ui-field-label, .ui-field-input, .ui-field-btn, .ui-path-label, .ui-path-val, .ui-path-btn, .ui-title, .ui-btn, .vp-label, .vp-url-row, .circle-badge {
+  font-family: var(--num) !important;
+}
+
+/* 제목 — Pretendard 800~900 */
+h1, h2, h3, h4, h5, h6,
+.hero-t2, .hero-t4, .nav-logo, .foot-logo,
+.pain-t, .step-t, .ic-title, .gs-t, .pc-title,
+.kpi-num, .th-num, .wf-val, .sd-h1 {
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif !important;
+}
+
+/* 숫자 강조 — Inter */
+.kpi-num, .th-num, .wf-val, .pc-price,
+.sa-kpi-num, .sb-kpi-num, .sc-kpi-num {
+  font-family: 'Inter', 'DM Mono', monospace !important;
+}
+
+/* LAYOUT & TYPOGRAPHY */
+.w { max-width: var(--w); margin: 0 auto; padding: 0 var(--gap); }
+.section { padding: var(--section) 0; border-top: 1px solid var(--line); }
+body > .section:first-of-type { border-top: none; }
+.section--tinted { background: var(--tinted); }
+.section--white { background: var(--white); }
+
+.eyebrow { font-size: clamp(13px, 2.5vw, 16px); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6366f1; display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+.eyebrow::before { content: ''; width: 20px; height: 2px; background: #6366f1; flex-shrink: 0; }
+h1, h2 { font-family: 'Pretendard', 'Noto Sans KR', sans-serif; font-size: clamp(32px, 4.5vw, 46px); font-weight: 800; color: var(--ink); letter-spacing: -.03em; line-height: 1.3; margin-bottom: 28px; }
+.hl-red { color: #6366f1; }
+.hl-red2 { color: #818cf8; }
+.lead { font-size: 18px; line-height: 1.9; color: #4b5563; margin-bottom: 32px; }
+
+/* TOPBAR & NAV */
+.topbar { background: #1e1b4b; color: #c7d2fe; text-align: center; padding: 11px 20px; font-size: 15px; font-weight: 500; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 8px;}
+.topbar::after { content: ''; position: absolute; top: 0; left: -60%; width: 40%; height: 100%; background: rgba(255,255,255,.06); transform: skewX(-20deg); animation: shimmer 3.5s linear infinite; pointer-events: none; }
+.dot-live-top { width: 8px; height: 8px; background: #a5b4fc; border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; flex-shrink: 0; }
+@keyframes shimmer { to { left: 130%; } }
+@keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
+
+nav { position: sticky; top: 0; z-index: 99; background: rgba(255,255,255,.96); backdrop-filter: blur(14px); border-bottom: 1px solid #dbeafe; height: 68px; display: flex; align-items: center; padding: 0 var(--gap); justify-content: space-between; }
+.nav-logo { font-family: 'Pretendard', 'Noto Sans KR', sans-serif; font-size: 22px; font-weight: 900; letter-spacing: -.03em; color: var(--ink); text-decoration: none; cursor: pointer; }
+.nav-logo span { color: #c8321e; }
+.nav-menu-wrap { display: flex; align-items: center; background: #f0f4ff; padding: 4px; border-radius: 40px; list-style: none; gap: 2px; }
+.nav-menu-wrap a { font-size: 14px; font-weight: 600; color: #4b5563; padding: 7px 18px; border-radius: 30px; text-decoration: none; transition: all .2s; display: block; }
+.nav-menu-wrap a:hover { background: #fff; color: var(--ink); box-shadow: 0 2px 8px rgba(99,102,241,0.12); }
+.nav-cta { background: #4f46e5; color: #fff; padding: 9px 20px; border-radius: 7px; font-size: 14px; font-weight: 700; text-decoration: none; transition: background .2s; white-space: nowrap; }
+.nav-cta:hover { background: #6366f1; }
+
+/* HERO SECTION CSS CLASSES (NEW & OPTIMIZED) */
+.hero { padding: 10px 0 80px; position: relative; overflow: hidden; }
+.hero-box {
+  background: linear-gradient(145deg, #ffffff, #f0f4ff);
+  padding: clamp(28px, 5vw, 64px);
+  border-radius: clamp(16px, 4vw, 28px);
+  box-shadow: 0 4px 24px rgba(99,102,241,0.10), 0 1px 4px rgba(99,102,241,0.06);
+  border: 1px solid #c7d2fe;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+.hero-t1 { display: block; margin-bottom: 12px; font-size: clamp(13px, 3.5vw, 22px); font-weight: 700; color: #6366f1; letter-spacing: 0.06em; text-transform: uppercase; }
+.hero-t2 { display: block; margin-bottom: 20px; font-size: clamp(26px, 6.5vw, 52px); font-weight: 900; color: #1e1b4b; line-height: 1.25; letter-spacing: -.04em; }
+.hero-t3 { display: block; margin-bottom: 12px; font-size: clamp(16px, 4vw, 22px); font-weight: 500; color: #4b5563; line-height: 1.65; }
+.hero-t4 { display: block; margin-bottom: 28px; font-size: clamp(17px, 4.5vw, 26px); font-weight: 500; color: #4b5563; line-height: 1.65; }
+.hero-t4 strong { font-weight: 800; color: #1e1b4b; }
+.hero-badge { display: inline-block; font-size: clamp(13px, 3.5vw, 18px); font-weight: 800; color: #4f46e5; background: #eef2ff; padding: clamp(10px, 3vw, 16px) clamp(16px, 4vw, 32px); border-radius: 50px; border: 1px solid #c7d2fe; }
+.hero-sub-text { text-align: center; margin: 24px auto 40px; font-size: clamp(15px, 3.5vw, 19px); line-height: 1.75; color: #4b5563; max-width: 680px; }
+.hero-sub-text strong { display: block; font-size: clamp(17px, 4.2vw, 22px); color: #1e1b4b; margin-bottom: 16px; font-weight: 800; }
+.hero-sub-text .hl-blue { color: #4f46e5; font-weight: 800; font-size: clamp(14px, 3.5vw, 17px); margin-top:20px; display:block; }
+.hero-sub-text .hl-red { color: #6366f1; font-weight: 800; font-size: clamp(15px, 4vw, 19px); margin-top:8px; display:block; }
+
+.kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #c7d2fe; border-radius: 14px; overflow: hidden; margin-bottom: 44px; }
+.kpi { background: var(--white); padding: 28px 24px; text-align: center; position: relative; }
+.kpi-num { font-size: clamp(28px, 5vw, 42px); font-weight: 900; line-height: 1; letter-spacing: -0.03em; color: #1e1b4b; margin-bottom: 8px; font-family: 'Inter', sans-serif; }
+.kpi-label { font-size: 15px; color: #6b7280; line-height: 1.5; }
+.hero-cta-wrap { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.btn-main { display: inline-flex; align-items: center; gap: 10px; background: #4f46e5; color: #fff; padding: 18px 36px; font-size: 18px; font-weight: 700; text-decoration: none; border-radius: 8px; transition: transform .15s, box-shadow .15s, background .2s; box-shadow: 0 6px 24px rgba(79,70,229,.3); cursor: pointer; }
+.btn-main:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(79,70,229,.38); background: #6366f1; }
+.btn-ghost { display: inline-flex; align-items: center; gap: 8px; color: #4b5563; font-size: 16px; font-weight: 600; text-decoration: none; border-bottom: 1.5px solid #c7d2fe; padding-bottom: 2px; }
+.hero-notice { margin-top: 20px; font-size: 14px; color: #6b7280; display: flex; align-items: center; gap: 8px; }
+
+/* COMPONENTS (QC, PAIN, STEPS, WEAPON) */
+.qc-box { border: 1px solid #c7d2fe; border-radius: 14px; background: var(--white); overflow: hidden; margin-bottom: 48px; box-shadow: 0 4px 20px rgba(99,102,241,.06); }
+.qc-img-placeholder { background: #eef2ff; width: 100%; aspect-ratio: 16/9; display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 1px solid #c7d2fe; }
+.qc-img-placeholder img { width: 100%; height: 100%; object-fit: contain; }
+.qc-desc { padding: 32px 36px; }
+.qc-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.qc-item { display: flex; align-items: flex-start; gap: 12px; font-size: 17px; color: #4b5563; }
+.qc-chk { width: 22px; height: 22px; background: #eef2ff; color: #4f46e5; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+
+.pain-list { list-style: none; display: flex; flex-direction: column; border: 1px solid #c7d2fe; border-radius: 14px; overflow: hidden; margin: 36px 0; }
+.pain-item { display: flex; align-items: flex-start; gap: 20px; padding: 28px 32px; border-bottom: 1px solid #c7d2fe; background: var(--white); transition: background .2s; }
+.pain-item:last-child { border-bottom: none; }
+.pain-t { font-size: 19px; font-weight: 700; margin-bottom: 6px; color: #1e1b4b; }
+.pain-d { font-size: 17px; color: #4b5563; line-height: 1.75; }
+.pain-punch { background: #1e1b4b; color: #fff; padding: 36px 40px; border-radius: 14px; font-size: 22px; font-weight: 700; line-height: 1.65; text-align: center; }
+
+.step { display: flex; align-items: flex-start; gap: 20px; padding: 36px 0; border-bottom: 1px solid #c7d2fe; }
+.step:last-child { border-bottom: none; }
+.step-t { font-size: 21px; font-weight: 700; margin-bottom: 10px; color: #1e1b4b; display: flex; align-items: center; gap: 8px; }
+.step-t .material-symbols-rounded { font-size: 26px; color: #6366f1; }
+.step-d { font-size: 17px; color: #4b5563; line-height: 1.8; }
+.step-badge { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; background: #eef2ff; color: #4f46e5; padding: 5px 13px; font-size: 14px; border-radius: 6px; }
+
+.weapon-card { background: var(--white); border: 1px solid #c7d2fe; border-radius: 14px; overflow: hidden; margin: 36px 0; }
+.weapon-header { background: #1e1b4b; padding: 20px 28px; font-size: 14px; color: rgba(199,210,254,.5); display: flex; align-items: center; gap: 10px; }
+.weapon-row { display: grid; grid-template-columns: 1fr 36px 1fr; align-items: center; gap: 12px; padding: 16px 28px; border-bottom: 1px solid #c7d2fe; }
+.weapon-row:last-child { border-bottom: none; }
+.wr-before { font-size: 17px; color: #9ca3af; text-decoration: line-through; }
+.wr-arrow { text-align: center; color: #c7d2fe; font-size: 20px; }
+.wr-after { font-size: 17px; color: #1e1b4b; font-weight: 600; text-align: right; }
+.weapon-footer { background: #1e1b4b; padding: 20px 28px; display: flex; align-items: center; justify-content: space-between; }
+.wf-label { font-size: 14px; color: rgba(199,210,254,.35); }
+.wf-val { font-size: 30px; font-weight: 900; color: #818cf8; letter-spacing: -0.03em; }
+
+.install-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 36px; }
+.install-card { background: var(--white); border: 1px solid #c7d2fe; border-radius: 12px; padding: 28px; }
+.ic-icon .material-symbols-rounded { font-size: 36px; color: #6366f1; }
+.ic-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: #1e1b4b; }
+.ic-desc { font-size: 16px; color: #4b5563; line-height: 1.7; }
+
+.guide-step { display: flex; gap: 20px; padding: 26px 0; border-bottom: 1px solid #c7d2fe; }
+.guide-step:last-child { border-bottom: none; }
+.gs-t { font-size: 19px; font-weight: 700; margin-bottom: 6px; color: #1e1b4b; }
+.gs-d { font-size: 17px; color: #4b5563; line-height: 1.75; }
+
+.excel-win { border-radius: 12px; overflow: hidden; border: 1px solid #c7d2fe; box-shadow: 0 4px 20px rgba(99,102,241,.08); margin: 28px 0; }
+.excel-bar { background: #1e1b4b; padding: 10px 16px; display: flex; align-items: center; gap: 6px; }
+.excel-dot { width: 11px; height: 11px; border-radius: 50%; }
+.excel-bar-title { font-size: 13px; color: rgba(199,210,254,.4); margin-left: 6px; }
+.excel-tbl { width: 100%; border-collapse: collapse; font-size: 15px; }
+.excel-tbl th { padding: 10px 14px; text-align: left; background: #eef2ff; border-bottom: 1px solid #c7d2fe; border-right: 1px solid #c7d2fe; font-size: 13px; color: #6b7280; }
+.excel-tbl td { padding: 12px 14px; border-bottom: 1px solid #c7d2fe; border-right: 1px solid #c7d2fe; }
+.col-a { background: #f5f7ff; color: #9ca3af; text-align: center; }
+.col-b { font-weight: 600; color: #1e1b4b; }
+.col-c { color: #9ca3af; font-size: 14px; }
+.col-j { background: rgba(99,102,241,.04); }
+.auto-tag { background: #eef2ff; color: #4f46e5; padding: 2px 8px; border-radius: 3px; font-size: 13px; }
+.excel-note { padding: 14px 18px; background: #fff; border-top: 1px solid #c7d2fe; font-size: 16px; color: #4b5563; }
+
+.ptabs { display: flex; border-bottom: 2px solid #c7d2fe; margin-bottom: 28px; margin-top: 44px; }
+.ptab { padding: 12px 22px; font-size: 17px; font-weight: 600; color: #9ca3af; cursor: pointer; border-bottom: 2px transparent; margin-bottom: -2px; }
+.ptab.on { color: #4f46e5; border-bottom: 2px solid #4f46e5; }
+.ppane { display: none; }
+.ppane.on { display: block; }
+.pcard { background: var(--white); border: 1px solid #c7d2fe; border-radius: 12px; padding: 30px 34px; margin-bottom: 14px; }
+.pcard-label { font-size: 14px; color: #6366f1; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 14px; display: block; }
+.pcard-text { font-size: 17px; color: #374151; }
+.pcard-note { margin-top: 14px; padding: 12px 16px; background: #eef2ff; border-left: 3px solid #6366f1; font-size: 16px; color: #4b5563; }
+
+.saving-row { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
+.saving-item { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; background: var(--white); border: 1px solid #c7d2fe; border-radius: 10px; }
+.si-l { font-size: 18px; color: #1e1b4b; }
+.si-r { font-size: 18px; font-weight: 900; color: #4f46e5; }
+.time-hero { background: #1e1b4b; color: #fff; padding: 44px 40px; border-radius: 14px; text-align: center; }
+.th-num { font-size: 80px; font-weight: 900; color: #818cf8; font-family: 'Inter', sans-serif; }
+.th-desc { font-size: 19px; color: rgba(199,210,254,.55); }
+
+.youtube-container { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; border-radius: 14px; overflow: hidden; border: 1px solid #c7d2fe; margin-bottom: 12px; background: #1e1b4b; }
+.youtube-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+/* PRICING */
+.urgency { background: #1e1b4b; border: 1.5px solid #4f46e5; border-radius: 12px; padding: 20px 26px; margin-bottom: 32px; display: flex; align-items: flex-start; gap: 14px; font-size: 17px; color: #e0e7ff; }
+.urgency .dot-live { width: 10px; height: 10px; background: #a5b4fc; border-radius: 50%; margin-top: 7px; animation: pulse 1.5s ease-in-out infinite; flex-shrink: 0; }
+.pricing-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 36px; }
+.price-card { background: var(--white); border: 1px solid #c7d2fe; border-radius: 14px; padding: 36px 24px; display: flex; flex-direction: column; position: relative; }
+.price-card.popular { border: 2px solid #c8321e; }
+.pop-badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #c8321e; color: #fff; padding: 4px 16px; border-radius: 6px; font-size: 14px; font-weight: 700; }
+.pc-title { font-size: 20px; font-weight: 800; text-align: center; margin-bottom: 6px; color: #1e1b4b; }
+.pc-desc { font-size: 14px; color: #6b7280; text-align: center; min-height: 42px; margin-bottom: 24px; }
+.pc-price { font-size: 32px; font-weight: 900; text-align: center; color: #1e1b4b; font-family: 'Inter', sans-serif; }
+.pc-price span { font-size: 18px; color: #9ca3af; }
+.pc-setup { font-size: 13px; color: #4f46e5; background: #eef2ff; text-align: center; padding: 6px; border-radius: 6px; margin-bottom: 24px; font-weight: 700; }
+.pc-setup.free { background: rgba(5,150,105,.1); color: #065f46; }
+.pc-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; flex: 1; }
+.pc-features li { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; color: #4b5563; }
+.pc-check { color: #059669; font-weight: 700; flex-shrink: 0; }
+.price-cta { display: block; text-align: center; background: #1e1b4b; color: #fff; padding: 14px; font-size: 16px; font-weight: 700; text-decoration: none; border-radius: 8px; }
+.price-card.popular .price-cta { background: #c8321e; box-shadow: 0 6px 24px rgba(200,50,30,.32); }
+.price-warn { margin-top: 16px; padding: 16px 20px; background: #f0f4ff; border: 1px solid #c7d2fe; border-radius: 8px; font-size: 15px; color: #6b7280; text-align: center; }
+
+.story-quote { border-left: 4px solid #6366f1; padding: 24px 32px; background: var(--white); border-radius: 0 12px 12px 0; margin: 36px 0; font-size: 20px; font-style: italic; color: #312e81; }
+.story-body { font-size: 19px; color: #4b5563; margin-bottom: 28px; }
+
+.faq { border: 1px solid #c7d2fe; border-radius: 12px; overflow: hidden; margin-top: 48px; }
+.faq-item { border-bottom: 1px solid #c7d2fe; }
+.faq-q { width: 100%; text-align: left; padding: 22px 28px; font-size: 18px; font-weight: 600; background: none; border: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: #1e1b4b; font-family: var(--sans); }
+.fq-ico { margin-left: auto; font-size: 22px; color: #9ca3af; transition: transform .3s; line-height: 1; flex-shrink: 0; }
+.faq-item.open .fq-ico { transform: rotate(45deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height .35s ease; font-size: 17px; color: #4b5563; }
+.faq-a-in { padding: 0 28px 22px; }
+.faq-item.open .faq-a { max-height: 300px; }
+.warn { color: #4f46e5; font-weight: 700; }
+
+.final { text-align: center; background: #1e1b4b; color: #fff; }
+.final-sub { font-size: 20px; color: rgba(199,210,254,.6); margin-bottom: 44px; }
+.final-btns { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-bottom: 36px; }
+.btn-kakao { display: inline-flex; background: #fee500; color: #3c1e1e; padding: 18px 40px; font-size: 18px; font-weight: 700; text-decoration: none; border-radius: 8px; width: 100%; max-width: 420px; justify-content: center; }
+.btn-form { display: inline-flex; background: #fff; color: #1e1b4b; padding: 18px 40px; font-size: 18px; font-weight: 800; text-decoration: none; border-radius: 8px; width: 100%; max-width: 420px; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.final-note { font-size: 14px; color: rgba(199,210,254,0.6); }
+
+footer { background: #0f0d2e; padding: 32px var(--gap); display: flex; justify-content: space-between; color: rgba(199,210,254,.25); font-size: 14px; }
+.foot-logo { font-size: 20px; font-weight: 900; color: #c7d2fe; }
+.foot-logo span { color: #c8321e; }
+
+/* ── circle-badge & UI 윈도우 컴포넌트 ── */
+.circle-badge {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: #4f46e5; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 800; flex-shrink: 0;
+  font-family: var(--num);
+}
+.ui-window { border: 1px solid #2e2a5a; border-radius: 12px; overflow: hidden; background: #14113a; }
+.ui-titlebar { background: #1e1b4b; padding: 10px 16px; display: flex; align-items: center; gap: 6px; }
+.ui-dot { width: 11px; height: 11px; border-radius: 50%; background: #3730a3; }
+.ui-title { font-size: 13px; color: rgba(199,210,254,.4); margin-left: 6px; }
+.ui-body { padding: 16px 20px; }
+.ui-section-label { font-size: 12px; color: rgba(199,210,254,.3); margin-bottom: 12px; font-family: var(--mono); }
+.ui-waveform { display: flex; align-items: flex-end; gap: 3px; height: 60px; }
+.wave-bar { flex: 1; background: #818cf8; border-radius: 2px 2px 0 0; min-height: 4px; }
+
+.r { opacity: 0; transform: translateY(22px); transition: opacity .65s ease, transform .65s ease; }
+.r.in { opacity: 1; transform: translateY(0); }
+
+/* ────────────────────────────────────
+   🚨 MANDATORY NOTIFICATION POPUP MODAL STYLES
+──────────────────────────────────── */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(14, 11, 42, 0.8); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10000; opacity: 1; transition: opacity 0.3s ease;
+}
+.modal-overlay.hide { display: none; opacity: 0; }
+.modal-box {
+  background: var(--white); border-radius: 16px; width: 90%; max-width: 650px;
+  border: 1px solid #c7d2fe; box-shadow: 0 24px 64px rgba(79,70,229,0.25);
+  overflow: hidden; animation: modalSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes modalSlide { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal-header { background: #eef2ff; padding: 22px 28px; border-bottom: 1px solid #c7d2fe; display: flex; align-items: center; gap: 12px; }
+.modal-title-wrap { font-size: 22px; font-weight: 900; color: #4f46e5; display: flex; align-items: center; gap: 8px; word-break: break-word; overflow-wrap: break-word; }
+.modal-body { padding: 32px 34px; font-size: 17px; line-height: 1.8; color: #312e81; }
+.modal-body h4 { font-size: 19px; font-weight: 800; margin-bottom: 8px; color: #1e1b4b; }
+.modal-body p { margin-bottom: 24px; }
+.modal-body p:last-of-type { margin-bottom: 0; }
+.modal-footer { background: #f0f4ff; padding: 18px 28px; border-top: 1px solid #c7d2fe; display: flex; align-items: center; justify-content: space-between; }
+.modal-close-btn { background: #1e1b4b; color: #fff; border: none; padding: 12px 28px; font-size: 16px; font-weight: 700; border-radius: 8px; cursor: pointer; transition: background 0.2s; font-family: var(--sans); }
+.modal-close-btn:hover { background: #4f46e5; }
+
+/* ── 모달 내부 콘텐츠 클래스 ── */
+.modal-icon { font-size: 28px; flex-shrink: 0; }
+.modal-warn-title { color: #4f46e5; font-size: 20px; font-weight: 800; margin-bottom: 12px; }
+.modal-intro { font-size: 17.5px; margin-bottom: 28px; font-weight: 500; line-height: 1.8; }
+.modal-divider { border-top: 1px dashed #c7d2fe; margin: 24px 0; padding-top: 24px; }
+.modal-event-title { color: #1e1b4b; font-size: 19px; font-weight: 800; margin-bottom: 10px; }
+.modal-event-text { font-size: 17px; color: #4b5563; line-height: 1.75; }
+.modal-label { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #6b7280; cursor: pointer; }
+.modal-checkbox { width: 16px; height: 16px; cursor: pointer; flex-shrink: 0; }
+
+/* ════════════════════════════════════
+   📱 모달 바텀 시트 (모바일)
+════════════════════════════════════ */
+@media (max-width: 640px) {
+  .modal-overlay { align-items: flex-end; padding: 0; }
+.modal-box {
+    width: 100%; max-width: 100%; max-height: 90vh;
+    border-radius: 20px 20px 0 0;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0);   opacity: 1; }
+  }
+  .modal-header { flex-shrink: 0; padding: 14px 16px; overflow: hidden; }
+  .modal-title-wrap { flex-wrap: wrap; font-size: 13px; word-break: break-word; }
+  .modal-icon { font-size: 20px; }
+  .modal-body {
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+    flex: 1; min-height: 0;
+    padding: 16px; word-break: break-word;
+  }
+  .modal-warn-title  { font-size: 15px; margin-bottom: 8px; }
+  .modal-intro       { font-size: 14px; margin-bottom: 16px; line-height: 1.65; }
+  .modal-divider     { margin: 16px 0; padding-top: 16px; }
+  .modal-event-title { font-size: 14px; margin-bottom: 8px; }
+  .modal-event-text  { font-size: 13px; line-height: 1.65; }
+  .modal-footer      { flex-shrink: 0; padding: 10px 16px; }
+  .modal-label       { font-size: 13px; }
+  .modal-close-btn   { padding: 9px 20px; font-size: 14px; }
+}
+
+/* ════════════════════════════════════
+   📱 반응형 — 태블릿 (≤900px)
+════════════════════════════════════ */
+@media (max-width: 900px) {
+  :root { --section: 72px; }
+  h1, h2 { font-size: clamp(26px, 4.5vw, 38px); }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto; }
+  .install-row  { grid-template-columns: 1fr; }
+  .weapon-compare-grid { grid-template-columns: 1fr !important; }
+  .cost-grid { grid-template-columns: 1fr !important; }
+  .compare-inner { grid-template-columns: 1fr !important; }
+  .compare-inner > div + div {
+    border-left: none !important; padding-left: 0 !important;
+    border-top: 1px solid var(--line); padding-top: 16px; margin-top: 8px;
+  }
+}
+
+/* ════════════════════════════════════
+   📱 반응형 — 모바일 (≤640px)
+════════════════════════════════════ */
+@media (max-width: 640px) {
+  :root { --section: 52px; --gap: 18px; }
+  
+  .mob-br { display: block; }
+
+  /* ── 가로 스크롤 원천 차단 ── */
+  .w, section, nav, footer { max-width: 100vw; }
+  img, video, iframe { max-width: 100%; }
+
+  /* 상단바 */
+  .topbar { font-size: 12px; padding: 8px 14px; gap: 6px; }
+
+  /* 네비 */
+  nav { padding: 0 16px; height: 56px; gap: 10px; }
+  .nav-logo { font-size: 17px; }
+  .nav-menu-wrap { display: none; }
+  .nav-cta { font-size: 13px; padding: 8px 14px; }
+
+  /* 제목·텍스트 */
+  h1, h2 { font-size: clamp(22px, 7vw, 30px); margin-bottom: 20px; }
+  .lead { font-size: 15px; margin-bottom: 24px; }
+  .eyebrow { font-size: 13px; margin-bottom: 16px; }
+
+  /* 히어로 */
+  .hero { padding: 5px 0 36px; }
+  .hero-sub { font-size: 16px; margin-bottom: 32px; }
+  .hero-sub strong { font-size: 17px; }
+  .hero-cta-wrap { flex-direction: column; gap: 12px; }
+  .btn-main { width: 100%; justify-content: center; font-size: 16px; padding: 15px 24px; }
+  .btn-ghost { font-size: 14px; }
+  .hero-notice { font-size: 13px; }
+
+  /* KPI 3열 → 1열 */
+  .kpi-row { grid-template-columns: 1fr; margin-bottom: 24px; }
+  .kpi { padding: 20px 18px; }
+  .kpi-label { font-size: 14px; }
+
+  /* 페인 리스트 */
+  .pain-item { padding: 18px 16px; gap: 12px; }
+  .pain-t { font-size: 16px; }
+  .pain-d { font-size: 14px; }
+  .pain-punch { padding: 22px 18px; font-size: 17px; }
+  .circle-badge { width: 34px; height: 34px; font-size: 15px; }
+
+  /* 스텝 */
+  .step { padding: 22px 0; gap: 12px; }
+  .step > div { min-width: 0; }
+  .step-t { font-size: 16px; }
+  .step-d { font-size: 15px; }
+  .step-badge { font-size: 13px; white-space: normal; }
+
+  /* 엑셀 테이블 — 가로 스크롤 */
+  .excel-win { max-width: 100%; margin-top: 12px; overflow: hidden; }
+  .excel-tbl { min-width: 0; width: 100%; font-size: 13px; }
+  .excel-tbl thead th:nth-child(3),
+  .excel-tbl thead th:nth-child(4),
+  .col-c,
+  .col-j { display: none; }
+  .excel-tbl tbody tr:last-child { display: none; }
+
+  /* 설치카드 2열 → 1열 */
+  .install-row { grid-template-columns: 1fr; gap: 10px; margin-top: 24px; }
+  .install-card { padding: 22px 18px; }
+
+  /* 탭 */
+  .ptabs { gap: 0; overflow-x: auto; margin-top: 24px; margin-bottom: 16px; }
+  .ptab { font-size: 14px; padding: 10px 14px; white-space: nowrap; }
+  .pcard { padding: 22px 18px; }
+  .pcard-text { font-size: 15px; }
+
+  /* 가격표 2열 → 1열 */
+  .pricing-grid { grid-template-columns: 1fr; }
+  .price-card { padding: 26px 18px; }
+  .pc-price { font-size: 26px; }
+  .urgency { font-size: 15px; padding: 16px 18px; }
+
+  /* 인라인 그리드 → 1열 강제 (가격 프레이밍 박스 등) */
+  [style*="grid-template-columns:repeat(3"] ,
+  [style*="grid-template-columns: repeat(3"] {
+    grid-template-columns: 1fr !important;
+  }
+  [style*="grid-template-columns:repeat(2"] ,
+  [style*="grid-template-columns: repeat(2"] ,
+  [style*="grid-template-columns:1fr 1fr"] ,
+  [style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+  /* compare-inner 좌측 보더 제거 */
+  .compare-inner > div + div {
+    border-left: none !important;
+    padding-left: 0 !important;
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+    margin-top: 8px;
+  }
+  /* 가격 프레이밍 박스 내부 border 제거 */
+  [style*="border-left:1px solid #334155"],
+  [style*="border-left: 1px solid #334155"] {
+    border-left: none !important;
+    border-right: none !important;
+    border-top: 1px solid #334155 !important;
+    padding: 16px 0 0 !important;
+    margin-top: 16px !important;
+  }
+
+  /* 인용구·스토리 */
+  .story-quote { padding: 16px 18px; font-size: 15px; margin: 24px 0; }
+  .story-body { font-size: 15px; margin-bottom: 20px; }
+
+  /* FAQ */
+  .faq-q { font-size: 15px; padding: 16px 18px; }
+  .faq-a-in { padding: 0 18px 16px; font-size: 14px; line-height: 1.7; }
+
+  /* 최하단 CTA */
+  .final-sub { font-size: 16px; margin-bottom: 30px; }
+  .btn-form, .btn-kakao { font-size: 15px; padding: 15px 24px; }
+  .final-note { font-size: 13px; }
+
+  /* 푸터 */
+  footer { flex-direction: column; gap: 8px; text-align: center; padding: 22px 18px; }
+  .foot-logo { font-size: 17px; }
+
+  /* 무기 비교 카드 — 모바일 패딩 축소 */
+  .weapon-footer { padding: 16px 18px; flex-direction: column; gap: 8px; }
+  .wf-val { font-size: 24px; }
+
+  /* 최종 CTA 버튼 모바일 */
+  .section.final div[style*="display:flex"][style*="gap:12px"] {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .section.final a[class="price-cta"],
+  .section.final a[href="#pricing"] {
+    text-align: center !important;
+  }
+}
+
+@media (min-width: 641px) {
+  .mob-br { display: none; }
+}
+
+/* pricing-frame 3열 → 모바일 1열 */
+@media (max-width: 640px) {
+  .pricing-frame {
+    grid-template-columns: 1fr !important;
+    padding: 20px 18px !important;
+  }
+  .pricing-frame > div {
+    border-left: none !important;
+    border-right: none !important;
+    border-top: 1px solid #334155 !important;
+    padding: 16px 0 0 !important;
+    margin-top: 8px !important;
+  }
+  .pricing-frame > div:first-child {
+    border-top: none !important;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+  .recovery-bar {
+    padding: 14px 18px !important;
+    font-size: 13.5px !important;
+  }
+}
+
+/* ── 햄버거 메뉴 ── */
+.hamburger {
+  display: none; flex-direction: column; justify-content: center;
+  gap: 5px; width: 36px; height: 36px; padding: 4px;
+  background: none; border: none; cursor: pointer; flex-shrink: 0;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: #1e1b4b; border-radius: 2px;
+  transition: transform .3s, opacity .3s;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* 메뉴 겹침 방지 — 860px 이하에서 햄버거로 전환 */
+@media (max-width: 860px) {
+  .hamburger { display: flex; }
+  .nav-menu-wrap {
+    display: none; flex-direction: column;
+    position: absolute; top: 68px; left: 0; right: 0;
+    background: rgba(255,255,255,.98); backdrop-filter: blur(14px);
+    border-bottom: 1px solid #c7d2fe;
+    padding: 12px 0; gap: 0; border-radius: 0;
+    z-index: 98;
+  }
+  .nav-menu-wrap.open { display: flex; }
+  .nav-menu-wrap a {
+    padding: 14px 24px; border-radius: 0; font-size: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-menu-wrap a:last-child { border-bottom: none; }
+}
+
+@media (max-width: 640px) {
+  .nav-cta { display: none; }
+  nav { top: 0; }
+  .nav-menu-wrap { top: 56px; }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+  <span class="dot-live-top"></span>
+  <strong>현재 얼리버드 분들을 위해 한정 수량에 한해 특별 할인가로 분양 중입니다.
+</div>
+
+<nav>
+  <a href="#" class="nav-logo" onclick="window.scrollTo(0,0);">AutoTube <span>Pro</span></a>
+  <ul class="nav-menu-wrap" id="navMenu">
+    <li><a href="#how" onclick="closeMenu()">작동방식</a></li>
+    <li><a href="#guide" onclick="closeMenu()">시작방법</a></li>
+    <li><a href="#pricing" onclick="closeMenu()">요금제</a></li>
+    <li><a href="manual.html" onclick="closeMenu()" style="cursor:pointer; font-weight:700; color:var(--red);">🔄 사용설명서</a></li>
+  </ul>
+  <a href="https://forms.gle/EViTc2rboeocEWhR8" class="nav-cta" target="_blank">무료 체험 신청 →</a>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="메뉴 열기">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<section class="section">
+  <div class="w">
+    
+    <h1 class="hero hero-box">
+      <span class="hero-t1">유튜브 크리에이터 전용</span>
+      <span class="hero-t2"><span class="hl-red">영상 제작 자동화</span> 소프트웨어</span>
+      <span class="hero-t3">이미지 · 음성 · 자막 자동 생성부터<br><strong style="font-weight: 700; color: #111111;">캡컷 1초 타임라인 배치</strong>까지</span>
+      <span class="hero-t4"><strong>당신의 반복 작업을</strong><br> 획기적으로 줄여 드립니다.</span>
+      <span class="hero-badge">🎁 5일간 무료 체험 기회를 놓치지 마세요.</span>
+    </h1>
+
+    <p class="hero-sub-text r">
+      <strong>대본 엑셀 한 장에서 완성 CapCut 타임라인까지<br class="mob-br"> <br>6단계 자동화 파이프라인</strong>
+      AI 이미지 자동 생성<br> 
+      사용자 본인 목소리로 음성 TTS 생성,<br> 
+      <br class="mob-br"> 
+      SRT 자막 자동 추출<br> 
+      CapCut 1초 조립.
+      <span class="hl-blue">"필요에 따라 기능별 독립적으로 사용 가능"</span>
+      <span class="hl-red">편집 노가다는 툴에게 맡기고,<br>기획과 연출에만 집중하세요.</span>
+    </p>
+
+    <div class="kpi-row r" style="margin-left: auto; margin-right: auto;">
+      <div class="kpi">
+        <div class="kpi-num"><span class="hl-red">1초</span></div>
+        <div class="kpi-label" style="font-weight: 700; color: var(--ink);">
+          <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: -3px; color: var(--red);">bolt</span>
+          캡컷 타임라인 자동 배치
+        </div>
+        <div style="font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.5; letter-spacing: -0.02em;">
+          · 모든 검수 후 생성 버튼<br> 누름과 동시에 완성
+        </div>
+      </div>
+
+      <div class="kpi">
+        <div class="kpi-num"><span class="hl-red">0원</span></div>
+        <div class="kpi-label" style="font-weight: 700; color: var(--ink);">
+          <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: -3px; color: var(--red);">payments</span>
+          할당량 및 개인 서버 활용
+        </div>
+        <div style="font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.5; letter-spacing: -0.02em;">
+          · 계정별 하루 할당량<br> 활용하여 이미지 생성<br>(다계정 사용 가능)<br>· 사용자 PC에 개인 TTS<br> 서버 생성해서 사용
+        </div>
+      </div>
+
+      <div class="kpi">
+        <div class="kpi-num"><span class="hl-red">100%</span></div>
+        <div class="kpi-label" style="font-weight: 700; color: var(--ink);">
+          <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: -3px; color: var(--red);">lock</span>
+          외부 서버 의존 없는<br> 독립 구동
+        </div>
+        <div style="font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.5; letter-spacing: -0.02em;">
+          · 내 PC에 설치해서 사용<br>· 대본·프롬프트 외부 유출<br> 원천 차단
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--white" id="pain">
+  <div class="w">
+    <span class="eyebrow r">이 소모적인 단순 반복, 언제까지 직접 하실 겁니까?</span>
+    <h2 class="r">진짜 유튜버만 아는<br>지독한 <span class="hl-red">'미세 노가다'</span>들</h2>
+
+    <ul class="pain-list r">
+      <li class="pain-item">
+        <div class="circle-badge">1</div>
+        <div>
+          <div class="pain-t">파일명 리네이밍 지옥</div>
+          <div class="pain-d">AI가 무작위로 뱉어낸 수십 장의 이미지 파일들. 편집할 때 꼬이지 않도록 대본 순서에 맞춰 <code>01.png</code>, <code>02.png</code>로 하나하나 이름을 바꾸고 폴더에 정리하는 고통.</div>
+        </div>
+      </li>
+      <li class="pain-item">
+        <div class="circle-badge">2</div>
+        <div>
+          <div class="pain-t">자막 엔터 치기 (1줄 가독성 세팅)</div>
+          <div class="pain-d">캡컷에 자동 자막을 넣으면 화면에 2~3줄씩 뭉텅이 출력되거나 단어 중간이 잘립니다. 시청자가 읽기 편하도록 의미 단위로 끊어서 수십 번씩 '엔터'를 치는 작업.</div>
+        </div>
+      </li>
+      <li class="pain-item">
+        <div class="circle-badge">3</div>
+        <div>
+          <div class="pain-t">로봇 같은 TTS 출력의 '숨고르기' 칼질</div>
+          <div class="pain-d">TTS로 10분짜리 대본을 뽑으면 로봇처럼 쉬지 않고 말을 내뱉습니다. 자연스러운 호흡을 위해 문장 사이에 마우스로 칼질(Split)을 하고 0.7초씩 틈을 벌려주는 노동.</div>
+        </div>
+      </li>
+      <li class="pain-item">
+        <div class="circle-badge">4</div>
+        <div>
+          <div class="pain-t">클립 길이 고무줄 늘리기</div>
+          <div class="pain-d">오디오 문장 길이에 맞춰서, 위에 얹힌 이미지 클립 끝자락을 마우스로 잡고 늘리거나 줄이는 작업을 60~100번 반복해야 합니다.</div>
+        </div>
+      </li>
+      <li class="pain-item">
+        <div class="circle-badge">5</div>
+        <div>
+          <div class="pain-t">오타 숨은그림찾기</div>
+          <div class="pain-d">경제/시사 채널 특성상 전문 용어에서 자동 자막 오타와 환각이 반드시 발생합니다. 원본 엑셀 대본을 띄워놓고 10분 내내 눈이 빠져라 대조하며 수정해야 합니다.</div>
+        </div>
+      </li>
+    </ul>
+    <div class="pain-punch r">이 미세 노가다를 전부 <strong style="color: #ff9f7f;">자동화</strong>했습니다.</div>
+  </div>
+
+  <div class="w">
+    <div style="background:#0f172a;border-radius:10px;padding:28px 36px;margin-top:0;text-align:center;">
+  <div style="font-size:20px;font-weight:800;color:#fff;line-height:1.6;margin-bottom:10px;">원클릭으로 영상을 자동으로 만들어 준다는 환상은 버리세요.</div>
+  <div style="font-size:17px;color:rgba(255,255,255,.6);line-height:1.7;">영상의 진짜 퀄리티는 <strong style="color:#ff9f7f;">기획과 검수</strong>에서 나옵니다.<br>AutoTube Pro는 그 사이의 반복 노가다를 대신 처리합니다.</div>
+</div>
+  </div>
+</section>
+
+<section class="section section--tinted" id="how">
+  <div class="w">
+    <span class="eyebrow r">자동화 파이프라인</span>
+    <h2 class="r">AutoTube Pro는<br> <span class="hl-red">이렇게</span> 동작 됩니다.</h2>
+    <p class="lead r">버튼을 누른 후 자리를 비워도 됩니다.<br> 수십 장의 이미지와 수십 개의 음성 파일이 순차적으로 자동 생성되어 지정 폴더에 저장됩니다.</p>
+
+    <div class="steps r">
+
+      <div class="step">
+        <div class="circle-badge" style="background:#334155;">준비</div>
+        <div>
+          <div class="step-t"><span class="material-symbols-rounded">folder_open</span> 시작 전 1회 — 폴더 구조 설정</div>
+          <p class="step-d">구매 시 제공되는 패키지를 C: 드라이브에 설치하면 <strong>1_대본 / 2_이미지 / 3_오디오_자막</strong> 폴더가 자동으로 구성됩니다. 이후 모든 리소스는 각 폴더에 자동 저장되며, 새 영상 작업 시 프로젝트 폴더만 추가하면 됩니다.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="circle-badge">1</div>
+        <div>
+  <div class="step-t"><span class="material-symbols-rounded">table_chart</span> STEP 1 — 사용자가 대본 엑셀을 준비합니다.</div>
+  <p class="step-d">이미 사용 중인 AI 프롬프트(ChatGPT·Claude 등)로 대본을 생성하고 엑셀에 붙여넣습니다. 이미지 생성 프롬프트 열과 성우 대본 시트가 포함된 이 엑셀 파일이 <strong>이후 모든 자동화의 유일한 시작점</strong>입니다.</p>
+  <div class="excel-win r" style="margin-top:16px;">
+    <div class="excel-bar">
+      <div class="excel-dot" style="background:#ff5f57;"></div><div class="excel-dot" style="background:#febc2e;"></div><div class="excel-dot" style="background:#28c840;"></div>
+      <span class="excel-bar-title">대본_샘플.xlsx</span>
+    </div>
+    
+    <img src="Excel_file.png" alt="대본 엑셀 준비 화면" style="width: 100%; height: auto; display: block; border-bottom: 1px solid var(--line);">
+    
+    <div class="excel-note"><strong>"성우녹음대본"과 "이미지 생성 프롬프트"</strong> 열 이름은 정확히 이 이름이어야 자동화가 작동합니다.</div>
+  </div>
+</div>
+      </div>
+
+      <div class="step">
+        <div class="circle-badge">2</div>
+        <div>
+          <div class="step-t"><span class="material-symbols-rounded">edit_document</span> STEP 2 — AutoTube Pro가 대본을 불러옵니다.</div>
+          <p class="step-d">엑셀로 최종 작성된 대본은 AutoTube Pro로 불러서 확인하고 간단히 수정할 수 기능을 제공 합니다.(간이 편집기 기능)</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="circle-badge">3</div>
+        <div>
+          <div class="step-t"><span class="material-symbols-rounded">imagesmode</span> STEP 3 — AutoTube Pro가 수십 장의 이미지를 순차 생성합니다.</div>
+          <p class="step-d">AutoTube Pro가 엑셀의 이미지 프롬프트를 한 줄씩 자동으로 읽어 Gemini에 전송합니다. <strong>60컷 영상이라면 60장의 이미지가 사람의 개입 없이 순차적으로 생성</strong>되어 2_이미지 폴더에 01.png, 02.png 형식으로 자동 저장됩니다. 버튼을 누르고 자리를 비워도 됩니다.</p>
+          </div>
+      </div>
+
+      <div class="step">
+        <div class="circle-badge">4</div>
+        <div>
+  <div class="step-t" style="align-items: flex-start;">
+    <span class="material-symbols-rounded" style="margin-top: 2px;">mic</span> 
+    <span>STEP 4 — AutoTube Pro가 수십 개의 음성 파일을 자동 녹음합니다.</span>
+  </div>
+  
+  <p class="step-d">AutoTube Pro가 성우녹음 시트의 대본을 한 줄씩 사용자 전용의 AI 음성 서버로 전송합니다. <strong>서버가 목소리 샘플의 억양·톤을 분석하여 60컷이라면 60개의 WAV 파일을 순차 생성</strong>하고, 완료 후 AutoTube Pro가 자동으로 하나의 마스터 오디오(합본.wav)로 합칩니다. 파형 시각화로 각 파일의 진행 상황을 실시간 확인 가능 합니다.</p>
+  
+  <div class="ui-window" style="margin-top:20px; background: #1a1a2e;">
+    <div class="ui-titlebar">
+      <div class="ui-dot"></div><div class="ui-dot"></div><div class="ui-dot"></div>
+      <span class="ui-title">AutoTube Pro — 오디오 파형 시각화</span>
+    </div>
+    <img src="TTS_Audio.png" alt="오디오 파형 시각화 화면" style="width: 100%; height: auto; display: block; border-top: 1px solid #2a2a3a;">
+  </div>
+  
+  <span class="step-badge" style="margin-top: 16px;">
+    <span class="material-symbols-rounded" style="font-size:16px;">lightbulb</span>
+     사용하시는 PC 성능이 높다면, 자동 이미지 생성과 음성 생성을<br class="mob-br"> 동시에 진행 할 수 있어<br class="mob-br"> 전체 제작 시간을 단축 할 수 있습니다.
+  </span>
+</div>
+      </div>
+
+      <div class="step">
+        <div class="circle-badge">5</div>
+        <div>
+          <div class="step-t"><span class="material-symbols-rounded">subtitles</span> STEP 5 — AutoTube Pro가 오디오를 분석해 자막을 자동 추출합니다.</div>
+          <p class="step-d">AutoTube Pro가 합본 오디오를 AI로 분석하여 <strong>각 컷의 정확한 시작·끝 타임코드를 자동 계산</strong>합니다. SRT 자막 파일이 생성되고, 타임스탬프는 엑셀에 자동으로 기록됩니다. 이 데이터가 CapCut 조립의 정밀 기준이 됩니다.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="circle-badge">6</div>
+        <div>
+          <div class="step-t"><span class="material-symbols-rounded">fact_check</span> STEP 6 — 자동으로 생성된 리소스 검수 후, AutoTube Pro가 CapCut을 자동 조립합니다.</div>
+          <p class="step-d">이미지·오디오·자막을 한 화면에서 동기화 재생하며 검수합니다. 문제 컷은 체크박스 마킹 후 해당 STEP에서 개별 재작업하면 됩니다. <strong>검수가 완료되면 AutoTube Pro가 모든 리소스의 타임코드를 CapCut 프로젝트 파일에 1초 만에 자동 주입합니다.</strong> 이후 CapCut을 열면 수십 개의 클립이 정밀하게 조립되어 있습니다.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section section--white">
+  <div class="w">
+    <span class="eyebrow r">어떤 채널이든 연결됩니다</span>
+    <h2 class="r">이미 사용 중인<br> <span class="hl-red">당신의 AI 프롬프트 노하우 100%</span><br> 그대로 AutoTube에 연결하세요</h2>
+    <p class="lead r">ChatGPT나 Claude등 AI로 이미 대본을 만들고 계신가요?<br> 그 결과물을 엑셀에 붙여넣으면 AutoTube Pro가 바로 작동합니다.<br>
+    경제 · 역사 · 건강 · 재테크 등 어떤 주제든,<strong><br> 당신만의 프롬프트 스타일 그대로</strong> 자동화 파이프라인에 연결됩니다.</p>
+
+    <div class="install-row r" style="margin-top:0;">
+      <div class="install-card">
+        <div class="ic-icon"><span class="material-symbols-rounded" style="color:var(--blue);">auto_fix_high</span></div>
+        <div class="ic-title">내 프롬프트 → 엑셀 → 자동화</div>
+        <div class="ic-desc">기존에 사용하던 AI 대본 프롬프트 결과물을 엑셀에 붙여넣기만 하면 됩니다. 엑셀 구조 규칙(이미지 생성 프롬프트 열, 성우녹음 시트)만 맞추면 나머지는 전부 자동입니다.</div>
+      </div>
+      <div class="install-card">
+        <div class="ic-icon"><span class="material-symbols-rounded" style="color:var(--green);">card_giftcard</span></div>
+        <div class="ic-title">샘플 대본 패키지 제공</div>
+        <div class="ic-desc">바로 시작할 수 있도록 경제·정보 채널용 60컷 3막 구조 샘플 대본 프롬프트가 함께 제공됩니다. 주제만 바꿔서 즉시 활용할 수 있습니다.</div>
+      </div>
+    </div>
+     <div class="pcard-note">구매 시 제공되는 샘플 대본 프롬프트를 참고하여 자신의 채널에 맞게 커스터마이징 하실 수도 있습니다.</div>
+      
+  </div>
+</section>
+
+<section class="section section--tinted" id="comparison-work">
+  <div class="w">
+    <span class="eyebrow r">수작업 대비 압도적인 효율</span>
+    <h2 class="r">기존의 편집 공정을<br><span class="hl-red">완전히</span> 뒤바꿉니다</h2>
+
+    <p class="lead r">이미지 따로, 자막 따로, 오디오 따로 작업하던 파편화된 공정을 하나로 통합하여, 캡컷 조립까지 걸리는 시간을 혁신적으로 단축합니다.</p>
+
+    <!-- 푸터 (비교의 형평성을 맞춘 실제 마우스 노동 시간 비교) -->
+  <div class="weapon-footer" style="display:flex; flex-direction:column; gap:20px; align-items:stretch; background: #191932; padding: 32px 28px;">
+    
+    <div style="text-align: center; margin-bottom: 4px;">
+      <span style="color: #ffffff; font-size: 17px; font-weight: 700; letter-spacing: -0.02em;">8~10분 롱폼 영상 제작 시 '인간의 순수 개입(노동)' 시간 비교</span>
+    </div>
+
+    <!-- 3단 비교 카드 그리드 -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+      
+      <!-- 1. 완전 수작업 -->
+      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 18px 12px; text-align: center;">
+        <div style="font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 600; margin-bottom: 8px;">완전 수작업 방식</div>
+        <div style="font-size: 20px; color: #adb5bd; font-weight: 700;">약 5시간 +</div>
+        <div style="font-size: 13px; color: rgba(255,255,255,0.4); margin-top: 10px; line-height: 1.4;">리소스 100% 직접 생성<br>수동 파일 관리 및 조립</div>
+      </div>
+
+      <!-- 2. 개별 AI 툴 조합 -->
+      <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 18px 12px; text-align: center;">
+        <div style="font-size: 13px; color: rgba(255,255,255,0.6); font-weight: 600; margin-bottom: 8px;">개별 AI 툴 조합</div>
+        <div style="font-size: 20px; color: #adb5bd; font-weight: 700;">최소 2시간 +</div>
+        <div style="font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 10px; line-height: 1.4;">생성은 AI가 돕지만<br>파일 관리와 싱크는 수작업</div>
+      </div>
+
+      <!-- 3. AutoTube Pro -->
+      <div style="background: rgba(255, 159, 127, 0.1); border: 1px solid #ff9f7f; border-radius: 8px; padding: 18px 12px; text-align: center; position: relative;">
+        <div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #ff9f7f; color: #111; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 12px;">단순 노동 삭제</div>
+        <div style="font-size: 13px; color: #ff9f7f; font-weight: 700; margin-bottom: 8px;">AutoTube Pro</div>
+        <div style="font-size: 24px; color: #ffffff; font-weight: 800;">약 15분 +</div>
+        <div style="font-size: 13px; color: rgba(255,255,255,0.8); margin-top: 10px; line-height: 1.4;">엑셀 세팅 및 결과물 검수<br>(실제 타임라인 조립 1초)</div>
+      </div>
+
+    </div>
+
+    <!-- 부연 설명: 대기 시간의 가치 전환 (크리에이터 본연의 업무) -->
+    <div style="background: rgba(0,0,0,0.3); padding: 18px 22px; border-radius: 8px; margin-top: 8px; border-left: 4px solid #ff9f7f;">
+      <span style="color: rgba(255,255,255,0.85); font-size: 14.5px; line-height: 1.7; display: block; font-weight: 500;">
+        기계가 할 일은 AutoTube Pro에 맡기세요. 사용자는 <strong>초기 세팅과 최종 검수</strong>만 진행하면 됩니다. 프로그램이 리소스를 자동 생성하는 시간 동안,<br>
+        <strong style="color: #ffffff; font-size: 15.5px; background: rgba(255, 255, 255, 0.1); padding: 3px 8px; border-radius: 4px; display: inline-block; margin: 6px 0;">
+          다음 영상 대본 기획, 트렌드 리서치 등 채널 성장을 위한 가장 가치 있는 일에 온전히 집중할 수 있습니다.
+        </strong><br>
+        <span style="color: rgba(255,255,255,0.8); font-size: 14.5px; display: inline-block; margin-top: 4px;">
+          검수가 끝난 리소스를 CapCut 타임라인에 정밀하게 올리는 최종 작업은 <strong style="color: #ff9f7f; font-weight: 800; font-size: 16px;">버튼 클릭 단 1초</strong>면 충분합니다.
+        </span>
+      </span>
+    </div>
+    
+  </div>
+
+  </div>
+</section>
+
+<section class="section section--white" id="cost">
+  <div class="w">
+    <span class="eyebrow r">생성 비용</span>
+    <h2 class="r">TTS·자막은 무제한 <span class="hl-red">0원</span>,<br>이미지는 구글 계정 플랜 그대로</h2>
+    <p class="lead r">외부 유료 API 없이, 이미 갖고 있는 구글 계정과 오픈소스 모델만으로 운영됩니다.<br>항목별로 투명하게 공개합니다.</p>
+
+    <!-- 비용 표 -->
+    <div class="r" style="background:var(--white);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:32px;">
+      <table style="width:100%;border-collapse:collapse;font-size:16px;">
+        <thead>
+          <tr style="background:#1e1b4b;">
+            <th style="padding:14px 20px;text-align:left;color:#c7d2fe;font-size:13px;font-weight:700;letter-spacing:.04em;">항목</th>
+            <th style="padding:14px 20px;text-align:left;color:#c7d2fe;font-size:13px;font-weight:700;letter-spacing:.04em;">방식</th>
+            <th style="padding:14px 20px;text-align:center;color:#c7d2fe;font-size:13px;font-weight:700;letter-spacing:.04em;">비용</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--line);">
+            <td style="padding:16px 20px;font-weight:700;color:#1e1b4b;">🖼️ 이미지 생성</td>
+            <td style="padding:16px 20px;color:#4b5563;">Google Gemini<br><span style="font-size:13px;color:#6b7280;">이용자 본인 Google 계정으로 접속</span></td>
+            <td style="padding:16px 20px;text-align:center;font-weight:800;color:#4b5563;">구글 계정 플랜에 따라<br><span style="font-size:13px;font-weight:400;color:#6b7280;">무료 할당량 내 0원 / 초과 시 유료</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--line);background:#f8faff;">
+            <td style="padding:16px 20px;font-weight:700;color:#1e1b4b;">🎙️ TTS 음성 생성</td>
+            <td style="padding:16px 20px;color:#4b5563;">Qwen3-TTS (오픈소스)<br><span style="font-size:13px;color:#6b7280;">Google Colab 무료 서버에서 실행</span></td>
+            <td style="padding:16px 20px;text-align:center;"><span style="font-size:18px;font-weight:900;color:#059669;">무제한 0원</span></td>
+          </tr>
+          <tr>
+            <td style="padding:16px 20px;font-weight:700;color:#1e1b4b;">💬 자막 생성</td>
+            <td style="padding:16px 20px;color:#4b5563;">Whisper (오픈소스)<br><span style="font-size:13px;color:#6b7280;">내 PC에서 직접 실행</span></td>
+            <td style="padding:16px 20px;text-align:center;"><span style="font-size:18px;font-weight:900;color:#059669;">무제한 0원</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="r cost-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:0;">
+      <div style="background:var(--white);border:1.5px solid var(--line);border-radius:12px;padding:28px;">
+        <div style="font-size:32px;margin-bottom:12px;">🖼️</div>
+        <div style="font-size:17px;font-weight:800;color:var(--ink);margin-bottom:8px;">이미지 생성 — 구글 계정 플랜 기준</div>
+        <div style="font-size:15px;color:var(--gray);line-height:1.75;">이미 구독 중인 <strong>Google Gemini 무료 할당량</strong> 범위에서 생성합니다. 추가 결제 없이 이미지를 생성할 수 있습니다.</div>
+        <div style="margin-top:14px;padding:12px 14px;background:#f0f4ff;border-radius:8px;font-size:13px;color:var(--gray);line-height:1.7;">
+          <strong style="color:var(--ink);">계정별 하루 생성 가능 컷 수 (참고)</strong><br>
+          · 무료 계정 : 약 15~20컷 / 일 <em style="color:var(--muted);">(영상 0.5~1편 분량)</em><br>
+          · Google AI Plus : 무료 대비 약 2배 한도<br>
+          · Google AI Pro : 무료 대비 약 4배 한도 <em style="color:var(--muted);">(약 50~100컷, 실사용 기준)</em><br>
+          <span style="color:var(--muted);font-size:12px;">※ 구글 정책에 따라 변동될 수 있습니다</span>
+        </div>
+        <div style="margin-top:12px;padding:10px 14px;background:#fffbea;border:1px solid #fde68a;border-radius:8px;font-size:13px;color:#78350f;line-height:1.65;">
+          <strong>💡 Tip</strong> — 복수의 구글 계정을 번갈아 로그인하면 하루 더 많은 이미지를 생성할 수 있습니다. AutoTube Pro의 구글 로그인 버튼으로 계정 전환이 간편하게 가능합니다.
+        </div>
+      </div>
+      <div style="background:var(--white);border:1.5px solid var(--line);border-radius:12px;padding:28px;">
+        <div style="font-size:32px;margin-bottom:12px;">🎙️</div>
+        <div style="font-size:17px;font-weight:800;color:var(--ink);margin-bottom:8px;">AI 음성 생성 — 무제한 0원</div>
+        <div style="font-size:15px;color:var(--gray);line-height:1.75;"><strong>Google Colab 무료 클라우드 서버</strong>에서 오픈소스 Qwen3-TTS 모델로 실행됩니다. 내 PC에 부담을 주지 않고 고품질 AI 음성을 무제한 생성합니다.</div>
+        <div style="margin-top:14px;padding:12px 14px;background:#f0f4ff;border-radius:8px;font-size:13px;color:var(--gray);line-height:1.7;">
+          <strong style="color:var(--ink);">Google Colab 무료 이용 조건</strong><br>
+          · 하루 세션 시간 제한 있음 (약 6~12시간)<br>
+          · GPU 유형에 따라 생성 속도 다름<br>
+          · 유료 Colab Pro는 더 긴 세션 제공<br>
+          <span style="color:var(--muted);font-size:12px;">※ 구글 정책에 따라 변동될 수 있습니다</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tinted" id="qc">
+  <div class="w">
+    <span class="eyebrow r">품질 검수</span>
+    <h2 class="r">만들고 끝이 아닙니다,<br><span class="hl-red">검수까지</span> 자동으로</h2>
+    <p class="lead r">CapCut으로 넘어가기 전, 이미지·오디오·자막을 한 화면에서 동기화 재생하며 검수합니다.<br>불량 컷은 체크박스 마킹 후 해당 STEP에서만 개별 재작업하면 됩니다.</p>
+
+    <div class="r" style="background:var(--white);border:1.5px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:28px;box-shadow:0 4px 20px rgba(99,102,241,.07);">
+      <div style="background:#1e1b4b;padding:14px 20px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:16px;font-weight:800;color:#c7d2fe;letter-spacing:-0.01em;">🔍 자동 생성된 리소스 정밀 검수 기능</span>
+      </div>
+      <img src="그림8.png" alt="AutoTube Pro 영상 검증 탭 — 통합 QC 화면" style="width:100%;display:block;">
+    </div>
+
+    <div class="r" style="background:var(--white);border:1.5px solid var(--line);border-radius:14px;padding:28px 32px;">
+      <div style="font-size:18px;font-weight:800;color:var(--ink);margin-bottom:12px;">수정과 렌더링을 반복하는 '편집기 내 악몽'은 끝났습니다.</div>
+      <p style="font-size:16px;color:var(--gray);line-height:1.75;margin-bottom:20px;">
+        AutoTube Pro는 무거운 CapCut으로 넘어가기 전, 모든 리소스(이미지·오디오·자막)를 한 화면에서 동기화해 확인하는 <strong style="color:var(--ink);">'통합 정밀 검수(QC) 기능'</strong>을 제공합니다. 불량 결과물의 유입을 사전에 차단하여 완벽한 작업 흐름을 만듭니다.
+      </p>
+      <ul style="list-style:none;padding:0;margin:0;font-size:16px;color:var(--gray);line-height:1.75;display:flex;flex-direction:column;gap:14px;">
+        <li style="display:flex;align-items:flex-start;gap:12px;">
+          <span style="color:#4f46e5;font-weight:900;flex-shrink:0;">✅</span>
+          <div><strong style="color:var(--ink);">부분 재작업 (수정 최소화)</strong> — 전체를 다시 만들 필요 없이, 문제가 발생한 컷만 선택해 즉시 개별 재생성합니다.</div>
+        </li>
+        <li style="display:flex;align-items:flex-start;gap:12px;">
+          <span style="color:#4f46e5;font-weight:900;flex-shrink:0;">✅</span>
+          <div><strong style="color:var(--ink);">연쇄 노가다 원천 차단</strong> — 타임라인 조립 후 오류를 발견하면 [툴 재접속 ➔ 재생성 ➔ 클립 교체]라는 끔찍한 연쇄 노가다가 시작됩니다. <strong style="color:var(--ink);">길이가 달라진 전체 오디오·자막 싱크를 다시 맞추는 데 수십 분이 증발</strong>합니다.<br>오토튜브는 100% 검증이 끝난 <strong style="color:#c8321e;">무결점 리소스만 타임라인으로 최종 전송</strong>하므로, 이 스트레스를 완전히 지워냅니다.</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section section--white" id="comparison">
+  <div class="w">
+    <span class="eyebrow r">내 PC에서 독립적으로 구동됩니다</span>
+    <h2 class="r">
+      내 대본과 프롬프트가<br>
+      <span class="hl-red">외부 서버로 나가지 않습니다</span>
+    </h2>
+
+    <blockquote class="story-quote r" style="font-style: normal; font-size:18px;">
+      취미로 한두 편 가볍게 만드신다면 웹 기반 서비스가 편리합니다.<br><br>
+      하지만 전업으로 채널을 운영하며 원가를 절감해야 하는 크리에이터라면,<br>
+      <strong>로컬 설비가 가장 현실적인 선택입니다.</strong>
+    </blockquote>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="format-detection" content="telephone=no">
+<title>AutoTube Pro — 대본이 영상이 되는 자동화 파이프라인</title>
+
+<meta name="description" content="대본 엑셀 한 장에서 완성 CapCut 타임라인까지. Gemini 이미지 자동 생성 · AI 음성 생성 · SRT 자막 추출 · CapCut 1초 조립. 유튜브 크리에이터 전용 영상 제작 자동화 소프트웨어. Windows 전용 PC 설치형.">
+<meta name="keywords" content="유튜브 자동화, 영상 제작 자동화, AutoTube Pro, CapCut 자동화, AI 음성 생성, Gemini 이미지 생성, 유튜브 크리에이터 툴, 자막 자동 추출, TTS 자동화, 유튜브 편집 자동화">
+<meta name="robots" content="index, follow">
+<meta name="author" content="AutoTube Pro">
+<link rel="canonical" href="https://aibaselab.com/">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="AutoTube Pro — 대본이 영상이 되는 자동화 파이프라인">
+<meta property="og:description" content="대본 엑셀 한 장에서 완성 CapCut 타임라인까지. Gemini 이미지 자동 생성 · AI 음성 생성 · SRT 자막 추출 · CapCut 1초 조립.">
+<meta property="og:url" content="https://aibaselab.com/">
+<meta property="og:site_name" content="AutoTube Pro">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://aibaselab.com/그림8.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AutoTube Pro 영상 제작 자동화 소프트웨어 화면">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AutoTube Pro — 대본이 영상이 되는 자동화 파이프라인">
+<meta name="twitter:description" content="대본 엑셀 한 장에서 완성 CapCut 타임라인까지. Gemini 이미지 자동 생성 · AI 음성 생성 · SRT 자막 추출 · CapCut 1초 조립. 유튜브 크리에이터 전용 영상 제작 자동화 소프트웨어.">
+<meta name="twitter:image" content="https://aibaselab.com/그림8.png">
+
+<meta name="theme-color" content="#4f46e5">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "AutoTube Pro",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Windows",
+  "description": "대본 엑셀 한 장에서 완성 CapCut 타임라인까지. Gemini 이미지 자동 생성·AI 음성 생성·SRT 자막 추출·CapCut 1초 조립. 유튜브 크리에이터 전용 영상 제작 자동화 소프트웨어.",
+  "url": "https://aibaselab.com/",
+  "offers": {
+    "@type": "Offer",
+    "price": "980000",
+    "priceCurrency": "KRW",
+    "availability": "https://schema.org/InStock"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "AutoTube Pro"
+  }
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+<style>
+/* ────────────────────────────────────
+   TOKENS & BASE — C: Deep Navy
+──────────────────────────────────── */
+:root {
+  --bg:    #f0f4ff; --white: #ffffff; --ink: #1e1b4b; --ink2: #312e81; --gray: #4b5563;
+  --muted: #6b7280; --line: #c7d2fe; --red: #4f46e5; --red2: #6366f1; --amber: #7c3aed;
+  --blue:  #4f46e5; --green: #059669;
+  --tinted: #e8edff;
+  --sans:  'Pretendard', 'Noto Sans KR', sans-serif;
+  --body:  'Noto Sans KR', 'Pretendard', sans-serif;
+  --mono:  'DM Mono', monospace;
+  --num:   'Inter', 'DM Mono', monospace;
+  --w: 800px; --gap: clamp(20px, 5vw, 60px); --section: 110px;
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; overflow-x: hidden; }
+body { font-family: var(--body); background: var(--bg); color: var(--ink); font-size: 19px; line-height: 1.8; -webkit-font-smoothing: antialiased; overflow-x: hidden; word-break: keep-all; overflow-wrap: break-word; }
+
+.price-period, .compare-time, .as-val, .ui-progress-label, .auto-tag, .step-badge, .pcard-label, .pc-label, .hero-notice, .final-note, .foot-copy, .topbar, .ui-section-label, .ui-field-label, .ui-field-input, .ui-field-btn, .ui-path-label, .ui-path-val, .ui-path-btn, .ui-title, .ui-btn, .vp-label, .vp-url-row, .circle-badge {
+  font-family: var(--num) !important;
+}
+
+/* 제목 — Pretendard 800~900 */
+h1, h2, h3, h4, h5, h6,
+.hero-t2, .hero-t4, .nav-logo, .foot-logo,
+.pain-t, .step-t, .ic-title, .gs-t, .pc-title,
+.kpi-num, .th-num, .wf-val, .sd-h1 {
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif !important;
+}
+
+/* 숫자 강조 — Inter */
+.kpi-num, .th-num, .wf-val, .pc-price,
+.sa-kpi-num, .sb-kpi-num, .sc-kpi-num {
+  font-family: 'Inter', 'DM Mono', monospace !important;
+}
+
+/* LAYOUT & TYPOGRAPHY */
+.w { max-width: var(--w); margin: 0 auto; padding: 0 var(--gap); }
+.section { padding: var(--section) 0; border-top: 1px solid var(--line); }
+body > .section:first-of-type { border-top: none; }
+.section--tinted { background: var(--tinted); }
+.section--white { background: var(--white); }
+
+.eyebrow { font-size: clamp(13px, 2.5vw, 16px); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6366f1; display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+.eyebrow::before { content: ''; width: 20px; height: 2px; background: #6366f1; flex-shrink: 0; }
+h1, h2 { font-family: 'Pretendard', 'Noto Sans KR', sans-serif; font-size: clamp(32px, 4.5vw, 46px); font-weight: 800; color: var(--ink); letter-spacing: -.03em; line-height: 1.3; margin-bottom: 28px; }
+.hl-red { color: #6366f1; }
+.hl-red2 { color: #818cf8; }
+.lead { font-size: 18px; line-height: 1.9; color: #4b5563; margin-bottom: 32px; }
+
+/* TOPBAR & NAV */
+.topbar { background: #1e1b4b; color: #c7d2fe; text-align: center; padding: 11px 20px; font-size: 15px; font-weight: 500; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 8px;}
+.topbar::after { content: ''; position: absolute; top: 0; left: -60%; width: 40%; height: 100%; background: rgba(255,255,255,.06); transform: skewX(-20deg); animation: shimmer 3.5s linear infinite; pointer-events: none; }
+.dot-live-top { width: 8px; height: 8px; background: #a5b4fc; border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; flex-shrink: 0; }
+@keyframes shimmer { to { left: 130%; } }
+@keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
+
+nav { position: sticky; top: 0; z-index: 99; background: rgba(255,255,255,.96); backdrop-filter: blur(14px); border-bottom: 1px solid #dbeafe; height: 68px; display: flex; align-items: center; padding: 0 var(--gap); justify-content: space-between; }
+.nav-logo { font-family: 'Pretendard', 'Noto Sans KR', sans-serif; font-size: 22px; font-weight: 900; letter-spacing: -.03em; color: var(--ink); text-decoration: none; cursor: pointer; }
+.nav-logo span { color: #c8321e; }
+.nav-menu-wrap { display: flex; align-items: center; background: #f0f4ff; padding: 4px; border-radius: 40px; list-style: none; gap: 2px; }
+.nav-menu-wrap a { font-size: 14px; font-weight: 600; color: #4b5563; padding: 7px 18px; border-radius: 30px; text-decoration: none; transition: all .2s; display: block; }
+.nav-menu-wrap a:hover { background: #fff; color: var(--ink); box-shadow: 0 2px 8px rgba(99,102,241,0.12); }
+.nav-cta { background: #4f46e5; color: #fff; padding: 9px 20px; border-radius: 7px; font-size: 14px; font-weight: 700; text-decoration: none; transition: background .2s; white-space: nowrap; }
+.nav-cta:hover { background: #6366f1; }
+
+/* HERO SECTION CSS CLASSES (NEW & OPTIMIZED) */
+.hero { padding: 10px 0 80px; position: relative; overflow: hidden; }
+.hero-box {
+  background: linear-gradient(145deg, #ffffff, #f0f4ff);
+  padding: clamp(28px, 5vw, 64px);
+  border-radius: clamp(16px, 4vw, 28px);
+  box-shadow: 0 4px 24px rgba(99,102,241,0.10), 0 1px 4px rgba(99,102,241,0.06);
+  border: 1px solid #c7d2fe;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+.hero-t1 { display: block; margin-bottom: 12px; font-size: clamp(13px, 3.5vw, 22px); font-weight: 700; color: #6366f1; letter-spacing: 0.06em; text-transform: uppercase; }
+.hero-t2 { display: block; margin-bottom: 20px; font-size: clamp(26px, 6.5vw, 52px); font-weight: 900; color: #1e1b4b; line-height: 1.25; letter-spacing: -.04em; }
+.hero-t3 { display: block; margin-bottom: 12px; font-size: clamp(16px, 4vw, 22px); font-weight: 500; color: #4b5563; line-height: 1.65; }
+.hero-t4 { display: block; margin-bottom: 28px; font-size: clamp(17px, 4.5vw, 26px); font-weight: 500; color: #4b5563; line-height: 1.65; }
+.hero-t4 strong { font-weight: 800; color: #1e1b4b; }
+.hero-badge { display: inline-block; font-size: clamp(13px, 3.5vw, 18px); font-weight: 800; color: #4f46e5; background: #eef2ff; padding: clamp(10px, 3vw, 16px) clamp(16px, 4vw, 32px); border-radius: 50px; border: 1px solid #c7d2fe; }
+.hero-sub-text { text-align: center; margin: 24px auto 40px; font-size: clamp(15px, 3.5vw, 19px); line-height: 1.75; color: #4b5563; max-width: 680px; }
+.hero-sub-text strong { display: block; font-size: clamp(17px, 4.2vw, 22px); color: #1e1b4b; margin-bottom: 16px; font-weight: 800; }
+.hero-sub-text .hl-blue { color: #4f46e5; font-weight: 800; font-size: clamp(14px, 3.5vw, 17px); margin-top:20px; display:block; }
+.hero-sub-text .hl-red { color: #6366f1; font-weight: 800; font-size: clamp(15px, 4vw, 19px); margin-top:8px; display:block; }
+
+.kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #c7d2fe; border-radius: 14px; overflow: hidden; margin-bottom: 44px; }
+.kpi { background: var(--white); padding: 28px 24px; text-align: center; position: relative; }
+.kpi-num { font-size: clamp(28px, 5vw, 42px); font-weight: 900; line-height: 1; letter-spacing: -0.03em; color: #1e1b4b; margin-bottom: 8px; font-family: 'Inter', sans-serif; }
+.kpi-label { font-size: 15px; color: #6b7280; line-height: 1.5; }
+.hero-cta-wrap { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.btn-main { display: inline-flex; align-items: center; gap: 10px; background: #4f46e5; color: #fff; padding: 18px 36px; font-size: 18px; font-weight: 700; text-decoration: none; border-radius: 8px; transition: transform .15s, box-shadow .15s, background .2s; box-shadow: 0 6px 24px rgba(79,70,229,.3); cursor: pointer; }
+.btn-main:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(79,70,229,.38); background: #6366f1; }
+.btn-ghost { display: inline-flex; align-items: center; gap: 8px; color: #4b5563; font-size: 16px; font-weight: 600; text-decoration: none; border-bottom: 1.5px solid #c7d2fe; padding-bottom: 2px; }
+.hero-notice { margin-top: 20px; font-size: 14px; color: #6b7280; display: flex; align-items: center; gap: 8px; }
+
+/* COMPONENTS (QC, PAIN, STEPS, WEAPON) */
+.qc-box { border: 1px solid #c7d2fe; border-radius: 14px; background: var(--white); overflow: hidden; margin-bottom: 48px; box-shadow: 0 4px 20px rgba(99,102,241,.06); }
+.qc-img-placeholder { background: #eef2ff; width: 100%; aspect-ratio: 16/9; display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 1px solid #c7d2fe; }
+.qc-img-placeholder img { width: 100%; height: 100%; object-fit: contain; }
+.qc-desc { padding: 32px 36px; }
+.qc-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.qc-item { display: flex; align-items: flex-start; gap: 12px; font-size: 17px; color: #4b5563; }
+.qc-chk { width: 22px; height: 22px; background: #eef2ff; color: #4f46e5; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+
+.pain-list { list-style: none; display: flex; flex-direction: column; border: 1px solid #c7d2fe; border-radius: 14px; overflow: hidden; margin: 36px 0; }
+.pain-item { display: flex; align-items: flex-start; gap: 20px; padding: 28px 32px; border-bottom: 1px solid #c7d2fe; background: var(--white); transition: background .2s; }
+.pain-item:last-child { border-bottom: none; }
+.pain-t { font-size: 19px; font-weight: 700; margin-bottom: 6px; color: #1e1b4b; }
+.pain-d { font-size: 17px; color: #4b5563; line-height: 1.75; }
+.pain-punch { background: #1e1b4b; color: #fff; padding: 36px 40px; border-radius: 14px; font-size: 22px; font-weight: 700; line-height: 1.65; text-align: center; }
+
+.step { display: flex; align-items: flex-start; gap: 20px; padding: 36px 0; border-bottom: 1px solid #c7d2fe; }
+.step:last-child { border-bottom: none; }
+.step-t { font-size: 21px; font-weight: 700; margin-bottom: 10px; color: #1e1b4b; display: flex; align-items: center; gap: 8px; }
+.step-t .material-symbols-rounded { font-size: 26px; color: #6366f1; }
+.step-d { font-size: 17px; color: #4b5563; line-height: 1.8; }
+.step-badge { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; background: #eef2ff; color: #4f46e5; padding: 5px 13px; font-size: 14px; border-radius: 6px; }
+
+.weapon-card { background: var(--white); border: 1px solid #c7d2fe; border-radius: 14px; overflow: hidden; margin: 36px 0; }
+.weapon-header { background: #1e1b4b; padding: 20px 28px; font-size: 14px; color: rgba(199,210,254,.5); display: flex; align-items: center; gap: 10px; }
+.weapon-row { display: grid; grid-template-columns: 1fr 36px 1fr; align-items: center; gap: 12px; padding: 16px 28px; border-bottom: 1px solid #c7d2fe; }
+.weapon-row:last-child { border-bottom: none; }
+.wr-before { font-size: 17px; color: #9ca3af; text-decoration: line-through; }
+.wr-arrow { text-align: center; color: #c7d2fe; font-size: 20px; }
+.wr-after { font-size: 17px; color: #1e1b4b; font-weight: 600; text-align: right; }
+.weapon-footer { background: #1e1b4b; padding: 20px 28px; display: flex; align-items: center; justify-content: space-between; }
+.wf-label { font-size: 14px; color: rgba(199,210,254,.35); }
+.wf-val { font-size: 30px; font-weight: 900; color: #818cf8; letter-spacing: -0.03em; }
+
+.install-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 36px; }
+.install-card { background: var(--white); border: 1px solid #c7d2fe; border-radius: 12px; padding: 28px; }
+.ic-icon .material-symbols-rounded { font-size: 36px; color: #6366f1; }
+.ic-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: #1e1b4b; }
+.ic-desc { font-size: 16px; color: #4b5563; line-height: 1.7; }
+
+.guide-step { display: flex; gap: 20px; padding: 26px 0; border-bottom: 1px solid #c7d2fe; }
+.guide-step:last-child { border-bottom: none; }
+.gs-t { font-size: 19px; font-weight: 700; margin-bottom: 6px; color: #1e1b4b; }
+.gs-d { font-size: 17px; color: #4b5563; line-height: 1.75; }
+
+.excel-win { border-radius: 12px; overflow: hidden; border: 1px solid #c7d2fe; box-shadow: 0 4px 20px rgba(99,102,241,.08); margin: 28px 0; }
+.excel-bar { background: #1e1b4b; padding: 10px 16px; display: flex; align-items: center; gap: 6px; }
+.excel-dot { width: 11px; height: 11px; border-radius: 50%; }
+.excel-bar-title { font-size: 13px; color: rgba(199,210,254,.4); margin-left: 6px; }
+.excel-tbl { width: 100%; border-collapse: collapse; font-size: 15px; }
+.excel-tbl th { padding: 10px 14px; text-align: left; background: #eef2ff; border-bottom: 1px solid #c7d2fe; border-right: 1px solid #c7d2fe; font-size: 13px; color: #6b7280; }
+.excel-tbl td { padding: 12px 14px; border-bottom: 1px solid #c7d2fe; border-right: 1px solid #c7d2fe; }
+.col-a { background: #f5f7ff; color: #9ca3af; text-align: center; }
+.col-b { font-weight: 600; color: #1e1b4b; }
+.col-c { color: #9ca3af; font-size: 14px; }
+.col-j { background: rgba(99,102,241,.04); }
+.auto-tag { background: #eef2ff; color: #4f46e5; padding: 2px 8px; border-radius: 3px; font-size: 13px; }
+.excel-note { padding: 14px 18px; background: #fff; border-top: 1px solid #c7d2fe; font-size: 16px; color: #4b5563; }
+
+.ptabs { display: flex; border-bottom: 2px solid #c7d2fe; margin-bottom: 28px; margin-top: 44px; }
+.ptab { padding: 12px 22px; font-size: 17px; font-weight: 600; color: #9ca3af; cursor: pointer; border-bottom: 2px transparent; margin-bottom: -2px; }
+.ptab.on { color: #4f46e5; border-bottom: 2px solid #4f46e5; }
+.ppane { display: none; }
+.ppane.on { display: block; }
+.pcard { background: var(--white); border: 1px solid #c7d2fe; border-radius: 12px; padding: 30px 34px; margin-bottom: 14px; }
+.pcard-label { font-size: 14px; color: #6366f1; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 14px; display: block; }
+.pcard-text { font-size: 17px; color: #374151; }
+.pcard-note { margin-top: 14px; padding: 12px 16px; background: #eef2ff; border-left: 3px solid #6366f1; font-size: 16px; color: #4b5563; }
+
+.saving-row { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
+.saving-item { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; background: var(--white); border: 1px solid #c7d2fe; border-radius: 10px; }
+.si-l { font-size: 18px; color: #1e1b4b; }
+.si-r { font-size: 18px; font-weight: 900; color: #4f46e5; }
+.time-hero { background: #1e1b4b; color: #fff; padding: 44px 40px; border-radius: 14px; text-align: center; }
+.th-num { font-size: 80px; font-weight: 900; color: #818cf8; font-family: 'Inter', sans-serif; }
+.th-desc { font-size: 19px; color: rgba(199,210,254,.55); }
+
+.youtube-container { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; border-radius: 14px; overflow: hidden; border: 1px solid #c7d2fe; margin-bottom: 12px; background: #1e1b4b; }
+.youtube-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+/* PRICING */
+.urgency { background: #1e1b4b; border: 1.5px solid #4f46e5; border-radius: 12px; padding: 20px 26px; margin-bottom: 32px; display: flex; align-items: flex-start; gap: 14px; font-size: 17px; color: #e0e7ff; }
+.urgency .dot-live { width: 10px; height: 10px; background: #a5b4fc; border-radius: 50%; margin-top: 7px; animation: pulse 1.5s ease-in-out infinite; flex-shrink: 0; }
+.pricing-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 36px; }
+.price-card { background: var(--white); border: 1px solid #c7d2fe; border-radius: 14px; padding: 36px 24px; display: flex; flex-direction: column; position: relative; }
+.price-card.popular { border: 2px solid #c8321e; }
+.pop-badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #c8321e; color: #fff; padding: 4px 16px; border-radius: 6px; font-size: 14px; font-weight: 700; }
+.pc-title { font-size: 20px; font-weight: 800; text-align: center; margin-bottom: 6px; color: #1e1b4b; }
+.pc-desc { font-size: 14px; color: #6b7280; text-align: center; min-height: 42px; margin-bottom: 24px; }
+.pc-price { font-size: 32px; font-weight: 900; text-align: center; color: #1e1b4b; font-family: 'Inter', sans-serif; }
+.pc-price span { font-size: 18px; color: #9ca3af; }
+.pc-setup { font-size: 13px; color: #4f46e5; background: #eef2ff; text-align: center; padding: 6px; border-radius: 6px; margin-bottom: 24px; font-weight: 700; }
+.pc-setup.free { background: rgba(5,150,105,.1); color: #065f46; }
+.pc-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; flex: 1; }
+.pc-features li { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; color: #4b5563; }
+.pc-check { color: #059669; font-weight: 700; flex-shrink: 0; }
+.price-cta { display: block; text-align: center; background: #1e1b4b; color: #fff; padding: 14px; font-size: 16px; font-weight: 700; text-decoration: none; border-radius: 8px; }
+.price-card.popular .price-cta { background: #c8321e; box-shadow: 0 6px 24px rgba(200,50,30,.32); }
+.price-warn { margin-top: 16px; padding: 16px 20px; background: #f0f4ff; border: 1px solid #c7d2fe; border-radius: 8px; font-size: 15px; color: #6b7280; text-align: center; }
+
+.story-quote { border-left: 4px solid #6366f1; padding: 24px 32px; background: var(--white); border-radius: 0 12px 12px 0; margin: 36px 0; font-size: 20px; font-style: italic; color: #312e81; }
+.story-body { font-size: 19px; color: #4b5563; margin-bottom: 28px; }
+
+.faq { border: 1px solid #c7d2fe; border-radius: 12px; overflow: hidden; margin-top: 48px; }
+.faq-item { border-bottom: 1px solid #c7d2fe; }
+.faq-q { width: 100%; text-align: left; padding: 22px 28px; font-size: 18px; font-weight: 600; background: none; border: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: #1e1b4b; font-family: var(--sans); }
+.fq-ico { margin-left: auto; font-size: 22px; color: #9ca3af; transition: transform .3s; line-height: 1; flex-shrink: 0; }
+.faq-item.open .fq-ico { transform: rotate(45deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height .35s ease; font-size: 17px; color: #4b5563; }
+.faq-a-in { padding: 0 28px 22px; }
+.faq-item.open .faq-a { max-height: 300px; }
+.warn { color: #4f46e5; font-weight: 700; }
+
+.final { text-align: center; background: #1e1b4b; color: #fff; }
+.final-sub { font-size: 20px; color: rgba(199,210,254,.6); margin-bottom: 44px; }
+.final-btns { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-bottom: 36px; }
+.btn-kakao { display: inline-flex; background: #fee500; color: #3c1e1e; padding: 18px 40px; font-size: 18px; font-weight: 700; text-decoration: none; border-radius: 8px; width: 100%; max-width: 420px; justify-content: center; }
+.btn-form { display: inline-flex; background: #fff; color: #1e1b4b; padding: 18px 40px; font-size: 18px; font-weight: 800; text-decoration: none; border-radius: 8px; width: 100%; max-width: 420px; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.final-note { font-size: 14px; color: rgba(199,210,254,0.6); }
+
+footer { background: #0f0d2e; padding: 32px var(--gap); display: flex; justify-content: space-between; color: rgba(199,210,254,.25); font-size: 14px; }
+.foot-logo { font-size: 20px; font-weight: 900; color: #c7d2fe; }
+.foot-logo span { color: #c8321e; }
+
+/* ── circle-badge & UI 윈도우 컴포넌트 ── */
+.circle-badge {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: #4f46e5; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 800; flex-shrink: 0;
+  font-family: var(--num);
+}
+.ui-window { border: 1px solid #2e2a5a; border-radius: 12px; overflow: hidden; background: #14113a; }
+.ui-titlebar { background: #1e1b4b; padding: 10px 16px; display: flex; align-items: center; gap: 6px; }
+.ui-dot { width: 11px; height: 11px; border-radius: 50%; background: #3730a3; }
+.ui-title { font-size: 13px; color: rgba(199,210,254,.4); margin-left: 6px; }
+.ui-body { padding: 16px 20px; }
+.ui-section-label { font-size: 12px; color: rgba(199,210,254,.3); margin-bottom: 12px; font-family: var(--mono); }
+.ui-waveform { display: flex; align-items: flex-end; gap: 3px; height: 60px; }
+.wave-bar { flex: 1; background: #818cf8; border-radius: 2px 2px 0 0; min-height: 4px; }
+
+.r { opacity: 0; transform: translateY(22px); transition: opacity .65s ease, transform .65s ease; }
+.r.in { opacity: 1; transform: translateY(0); }
+
+/* ────────────────────────────────────
+   🚨 MANDATORY NOTIFICATION POPUP MODAL STYLES
+──────────────────────────────────── */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(14, 11, 42, 0.8); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10000; opacity: 1; transition: opacity 0.3s ease;
+}
+.modal-overlay.hide { display: none; opacity: 0; }
+.modal-box {
+  background: var(--white); border-radius: 16px; width: 90%; max-width: 650px;
+  border: 1px solid #c7d2fe; box-shadow: 0 24px 64px rgba(79,70,229,0.25);
+  overflow: hidden; animation: modalSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes modalSlide { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal-header { background: #eef2ff; padding: 22px 28px; border-bottom: 1px solid #c7d2fe; display: flex; align-items: center; gap: 12px; }
+.modal-title-wrap { font-size: 22px; font-weight: 900; color: #4f46e5; display: flex; align-items: center; gap: 8px; word-break: break-word; overflow-wrap: break-word; }
+.modal-body { padding: 32px 34px; font-size: 17px; line-height: 1.8; color: #312e81; }
+.modal-body h4 { font-size: 19px; font-weight: 800; margin-bottom: 8px; color: #1e1b4b; }
+.modal-body p { margin-bottom: 24px; }
+.modal-body p:last-of-type { margin-bottom: 0; }
+.modal-footer { background: #f0f4ff; padding: 18px 28px; border-top: 1px solid #c7d2fe; display: flex; align-items: center; justify-content: space-between; }
+.modal-close-btn { background: #1e1b4b; color: #fff; border: none; padding: 12px 28px; font-size: 16px; font-weight: 700; border-radius: 8px; cursor: pointer; transition: background 0.2s; font-family: var(--sans); }
+.modal-close-btn:hover { background: #4f46e5; }
+
+/* ── 모달 내부 콘텐츠 클래스 ── */
+.modal-icon { font-size: 28px; flex-shrink: 0; }
+.modal-warn-title { color: #4f46e5; font-size: 20px; font-weight: 800; margin-bottom: 12px; }
+.modal-intro { font-size: 17.5px; margin-bottom: 28px; font-weight: 500; line-height: 1.8; }
+.modal-divider { border-top: 1px dashed #c7d2fe; margin: 24px 0; padding-top: 24px; }
+.modal-event-title { color: #1e1b4b; font-size: 19px; font-weight: 800; margin-bottom: 10px; }
+.modal-event-text { font-size: 17px; color: #4b5563; line-height: 1.75; }
+.modal-label { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #6b7280; cursor: pointer; }
+.modal-checkbox { width: 16px; height: 16px; cursor: pointer; flex-shrink: 0; }
+
+/* ════════════════════════════════════
+   📱 모달 바텀 시트 (모바일)
+════════════════════════════════════ */
+@media (max-width: 640px) {
+  .modal-overlay { align-items: flex-end; padding: 0; }
+.modal-box {
+    width: 100%; max-width: 100%; max-height: 90vh;
+    border-radius: 20px 20px 0 0;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0);   opacity: 1; }
+  }
+  .modal-header { flex-shrink: 0; padding: 14px 16px; overflow: hidden; }
+  .modal-title-wrap { flex-wrap: wrap; font-size: 13px; word-break: break-word; }
+  .modal-icon { font-size: 20px; }
+  .modal-body {
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+    flex: 1; min-height: 0;
+    padding: 16px; word-break: break-word;
+  }
+  .modal-warn-title  { font-size: 15px; margin-bottom: 8px; }
+  .modal-intro       { font-size: 14px; margin-bottom: 16px; line-height: 1.65; }
+  .modal-divider     { margin: 16px 0; padding-top: 16px; }
+  .modal-event-title { font-size: 14px; margin-bottom: 8px; }
+  .modal-event-text  { font-size: 13px; line-height: 1.65; }
+  .modal-footer      { flex-shrink: 0; padding: 10px 16px; }
+  .modal-label       { font-size: 13px; }
+  .modal-close-btn   { padding: 9px 20px; font-size: 14px; }
+}
+
+/* ════════════════════════════════════
+   📱 반응형 — 태블릿 (≤900px)
+════════════════════════════════════ */
+@media (max-width: 900px) {
+  :root { --section: 72px; }
+  h1, h2 { font-size: clamp(26px, 4.5vw, 38px); }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto; }
+  .install-row  { grid-template-columns: 1fr; }
+  .weapon-compare-grid { grid-template-columns: 1fr !important; }
+  .cost-grid { grid-template-columns: 1fr !important; }
+  .compare-inner { grid-template-columns: 1fr !important; }
+  .compare-inner > div + div {
+    border-left: none !important; padding-left: 0 !important;
+    border-top: 1px solid var(--line); padding-top: 16px; margin-top: 8px;
+  }
+}
+
+/* ════════════════════════════════════
+   📱 반응형 — 모바일 (≤640px)
+════════════════════════════════════ */
+@media (max-width: 640px) {
+  :root { --section: 52px; --gap: 18px; }
+  
+  .mob-br { display: block; }
+
+  /* ── 가로 스크롤 원천 차단 ── */
+  .w, section, nav, footer { max-width: 100vw; }
+  img, video, iframe { max-width: 100%; }
+
+  /* 상단바 */
+  .topbar { font-size: 12px; padding: 8px 14px; gap: 6px; }
+
+  /* 네비 */
+  nav { padding: 0 16px; height: 56px; gap: 10px; }
+  .nav-logo { font-size: 17px; }
+  .nav-menu-wrap { display: none; }
+  .nav-cta { font-size: 13px; padding: 8px 14px; }
+
+  /* 제목·텍스트 */
+  h1, h2 { font-size: clamp(22px, 7vw, 30px); margin-bottom: 20px; }
+  .lead { font-size: 15px; margin-bottom: 24px; }
+  .eyebrow { font-size: 13px; margin-bottom: 16px; }
+
+  /* 히어로 */
+  .hero { padding: 5px 0 36px; }
+  .hero-sub { font-size: 16px; margin-bottom: 32px; }
+  .hero-sub strong { font-size: 17px; }
+  .hero-cta-wrap { flex-direction: column; gap: 12px; }
+  .btn-main { width: 100%; justify-content: center; font-size: 16px; padding: 15px 24px; }
+  .btn-ghost { font-size: 14px; }
+  .hero-notice { font-size: 13px; }
+
+  /* KPI 3열 → 1열 */
+  .kpi-row { grid-template-columns: 1fr; margin-bottom: 24px; }
+  .kpi { padding: 20px 18px; }
+  .kpi-label { font-size: 14px; }
+
+  /* 페인 리스트 */
+  .pain-item { padding: 18px 16px; gap: 12px; }
+  .pain-t { font-size: 16px; }
+  .pain-d { font-size: 14px; }
+  .pain-punch { padding: 22px 18px; font-size: 17px; }
+  .circle-badge { width: 34px; height: 34px; font-size: 15px; }
+
+  /* 스텝 */
+  .step { padding: 22px 0; gap: 12px; }
+  .step > div { min-width: 0; }
+  .step-t { font-size: 16px; }
+  .step-d { font-size: 15px; }
+  .step-badge { font-size: 13px; white-space: normal; }
+
+  /* 엑셀 테이블 — 가로 스크롤 */
+  .excel-win { max-width: 100%; margin-top: 12px; overflow: hidden; }
+  .excel-tbl { min-width: 0; width: 100%; font-size: 13px; }
+  .excel-tbl thead th:nth-child(3),
+  .excel-tbl thead th:nth-child(4),
+  .col-c,
+  .col-j { display: none; }
+  .excel-tbl tbody tr:last-child { display: none; }
+
+  /* 설치카드 2열 → 1열 */
+  .install-row { grid-template-columns: 1fr; gap: 10px; margin-top: 24px; }
+  .install-card { padding: 22px 18px; }
+
+  /* 탭 */
+  .ptabs { gap: 0; overflow-x: auto; margin-top: 24px; margin-bottom: 16px; }
+  .ptab { font-size: 14px; padding: 10px 14px; white-space: nowrap; }
+  .pcard { padding: 22px 18px; }
+  .pcard-text { font-size: 15px; }
+
+  /* 가격표 2열 → 1열 */
+  .pricing-grid { grid-template-columns: 1fr; }
+  .price-card { padding: 26px 18px; }
+  .pc-price { font-size: 26px; }
+  .urgency { font-size: 15px; padding: 16px 18px; }
+
+  /* 인라인 그리드 → 1열 강제 (가격 프레이밍 박스 등) */
+  [style*="grid-template-columns:repeat(3"] ,
+  [style*="grid-template-columns: repeat(3"] {
+    grid-template-columns: 1fr !important;
+  }
+  [style*="grid-template-columns:repeat(2"] ,
+  [style*="grid-template-columns: repeat(2"] ,
+  [style*="grid-template-columns:1fr 1fr"] ,
+  [style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+  /* compare-inner 좌측 보더 제거 */
+  .compare-inner > div + div {
+    border-left: none !important;
+    padding-left: 0 !important;
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+    margin-top: 8px;
+  }
+  /* 가격 프레이밍 박스 내부 border 제거 */
+  [style*="border-left:1px solid #334155"],
+  [style*="border-left: 1px solid #334155"] {
+    border-left: none !important;
+    border-right: none !important;
+    border-top: 1px solid #334155 !important;
+    padding: 16px 0 0 !important;
+    margin-top: 16px !important;
+  }
+
+  /* 인용구·스토리 */
+  .story-quote { padding: 16px 18px; font-size: 15px; margin: 24px 0; }
+  .story-body { font-size: 15px; margin-bottom: 20px; }
+
+  /* FAQ */
+  .faq-q { font-size: 15px; padding: 16px 18px; }
+  .faq-a-in { padding: 0 18px 16px; font-size: 14px; line-height: 1.7; }
+
+  /* 최하단 CTA */
+  .final-sub { font-size: 16px; margin-bottom: 30px; }
+  .btn-form, .btn-kakao { font-size: 15px; padding: 15px 24px; }
+  .final-note { font-size: 13px; }
+
+  /* 푸터 */
+  footer { flex-direction: column; gap: 8px; text-align: center; padding: 22px 18px; }
+  .foot-logo { font-size: 17px; }
+
+  /* 무기 비교 카드 — 모바일 패딩 축소 */
+  .weapon-footer { padding: 16px 18px; flex-direction: column; gap: 8px; }
+  .wf-val { font-size: 24px; }
+
+  /* 최종 CTA 버튼 모바일 */
+  .section.final div[style*="display:flex"][style*="gap:12px"] {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .section.final a[class="price-cta"],
+  .section.final a[href="#pricing"] {
+    text-align: center !important;
+  }
+}
+
+@media (min-width: 641px) {
+  .mob-br { display: none; }
+}
+
+/* pricing-frame 3열 → 모바일 1열 */
+@media (max-width: 640px) {
+  .pricing-frame {
+    grid-template-columns: 1fr !important;
+    padding: 20px 18px !important;
+  }
+  .pricing-frame > div {
+    border-left: none !important;
+    border-right: none !important;
+    border-top: 1px solid #334155 !important;
+    padding: 16px 0 0 !important;
+    margin-top: 8px !important;
+  }
+  .pricing-frame > div:first-child {
+    border-top: none !important;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+  .recovery-bar {
+    padding: 14px 18px !important;
+    font-size: 13.5px !important;
+  }
+}
+
+/* ── 햄버거 메뉴 ── */
+.hamburger {
+  display: none; flex-direction: column; justify-content: center;
+  gap: 5px; width: 36px; height: 36px; padding: 4px;
+  background: none; border: none; cursor: pointer; flex-shrink: 0;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: #1e1b4b; border-radius: 2px;
+  transition: transform .3s, opacity .3s;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* 메뉴 겹침 방지 — 860px 이하에서 햄버거로 전환 */
+@media (max-width: 860px) {
+  .hamburger { display: flex; }
+  .nav-menu-wrap {
+    display: none; flex-direction: column;
+    position: absolute; top: 68px; left: 0; right: 0;
+    background: rgba(255,255,255,.98); backdrop-filter: blur(14px);
+    border-bottom: 1px solid #c7d2fe;
+    padding: 12px 0; gap: 0; border-radius: 0;
+    z-index: 98;
+  }
+  .nav-menu-wrap.open { display: flex; }
+  .nav-menu-wrap a {
+    padding: 14px 24px; border-radius: 0; font-size: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-menu-wrap a:last-child { border-bottom: none; }
+}
+
+@media (max-width: 640px) {
+  .nav-cta { display: none; }
+  nav { top: 0; }
+  .nav-menu-wrap { top: 56px; }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+  <span class="dot-live-top"></span>
+  <strong>현재 얼리버드 분들을 위해 한정 수량에 한해 특별 할인가로 분양 중입니다.
+</div>
+
+<nav>
+  <a href="#" class="nav-logo" onclick="window.scrollTo(0,0);">AutoTube <span>Pro</span></a>
+  <ul class="nav-menu-wrap" id="navMenu">
+    <li><a href="#how" onclick="closeMenu()">작동방식</a></li>
+    <li><a href="#guide" onclick="closeMenu()">시작방법</a></li>
+    <li><a href="#pricing" onclick="closeMenu()">요금제</a></li>
+    <li><a href="manual.html" onclick="closeMenu()" style="cursor:pointer; font-weight:700; color:var(--red);">🔄 사용설명서</a></li>
+  </ul>
+  <a href="https://forms.gle/EViTc2rboeocEWhR8" class="nav-cta" target="_blank">무료 체험 신청 →</a>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="메뉴 열기">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<section class="section">
+  <div class="w">
+    
+    <h1 class="hero hero-box">
+      <span class="hero-t1">유튜브 크리에이터 전용</span>
+      <span class="hero-t2"><span class="hl-red">영상 제작 자동화</span> 소프트웨어</span>
+      <span class="hero-t3">이미지 · 음성 · 자막 자동 생성부터<br><strong style="font-weight: 700; color: #111111;">캡컷 1초 타임라인 배치</strong>까지</span>
+      <span class="hero-t4"><strong>당신의 반복 작업을</strong><br> 획기적으로 줄여 드립니다.</span>
+      <span class="hero-badge">🎁 5일간 무료 체험 기회를 놓치지 마세요.</span>
+    </h1>
+
+    <p class="hero-sub-text r">
+      <strong>대본 엑셀 한 장에서 완성 CapCut 타임라인까지<br class="mob-br"> <br>6단계 자동화 파이프라인</strong>
+      AI 이미지 자동 생성<br> 
+      사용자 본인 목소리로 음성 TTS 생성,<br> 
+      <br class="mob-br"> 
+      SRT 자막 자동 추출<br> 
+      CapCut 1초 조립.
+      <span class="hl-blue">"필요에 따라 기능별 독립적으로 사용 가능"</span>
+      <span class="hl-red">편집 노가다는 툴에게 맡기고,<br>기획과 연출에만 집중하세요.</span>
+    </p>
+
+    <div class="kpi-row r" style="margin-left: auto; margin-right: auto;">
+      <div class="kpi">
+        <div class="kpi-num"><span class="hl-red">1초</span></div>
+        <div class="kpi-label" style="font-weight: 700; color: var(--ink);">
+          <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: -3px; color: var(--red);">bolt</span>
+          캡컷 타임라인 자동 배치
+        </div>
+        <div style="font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.5; letter-spacing: -0.02em;">
+          · 모든 검수 후 생성 버튼<br> 누름과 동시에 완성
+        </div>
+      </div>
+
+      <div class="kpi">
+        <div class="kpi-num"><span class="hl-red">0원</span></div>
+        <div class="kpi-label" style="font-weight: 700; color: var(--ink);">
+          <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: -3px; color: var(--red);">payments</span>
+          할당량 및 개인 서버 활용
+        </div>
+        <div style="font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.5; letter-spacing: -0.02em;">
+          · 계정별 하루 할당량<br> 활용하여 이미지 생성<br>(다계정 사용 가능)<br>· 사용자 PC에 개인 TTS<br> 서버 생성해서 사용
+        </div>
+      </div>
+
+      <div class="kpi">
+        <div class="kpi-num"><span class="hl-red">100%</span></div>
+        <div class="kpi-label" style="font-weight: 700; color: var(--ink);">
+          <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: -3px; color: var(--red);">lock</span>
+          외부 서버 의존 없는<br> 독립 구동
+        </div>
+        <div style="font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.5; letter-spacing: -0.02em;">
+          · 내 PC에 설치해서 사용<br>· 대본·프롬프트 외부 유출<br> 원천 차단
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--white" id="pain">
+  <div class="w">
+    <span class="eyebrow r">이 소모적인 단순 반복, 언제까지 직접 하실 겁니까?</span>
+    <h2 class="r">진짜 유튜버만 아는<br>지독한 <span class="hl-red">'미세 노가다'</span>들</h2>
+
+    <ul class="pain-list r">
+      <li class="pain-item">
+        <div class="circle-badge">1</div>
+        <div>
+          <div class="pain-t">파일명 리네이밍 지옥</div>
+          <div class="pain-d">AI가 무작위로 뱉어낸 수십 장의 이미지 파일들. 편집할 때 꼬이지 않도록 대본 순서에 맞춰 <code>01.png</code>, <code>02.png</code>로 하나하나 이름을 바꾸고 폴더에 정리하는 고통.</div>
+        </div>
+      </li>
+      <li class="pain-item">
+        <div class="circle-badge">2</div>
+        <div>
+          <div class="pain-t">자막 엔터 치기 (1줄 가독성 세팅)</div>
+          <div class="pain-d">캡컷에 자동 자막을 넣으면 화면에 2~3줄씩 뭉텅이 출력되거나 단어 중간이 잘립니다. 시청자가 읽기 편하도록 의미 단위로 끊어서 수십 번씩 '엔터'를 치는 작업.</div>
+        </div>
+      </li>
+      <li class="pain-item">
+        <div class="circle-badge">3</div>
+        <div>
+          <div class="pain-t">로봇 같은 TTS 출력의 '숨고르기' 칼질</div>
+          <div class="pain-d">TTS로 10분짜리 대본을 뽑으면 로봇처럼 쉬지 않고 말을 내뱉습니다. 자연스러운 호흡을 위해 문장 사이에 마우스로 칼질(Split)을 하고 0.7초씩 틈을 벌려주는 노동.</div>
+        </div>
+      </li>
+      <li class="pain-item">
+        <div class="circle-badge">4</div>
+        <div>
+          <div class="pain-t">클립 길이 고무줄 늘리기</div>
+          <div class="pain-d">오디오 문장 길이에 맞춰서, 위에 얹힌 이미지 클립 끝자락을 마우스로 잡고 늘리거나 줄이는 작업을 60~100번 반복해야 합니다.</div>
+        </div>
+      </li>
+      <li class="pain-item">
+        <div class="circle-badge">5</div>
+        <div>
+          <div class="pain-t">오타 숨은그림찾기</div>
+          <div class="pain-d">경제/시사 채널 특성상 전문 용어에서 자동 자막 오타와 환각이 반드시 발생합니다. 원본 엑셀 대본을 띄워놓고 10분 내내 눈이 빠져라 대조하며 수정해야 합니다.</div>
+        </div>
+      </li>
+    </ul>
+    <div class="pain-punch r">이 미세 노가다를 전부 <strong style="color: #ff9f7f;">자동화</strong>했습니다.</div>
+  </div>
+
+  <div class="w">
+    <div style="background:#0f172a;border-radius:10px;padding:28px 36px;margin-top:0;text-align:center;">
+  <div style="font-size:20px;font-weight:800;color:#fff;line-height:1.6;margin-bottom:10px;">원클릭으로 영상을 자동으로 만들어 준다는 환상은 버리세요.</div>
+  <div style="font-size:17px;color:rgba(255,255,255,.6);line-height:1.7;">영상의 진짜 퀄리티는 <strong style="color:#ff9f7f;">기획과 검수</strong>에서 나옵니다.<br>AutoTube Pro는 그 사이의 반복 노가다를 대신 처리합니다.</div>
+</div>
+  </div>
+</section>
+
+<section class="section section--tinted" id="how">
+  <div class="w">
+    <span class="eyebrow r">자동화 파이프라인</span>
+    <h2 class="r">AutoTube Pro는<br> <span class="hl-red">이렇게</span> 동작 됩니다.</h2>
+    <p class="lead r">버튼을 누른 후 자리를 비워도 됩니다.<br> 수십 장의 이미지와 수십 개의 음성 파일이 순차적으로 자동 생성되어 지정 폴더에 저장됩니다.</p>
+
+    <div class="steps r">
+
+      <div class="step">
+        <div class="circle-badge" style="background:#334155;">준비</div>
+        <div>
+          <div class="step-t"><span class="material-symbols-rounded">folder_open</span> 시작 전 1회 — 폴더 구조 설정</div>
+          <p class="step-d">구매 시 제공되는 패키지를 C: 드라이브에 설치하면 <strong>1_대본 / 2_이미지 / 3_오디오_자막</strong> 폴더가 자동으로 구성됩니다. 이후 모든 리소스는 각 폴더에 자동 저장되며, 새 영상 작업 시 프로젝트 폴더만 추가하면 됩니다.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="circle-badge">1</div>
+        <div>
+  <div class="step-t"><span class="material-symbols-rounded">table_chart</span> STEP 1 — 사용자가 대본 엑셀을 준비합니다.</div>
+  <p class="step-d">이미 사용 중인 AI 프롬프트(ChatGPT·Claude 등)로 대본을 생성하고 엑셀에 붙여넣습니다. 이미지 생성 프롬프트 열과 성우 대본 시트가 포함된 이 엑셀 파일이 <strong>이후 모든 자동화의 유일한 시작점</strong>입니다.</p>
+  <div class="excel-win r" style="margin-top:16px;">
+    <div class="excel-bar">
+      <div class="excel-dot" style="background:#ff5f57;"></div><div class="excel-dot" style="background:#febc2e;"></div><div class="excel-dot" style="background:#28c840;"></div>
+      <span class="excel-bar-title">대본_샘플.xlsx</span>
+    </div>
+    
+    <img src="Excel_file.png" alt="대본 엑셀 준비 화면" style="width: 100%; height: auto; display: block; border-bottom: 1px solid var(--line);">
+    
+    <div class="excel-note"><strong>"성우녹음대본"과 "이미지 생성 프롬프트"</strong> 열 이름은 정확히 이 이름이어야 자동화가 작동합니다.</div>
+  </div>
+</div>
+      </div>
+
+      <div class="step">
+        <div class="circle-badge">2</div>
+        <div>
+          <div class="step-t"><span class="material-symbols-rounded">edit_document</span> STEP 2 — AutoTube Pro가 대본을 불러옵니다.</div>
+          <p class="step-d">엑셀로 최종 작성된 대본은 AutoTube Pro로 불러서 확인하고 간단히 수정할 수 기능을 제공 합니다.(간이 편집기 기능)</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="circle-badge">3</div>
+        <div>
+          <div class="step-t"><span class="material-symbols-rounded">imagesmode</span> STEP 3 — AutoTube Pro가 수십 장의 이미지를 순차 생성합니다.</div>
+          <p class="step-d">AutoTube Pro가 엑셀의 이미지 프롬프트를 한 줄씩 자동으로 읽어 Gemini에 전송합니다. <strong>60컷 영상이라면 60장의 이미지가 사람의 개입 없이 순차적으로 생성</strong>되어 2_이미지 폴더에 01.png, 02.png 형식으로 자동 저장됩니다. 버튼을 누르고 자리를 비워도 됩니다.</p>
+          </div>
+      </div>
+
+      <div class="step">
+        <div class="circle-badge">4</div>
+        <div>
+  <div class="step-t" style="align-items: flex-start;">
+    <span class="material-symbols-rounded" style="margin-top: 2px;">mic</span> 
+    <span>STEP 4 — AutoTube Pro가 수십 개의 음성 파일을 자동 녹음합니다.</span>
+  </div>
+  
+  <p class="step-d">AutoTube Pro가 성우녹음 시트의 대본을 한 줄씩 사용자 전용의 AI 음성 서버로 전송합니다. <strong>서버가 목소리 샘플의 억양·톤을 분석하여 60컷이라면 60개의 WAV 파일을 순차 생성</strong>하고, 완료 후 AutoTube Pro가 자동으로 하나의 마스터 오디오(합본.wav)로 합칩니다. 파형 시각화로 각 파일의 진행 상황을 실시간 확인 가능 합니다.</p>
+  
+  <div class="ui-window" style="margin-top:20px; background: #1a1a2e;">
+    <div class="ui-titlebar">
+      <div class="ui-dot"></div><div class="ui-dot"></div><div class="ui-dot"></div>
+      <span class="ui-title">AutoTube Pro — 오디오 파형 시각화</span>
+    </div>
+    <img src="TTS_Audio.png" alt="오디오 파형 시각화 화면" style="width: 100%; height: auto; display: block; border-top: 1px solid #2a2a3a;">
+  </div>
+  
+  <span class="step-badge" style="margin-top: 16px;">
+    <span class="material-symbols-rounded" style="font-size:16px;">lightbulb</span>
+     사용하시는 PC 성능이 높다면, 자동 이미지 생성과 음성 생성을<br class="mob-br"> 동시에 진행 할 수 있어<br class="mob-br"> 전체 제작 시간을 단축 할 수 있습니다.
+  </span>
+</div>
+      </div>
+
+      <div class="step">
+        <div class="circle-badge">5</div>
+        <div>
+          <div class="step-t"><span class="material-symbols-rounded">subtitles</span> STEP 5 — AutoTube Pro가 오디오를 분석해 자막을 자동 추출합니다.</div>
+          <p class="step-d">AutoTube Pro가 합본 오디오를 AI로 분석하여 <strong>각 컷의 정확한 시작·끝 타임코드를 자동 계산</strong>합니다. SRT 자막 파일이 생성되고, 타임스탬프는 엑셀에 자동으로 기록됩니다. 이 데이터가 CapCut 조립의 정밀 기준이 됩니다.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="circle-badge">6</div>
+        <div>
+          <div class="step-t"><span class="material-symbols-rounded">fact_check</span> STEP 6 — 자동으로 생성된 리소스 검수 후, AutoTube Pro가 CapCut을 자동 조립합니다.</div>
+          <p class="step-d">이미지·오디오·자막을 한 화면에서 동기화 재생하며 검수합니다. 문제 컷은 체크박스 마킹 후 해당 STEP에서 개별 재작업하면 됩니다. <strong>검수가 완료되면 AutoTube Pro가 모든 리소스의 타임코드를 CapCut 프로젝트 파일에 1초 만에 자동 주입합니다.</strong> 이후 CapCut을 열면 수십 개의 클립이 정밀하게 조립되어 있습니다.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section section--white">
+  <div class="w">
+    <span class="eyebrow r">어떤 채널이든 연결됩니다</span>
+    <h2 class="r">이미 사용 중인<br> <span class="hl-red">당신의 AI 프롬프트 노하우 100%</span><br> 그대로 AutoTube에 연결하세요</h2>
+    <p class="lead r">ChatGPT나 Claude등 AI로 이미 대본을 만들고 계신가요?<br> 그 결과물을 엑셀에 붙여넣으면 AutoTube Pro가 바로 작동합니다.<br>
+    경제 · 역사 · 건강 · 재테크 등 어떤 주제든,<strong><br> 당신만의 프롬프트 스타일 그대로</strong> 자동화 파이프라인에 연결됩니다.</p>
+
+    <div class="install-row r" style="margin-top:0;">
+      <div class="install-card">
+        <div class="ic-icon"><span class="material-symbols-rounded" style="color:var(--blue);">auto_fix_high</span></div>
+        <div class="ic-title">내 프롬프트 → 엑셀 → 자동화</div>
+        <div class="ic-desc">기존에 사용하던 AI 대본 프롬프트 결과물을 엑셀에 붙여넣기만 하면 됩니다. 엑셀 구조 규칙(이미지 생성 프롬프트 열, 성우녹음 시트)만 맞추면 나머지는 전부 자동입니다.</div>
+      </div>
+      <div class="install-card">
+        <div class="ic-icon"><span class="material-symbols-rounded" style="color:var(--green);">card_giftcard</span></div>
+        <div class="ic-title">샘플 대본 패키지 제공</div>
+        <div class="ic-desc">바로 시작할 수 있도록 경제·정보 채널용 60컷 3막 구조 샘플 대본 프롬프트가 함께 제공됩니다. 주제만 바꿔서 즉시 활용할 수 있습니다.</div>
+      </div>
+    </div>
+     <div class="pcard-note">구매 시 제공되는 샘플 대본 프롬프트를 참고하여 자신의 채널에 맞게 커스터마이징 하실 수도 있습니다.</div>
+      
+  </div>
+</section>
+
+<section class="section section--tinted" id="comparison-work">
+  <div class="w">
+    <span class="eyebrow r">수작업 대비 압도적인 효율</span>
+    <h2 class="r">기존의 편집 공정을<br><span class="hl-red">완전히</span> 뒤바꿉니다</h2>
+
+    <p class="lead r">이미지 따로, 자막 따로, 오디오 따로 작업하던 파편화된 공정을 하나로 통합하여, 캡컷 조립까지 걸리는 시간을 혁신적으로 단축합니다.</p>
+
+    <!-- 푸터 (비교의 형평성을 맞춘 실제 마우스 노동 시간 비교) -->
+  <div class="weapon-footer" style="display:flex; flex-direction:column; gap:20px; align-items:stretch; background: #191932; padding: 32px 28px;">
+    
+    <div style="text-align: center; margin-bottom: 4px;">
+      <span style="color: #ffffff; font-size: 17px; font-weight: 700; letter-spacing: -0.02em;">8~10분 롱폼 영상 제작 시 '인간의 순수 개입(노동)' 시간 비교</span>
+    </div>
+
+    <!-- 3단 비교 카드 그리드 -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+      
+      <!-- 1. 완전 수작업 -->
+      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 18px 12px; text-align: center;">
+        <div style="font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 600; margin-bottom: 8px;">완전 수작업 방식</div>
+        <div style="font-size: 20px; color: #adb5bd; font-weight: 700;">약 5시간 +</div>
+        <div style="font-size: 13px; color: rgba(255,255,255,0.4); margin-top: 10px; line-height: 1.4;">리소스 100% 직접 생성<br>수동 파일 관리 및 조립</div>
+      </div>
+
+      <!-- 2. 개별 AI 툴 조합 -->
+      <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 18px 12px; text-align: center;">
+        <div style="font-size: 13px; color: rgba(255,255,255,0.6); font-weight: 600; margin-bottom: 8px;">개별 AI 툴 조합</div>
+        <div style="font-size: 20px; color: #adb5bd; font-weight: 700;">최소 2시간 +</div>
+        <div style="font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 10px; line-height: 1.4;">생성은 AI가 돕지만<br>파일 관리와 싱크는 수작업</div>
+      </div>
+
+      <!-- 3. AutoTube Pro -->
+      <div style="background: rgba(255, 159, 127, 0.1); border: 1px solid #ff9f7f; border-radius: 8px; padding: 18px 12px; text-align: center; position: relative;">
+        <div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #ff9f7f; color: #111; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 12px;">단순 노동 삭제</div>
+        <div style="font-size: 13px; color: #ff9f7f; font-weight: 700; margin-bottom: 8px;">AutoTube Pro</div>
+        <div style="font-size: 24px; color: #ffffff; font-weight: 800;">약 15분 +</div>
+        <div style="font-size: 13px; color: rgba(255,255,255,0.8); margin-top: 10px; line-height: 1.4;">엑셀 세팅 및 결과물 검수<br>(실제 타임라인 조립 1초)</div>
+      </div>
+
+    </div>
+
+    <!-- 부연 설명: 대기 시간의 가치 전환 (크리에이터 본연의 업무) -->
+    <div style="background: rgba(0,0,0,0.3); padding: 18px 22px; border-radius: 8px; margin-top: 8px; border-left: 4px solid #ff9f7f;">
+      <span style="color: rgba(255,255,255,0.85); font-size: 14.5px; line-height: 1.7; display: block; font-weight: 500;">
+        기계가 할 일은 AutoTube Pro에 맡기세요. 사용자는 <strong>초기 세팅과 최종 검수</strong>만 진행하면 됩니다. 프로그램이 리소스를 자동 생성하는 시간 동안,<br>
+        <strong style="color: #ffffff; font-size: 15.5px; background: rgba(255, 255, 255, 0.1); padding: 3px 8px; border-radius: 4px; display: inline-block; margin: 6px 0;">
+          다음 영상 대본 기획, 트렌드 리서치 등 채널 성장을 위한 가장 가치 있는 일에 온전히 집중할 수 있습니다.
+        </strong><br>
+        <span style="color: rgba(255,255,255,0.8); font-size: 14.5px; display: inline-block; margin-top: 4px;">
+          검수가 끝난 리소스를 CapCut 타임라인에 정밀하게 올리는 최종 작업은 <strong style="color: #ff9f7f; font-weight: 800; font-size: 16px;">버튼 클릭 단 1초</strong>면 충분합니다.
+        </span>
+      </span>
+    </div>
+    
+  </div>
+
+  </div>
+</section>
+
+<section class="section section--white" id="cost">
+  <div class="w">
+    <span class="eyebrow r">생성 비용</span>
+    <h2 class="r">TTS·자막은 무제한 <span class="hl-red">0원</span>,<br>이미지는 구글 계정 플랜 그대로</h2>
+    <p class="lead r">외부 유료 API 없이, 이미 갖고 있는 구글 계정과 오픈소스 모델만으로 운영됩니다.<br>항목별로 투명하게 공개합니다.</p>
+
+    <!-- 비용 표 -->
+    <div class="r" style="background:var(--white);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:32px;">
+      <table style="width:100%;border-collapse:collapse;font-size:16px;">
+        <thead>
+          <tr style="background:#1e1b4b;">
+            <th style="padding:14px 20px;text-align:left;color:#c7d2fe;font-size:13px;font-weight:700;letter-spacing:.04em;">항목</th>
+            <th style="padding:14px 20px;text-align:left;color:#c7d2fe;font-size:13px;font-weight:700;letter-spacing:.04em;">방식</th>
+            <th style="padding:14px 20px;text-align:center;color:#c7d2fe;font-size:13px;font-weight:700;letter-spacing:.04em;">비용</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--line);">
+            <td style="padding:16px 20px;font-weight:700;color:#1e1b4b;">🖼️ 이미지 생성</td>
+            <td style="padding:16px 20px;color:#4b5563;">Google Gemini<br><span style="font-size:13px;color:#6b7280;">이용자 본인 Google 계정으로 접속</span></td>
+            <td style="padding:16px 20px;text-align:center;font-weight:800;color:#4b5563;">구글 계정 플랜에 따라<br><span style="font-size:13px;font-weight:400;color:#6b7280;">무료 할당량 내 0원 / 초과 시 유료</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--line);background:#f8faff;">
+            <td style="padding:16px 20px;font-weight:700;color:#1e1b4b;">🎙️ TTS 음성 생성</td>
+            <td style="padding:16px 20px;color:#4b5563;">Qwen3-TTS (오픈소스)<br><span style="font-size:13px;color:#6b7280;">Google Colab 무료 서버에서 실행</span></td>
+            <td style="padding:16px 20px;text-align:center;"><span style="font-size:18px;font-weight:900;color:#059669;">무제한 0원</span></td>
+          </tr>
+          <tr>
+            <td style="padding:16px 20px;font-weight:700;color:#1e1b4b;">💬 자막 생성</td>
+            <td style="padding:16px 20px;color:#4b5563;">Whisper (오픈소스)<br><span style="font-size:13px;color:#6b7280;">내 PC에서 직접 실행</span></td>
+            <td style="padding:16px 20px;text-align:center;"><span style="font-size:18px;font-weight:900;color:#059669;">무제한 0원</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="r cost-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:0;">
+      <div style="background:var(--white);border:1.5px solid var(--line);border-radius:12px;padding:28px;">
+        <div style="font-size:32px;margin-bottom:12px;">🖼️</div>
+        <div style="font-size:17px;font-weight:800;color:var(--ink);margin-bottom:8px;">이미지 생성 — 구글 계정 플랜 기준</div>
+        <div style="font-size:15px;color:var(--gray);line-height:1.75;">이미 구독 중인 <strong>Google Gemini 무료 할당량</strong> 범위에서 생성합니다. 추가 결제 없이 이미지를 생성할 수 있습니다.</div>
+        <div style="margin-top:14px;padding:12px 14px;background:#f0f4ff;border-radius:8px;font-size:13px;color:var(--gray);line-height:1.7;">
+          <strong style="color:var(--ink);">계정별 하루 생성 가능 컷 수 (참고)</strong><br>
+          · 무료 계정 : 약 15~20컷 / 일 <em style="color:var(--muted);">(영상 0.5~1편 분량)</em><br>
+          · Google AI Plus : 무료 대비 약 2배 한도<br>
+          · Google AI Pro : 무료 대비 약 4배 한도 <em style="color:var(--muted);">(약 50~100컷, 실사용 기준)</em><br>
+          <span style="color:var(--muted);font-size:12px;">※ 구글 정책에 따라 변동될 수 있습니다</span>
+        </div>
+        <div style="margin-top:12px;padding:10px 14px;background:#fffbea;border:1px solid #fde68a;border-radius:8px;font-size:13px;color:#78350f;line-height:1.65;">
+          <strong>💡 Tip</strong> — 복수의 구글 계정을 번갈아 로그인하면 하루 더 많은 이미지를 생성할 수 있습니다. AutoTube Pro의 구글 로그인 버튼으로 계정 전환이 간편하게 가능합니다.
+        </div>
+      </div>
+      <div style="background:var(--white);border:1.5px solid var(--line);border-radius:12px;padding:28px;">
+        <div style="font-size:32px;margin-bottom:12px;">🎙️</div>
+        <div style="font-size:17px;font-weight:800;color:var(--ink);margin-bottom:8px;">AI 음성 생성 — 무제한 0원</div>
+        <div style="font-size:15px;color:var(--gray);line-height:1.75;"><strong>Google Colab 무료 클라우드 서버</strong>에서 오픈소스 Qwen3-TTS 모델로 실행됩니다. 내 PC에 부담을 주지 않고 고품질 AI 음성을 무제한 생성합니다.</div>
+        <div style="margin-top:14px;padding:12px 14px;background:#f0f4ff;border-radius:8px;font-size:13px;color:var(--gray);line-height:1.7;">
+          <strong style="color:var(--ink);">Google Colab 무료 이용 조건</strong><br>
+          · 하루 세션 시간 제한 있음 (약 6~12시간)<br>
+          · GPU 유형에 따라 생성 속도 다름<br>
+          · 유료 Colab Pro는 더 긴 세션 제공<br>
+          <span style="color:var(--muted);font-size:12px;">※ 구글 정책에 따라 변동될 수 있습니다</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tinted" id="qc">
+  <div class="w">
+    <span class="eyebrow r">품질 검수</span>
+    <h2 class="r">만들고 끝이 아닙니다,<br><span class="hl-red">검수까지</span> 자동으로</h2>
+    <p class="lead r">CapCut으로 넘어가기 전, 이미지·오디오·자막을 한 화면에서 동기화 재생하며 검수합니다.<br>불량 컷은 체크박스 마킹 후 해당 STEP에서만 개별 재작업하면 됩니다.</p>
+
+    <div class="r" style="background:var(--white);border:1.5px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:28px;box-shadow:0 4px 20px rgba(99,102,241,.07);">
+      <div style="background:#1e1b4b;padding:14px 20px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:16px;font-weight:800;color:#c7d2fe;letter-spacing:-0.01em;">🔍 자동 생성된 리소스 정밀 검수 기능</span>
+      </div>
+      <img src="그림8.png" alt="AutoTube Pro 영상 검증 탭 — 통합 QC 화면" style="width:100%;display:block;">
+    </div>
+
+    <div class="r" style="background:var(--white);border:1.5px solid var(--line);border-radius:14px;padding:28px 32px;">
+      <div style="font-size:18px;font-weight:800;color:var(--ink);margin-bottom:12px;">수정과 렌더링을 반복하는 '편집기 내 악몽'은 끝났습니다.</div>
+      <p style="font-size:16px;color:var(--gray);line-height:1.75;margin-bottom:20px;">
+        AutoTube Pro는 무거운 CapCut으로 넘어가기 전, 모든 리소스(이미지·오디오·자막)를 한 화면에서 동기화해 확인하는 <strong style="color:var(--ink);">'통합 정밀 검수(QC) 기능'</strong>을 제공합니다. 불량 결과물의 유입을 사전에 차단하여 완벽한 작업 흐름을 만듭니다.
+      </p>
+      <ul style="list-style:none;padding:0;margin:0;font-size:16px;color:var(--gray);line-height:1.75;display:flex;flex-direction:column;gap:14px;">
+        <li style="display:flex;align-items:flex-start;gap:12px;">
+          <span style="color:#4f46e5;font-weight:900;flex-shrink:0;">✅</span>
+          <div><strong style="color:var(--ink);">부분 재작업 (수정 최소화)</strong> — 전체를 다시 만들 필요 없이, 문제가 발생한 컷만 선택해 즉시 개별 재생성합니다.</div>
+        </li>
+        <li style="display:flex;align-items:flex-start;gap:12px;">
+          <span style="color:#4f46e5;font-weight:900;flex-shrink:0;">✅</span>
+          <div><strong style="color:var(--ink);">연쇄 노가다 원천 차단</strong> — 타임라인 조립 후 오류를 발견하면 [툴 재접속 ➔ 재생성 ➔ 클립 교체]라는 끔찍한 연쇄 노가다가 시작됩니다. <strong style="color:var(--ink);">길이가 달라진 전체 오디오·자막 싱크를 다시 맞추는 데 수십 분이 증발</strong>합니다.<br>오토튜브는 100% 검증이 끝난 <strong style="color:#c8321e;">무결점 리소스만 타임라인으로 최종 전송</strong>하므로, 이 스트레스를 완전히 지워냅니다.</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section section--white" id="comparison">
+  <div class="w">
+    <span class="eyebrow r">내 PC에서 독립적으로 구동됩니다</span>
+    <h2 class="r">
+      내 대본과 프롬프트가<br>
+      <span class="hl-red">외부 서버로 나가지 않습니다</span>
+    </h2>
+
+    <blockquote class="story-quote r" style="font-style: normal; font-size:18px;">
+      취미로 한두 편 가볍게 만드신다면 웹 기반 서비스가 편리합니다.<br><br>
+      하지만 전업으로 다채널을 운영하며 원가를 절감해야 하는 크리에이터라면,<br>
+      <strong>로컬 설비가 가장 현실적인 선택입니다.</strong>
+    </blockquote>
+
+    <div style="margin-top: 56px; display:flex; flex-direction:column; gap:20px;">
+      <div class="r" style="background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:28px 32px;">
+        <h3 style="font-size:20px; font-weight:800; margin-bottom:16px; display:flex; align-items:center; gap:10px;"><span class="material-symbols-rounded" style="color:var(--ink);">lock</span> 1. 데이터 보안과 소유권</h3>
+        <div class="compare-inner" style="display:grid; grid-template-columns:1fr 1fr; gap:24px; font-size:17px; line-height:1.7;">
+          <div>
+            <div style="color:var(--muted); font-size:13px; font-weight:700; margin-bottom:8px; text-transform:uppercase;">웹 기반 서비스</div>
+            <div style="color:var(--gray);">피땀 흘려 기획한 대본과 나만의 비밀 프롬프트가 외부 서버에 저장됩니다. 보안이 취약해지면 기획이 유출될 수 있습니다.</div>
+          </div>
+          <div style="border-left:2px solid var(--line); padding-left:24px;">
+            <div style="color:var(--red); font-size:13px; font-weight:700; margin-bottom:8px; text-transform:uppercase;">AutoTube Pro</div>
+            <div style="color:var(--ink);">모든 작업이 <strong>100% 내 PC 안에서만</strong> 이루어집니다. 내 소중한 기획과 데이터가 외부로 새어 나갈 걱정이 전혀 없습니다.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="r" style="background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:28px 32px;">
+        <h3 style="font-size:20px; font-weight:800; margin-bottom:16px; display:flex; align-items:center; gap:10px;"><span class="material-symbols-rounded" style="color:var(--ink);">payments</span> 2. 제작 단가 (비용 구조)</h3>
+        <div class="compare-inner" style="display:grid; grid-template-columns:1fr 1fr; gap:24px; font-size:17px; line-height:1.7;">
+          <div>
+            <div style="color:var(--muted); font-size:13px; font-weight:700; margin-bottom:8px; text-transform:uppercase;">웹 기반 서비스</div>
+            <div style="color:var(--gray);">월 구독료를 내고도, 영상을 만들 때마다 포인트가 추가로 차감됩니다. 많이 찍어낼수록 마진율이 급격히 떨어집니다.</div>
+          </div>
+          <div style="border-left:2px solid var(--line); padding-left:24px;">
+            <div style="color:var(--red); font-size:13px; font-weight:700; margin-bottom:8px; text-transform:uppercase;">AutoTube Pro</div>
+            <div style="color:var(--ink);">내 계정의 무료 할당량을 영리하게 사용하여 <strong>추가 유지비 0원</strong>을 목표로 활용 가능 합니다.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="r" style="background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:28px 32px;">
+        <h3 style="font-size:20px; font-weight:800; margin-bottom:16px; display:flex; align-items:center; gap:10px;"><span class="material-symbols-rounded" style="color:var(--ink);">domain_disabled</span> 3. 서비스 종속성과 생존성</h3>
+        <div class="compare-inner" style="display:grid; grid-template-columns:1fr 1fr; gap:24px; font-size:17px; line-height:1.7;">
+          <div>
+            <div style="color:var(--muted); font-size:13px; font-weight:700; margin-bottom:8px; text-transform:uppercase;">웹 기반 서비스</div>
+            <div style="color:var(--gray);">운영사 서버가 폭주하면 오늘 영상은 못 올립니다. 회사가 폐업하면 내가 결제한 서비스는 즉시 사라집니다.</div>
+          </div>
+          <div style="border-left:2px solid var(--line); padding-left:24px;">
+            <div style="color:var(--red); font-size:13px; font-weight:700; margin-bottom:8px; text-transform:uppercase;">AutoTube Pro</div>
+            <div style="color:var(--ink);">설치형 프로그램입니다. <strong>내 PC가 켜져 있는 한, 365일 멈추지 않고 돌아가는 영구적인 설비</strong>입니다.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="r" style="background:#eef2ff; border:1px solid var(--line); border-radius:12px; padding:32px; margin-top:12px;">
+        <div style="font-size:18px; color:var(--ink2); line-height:1.8;">
+          <strong>※ 웹 기반 서비스에도 분명한 장점이 있습니다.</strong><br>
+          설치 없이 어디서든 간편하게 쓸 수 있어 입문용으로 적합합니다.<br><br>
+          다만 채널을 본격적으로 운영하며 원가를 절감해야 한다면,<br>
+          <span style="background:var(--accent,#4f46e5); color:#fff; padding:2px 8px; border-radius:4px;">내 PC에서 독립적으로 구동되는 로컬 설비가 더 현실적인 선택</span>입니다.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tinted" id="videos-section">
+  <div class="w">
+    <span class="eyebrow r">영상으로 확인하기</span>
+    <h2 class="r">백 번의 말보다<br><span class="hl-red">영상 하나</span>가 더 확실합니다</h2>
+
+    <div style="margin-top:48px;">
+      <div class="r">
+        <h3 style="font-size:22px; font-weight:800; margin-bottom:12px; color:var(--ink);">AutoTube Pro로 제작된 실제 유튜브 영상</h3>
+        <p style="font-size:17px; color:var(--gray); margin-bottom:20px; line-height:1.6;">AutoTube Pro로 제작되어 실제 유튜브 채널에 업로드된 롱폼 결과물입니다.</p>
+        <div class="youtube-container">
+          <iframe src="https://www.youtube.com/embed/bpY4OiWgDFE?playsinline=1&rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--white" id="story">
+  <div class="w">
+    <span class="eyebrow r">왜 한정된 인원에게만 제공하나요?</span>
+    <h2 class="r">처음부터 <span class="hl-red">팔려고</span><br>만든 프로그램이 아닙니다</h2>
+
+    <p class="story-body r">
+      저는 25년 엔지니어 출신으로 얼마 전부터 유튜브 채널을 직접 운영하고 있습니다.
+      채널을 시작하고 나서 가장 힘든 건 콘텐츠 기획이 아니었습니다.
+      <strong><br>이미지 드래그, 자막 수정, 타이밍 맞추기... <br>편집 노가다에 하루가 통째로 사라지는 것</strong>이었습니다.
+    </p>
+
+    <p class="story-body r">
+      그래서 결국 직접 만들기로 했습니다.<br>
+      앞으로 채널을 몇 개 더 확장할 계획을 가지고 있었기에 효율화가 절실했기 때문입니다.<br><br>
+      AI 음성 생성, Gemini 이미지 대량 생성, 자막 교정, 캡컷 자동 조립까지.
+      <strong><br>오직 '내가 쓰기 위해' 필요한 기능만 깎고 다듬어 만든 툴</strong>입니다.<br><br>      
+    </p>
+
+    <blockquote class="story-quote r">
+      주변 유튜버 분들이 "어떻게 이렇게 빨리 만들어요?" 하고<br> 연락이 오기 시작했습니다.<br>
+      그래서 그때 처음으로 공개를 고민했습니다.
+    </blockquote>
+
+    <p class="story-body r">
+      하지만, 이 툴은 <strong>모든 사람을 위한 프로그램이 아닙니다.</strong><br><br>
+      캡컷, AI 툴, 엑셀을 이미 써본 적 있고,
+      유튜브 영상 제작 경험이 있으며,
+      설명서를 읽고 스스로 세팅할 수 있는 분들을 위한 도구입니다.<br><br>
+      반대로 <strong>처음 유튜브를 시작하시거나,<br>
+      AI 툴을 처음 접하시는 분들께는 맞지 않습니다.</strong><br>
+      이 프로그램은 영상 제작 교육 강의가 아닙니다.<br>
+      이미 만들고 있는 분들의 <strong>반복 노가다를 없애주는 자동화 설비</strong>입니다.<br><br>
+      스스로 세팅하고 활용할 준비가 된 분들,<br>
+      지금 겪고 있는 편집 노가다에서 벗어나고 싶으신 분들만 
+      신청해 주시기 바랍니다.
+    </p>
+
+  </div>
+</section>
+<!-- =====================================================
+  가격 섹션 최종 수정본
+  변경 내용:
+  1. eyebrow: "도입 비용" → "요금제"
+  2. h2: "외주 편집자 한 달 월급으로 1년 내내 일하는 자동화 설비"
+  3. lead: 1.5개월 회수 + 공짜 직원 메시지
+  4. 프레이밍 박스: 폰트/색상 개선 + 최저시급 ₩10,030 수정
+  5. 강조줄 추가: "더 많이 만들수록 본전 빠름"
+  6. Paddle 버튼 + 무료체험 보조버튼
+  7. VAT 안내 박스 (기업 가독성 확보)
+====================================================== -->
+
+<!-- ▼ Paddle JS SDK — <head> 또는 </body> 직전에 1회만 추가 -->
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+<script>
+  Paddle.Setup({ vendor: YOUR_VENDOR_ID }); // ← 실제 Paddle Vendor ID로 교체
+</script>
+
+
+<section class="section section--tinted" id="pricing">
+  <div class="w">
+
+    <!-- 섹션 헤더 -->
+    <span class="eyebrow r">요금제</span>
+    <h2 class="r">
+      외주 편집자 한 달 월급으로,<br>
+      <span class="hl-red">1년 내내 일하는 자동화 설비</span>
+    </h2>
+    <p class="lead r">
+      월 10편 기준, 단 <strong>1.5개월</strong>에 
+      연간 라이선스 비용이 전액 회수됩니다.<br>
+      이후 남은 기간은 <strong>공짜로 일하는 자동화 직원</strong>이
+      생기는 효과와 같습니다.<br>
+      
+    </p>
+
+
+    <!-- ① 가격 프레이밍 박스 -->
+    <div class="r pricing-frame" style="
+      background:#0f172a; border:1px solid #334155;
+      border-radius:14px; padding:28px 32px;
+      margin-bottom:0;
+      display:grid; grid-template-columns:repeat(3,1fr); gap:0;
+      text-align:center;">
+
+      <div style="padding:0 20px;">
+        <div style="font-size:14px; font-weight:600;
+          color:#e2e8f0; margin-bottom:10px;">하루로 환산하면</div>
+        <div style="font-size:32px; font-weight:900;
+          color:#60a5fa; line-height:1;">₩2,684</div>
+        <div style="font-size:14px; color:#cbd5e1;
+          margin-top:10px; line-height:1.8;">
+          ₩980,000 ÷ 365일<br>
+          <span style="color:#94a3b8;">커피 한 잔값으로 편집 해방</span>
+        </div>
+      </div>
+
+      <div style="padding:0 20px;
+        border-left:1px solid #334155; border-right:1px solid #334155;">
+        <div style="font-size:14px; font-weight:600;
+          color:#e2e8f0; margin-bottom:10px;">월 10편 제작 시</div>
+        <div style="font-size:32px; font-weight:900;
+          color:#34d399; line-height:1;">₩8,167</div>
+        <div style="font-size:14px; color:#cbd5e1;
+          margin-top:10px; line-height:1.8;">
+          ₩980,000 ÷ 12개월 ÷ 10편<br>
+          <span style="color:#94a3b8;">영상 광고 수익보다 저렴</span>
+        </div>
+      </div>
+
+      <div style="padding:0 20px;">
+        <div style="font-size:14px; font-weight:600;
+          color:#e2e8f0; margin-bottom:10px;">절약 시간의 가치</div>
+        <div style="font-size:32px; font-weight:900;
+          color:#f472b6; line-height:1;">월 ₩70만</div>
+        <div style="font-size:14px; color:#cbd5e1;
+          margin-top:10px; line-height:1.8;">
+          영상당 7시간 절약 × 10편<br>
+          <span style="color:#94a3b8;">= 70시간 × 최저시급 ₩10,030</span>
+        </div>
+      </div>
+
+    </div><!-- /프레이밍 박스 -->
+
+
+    <!-- ② 강조줄 — 회수 메시지 -->
+    <div class="r recovery-bar" style="
+      background: linear-gradient(90deg, #1e3a5f 0%, #1e293b 100%);
+      border:1px solid #334155; border-top:none;
+      border-radius:0 0 14px 14px;
+      padding:16px 32px;
+      display:flex; align-items:center; gap:12px;
+      margin-bottom:36px;">
+      <span style="font-size:20px; flex-shrink:0;">📈</span>
+      <div style="font-size:14.5px; color:#e2e8f0; line-height:1.7;">
+        <strong style="color:#60a5fa;">월 10편 기준 1.5개월,
+        월 20편이면 단 1개월 만에 라이선스 비용이 회수됩니다.</strong><br>
+        <span style="color:#94a3b8;">
+          더 많이 만들수록 본전은 빨리 뽑히고,
+          이후부터는 공짜로 일하는 자동화 직원이 됩니다.
+        </span>
+      </div>
+    </div>
+
+
+    <!-- 얼리버드 배너 -->
+    <div class="urgency r">
+      <span class="dot-live"></span>
+      <span style="font-size:18px; line-height:1.6;">
+        <strong>🔥 첫 출시 기념, 한정 수량 파격 할인 이벤트 진행 중</strong><br>
+        현재 얼리버드 파트너분들을 위해 한정 수량에 한해
+        특별 할인가로 분양 중이며,<br>
+        본 행사는 사전 공지 없이 정상가로 즉시 전환될 수
+        있음을 알려드립니다.
+      </span>
+    </div>
+
+
+    <!-- 무료 체험 안내 박스 -->
+    <div class="r" style="
+      background:#f0fff4; border:1.5px solid rgba(26,138,74,.3);
+      border-radius:10px; padding:22px 28px; margin-bottom:28px;
+      display:flex; align-items:flex-start; gap:16px;">
+      <span style="font-size:28px; flex-shrink:0;">🎁</span>
+      <div>
+        <div style="font-size:18px; font-weight:800;
+          color:#1a5c32; margin-bottom:6px;">
+          먼저 5일간 무료로 사용해 보세요
+        </div>
+        <div style="font-size:18px; color:#2d6a4f; line-height:1.7;">
+          결제 전 <strong>AutoTube Pro 버전으로 5일간 무료 체험판</strong>이
+          제공됩니다.<br>
+          이미지·음성·자막·CapCut 조립까지 전 기능을 직접
+          테스트한 후 구매를 결정하세요.
+        </div>
+        <div style="font-size:15px; color:#40916c; margin-top:6px;">
+          ※ Windows 전용 PC 설치형 프로그램입니다.<br>
+          ※ 영상 제작 경험이 있는 크리에이터/스튜디오 전용
+          (영상 제작 교육 강의 아님)
+        </div>
+      </div>
+    </div>
+
+
+    <!-- 카드 hover 효과용 CSS — <style> 태그 안에 추가 -->
+<style>
+.price-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+.price-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 48px rgba(79,70,229,0.13);
+}
+.price-card.popular:hover {
+  box-shadow: 0 20px 48px rgba(200,50,30,0.22);
+}
+.price-cta {
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+.price-cta:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+</style>
+
+<!-- CSS — 기존 사이트 <style> 또는 CSS 파일 하단에 추가 -->
+<style>
+.price-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+  border: 2px solid transparent !important;
+}
+.price-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 48px rgba(79,70,229,0.13);
+  border: 2px solid #4f46e5 !important;
+}
+.price-card.popular:hover {
+  border: 2px solid #c8321e !important;
+  box-shadow: 0 20px 48px rgba(200,50,30,0.22);
+}
+.price-card.popular {
+  border: 2px solid #c8321e !important;
+}
+.price-cta {
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+.price-cta:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+</style>
+
+
+<!-- 상단 "구매하기" 헤더 (밝은색, 카드와 분리) -->
+<div class="r" style="
+  background: #eef2ff;
+  border: 1.5px solid #c7d2fe;
+  border-radius: 12px;
+  padding: 18px 32px;
+  text-align: center;
+  margin-bottom: 16px;">
+
+  <div style="
+    font-size: 22px;
+    font-weight: 900;
+    color: #1e1b4b;
+    letter-spacing: .05em;">
+    구매하기
+  </div>
+
+</div>
+
+
+<!-- 플랜 카드 2개 -->
+<div class="pricing-grid r" style="margin-bottom: 0;">
+
+  <!-- AutoTube 플랜 -->
+  <div class="price-card">
+
+    <div class="pc-title">AutoTube</div>
+    <div class="pc-desc" style="margin-bottom:6px;">
+      개인 독립 크리에이터를 위한<br>
+      <strong style="color:var(--red);">단일 기기 요금제</strong>
+    </div>
+    <div class="pc-setup" style="margin-bottom:20px;">
+      PC 1대만 설치 가능
+    </div>
+
+    <hr style="border:none; border-top:1px solid #e2e8f0; margin:0 0 20px;">
+
+    <div style="margin-bottom:24px;">
+      <div class="pc-price" style="
+        font-size:16px; color:var(--muted);
+        text-decoration:line-through; margin-bottom:4px;">
+        ₩1,300,000
+      </div>
+      <div class="pc-price" style="color:var(--ink); margin-bottom:0;">
+        ₩980,000 <span>/년</span>
+      </div>
+      <div style="font-size:12px; color:var(--muted); margin-top:5px; text-align:center;">(VAT 별도)</div>
+    </div>
+
+    <a href="#!"
+   class="paddle_button price-cta"
+   data-items='[{"priceId": "pri_여기에_오토튜브_라이브_PriceID_입력", "quantity": 1}]'
+   style="display:block; text-align:center; margin-bottom:10px;">
+   구매하기 — ₩980,000
+</a>
+
+    <a href="https://forms.gle/EViTc2rboeocEWhR8"
+      target="_blank"
+      style="display:block; text-align:center;
+        background:#f8fafc; color:#475569;
+        font-weight:600; font-size:14px;
+        padding:12px 0; border-radius:8px;
+        border:1px solid #e2e8f0; text-decoration:none;">
+      🎁 5일 무료 체험 신청
+    </a>
+
+  </div><!-- /AutoTube -->
+
+
+  <!-- AutoTube Pro 플랜 -->
+  <div class="price-card popular">
+    <div class="pop-badge">가장 많은 선택</div>
+
+    <div class="pc-title">AutoTube Pro</div>
+    <div class="pc-desc" style="margin-bottom:6px;">
+      장소 제약 없이 유연한 프로덕션을 구축하는<br>
+      <strong style="color:var(--red);">다중 기기 요금제</strong>
+    </div>
+    <div class="pc-setup free" style="margin-bottom:20px;">
+      PC 3대까지 설치 가능 (동시접속 불가)
+    </div>
+
+    <hr style="border:none; border-top:1px solid #e2e8f0; margin:0 0 20px;">
+
+    <div style="margin-bottom:24px;">
+      <div class="pc-price" style="
+        font-size:16px; color:var(--muted);
+        text-decoration:line-through; margin-bottom:4px;">
+        ₩1,600,000
+      </div>
+      <div class="pc-price" style="color:var(--red); margin-bottom:0;">
+        ₩1,280,000 <span>/년</span>
+      </div>
+      <div style="font-size:12px; color:var(--muted); margin-top:5px; text-align:center;">(VAT 별도)</div>
+    </div>
+
+    <a href="#!"
+   class="paddle_button price-cta"
+   data-items='[{"priceId": "pri_여기에_오토튜브프로_라이브_PriceID_입력", "quantity": 1}]'
+   style="display:block; text-align:center; margin-bottom:10px;">
+   구매하기 — ₩1,280,000
+</a>
+
+    <a href="https://forms.gle/EViTc2rboeocEWhR8"
+      target="_blank"
+      style="display:block; text-align:center;
+        background:#f8fafc; color:#475569;
+        font-weight:600; font-size:14px;
+        padding:12px 0; border-radius:8px;
+        border:1px solid #e2e8f0; text-decoration:none;">
+      🎁 5일 무료 체험 신청
+    </a>
+
+  </div><!-- /AutoTube Pro -->
+
+</div><!-- /pricing-grid -->
+
+
+<!-- 하단 안심 문구 바 (상단 헤더와 동일한 스타일) -->
+<div class="r" style="
+  background: #eef2ff;
+  border: 1.5px solid #c7d2fe;
+  border-radius: 12px;
+  padding: 16px 32px;
+  text-align: center;
+  margin-top: 16px;">
+
+  <div style="
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #4f46e5;">
+    ✅ 5일 무료 체험 완료 후 구매 강요 없음
+  </div>
+
+</div>
+
+    <!-- ④ VAT 안내 박스 — 기업 고객 가독성 확보 -->
+    <div class="r" style="
+      background:#fffbeb; border:1.5px solid #f59e0b;
+      border-radius:12px; padding:24px 28px; margin-top:28px;">
+      <div style="display:flex; align-items:flex-start; gap:14px;">
+        <span style="font-size:24px; flex-shrink:0; margin-top:2px;">🏢</span>
+        <div style="width:100%;">
+          <div style="font-size:15px; font-weight:800;
+            color:#92400e; margin-bottom:12px;">
+            결제 전 반드시 확인하세요 — 부가세(VAT) 처리 안내
+          </div>
+          <div style="font-size:14px; color:#78350f;
+            line-height:1.8; margin-bottom:16px;">
+            본 제품은 <strong>해외 결제 대행사 Paddle</strong>을
+            통해 결제됩니다.<br>
+            Paddle 결제 시 <strong>부가세(VAT) 10%가 자동으로
+            적용</strong>됩니다.
+          </div>
+          <div style="border-top:1px solid rgba(245,158,11,.3);
+            margin-bottom:16px;"></div>
+          <div style="background:rgba(255,255,255,.7);
+            border-radius:8px; padding:16px 20px;
+            border-left:4px solid #f59e0b;">
+            <div style="font-size:14px; font-weight:700;
+              color:#92400e; margin-bottom:8px;">
+              📋 기업 지출증빙 및 부가세 대리납부(Reverse Charge) 안내
+            </div>
+            <div style="font-size:14px; color:#78350f; line-height:1.9;">
+              기업 결제 시 사업자번호를 입력하시면, 세법에 따라
+              <strong>부가세가 차감 청구</strong>되며 추후 귀사에서
+              직접 국세청에 신고 및 납부하셔야 합니다.<br>
+              <span style="font-size:13px; color:#a16207;">
+                ※ 결제 전 회계/세무 담당자와 미리 확인 후
+                진행하시기 바랍니다.
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /VAT 안내 박스 -->
+
+  </div>
+</section>
+
+<section class="section section--white" id="contact">
+  <div class="w">
+    <span class="eyebrow r">자주 묻는 질문</span>
+    <h2 class="r">도입 전 <span class="hl-red">궁금하신 점</span>이 있으신가요?</h2>
+    <div class="faq r" style="margin-bottom: 96px;">
+      <div class="faq-item">
+        <button class="faq-q" onclick="faq(this)">코딩을 전혀 몰라도 되나요?<span class="fq-ico">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">네. 우측 상단의 사용설명서 탭을 누르시면 이미지와 함께 단계별 작동법을 즉시 확인할 수 있습니다. 설치 인프라 환경 세팅은 원격 접속으로 완벽하게 지원해 드립니다.</div></div>
+      </div>
+      <div class="faq-item">
+  <button class="faq-q" onclick="faq(this)">
+    방문 설치가 가능한가요?<span class="fq-ico">+</span>
+  </button>
+  <div class="faq-a">
+    <div class="faq-a-in">
+      방문·대면 설치는 지원하지 않습니다.<br>
+      상단 <strong>사용설명서</strong>에 설치부터
+      전 기능 사용법이 단계별로 상세히 안내되어 있으며,
+      설명서만으로도 충분히 세팅이 가능하도록
+      구성되어 있습니다.
+    </div>
+  </div>
+</div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="faq(this)">Mac에서도 사용할 수 있나요?<span class="fq-ico">+</span></button>
+        <div class="faq-a"><div class="faq-a-in"><span class="warn">Windows OS 전용 고성능 독립 소프트웨어입니다.</span> macOS 기반 환경에서는 정상 동작하지 않으므로 도입 전 인프라 확인을 필히 부탁드립니다.</div></div>
+      </div>
+     <div class="faq-item">
+  <button class="faq-q" onclick="faq(this)">
+    세금계산서 발행이 되나요?<span class="fq-ico">+</span>
+  </button>
+  <div class="faq-a">
+    <div class="faq-a-in">
+      본 제품은 해외 결제 대행사 <strong>Paddle</strong>을 통해
+      결제되며, Paddle이 구매 영수증을 발행합니다.<br>
+      세금계산서 별도 발행은 지원하지 않습니다.<br><br>
+      기업 지출 처리가 필요하신 경우,
+      결제 시 사업자번호를 입력하시면
+      <strong>부가세 대리납부(Reverse Charge)</strong> 방식으로
+      처리됩니다. 자세한 내용은 위 요금제 섹션의
+      <strong>기업 지출증빙 안내</strong>를 확인해 주세요.
+    </div>
+  </div>
+</div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="faq(this)">구글 정책이 바뀌면 이미지 생성이 안 될 수도 있나요?<span class="fq-ico">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">가능성은 있습니다. AutoTube Pro의 이미지 자동 생성은 Google Gemini를 활용하기 때문에 구글이 서비스 구조를 변경하면 일시적으로 기능이 제한될 수 있습니다. 이런 경우 업데이트로 빠르게 대응하며 카카오톡 채널로 사전 공지합니다.<br><br>참고로 <span class="warn">TTS 음성과 자막 생성은 오픈소스 모델(Qwen3-TTS, Whisper)로 동작</span>하기 때문에 구글 정책과 무관하게 항상 정상 작동합니다.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- CSS 추가 — 기존 .final 클래스 오버라이드 -->
+<style>
+.section.final {
+  background: #2d2a6e !important;
+  border-top: 2px solid #4f46e5;
+  padding: 80px 0 72px;
+}
+
+.final-sub {
+  color: rgba(224,231,255,.75) !important;
+}
+
+footer {
+  background: #1e1b4b !important;
+  border-top: 1px solid #312e81;
+}
+</style>
+
+
+<section class="section final">
+  <div class="w">
+
+    <span class="eyebrow r" style="justify-content:center; color:#c7d2fe;">
+      지금 시작하세요
+    </span>
+
+    <h2 class="r" style="color:#ffffff;">
+      당신은 <span style="color:#c7d2fe;">영상 제작 감독</span>입니다.<br>
+      편집 노가다는 <span style="color:#ffffff; text-decoration:underline; text-decoration-color:#6366f1; text-underline-offset:4px;">툴에게 맡기세요</span>
+    </h2>
+
+    <p class="final-sub r" style="max-width:600px; margin:0 auto 40px;">
+      영상의 성패는 <strong style="color:#ffffff;">어떤 대본을 쓰고,
+      어떻게 연출하느냐</strong>에 달려 있습니다.<br><br>
+      AutoTube Pro는 이미지·음성·자막을 정밀하게 조율해
+      캡컷 타임라인에 완벽히 배열해 두는
+      <strong style="color:#c7d2fe;">유능한 자동화 조수</strong>입니다.<br><br>
+      자동 배치가 끝난 캡컷을 열어,<br>
+      당신만의 디테일을 더해 영상을 완성하십시오.
+    </p>
+
+    <!-- CTA 버튼 -->
+    <div class="r" style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+      <a href="https://forms.gle/EViTc2rboeocEWhR8"
+        target="_blank"
+        class="price-cta"
+        style="
+          display:inline-block;
+          padding: 15px 36px;
+          font-size: 16px;
+          font-weight: 700;
+          text-decoration: none;
+          border-radius: 10px;
+          background: #4f46e5;
+          color: #fff;">
+        🎁 무료 체험 신청 →
+      </a>
+      <a href="#pricing"
+        style="
+          display:inline-block;
+          padding: 15px 36px;
+          font-size: 16px;
+          font-weight: 600;
+          color: #a5b4fc;
+          text-decoration: none;
+          border-radius: 10px;
+          border: 1.5px solid #312e81;
+          background: rgba(255,255,255,0.04);">
+        요금제 보기
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<footer style="padding: 32px 0;">
+  <div class="w" style="
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;">
+
+    <div class="foot-logo" style="color:#c7d2fe;">
+      AutoTube <span style="color:#c8321e;">Pro</span>
+    </div>
+
+    <!-- 중앙 링크 -->
+    <div style="display:flex; gap:20px; font-size:13px; color:#a5b4fc; flex-wrap:wrap; justify-content:center;">
+      <a href="#how" style="color:#a5b4fc; text-decoration:none;">작동방식</a>
+      <a href="#pricing" style="color:#a5b4fc; text-decoration:none;">요금제</a>
+      <a href="https://aibaselab.com/manual.html"
+        style="color:#a5b4fc; text-decoration:none;">사용설명서</a>
+      <a href="privacy.html" style="color:#a5b4fc; text-decoration:none;">개인정보처리방침</a>
+      <a href="terms.html" style="color:#a5b4fc; text-decoration:none;">이용약관</a>
+    </div>
+
+    <!-- 카피라이트 -->
+    <div class="foot-copy" style="
+      font-size: 12.5px;
+      color: #818cf8;">
+      © 2026 AutoTube Pro. All rights reserved.
+    </div>
+
+  </div>
+</footer>
+
+<script>
+/* 🚨 모달 닫기 제어 스크립트 */
+function closeNoticeModal() {
+  if (document.getElementById('noshowToday').checked) {
+    const today = new Date(); today.setHours(23,59,59,0);
+    document.cookie = 'noshow=' + today.getTime() + '; expires=' + today.toUTCString() + '; path=/';
+  }
+  document.getElementById('noticeModal').classList.add('hide');
+}
+(function(){
+  const c = document.cookie.split(';').find(c => c.trim().startsWith('noshow='));
+  if (c) {
+    const exp = parseInt(c.split('=')[1]);
+    if (Date.now() < exp) document.getElementById('noticeModal').classList.add('hide');
+  }
+})();
+
+/* 스크롤 reveal */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.06 });
+document.querySelectorAll('.r').forEach(el => io.observe(el));
+
+/* FAQ */
+function faq(btn) {
+  const item = btn.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+/* 프롬프트 탭 */
+function switchTab(el, id) {
+  document.querySelectorAll('.ptab').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.ppane').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById(id).classList.add('on');
+}
+
+/* 햄버거 메뉴 */
+function toggleMenu() {
+  document.getElementById('navMenu').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('navMenu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+
+</script>
+
+<style>
+#scrollTopBtn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(79,70,229,0.35);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .25s, transform .25s, background .15s;
+  pointer-events: none;
+  z-index: 999;
+}
+#scrollTopBtn.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+#scrollTopBtn:hover { background: #6366f1; }
+@media (max-width: 640px) {
+  #scrollTopBtn {
+    width: 44px;
+    height: 44px;
+    bottom: 20px;
+    right: 16px;
+    font-size: 18px;
+  }
+}
+</style>
+
+<button id="scrollTopBtn" aria-label="맨 위로">↑</button>
+
+<script>
+/* 스크롤 탑 */
+(function() {
+  var btn = document.getElementById('scrollTopBtn');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 400) {
+      btn.classList.add('show');
+    } else {
+      btn.classList.remove('show');
+    }
+  }, { passive: true });
+  btn.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+
+</body>
+</html>
+    <div style="margin-top: 56px; display:flex; flex-direction:column; gap:20px;">
+      <div class="r" style="background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:28px 32px;">
+        <h3 style="font-size:20px; font-weight:800; margin-bottom:16px; display:flex; align-items:center; gap:10px;"><span class="material-symbols-rounded" style="color:var(--ink);">lock</span> 1. 데이터 보안과 소유권</h3>
+        <div class="compare-inner" style="display:grid; grid-template-columns:1fr 1fr; gap:24px; font-size:17px; line-height:1.7;">
+          <div>
+            <div style="color:var(--muted); font-size:13px; font-weight:700; margin-bottom:8px; text-transform:uppercase;">웹 기반 서비스</div>
+            <div style="color:var(--gray);">피땀 흘려 기획한 대본과 나만의 비밀 프롬프트가 외부 서버에 저장됩니다. 보안이 취약해지면 기획이 유출될 수 있습니다.</div>
+          </div>
+          <div style="border-left:2px solid var(--line); padding-left:24px;">
+            <div style="color:var(--red); font-size:13px; font-weight:700; margin-bottom:8px; text-transform:uppercase;">AutoTube Pro</div>
+            <div style="color:var(--ink);">모든 작업이 <strong>100% 내 PC 안에서만</strong> 이루어집니다. 내 소중한 기획과 데이터가 외부로 새어 나갈 걱정이 전혀 없습니다.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="r" style="background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:28px 32px;">
+        <h3 style="font-size:20px; font-weight:800; margin-bottom:16px; display:flex; align-items:center; gap:10px;"><span class="material-symbols-rounded" style="color:var(--ink);">payments</span> 2. 제작 단가 (비용 구조)</h3>
+        <div class="compare-inner" style="display:grid; grid-template-columns:1fr 1fr; gap:24px; font-size:17px; line-height:1.7;">
+          <div>
+            <div style="color:var(--muted); font-size:13px; font-weight:700; margin-bottom:8px; text-transform:uppercase;">웹 기반 서비스</div>
+            <div style="color:var(--gray);">월 구독료를 내고도, 영상을 만들 때마다 포인트가 추가로 차감됩니다. 많이 찍어낼수록 마진율이 급격히 떨어집니다.</div>
+          </div>
+          <div style="border-left:2px solid var(--line); padding-left:24px;">
+            <div style="color:var(--red); font-size:13px; font-weight:700; margin-bottom:8px; text-transform:uppercase;">AutoTube Pro</div>
+            <div style="color:var(--ink);">내 계정의 무료 할당량을 영리하게 사용하여 <strong>추가 유지비 0원</strong>을 목표로 활용 가능 합니다.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="r" style="background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:28px 32px;">
+        <h3 style="font-size:20px; font-weight:800; margin-bottom:16px; display:flex; align-items:center; gap:10px;"><span class="material-symbols-rounded" style="color:var(--ink);">domain_disabled</span> 3. 서비스 종속성과 생존성</h3>
+        <div class="compare-inner" style="display:grid; grid-template-columns:1fr 1fr; gap:24px; font-size:17px; line-height:1.7;">
+          <div>
+            <div style="color:var(--muted); font-size:13px; font-weight:700; margin-bottom:8px; text-transform:uppercase;">웹 기반 서비스</div>
+            <div style="color:var(--gray);">운영사 서버가 폭주하면 오늘 영상은 못 올립니다. 회사가 폐업하면 내가 결제한 서비스는 즉시 사라집니다.</div>
+          </div>
+          <div style="border-left:2px solid var(--line); padding-left:24px;">
+            <div style="color:var(--red); font-size:13px; font-weight:700; margin-bottom:8px; text-transform:uppercase;">AutoTube Pro</div>
+            <div style="color:var(--ink);">설치형 프로그램입니다. <strong>내 PC가 켜져 있는 한, 365일 멈추지 않고 돌아가는 영구적인 설비</strong>입니다.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="r" style="background:#eef2ff; border:1px solid var(--line); border-radius:12px; padding:32px; margin-top:12px;">
+        <div style="font-size:18px; color:var(--ink2); line-height:1.8;">
+          <strong>※ 웹 기반 서비스에도 분명한 장점이 있습니다.</strong><br>
+          설치 없이 어디서든 간편하게 쓸 수 있어 입문용으로 적합합니다.<br><br>
+          다만 채널을 본격적으로 운영하며 원가를 절감해야 한다면,<br>
+          <span style="background:var(--accent,#4f46e5); color:#fff; padding:2px 8px; border-radius:4px;">내 PC에서 독립적으로 구동되는 로컬 설비가 더 현실적인 선택</span>입니다.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tinted" id="videos-section">
+  <div class="w">
+    <span class="eyebrow r">영상으로 확인하기</span>
+    <h2 class="r">백 번의 말보다<br><span class="hl-red">영상 하나</span>가 더 확실합니다</h2>
+
+    <div style="margin-top:48px;">
+      <div class="r">
+        <h3 style="font-size:22px; font-weight:800; margin-bottom:12px; color:var(--ink);">AutoTube Pro로 제작된 실제 유튜브 영상</h3>
+        <p style="font-size:17px; color:var(--gray); margin-bottom:20px; line-height:1.6;">AutoTube Pro로 제작되어 실제 유튜브 채널에 업로드된 롱폼 결과물입니다.</p>
+        <div class="youtube-container">
+          <iframe src="https://www.youtube.com/embed/bpY4OiWgDFE?playsinline=1&rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--white" id="story">
+  <div class="w">
+    <span class="eyebrow r">왜 한정된 인원에게만 제공하나요?</span>
+    <h2 class="r">처음부터 <span class="hl-red">팔려고</span><br>만든 프로그램이 아닙니다</h2>
+
+    <p class="story-body r">
+      저는 25년 엔지니어 출신으로 얼마 전부터 유튜브 채널을 직접 운영하고 있습니다.
+      채널을 시작하고 나서 가장 힘든 건 콘텐츠 기획이 아니었습니다.
+      <strong><br>이미지 드래그, 자막 수정, 타이밍 맞추기... <br>편집 노가다에 하루가 통째로 사라지는 것</strong>이었습니다.
+    </p>
+
+    <p class="story-body r">
+      그래서 결국 직접 만들기로 했습니다.<br>
+      앞으로 채널을 몇 개 더 확장할 계획을 가지고 있었기에 효율화가 절실했기 때문입니다.<br><br>
+      AI 음성 생성, Gemini 이미지 대량 생성, 자막 교정, 캡컷 자동 조립까지.
+      <strong><br>오직 '내가 쓰기 위해' 필요한 기능만 깎고 다듬어 만든 툴</strong>입니다.<br><br>      
+    </p>
+
+    <blockquote class="story-quote r">
+      주변 유튜버 분들이 "어떻게 이렇게 빨리 만들어요?" 하고<br> 연락이 오기 시작했습니다.<br>
+      그래서 그때 처음으로 공개를 고민했습니다.
+    </blockquote>
+
+    <p class="story-body r">
+      하지만, 이 툴은 <strong>모든 사람을 위한 프로그램이 아닙니다.</strong><br><br>
+      캡컷, AI 툴, 엑셀을 이미 써본 적 있고,
+      유튜브 영상 제작 경험이 있으며,
+      설명서를 읽고 스스로 세팅할 수 있는 분들을 위한 도구입니다.<br><br>
+      반대로 <strong>처음 유튜브를 시작하시거나,<br>
+      AI 툴을 처음 접하시는 분들께는 맞지 않습니다.</strong><br>
+      이 프로그램은 영상 제작 교육 강의가 아닙니다.<br>
+      이미 만들고 있는 분들의 <strong>반복 노가다를 없애주는 자동화 설비</strong>입니다.<br><br>
+      스스로 세팅하고 활용할 준비가 된 분들,<br>
+      지금 겪고 있는 편집 노가다에서 벗어나고 싶으신 분들만 
+      신청해 주시기 바랍니다.
+    </p>
+
+  </div>
+</section>
+<!-- =====================================================
+  가격 섹션 최종 수정본
+  변경 내용:
+  1. eyebrow: "도입 비용" → "요금제"
+  2. h2: "외주 편집자 한 달 월급으로 1년 내내 일하는 자동화 설비"
+  3. lead: 1.5개월 회수 + 공짜 직원 메시지
+  4. 프레이밍 박스: 폰트/색상 개선 + 최저시급 ₩10,030 수정
+  5. 강조줄 추가: "더 많이 만들수록 본전 빠름"
+  6. Paddle 버튼 + 무료체험 보조버튼
+  7. VAT 안내 박스 (기업 가독성 확보)
+====================================================== -->
+
+<!-- ▼ Paddle JS SDK — <head> 또는 </body> 직전에 1회만 추가 -->
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+<script>
+  Paddle.Setup({ vendor: YOUR_VENDOR_ID }); // ← 실제 Paddle Vendor ID로 교체
+</script>
+
+
+<section class="section section--tinted" id="pricing">
+  <div class="w">
+
+    <!-- 섹션 헤더 -->
+    <span class="eyebrow r">요금제</span>
+    <h2 class="r">
+      외주 편집자 한 달 월급으로,<br>
+      <span class="hl-red">1년 내내 일하는 자동화 설비</span>
+    </h2>
+    <p class="lead r">
+      월 10편 기준, 단 <strong>1.5개월</strong>에 
+      연간 라이선스 비용이 전액 회수됩니다.<br>
+      이후 남은 기간은 <strong>공짜로 일하는 자동화 직원</strong>이
+      생기는 효과와 같습니다.<br>
+      
+    </p>
+
+
+    <!-- ① 가격 프레이밍 박스 -->
+    <div class="r pricing-frame" style="
+      background:#0f172a; border:1px solid #334155;
+      border-radius:14px; padding:28px 32px;
+      margin-bottom:0;
+      display:grid; grid-template-columns:repeat(3,1fr); gap:0;
+      text-align:center;">
+
+      <div style="padding:0 20px;">
+        <div style="font-size:14px; font-weight:600;
+          color:#e2e8f0; margin-bottom:10px;">하루로 환산하면</div>
+        <div style="font-size:32px; font-weight:900;
+          color:#60a5fa; line-height:1;">₩2,684</div>
+        <div style="font-size:14px; color:#cbd5e1;
+          margin-top:10px; line-height:1.8;">
+          ₩980,000 ÷ 365일<br>
+          <span style="color:#94a3b8;">커피 한 잔값으로 편집 해방</span>
+        </div>
+      </div>
+
+      <div style="padding:0 20px;
+        border-left:1px solid #334155; border-right:1px solid #334155;">
+        <div style="font-size:14px; font-weight:600;
+          color:#e2e8f0; margin-bottom:10px;">월 10편 제작 시</div>
+        <div style="font-size:32px; font-weight:900;
+          color:#34d399; line-height:1;">₩8,167</div>
+        <div style="font-size:14px; color:#cbd5e1;
+          margin-top:10px; line-height:1.8;">
+          ₩980,000 ÷ 12개월 ÷ 10편<br>
+          <span style="color:#94a3b8;">영상 광고 수익보다 저렴</span>
+        </div>
+      </div>
+
+      <div style="padding:0 20px;">
+        <div style="font-size:14px; font-weight:600;
+          color:#e2e8f0; margin-bottom:10px;">절약 시간의 가치</div>
+        <div style="font-size:32px; font-weight:900;
+          color:#f472b6; line-height:1;">월 ₩70만</div>
+        <div style="font-size:14px; color:#cbd5e1;
+          margin-top:10px; line-height:1.8;">
+          영상당 7시간 절약 × 10편<br>
+          <span style="color:#94a3b8;">= 70시간 × 최저시급 ₩10,030</span>
+        </div>
+      </div>
+
+    </div><!-- /프레이밍 박스 -->
+
+
+    <!-- ② 강조줄 — 회수 메시지 -->
+    <div class="r recovery-bar" style="
+      background: linear-gradient(90deg, #1e3a5f 0%, #1e293b 100%);
+      border:1px solid #334155; border-top:none;
+      border-radius:0 0 14px 14px;
+      padding:16px 32px;
+      display:flex; align-items:center; gap:12px;
+      margin-bottom:36px;">
+      <span style="font-size:20px; flex-shrink:0;">📈</span>
+      <div style="font-size:14.5px; color:#e2e8f0; line-height:1.7;">
+        <strong style="color:#60a5fa;">월 10편 기준 1.5개월,
+        월 20편이면 단 1개월 만에 라이선스 비용이 회수됩니다.</strong><br>
+        <span style="color:#94a3b8;">
+          더 많이 만들수록 본전은 빨리 뽑히고,
+          이후부터는 공짜로 일하는 자동화 직원이 됩니다.
+        </span>
+      </div>
+    </div>
+
+
+    <!-- 얼리버드 배너 -->
+    <div class="urgency r">
+      <span class="dot-live"></span>
+      <span style="font-size:18px; line-height:1.6;">
+        <strong>🔥 첫 출시 기념, 한정 수량 파격 할인 이벤트 진행 중</strong><br>
+        현재 얼리버드 파트너분들을 위해 한정 수량에 한해
+        특별 할인가로 분양 중이며,<br>
+        본 행사는 사전 공지 없이 정상가로 즉시 전환될 수
+        있음을 알려드립니다.
+      </span>
+    </div>
+
+
+    <!-- 무료 체험 안내 박스 -->
+    <div class="r" style="
+      background:#f0fff4; border:1.5px solid rgba(26,138,74,.3);
+      border-radius:10px; padding:22px 28px; margin-bottom:28px;
+      display:flex; align-items:flex-start; gap:16px;">
+      <span style="font-size:28px; flex-shrink:0;">🎁</span>
+      <div>
+        <div style="font-size:18px; font-weight:800;
+          color:#1a5c32; margin-bottom:6px;">
+          먼저 5일간 무료로 사용해 보세요
+        </div>
+        <div style="font-size:18px; color:#2d6a4f; line-height:1.7;">
+          결제 전 <strong>AutoTube Pro 버전으로 5일간 무료 체험판</strong>이
+          제공됩니다.<br>
+          이미지·음성·자막·CapCut 조립까지 전 기능을 직접
+          테스트한 후 구매를 결정하세요.
+        </div>
+        <div style="font-size:15px; color:#40916c; margin-top:6px;">
+          ※ Windows 전용 PC 설치형 프로그램입니다.<br>
+          ※ 영상 제작 경험이 있는 크리에이터/스튜디오 전용
+          (영상 제작 교육 강의 아님)
+        </div>
+      </div>
+    </div>
+
+
+    <!-- 카드 hover 효과용 CSS — <style> 태그 안에 추가 -->
+<style>
+.price-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+.price-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 48px rgba(79,70,229,0.13);
+}
+.price-card.popular:hover {
+  box-shadow: 0 20px 48px rgba(200,50,30,0.22);
+}
+.price-cta {
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+.price-cta:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+</style>
+
+<!-- CSS — 기존 사이트 <style> 또는 CSS 파일 하단에 추가 -->
+<style>
+.price-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+  border: 2px solid transparent !important;
+}
+.price-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 48px rgba(79,70,229,0.13);
+  border: 2px solid #4f46e5 !important;
+}
+.price-card.popular:hover {
+  border: 2px solid #c8321e !important;
+  box-shadow: 0 20px 48px rgba(200,50,30,0.22);
+}
+.price-card.popular {
+  border: 2px solid #c8321e !important;
+}
+.price-cta {
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+.price-cta:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+</style>
+
+
+<!-- 상단 "구매하기" 헤더 (밝은색, 카드와 분리) -->
+<div class="r" style="
+  background: #eef2ff;
+  border: 1.5px solid #c7d2fe;
+  border-radius: 12px;
+  padding: 18px 32px;
+  text-align: center;
+  margin-bottom: 16px;">
+
+  <div style="
+    font-size: 22px;
+    font-weight: 900;
+    color: #1e1b4b;
+    letter-spacing: .05em;">
+    구매하기
+  </div>
+
+</div>
+
+
+<!-- 플랜 카드 2개 -->
+<div class="pricing-grid r" style="margin-bottom: 0;">
+
+  <!-- AutoTube 플랜 -->
+  <div class="price-card">
+
+    <div class="pc-title">AutoTube</div>
+    <div class="pc-desc" style="margin-bottom:6px;">
+      개인 독립 크리에이터를 위한<br>
+      <strong style="color:var(--red);">단일 기기 요금제</strong>
+    </div>
+    <div class="pc-setup" style="margin-bottom:20px;">
+      PC 1대만 설치 가능
+    </div>
+
+    <hr style="border:none; border-top:1px solid #e2e8f0; margin:0 0 20px;">
+
+    <div style="margin-bottom:24px;">
+      <div class="pc-price" style="
+        font-size:16px; color:var(--muted);
+        text-decoration:line-through; margin-bottom:4px;">
+        ₩1,300,000
+      </div>
+      <div class="pc-price" style="color:var(--ink); margin-bottom:0;">
+        ₩980,000 <span>/년</span>
+      </div>
+      <div style="font-size:16px; color:var(--muted); margin-top:5px; text-align:center;">(VAT 별도)</div>
+    </div>
+
+    <a href="#!"
+   class="paddle_button price-cta"
+   data-items='[{"priceId": "pri_여기에_오토튜브_라이브_PriceID_입력", "quantity": 1}]'
+   style="display:block; text-align:center; margin-bottom:10px;">
+   구매하기 — ₩980,000
+</a>
+
+    <a href="https://forms.gle/EViTc2rboeocEWhR8"
+      target="_blank"
+      style="display:block; text-align:center;
+        background:#f8fafc; color:#475569;
+        font-weight:600; font-size:14px;
+        padding:12px 0; border-radius:8px;
+        border:1px solid #e2e8f0; text-decoration:none;">
+      🎁 5일 무료 체험 신청
+    </a>
+
+  </div><!-- /AutoTube -->
+
+
+  <!-- AutoTube Pro 플랜 -->
+  <div class="price-card popular">
+    <div class="pop-badge">가장 많은 선택</div>
+
+    <div class="pc-title">AutoTube Pro</div>
+    <div class="pc-desc" style="margin-bottom:6px;">
+      장소 제약 없이 유연한 프로덕션을 구축하는<br>
+      <strong style="color:var(--red);">다중 기기 요금제</strong>
+    </div>
+    <div class="pc-setup free" style="margin-bottom:20px;">
+      PC 3대까지 설치 가능 (동시접속 불가)
+    </div>
+
+    <hr style="border:none; border-top:1px solid #e2e8f0; margin:0 0 20px;">
+
+    <div style="margin-bottom:24px;">
+      <div class="pc-price" style="
+        font-size:16px; color:var(--muted);
+        text-decoration:line-through; margin-bottom:4px;">
+        ₩1,600,000
+      </div>
+      <div class="pc-price" style="color:var(--red); margin-bottom:0;">
+        ₩1,280,000 <span>/년</span>
+      </div>
+      <div style="font-size:16px; color:var(--muted); margin-top:5px; text-align:center;">(VAT 별도)</div>
+    </div>
+
+    <a href="#!"
+   class="paddle_button price-cta"
+   data-items='[{"priceId": "pri_여기에_오토튜브프로_라이브_PriceID_입력", "quantity": 1}]'
+   style="display:block; text-align:center; margin-bottom:10px;">
+   구매하기 — ₩1,280,000
+</a>
+
+    <a href="https://forms.gle/EViTc2rboeocEWhR8"
+      target="_blank"
+      style="display:block; text-align:center;
+        background:#f8fafc; color:#475569;
+        font-weight:600; font-size:14px;
+        padding:12px 0; border-radius:8px;
+        border:1px solid #e2e8f0; text-decoration:none;">
+      🎁 5일 무료 체험 신청
+    </a>
+
+  </div><!-- /AutoTube Pro -->
+
+</div><!-- /pricing-grid -->
+
+
+<!-- 하단 안심 문구 바 (상단 헤더와 동일한 스타일) -->
+<div class="r" style="
+  background: #eef2ff;
+  border: 1.5px solid #c7d2fe;
+  border-radius: 12px;
+  padding: 16px 32px;
+  text-align: center;
+  margin-top: 16px;">
+
+  <div style="
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #4f46e5;">
+    ✅ 5일 무료 체험 완료 후 구매 강요 없음
+  </div>
+
+</div>
+
+    <!-- ④ VAT 안내 박스 — 기업 고객 가독성 확보 -->
+    <div class="r" style="
+      background:#fffbeb; border:1.5px solid #f59e0b;
+      border-radius:12px; padding:24px 28px; margin-top:28px;">
+      <div style="display:flex; align-items:flex-start; gap:14px;">
+        <span style="font-size:24px; flex-shrink:0; margin-top:2px;">🏢</span>
+        <div style="width:100%;">
+          <div style="font-size:15px; font-weight:800;
+            color:#92400e; margin-bottom:12px;">
+            결제 전 반드시 확인하세요 — 부가세(VAT) 처리 안내
+          </div>
+          <div style="font-size:14px; color:#78350f;
+            line-height:1.8; margin-bottom:16px;">
+            본 제품은 <strong>해외 결제 대행사 Paddle</strong>을
+            통해 결제됩니다.<br>
+            Paddle 결제 시 <strong>부가세(VAT) 10%가 자동으로
+            적용</strong>됩니다.
+          </div>
+          <div style="border-top:1px solid rgba(245,158,11,.3);
+            margin-bottom:16px;"></div>
+          <div style="background:rgba(255,255,255,.7);
+            border-radius:8px; padding:16px 20px;
+            border-left:4px solid #f59e0b;">
+            <div style="font-size:14px; font-weight:700;
+              color:#92400e; margin-bottom:8px;">
+              📋 기업 지출증빙 및 부가세 대리납부(Reverse Charge) 안내
+            </div>
+            <div style="font-size:14px; color:#78350f; line-height:1.9;">
+              기업 결제 시 사업자번호를 입력하시면, 세법에 따라
+              <strong>부가세가 차감 청구</strong>되며 추후 귀사에서
+              직접 국세청에 신고 및 납부하셔야 합니다.<br>
+              <span style="font-size:13px; color:#a16207;">
+                ※ 결제 전 회계/세무 담당자와 미리 확인 후
+                진행하시기 바랍니다.
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /VAT 안내 박스 -->
+
+  </div>
+</section>
+
+<section class="section section--white" id="contact">
+  <div class="w">
+    <span class="eyebrow r">자주 묻는 질문</span>
+    <h2 class="r">도입 전 <span class="hl-red">궁금하신 점</span>이 있으신가요?</h2>
+    <div class="faq r" style="margin-bottom: 96px;">
+      <div class="faq-item">
+        <button class="faq-q" onclick="faq(this)">코딩을 전혀 몰라도 되나요?<span class="fq-ico">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">네. 우측 상단의 사용설명서 탭을 누르시면 이미지와 함께 단계별 작동법을 즉시 확인할 수 있습니다. 설치 인프라 환경 세팅은 원격 접속으로 완벽하게 지원해 드립니다.</div></div>
+      </div>
+      <div class="faq-item">
+  <button class="faq-q" onclick="faq(this)">
+    방문 설치가 가능한가요?<span class="fq-ico">+</span>
+  </button>
+  <div class="faq-a">
+    <div class="faq-a-in">
+      방문·대면 설치는 지원하지 않습니다.<br>
+      상단 <strong>사용설명서</strong>에 설치부터
+      전 기능 사용법이 단계별로 상세히 안내되어 있으며,
+      설명서만으로도 충분히 세팅이 가능하도록
+      구성되어 있습니다.
+    </div>
+  </div>
+</div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="faq(this)">Mac에서도 사용할 수 있나요?<span class="fq-ico">+</span></button>
+        <div class="faq-a"><div class="faq-a-in"><span class="warn">Windows OS 전용 고성능 독립 소프트웨어입니다.</span> macOS 기반 환경에서는 정상 동작하지 않으므로 도입 전 인프라 확인을 필히 부탁드립니다.</div></div>
+      </div>
+     <div class="faq-item">
+  <button class="faq-q" onclick="faq(this)">
+    세금계산서 발행이 되나요?<span class="fq-ico">+</span>
+  </button>
+  <div class="faq-a">
+    <div class="faq-a-in">
+      본 제품은 해외 결제 대행사 <strong>Paddle</strong>을 통해
+      결제되며, Paddle이 구매 영수증을 발행합니다.<br>
+      세금계산서 별도 발행은 지원하지 않습니다.<br><br>
+      기업 지출 처리가 필요하신 경우,
+      결제 시 사업자번호를 입력하시면
+      <strong>부가세 대리납부(Reverse Charge)</strong> 방식으로
+      처리됩니다. 자세한 내용은 위 요금제 섹션의
+      <strong>기업 지출증빙 안내</strong>를 확인해 주세요.
+    </div>
+  </div>
+</div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="faq(this)">구글 정책이 바뀌면 이미지 생성이 안 될 수도 있나요?<span class="fq-ico">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">가능성은 있습니다. AutoTube Pro의 이미지 자동 생성은 Google Gemini를 활용하기 때문에 구글이 서비스 구조를 변경하면 일시적으로 기능이 제한될 수 있습니다. 이런 경우 업데이트로 빠르게 대응하며 카카오톡 채널로 사전 공지합니다.<br><br>참고로 <span class="warn">TTS 음성과 자막 생성은 오픈소스 모델(Qwen3-TTS, Whisper)로 동작</span>하기 때문에 구글 정책과 무관하게 항상 정상 작동합니다.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- CSS 추가 — 기존 .final 클래스 오버라이드 -->
+<style>
+.section.final {
+  background: #2d2a6e !important;
+  border-top: 2px solid #4f46e5;
+  padding: 80px 0 72px;
+}
+
+.final-sub {
+  color: rgba(224,231,255,.75) !important;
+}
+
+footer {
+  background: #1e1b4b !important;
+  border-top: 1px solid #312e81;
+}
+</style>
+
+
+<section class="section final">
+  <div class="w">
+
+    <span class="eyebrow r" style="justify-content:center; color:#c7d2fe;">
+      지금 시작하세요
+    </span>
+
+    <h2 class="r" style="color:#ffffff;">
+      당신은 <span style="color:#c7d2fe;">영상 제작 감독</span>입니다.<br>
+      편집 노가다는 <span style="color:#ffffff; text-decoration:underline; text-decoration-color:#6366f1; text-underline-offset:4px;">툴에게 맡기세요</span>
+    </h2>
+
+    <p class="final-sub r" style="max-width:600px; margin:0 auto 40px;">
+      영상의 성패는 <strong style="color:#ffffff;">어떤 대본을 쓰고,
+      어떻게 연출하느냐</strong>에 달려 있습니다.<br><br>
+      AutoTube Pro는 이미지·음성·자막을 정밀하게 조율해
+      캡컷 타임라인에 완벽히 배열해 두는
+      <strong style="color:#c7d2fe;">유능한 자동화 조수</strong>입니다.<br><br>
+      자동 배치가 끝난 캡컷을 열어,<br>
+      당신만의 디테일을 더해 영상을 완성하십시오.
+    </p>
+
+    <!-- CTA 버튼 -->
+    <div class="r" style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+      <a href="https://forms.gle/EViTc2rboeocEWhR8"
+        target="_blank"
+        class="price-cta"
+        style="
+          display:inline-block;
+          padding: 15px 36px;
+          font-size: 16px;
+          font-weight: 700;
+          text-decoration: none;
+          border-radius: 10px;
+          background: #4f46e5;
+          color: #fff;">
+        🎁 무료 체험 신청 →
+      </a>
+      <a href="#pricing"
+        style="
+          display:inline-block;
+          padding: 15px 36px;
+          font-size: 16px;
+          font-weight: 600;
+          color: #a5b4fc;
+          text-decoration: none;
+          border-radius: 10px;
+          border: 1.5px solid #312e81;
+          background: rgba(255,255,255,0.04);">
+        요금제 보기
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<footer style="padding: 32px 0;">
+  <div class="w" style="
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;">
+
+    <div class="foot-logo" style="color:#c7d2fe;">
+      AutoTube <span style="color:#c8321e;">Pro</span>
+    </div>
+
+    <!-- 중앙 링크 -->
+    <div style="display:flex; gap:20px; font-size:13px; color:#a5b4fc; flex-wrap:wrap; justify-content:center;">
+      <a href="#how" style="color:#a5b4fc; text-decoration:none;">작동방식</a>
+      <a href="#pricing" style="color:#a5b4fc; text-decoration:none;">요금제</a>
+      <a href="https://aibaselab.com/manual.html"
+        style="color:#a5b4fc; text-decoration:none;">사용설명서</a>
+      <a href="privacy.html" style="color:#a5b4fc; text-decoration:none;">개인정보처리방침</a>
+      <a href="terms.html" style="color:#a5b4fc; text-decoration:none;">이용약관</a>
+    </div>
+
+    <!-- 카피라이트 -->
+    <div class="foot-copy" style="
+      font-size: 12.5px;
+      color: #818cf8;">
+      © 2026 AutoTube Pro. All rights reserved.
+    </div>
+
+  </div>
+</footer>
+
+<script>
+/* 🚨 모달 닫기 제어 스크립트 */
+function closeNoticeModal() {
+  if (document.getElementById('noshowToday').checked) {
+    const today = new Date(); today.setHours(23,59,59,0);
+    document.cookie = 'noshow=' + today.getTime() + '; expires=' + today.toUTCString() + '; path=/';
+  }
+  document.getElementById('noticeModal').classList.add('hide');
+}
+(function(){
+  const c = document.cookie.split(';').find(c => c.trim().startsWith('noshow='));
+  if (c) {
+    const exp = parseInt(c.split('=')[1]);
+    if (Date.now() < exp) document.getElementById('noticeModal').classList.add('hide');
+  }
+})();
+
+/* 스크롤 reveal */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.06 });
+document.querySelectorAll('.r').forEach(el => io.observe(el));
+
+/* FAQ */
+function faq(btn) {
+  const item = btn.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+/* 프롬프트 탭 */
+function switchTab(el, id) {
+  document.querySelectorAll('.ptab').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.ppane').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById(id).classList.add('on');
+}
+
+/* 햄버거 메뉴 */
+function toggleMenu() {
+  document.getElementById('navMenu').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('navMenu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+
+</script>
+
+<style>
+#scrollTopBtn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(79,70,229,0.35);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .25s, transform .25s, background .15s;
+  pointer-events: none;
+  z-index: 999;
+}
+#scrollTopBtn.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+#scrollTopBtn:hover { background: #6366f1; }
+@media (max-width: 640px) {
+  #scrollTopBtn {
+    width: 44px;
+    height: 44px;
+    bottom: 20px;
+    right: 16px;
+    font-size: 18px;
+  }
+}
+</style>
+
+<button id="scrollTopBtn" aria-label="맨 위로">↑</button>
+
+<script>
+/* 스크롤 탑 */
+(function() {
+  var btn = document.getElementById('scrollTopBtn');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 400) {
+      btn.classList.add('show');
+    } else {
+      btn.classList.remove('show');
+    }
+  }, { passive: true });
+  btn.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+
+</body>
+</html>
