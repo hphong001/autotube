@@ -1263,20 +1263,11 @@ body {
       </div>
       <div class="desc-sec-title">각 번호별 기능 설명</div>
       <div class="desc-list">
-        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">원본 대본 &amp; 합친 녹음 경로 지정</div><div class="dd"><ul><li><strong>원본 대본</strong>: <code>1_대본\</code> 폴더의 엑셀 파일을 지정합니다.</li><li><strong>합친 녹음</strong>: <code>3_오디오_자막\</code> 폴더의 <code>합본.wav</code>를 지정합니다.</li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">전체 자막 SRT 만들기 → 엑셀에 이미지 배치 타임 적용 <span class="tag tag-order">★ 두 버튼 모두 클릭</span></div><div class="dd"><ul><li><strong>1단계 — 전체 자막 SRT 만들기</strong>: AI가 오디오를 분석해 각 컷의 시작·끝 시간을 담은 SRT 파일을 생성합니다.</li><li><strong>2단계 — 엑셀에 이미지 배치 타임 적용</strong>: 추출된 시간 정보를 엑셀 파일의 타임 열(J열)에 자동으로 기록합니다. <em>이 정보가 있어야 CapCut에서 이미지가 정확한 타이밍에 배치됩니다.</em></li><li>두 번째 버튼을 <strong>반드시 클릭</strong>해야 합니다.</li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">자막 작업 진행상태 패널</div><div class="dd"><ul><li>진행률(%)과 현재 처리 중인 자막 텍스트를 실시간으로 표시합니다.</li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">자막수정필요 입력 필드</div><div class="dd"><ul><li>발음이 불명확하거나 자막이 잘못 인식된 컷 번호를 기록합니다. <em>(예: 1, 3, 5)</em></li><li>STEP 6 영상 검증 탭에서 해당 컷만 재작업할 때 참조됩니다.</li></ul></div></div></div>
-      </div>
-      <div class="key-box">
-        <div class="key-box-title">핵심설명</div>
-        <div class="key-list">
-          <div class="key-item">SRT 만들기 후 반드시 <strong>"엑셀에 이미지 배치 타임 적용"</strong>도 클릭해야 합니다.</div>
-          <div class="key-item">두 번째 버튼 미클릭 시 <strong>CapCut에서 이미지 클립 타이밍이 잘못 배치</strong>됩니다.</div>
-          <div class="key-item">자막수정필요에 번호를 기록해두면 STEP 6에서 해당 컷만 정확히 재작업할 수 있습니다.</div>
-        </div>
-      </div>
-    </section>
+         <div class="desc-row"> <div class="dbadge">1</div><div class="dc"><div class="dt">원본 대본의 엑셀 파일을 선택 합니다.</div></div></div>
+      <div class="desc-row"> <div class="dbadge">2</div><div class="dc"><div class="dt">자막을 생성할 최종 TTS 파일 *_합본.wav 파일을 선택 합니다.</div></div></div>
+      <div class="desc-row"> <div class="dbadge">3</div><div class="dc"><div class="dt">만약 영상 검증 화면에서 자막 오류를 체크했다면 그 번호가 출력 됩니다.</div></div></div>
+      <div class="desc-row"> <div class="dbadge">4</div><div class="dc"><div class="dt">자동으로 자막을 생성하고, 엑셀 파일에 각 행별 자막 출력 시간을 자동으로 입력 합니다. </div></div></div>
+        
 
     <!-- ██ STEP 6 배너 ██ -->
     <div class="step-banner">
@@ -1295,13 +1286,10 @@ body {
       </div>
       <div class="sec-desc">
         <strong>영상 검증</strong> 탭입니다.<br>
-        이미지·오디오·자막을 한 화면에서 동기화 재생하며 품질을 검수합니다.<br>
-        문제가 있는 컷만 체크박스로 마킹하고, 해당 STEP으로 돌아가 개별 재작업하면 됩니다.
+        이미지·오디오·자막을 한 화면에서 동기화하여 개별적 또는 순차적으로 재생하며 품질을 검수합니다.<br>
+        문제가 있는 컷만 체크박스에 마킹하고, 해당 STEP으로 돌아가 개별 재작업하면 됩니다.
       </div>
-      <div class="io-box">
-        <div class="io-half io-in"><div class="io-lbl">📥 이 단계를 시작하기 전에</div><div class="io-val">2_이미지\ + 합본.wav + 자막.srt + 엑셀 대본</div></div>
-        <div class="io-half io-out"><div class="io-lbl">📤 이 단계가 끝나면</div><div class="io-val">CapCut 완성 프로젝트 파일</div></div>
-      </div>
+      
       <div class="img-box">
         <img src="그림8.png" alt="영상 검증 탭 — 통합 QC">
         <div class="img-cap">▲ 영상 검증 탭 — 통합 QC &amp; CapCut 조립 화면 (그림8)</div>
@@ -1310,33 +1298,32 @@ body {
       <div class="desc-list" style="margin-bottom:20px;">
         <div class="desc-row" style="background:#f0fdf4;border-color:#bbf7d0;">
           <div class="dbadge" style="background:#059669;box-shadow:0 2px 8px rgba(5,150,105,0.3);font-size:14px;">✓</div>
-          <div class="dc"><div class="dt" style="font-size:16px;">이미지 확인</div><div class="dd" style="font-size:15px;">이미지가 해당 대본 내용과 맞는가 / 품질이 양호한가</div></div>
+          <div class="dc"><div class="dt" style="font-size:16px;">이미지 확인</div><div class="dd" style="font-size:15px;">이미지가 해당 대본 내용과 맞는가 / 품질이 양호한가?</div></div>
         </div>
         <div class="desc-row" style="background:#f0fdf4;border-color:#bbf7d0;">
           <div class="dbadge" style="background:#059669;box-shadow:0 2px 8px rgba(5,150,105,0.3);font-size:14px;">✓</div>
-          <div class="dc"><div class="dt" style="font-size:16px;">오디오 확인</div><div class="dd" style="font-size:15px;">발음이 자연스러운가 / 잡음이나 끊김이 없는가</div></div>
+          <div class="dc"><div class="dt" style="font-size:16px;">오디오 확인</div><div class="dd" style="font-size:15px;">발음이 자연스러운가 / 잡음이나 끊김이 없는가?</div></div>
         </div>
         <div class="desc-row" style="background:#f0fdf4;border-color:#bbf7d0;">
           <div class="dbadge" style="background:#059669;box-shadow:0 2px 8px rgba(5,150,105,0.3);font-size:14px;">✓</div>
-          <div class="dc"><div class="dt" style="font-size:16px;">자막 확인</div><div class="dd" style="font-size:15px;">자막 타이밍이 오디오와 일치하는가 / 텍스트가 정확한가</div></div>
+          <div class="dc"><div class="dt" style="font-size:16px;">자막 확인</div><div class="dd" style="font-size:15px;">자막 타이밍이 오디오와 일치하는가 / 텍스트가 정확한가?</div></div>
         </div>
       </div>
       <div class="desc-sec-title">각 번호별 기능 설명</div>
       <div class="desc-list">
         <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">영상 검증 메인 탭</div><div class="dd"><ul><li>상단 탭 바에서 <strong>영상 검증</strong> 탭을 선택합니다.</li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">대본 불러오기</div><div class="dd"><ul><li>엑셀 파일 경로 입력 후 <strong>대본 불러오기</strong>를 클릭합니다.</li><li>각 컷의 대본·자막·썸네일·오디오 재생 버튼이 그리드에 표시됩니다.</li><li>이미지 누락 컷 → 빨간 "없음" 뱃지 / 자막 누락 컷 → "자막없음" 뱃지로 즉시 식별합니다.</li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">재생 구간 설정</div><div class="dd"><ul><li>자동 재생의 시작~끝 컷 번호를 지정합니다.</li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">자동 재생 / 재생 초기화 / 변경된 대본·자막 저장</div><div class="dd"><ul><li><strong>자동 재생</strong>: 컷을 순서대로 재생합니다. 우측 패널에서 이미지·파형·자막이 동기화 갱신됩니다.</li><li><strong>변경된 대본/자막 저장</strong>: 검수 중 직접 수정한 내용을 엑셀에 저장합니다.</li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">5</div><div class="dc"><div class="dt">체크박스 초기화</div><div class="dd"><ul><li>재작업 완료 후 마킹된 체크박스를 일괄 초기화합니다.</li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">6</div><div class="dc"><div class="dt">CapCut 프로젝트 생성 경로</div><div class="dd"><ul><li>CapCut 프로젝트 파일이 저장될 경로입니다. 기본값은 CapCut의 기본 프로젝트 폴더입니다.</li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">7</div><div class="dc"><div class="dt">캡컷 프로젝트 자동 생성 실행 <span class="tag tag-req">★ 최종 단계</span></div><div class="dd"><ul><li>모든 검수 완료 후 이 버튼을 클릭합니다.</li><li><strong>단 1초</strong> 안에 이미지·오디오·SRT 자막 타임코드가 CapCut 프로젝트에 자동 주입됩니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">대본 불러오기</div><div class="dd"><ul><li>엑셀 파일 경로 입력 후 <strong>대본 불러오기</strong>를 클릭합니다.</li><li>각 컷의 대본·자막·썸네일·오디오 재생 버튼이 그리드에 표시됩니다.</li><li>이미지 누락 컷 → 빨간 "없음" 뱃지 / 자막 누락 컷 → "자막없음" 뱃지로 즉시 식별 가능합니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">개별 행별로 이미지 더블클릭, 오디오 듣기를 통해 검수 할 수 있으며,<br> 재작없이 필요한 부분은 체크박스 체크하여 이후 개별 작업 할 수 있습니다.</div></div></div>
+        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">5번의 재생버튼으로 재생할 범위를 지정 합니다.</div></div></div>
+        <div class="desc-row"><div class="dbadge">5</div><div class="dc"><div class="dt">순차적으로 자동 재생을 시작하는 합니다.</div></div></div>
+        <div class="desc-row"><div class="dbadge">6</div><div class="dc"><div class="dt">재생을 멈춘후 처음부터 다시 재생을 원할때 초기화 버튼을 누릅니다.</div></div></div>
+        <div class="desc-row"><div class="dbadge">7</div><div class="dc"><div class="dt">해당 체크박스를 선택한후 버튼을 누르면 체크된 내용을 초기화 합니다.</div></div></div>
       </div>
       <div class="key-box">
         <div class="key-box-title">핵심설명</div>
         <div class="key-list">
           <div class="key-item">문제 발견 시 해당 컷의 오른쪽 체크박스 클릭 → <strong>분홍색으로 마킹</strong> → 해당 STEP으로 돌아가 <strong>개별생성</strong>으로 재작업합니다.</div>
           <div class="key-item">전체 공정을 처음부터 재실행할 필요가 없습니다. <strong>문제 컷만 선택적으로 재작업</strong>하면 됩니다.</div>
-          <div class="key-item">CapCut 실행 버튼(⑦) 클릭 전 <strong>생성 경로(⑥)를 반드시 확인</strong>하세요.</div>
         </div>
       </div>
     </section>
@@ -1351,6 +1338,20 @@ body {
         수십 개의 이미지 클립·오디오·SRT 자막이 정확한 타이밍에<br>
         배치된 완성형 타임라인을 바로 확인할 수 있습니다.
       </div>
+
+      <div class="img-box">
+        <img src="그림9-1.png" alt="캡컷 프로젝트 1초 생성">
+        <div class="img-cap">▲ 캡컷 프로젝트 1초 생성</div>
+      </div>
+
+       <div class="desc-sec-title">각 번호별 기능 설명</div>
+      <div class="desc-list">
+        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">대본 엑셀 파일을 선택 합니다.</div></div></div>
+        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">갭컷 프로젝트가 생성되는 경로 입닌다.<br> 참고만 하시고 따로 설정하실 필요 없습니다.</div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">16:9 롱폼영상 또는 9:16 쇼츠 영상등, 제작 하실 영상의 종류를 선택 합니다.</div></div></div>
+        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">버튼을 누르는 순간 1초만에 캡컷 프로젝트가 생성 됩니다. <br>생성된 이름을 확인하여 캡컷에서 마무리 작업을 하시면 됩니다. </div></div></div>      
+      </div>
+     
       <div class="img-box">
         <img src="그림9.png" alt="CapCut 완성 타임라인">
         <div class="img-cap">▲ CapCut — 자동 조립 완성 타임라인 화면 (그림9)</div>
@@ -1363,6 +1364,8 @@ body {
           <div class="key-item">반복 배치 작업에서 완전히 해방됩니다. <strong>창작에만 집중하세요.</strong></div>
         </div>
       </div>
+      </div>
+
     </section>
 
   </div>
