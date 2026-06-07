@@ -1635,6 +1635,7 @@ footer {
   </div>
 </section>
 
+
 <footer style="padding: 32px 0;">
   <div class="w" style="
     display: flex;
@@ -1643,12 +1644,12 @@ footer {
     flex-wrap: wrap;
     gap: 12px;">
  
-    <div class="foot-logo" style="color:#c7d2fe;">
+    <div class="foot-logo" style="color:#c7d2fe; flex-shrink:0;">
       AutoTube <span style="color:#c8321e;">Pro</span>
     </div>
  
     <!-- 중앙 링크 -->
-    <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:8px; flex:1; min-width:0;">
       <div style="display:flex; gap:20px; font-size:13px; flex-wrap:wrap; justify-content:center;">
         <a href="#how" style="color:#a5b4fc; text-decoration:none;">작동방식</a>
         <a href="#pricing" style="color:#a5b4fc; text-decoration:none;">요금제</a>
@@ -1657,19 +1658,18 @@ footer {
         <a href="privacy.html" style="color:#a5b4fc; text-decoration:none;">개인정보처리방침</a>
         <a href="terms.html" style="color:#a5b4fc; text-decoration:none;">이용약관</a>
       </div>
-      <div style="font-size:16px; color:#6b7280;">
+      <div style="font-size:12.5px; color:#6b7280;">
         맞춤개발 및 문의 :
         <a href="mailto:hp.biz001@gmail.com"
           style="color:#818cf8; text-decoration:none;">hp.biz001@gmail.com</a>
       </div>
+      <div class="foot-copy" style="font-size:12.5px; color:#818cf8;">
+        © 2026 AutoTube Pro. All rights reserved.
+      </div>
     </div>
  
-    <!-- 카피라이트 -->
-    <div class="foot-copy" style="
-      font-size: 12.5px;
-      color: #818cf8;">
-      © 2026 AutoTube Pro. All rights reserved.
-    </div>
+    <!-- 우측 균형용 빈 공간 (로고와 대칭) -->
+    <div style="width:140px; flex-shrink:0;"></div>
  
   </div>
 </footer>
