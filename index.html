@@ -600,6 +600,15 @@ footer {
 @media (max-width: 640px) {
   #scrollTopBtn { width: 44px; height: 44px; bottom: 20px; right: 16px; font-size: 18px; }
 }
+
+/* PC에서 버튼 숨김 */
+@media (min-width: 769px) {
+  .mobile-only-btn { display: none; }
+}
+/* 모바일에서 QR 숨김 */
+@media (max-width: 768px) {
+  .pc-only-qr { display: none; }
+}
 </style>
 </head>
 
@@ -1230,6 +1239,15 @@ footer {
           ※ 영상 제작 경험이 있는 크리에이터/스튜디오 전용
           (영상 제작 교육 강의 아님)
         </div>
+        <!-- 안심 문구 바 -->
+    <div class="r" style="
+      background: #eef2ff; border: 1.5px solid #c7d2fe;
+      border-radius: 12px; padding: 16px 32px;
+      text-align: center; margin-top: 16px;">
+      <div style="font-size: 14.5px; font-weight: 600; color: #4f46e5;">
+        ✅ 5일 무료 체험 완료 후 구매 강요 없음
+      </div>
+    </div>
       </div>
     </div>
 
@@ -1313,16 +1331,6 @@ footer {
 
     </div>
 
-    <!-- 안심 문구 바 -->
-    <div class="r" style="
-      background: #eef2ff; border: 1.5px solid #c7d2fe;
-      border-radius: 12px; padding: 16px 32px;
-      text-align: center; margin-top: 16px;">
-      <div style="font-size: 14.5px; font-weight: 600; color: #4f46e5;">
-        ✅ 5일 무료 체험 완료 후 구매 강요 없음
-      </div>
-    </div>
-
     <!-- VAT 안내 박스 -->
     <div class="r" style="
       background:#fffbeb; border:1.5px solid #f59e0b;
@@ -1331,7 +1339,7 @@ footer {
         <span style="font-size:24px; flex-shrink:0; margin-top:2px;">🏢</span>
         <div style="width:100%;">
           <div style="font-size:15px; font-weight:800; color:#92400e; margin-bottom:12px;">
-            결제 전 반드시 확인하세요 — 부가세(VAT) 처리 안내
+            카드 결제 전 반드시 확인하세요 — 부가세(VAT) 처리 안내
           </div>
           <div style="font-size:14px; color:#78350f; line-height:1.8; margin-bottom:16px;">
             본 제품은 <strong>해외 결제 대행사 Gumroad</strong>를
@@ -1355,6 +1363,70 @@ footer {
         </div>
       </div>
     </div>
+
+   <!-- 원화 직접결제 안내 -->
+<div class="r" style="
+  background: #f0fdf4; border: 1.5px solid #86efac;
+  border-radius: 12px; padding: 28px 32px;
+  margin-top: 16px;">
+
+  <!-- 제목 -->
+  <div style="text-align:center; margin-bottom: 16px;">
+    <span style="font-size: 20px; font-weight: 900;
+                 color: #f72804; letter-spacing: -0.3px;">
+      🏦 원화 직접 결제 안내
+    </span>
+  </div>
+
+  <!-- 설명 -->
+  <div style="text-align:center; font-size: 14px;
+              color: #166534; line-height: 1.9;
+              margin-bottom: 18px;">
+    카드결제(해외결제)보다 일반적으로 저렴합니다.<br>
+    복잡한 해외결제 없이 무통장 입금으로 간편하게 구매하실 수 있습니다.<br>
+    아래의 QR코드 스캔후 카카오채널에서 안내를 받으시기 바랍니다.
+  </div>
+
+   <!-- PC: QR코드 표시 -->
+<div style="text-align:center; margin-bottom:16px;"
+     class="pc-only-qr">
+  <div style="font-size:13px; color:#166534;
+              margin-bottom:10px; font-weight:600;">
+    📱 핸드폰으로 QR을 스캔해 주세요
+  </div>
+  <img src="https://aibaselab.com/kakao-qr.png"
+       alt="카카오톡 QR코드"
+       style="width:140px; height:140px;
+              border-radius:8px;
+              border:1px solid #bbf7d0;">
+</div>
+
+<!-- 모바일: 버튼만 표시 -->
+<div style="text-align:center; margin-bottom:16px;"
+     class="mobile-only-btn">
+  <a href="http://pf.kakao.com/_pVunX/chat"
+     target="_blank"
+     style="display:inline-block;
+            background:#FEE500; color:#3A1D1D;
+            font-size:15px; font-weight:800;
+            padding:13px 36px; border-radius:8px;
+            text-decoration:none;">
+    💬 카카오톡으로 문의하기
+  </a>
+</div>
+
+  <!-- 세금계산서 경고 -->
+  <div style="
+    font-size: 13px; font-weight: 700;
+    color: #dc2626;
+    background: #fff5f5;
+    border-radius: 8px; padding: 10px 16px;
+    border: 1.5px solid #fca5a5;
+    text-align: center; line-height: 1.8;">
+    ※ 세금계산서 등 별도 증빙이 필요하신 경우 위의 카드결제를 이용해 주세요.
+  </div>
+
+</div>
 
   </div>
 </section>
