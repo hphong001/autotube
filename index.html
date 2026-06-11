@@ -1003,8 +1003,11 @@ footer {
   </div>
 </section>
 
-<section class="section section--white" id="cost">
+
+
+<section class="section section--tinted" id="cost-saving">
   <div class="w">
+
     <span class="eyebrow r">생성 비용</span>
     <h2 class="r">TTS · 자막은 무제한 <span class="hl-red">0원</span>,<br>이미지는 구글 계정 플랜 그대로...</h2>
     <p class="lead r">외부 유료 API 없이, 이미 갖고 있는 구글 계정과 오픈소스 모델만으로 운영됩니다.<br>항목별로 투명하게 공개합니다.</p>
@@ -1021,52 +1024,230 @@ footer {
         <tbody>
           <tr style="border-bottom:1px solid var(--line);">
             <td style="padding:16px 20px;font-weight:700;color:#1e1b4b;">🖼️ 이미지 생성</td>
-            <td style="padding:16px 20px;color:#4b5563;">Google Gemini<br><span style="font-size:13px;color:#6b7280;">이용자 본인 Google 계정으로 접속</span></td>
+            <td style="padding:16px 20px;color:#4b5563;">구글 제미나이 웹페이지에서 자동 생성<br><span style="font-size:13px;color:#6b7280;">이용자 본인 Google 계정으로 접속</span></td>
             <td style="padding:16px 20px;text-align:center;font-weight:800;color:#4b5563;">구글 계정 플랜에 따라<br><span style="font-size:13px;font-weight:400;color:#6b7280;">무료 할당량 내 0원 / 초과 시 유료</span></td>
           </tr>
           <tr style="border-bottom:1px solid var(--line);background:#f8faff;">
             <td style="padding:16px 20px;font-weight:700;color:#1e1b4b;">🎙️ TTS 음성 생성</td>
-            <td style="padding:16px 20px;color:#4b5563;">Qwen3-TTS (오픈소스)<br><span style="font-size:13px;color:#6b7280;">Google Colab 무료 서버에서 실행</span></td>
+            <td style="padding:16px 20px;color:#4b5563;">오토튜브 사용자별 개별 TTS 서버 사용<br><span style="font-size:13px;color:#6b7280;">구글 무료 서버 활용 내 PC에서 개별 사용</span></td>
             <td style="padding:16px 20px;text-align:center;"><span style="font-size:18px;font-weight:900;color:#059669;">무제한 0원</span></td>
           </tr>
           <tr>
             <td style="padding:16px 20px;font-weight:700;color:#1e1b4b;">💬 자막 생성</td>
-            <td style="padding:16px 20px;color:#4b5563;">Whisper (오픈소스)<br><span style="font-size:13px;color:#6b7280;">내 PC에서 직접 실행</span></td>
+            <td style="padding:16px 20px;color:#4b5563;">오토튜브에 내장된 자막 생성 기능 사용<br><span style="font-size:13px;color:#6b7280;">내 PC에서 직접 실행</span></td>
             <td style="padding:16px 20px;text-align:center;"><span style="font-size:18px;font-weight:900;color:#059669;">무제한 0원</span></td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <div class="r cost-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:0;">
-      <div style="background:var(--white);border:1.5px solid var(--line);border-radius:12px;padding:28px;">
-        <div style="font-size:17px;font-weight:800;color:var(--ink);margin-bottom:8px;">이미지 생성 — 구글 계정 플랜 기준</div>
-        <div style="font-size:15px;color:var(--gray);line-height:1.75;">이미 구독 중인 <strong>Google Gemini 무료 할당량</strong> 범위에서 생성합니다. 추가 결제 없이 이미지를 생성할 수 있습니다.</div>
-        <div style="margin-top:14px;padding:12px 14px;background:#f0f4ff;border-radius:8px;font-size:13px;color:var(--gray);line-height:1.7;">
-          <strong style="color:var(--ink);">계정별 하루 생성 가능 컷 수 (참고)</strong><br>
-          · 무료 계정 : 약 15~20컷 / 일 <br>
-          · Google AI Plus : 무료 대비 약 2배 한도<br>
-          · Google AI Pro : 무료 대비 약 4배 한도 <br>
-          <span style="color:var(--muted);font-size:12px;">※ 구글 정책에 따라 변동될 수 있습니다</span>
+
+    <h2 class="r">이미지 생성 방식별<br><span class="hl-red">비용 완전 분석</span></h2>
+    <p class="lead r">
+      AutoTube Pro는 구글 계정의 무료 할당량을 그대로 활용합니다.<br>
+      방식별 단가와 절감 효과를 직접 확인해 보세요.
+    </p>
+
+    <!-- 2가지 방식 비교 카드 -->
+    <div class="r" style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:40px;">
+
+      <div style="background:#fff; border:2px solid #059669; border-radius:16px; padding:32px 28px; display:flex; flex-direction:column; gap:10px;">
+        <div style="display:inline-block; font-size:13px; font-weight:700; padding:4px 14px; border-radius:20px; background:#d1fae5; color:#065f46; margin-bottom:4px; align-self:flex-start;">✦ 추천 — 오토튜브 웹 자동화 방식</div>
+        <div style="font-size:18px; font-weight:800; color:#1e1b4b; line-height:1.4;">AutoTube Pro 이용<br>제미나이 웹에서 자동 생성</div>
+        <hr style="border:none; border-top:1px solid #d1fae5; margin:6px 0;">
+        <div style="text-align:center; padding:16px 0 10px;">
+          <div style="font-size:14px; color:#6b7280; margin-bottom:6px;">이미지 1장당</div>
+          <div style="font-size:56px; font-weight:900; color:#059669; line-height:1; font-family:'Inter',sans-serif; letter-spacing:-.03em;">₩0</div>
+          <div style="font-size:13px; color:#059669; margin-top:8px; opacity:.85;">구글 계정 무료 할당 내</div>
         </div>
-        <div style="margin-top:12px;padding:10px 14px;background:#fffbea;border:1px solid #fde68a;border-radius:8px;font-size:13px;color:#78350f;line-height:1.65;">
-          <strong>💡 Tip</strong> — 복수의 구글 계정을 번갈아 로그인하면 하루 더 많은 이미지를 생성할 수 있습니다. AutoTube Pro의 구글 로그인 버튼으로 계정 전환이 간편하게 가능합니다.
+        <div style="background:#d1fae5; border-radius:10px; padding:14px 18px; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:14px; color:#065f46; font-weight:600;">영상 1편 (60장) 예상 비용</span>
+          <span style="font-size:22px; font-weight:900; color:#059669; font-family:'Inter',sans-serif;">₩0</span>
+        </div>
+        <hr style="border:none; border-top:1px solid #d1fae5; margin:4px 0;">
+        <div style="font-size:12px; color:#6b7280; font-weight:600; margin-bottom:4px;">플랜별 하루 무료 생성 한도</div>
+        <table style="width:100%; border-collapse:collapse; font-size:13px;">
+          <thead>
+            <tr style="border-bottom:1px solid #d1fae5;">
+              <th style="text-align:left; padding:5px 6px; color:#9ca3af; font-weight:600;">플랜</th>
+              <th style="text-align:center; padding:5px 6px; color:#9ca3af; font-weight:600;">하루 한도</th>
+              <th style="text-align:right; padding:5px 6px; color:#9ca3af; font-weight:600;">월 구독료</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #f0fdf4;">
+              <td style="padding:5px 6px; color:#4b5563;">무료</td>
+              <td style="padding:5px 6px; text-align:center; color:#4b5563;">약 20장</td>
+              <td style="padding:5px 6px; text-align:right; color:#9ca3af;">$0</td>
+            </tr>
+            <tr style="border-bottom:1px solid #f0fdf4;">
+              <td style="padding:5px 6px; color:#4b5563;">AI Plus</td>
+              <td style="padding:5px 6px; text-align:center; color:#4b5563;">약 50장</td>
+              <td style="padding:5px 6px; text-align:right; color:#9ca3af;">$7.99</td>
+            </tr>
+            <tr style="border-bottom:1px solid #f0fdf4; background:#f0fdf4;">
+              <td style="padding:5px 6px; color:#059669; font-weight:700;">AI Pro ★</td>
+              <td style="padding:5px 6px; text-align:center; color:#059669; font-weight:700;">약 100장</td>
+              <td style="padding:5px 6px; text-align:right; color:#059669; font-weight:700;">$19.99</td>
+            </tr>
+            <tr>
+              <td style="padding:5px 6px; color:#4b5563;">AI Ultra</td>
+              <td style="padding:5px 6px; text-align:center; color:#4b5563;">약 1,000장</td>
+              <td style="padding:5px 6px; text-align:right; color:#9ca3af;">$249.99</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="margin-top:4px; padding:10px 14px; background:#f0fdf4; border-radius:8px; font-size:13px; color:#065f46; line-height:1.7;">
+          ※ 서버 상황에 따라 실제 생성 가능 수량이 달라질 수 있습니다.
+        </div>
+        <div style="display:flex; justify-content:space-between; padding:4px 0;"><span style="font-size:13px; color:#6b7280;">API 키</span><span style="font-size:13px; font-weight:700; color:#059669;">불필요 — 구글 계정만</span></div>
+        <div style="display:flex; justify-content:space-between; padding:4px 0;"><span style="font-size:13px; color:#6b7280;">유튜브 자동화</span><span style="font-size:13px; font-weight:700; color:#059669;">완전 자동</span></div>
+      </div>
+
+      <div style="background:#fff; border:2px solid #4f46e5; border-radius:16px; padding:32px 28px; display:flex; flex-direction:column; gap:10px;">
+        <div style="display:inline-block; font-size:13px; font-weight:700; padding:4px 14px; border-radius:20px; background:#eef2ff; color:#4f46e5; margin-bottom:4px; align-self:flex-start;">타사 API 방식 </div>
+        <div style="font-size:18px; font-weight:800; color:#1e1b4b; line-height:1.4;">구글 API 이용 자동 생성<br>Nano Banana 2 API</div>
+        <hr style="border:none; border-top:1px solid #c7d2fe; margin:6px 0;">
+        <div style="text-align:center; padding:16px 0 10px;">
+          <div style="font-size:14px; color:#6b7280; margin-bottom:6px;">이미지 1장당</div>
+          <div style="font-size:56px; font-weight:900; color:#4f46e5; line-height:1; font-family:'Inter',sans-serif; letter-spacing:-.03em;">100원</div>
+          <div style="font-size:13px; color:#6b7280; margin-top:8px;">$0.067 · 환율 1,500원/$</div>
+        </div>
+        <div style="background:#eef2ff; border-radius:10px; padding:14px 18px; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:14px; color:#4f46e5; font-weight:600;">영상 1편 (60장)</span>
+          <span style="font-size:22px; font-weight:900; color:#4f46e5; font-family:'Inter',sans-serif;">약 ₩6,000</span>
+        </div>
+        <hr style="border:none; border-top:1px solid #c7d2fe; margin:4px 0;">
+        <div style="display:flex; justify-content:space-between; padding:5px 0;"><span style="font-size:13px; color:#6b7280;">하루 생성 한도</span><span style="font-size:13px; font-weight:700; color:#4f46e5;">무제한</span></div>
+        <div style="display:flex; justify-content:space-between; padding:5px 0;"><span style="font-size:13px; color:#6b7280;">월정액</span><span style="font-size:13px; font-weight:700; color:#059669;">없음 (쓴 만큼만 실비)</span></div>
+        <div style="display:flex; justify-content:space-between; padding:5px 0;"><span style="font-size:13px; color:#6b7280;">API 키</span><span style="font-size:13px; color:#9ca3af;">Google API Key 필요</span></div>
+        <div style="display:flex; justify-content:space-between; padding:5px 0;"><span style="font-size:13px; color:#6b7280;">유튜브 자동화</span><span style="font-size:13px; font-weight:700; color:#059669;">완전 자동</span></div>
+        <div style="margin-top:auto; padding:12px 14px; background:#f8faff; border-radius:8px; border:1px solid #c7d2fe; font-size:12px; color:#6b7280; line-height:1.7;">
+          더 높은 품질이 필요하다면 Nano Banana Pro API(약 201원/장)도 선택 가능합니다.
         </div>
       </div>
-      <div style="background:var(--white);border:1.5px solid var(--line);border-radius:12px;padding:28px;">
-        <div style="font-size:17px;font-weight:800;color:var(--ink);margin-bottom:8px;">AI 음성 생성 — 무제한 0원</div>
-        <div style="font-size:15px;color:var(--gray);line-height:1.75;"><strong>Google Colab 무료 클라우드 서버</strong>에서 오픈소스 Qwen3-TTS 모델로 실행됩니다. 내 PC에 부담을 주지 않고 고품질 AI 음성을 무제한 생성합니다.</div>
-        <div style="margin-top:14px;padding:12px 14px;background:#f0f4ff;border-radius:8px;font-size:13px;color:var(--gray);line-height:1.7;">
-          <strong style="color:var(--ink);">Google Colab 무료 이용 조건</strong><br>
-          · 하루 세션 시간 제한 있음 (약 6~12시간)<br>
-          · GPU 유형에 따라 생성 속도 다름<br>
-          · 유료 Colab Pro는 더 긴 세션 제공<br>
-          <span style="color:var(--muted);font-size:12px;">※ 구글 정책에 따라 변동될 수 있습니다</span>
+
+    </div>
+
+    <div style="border-top:1.5px solid #c7d2fe; margin:0 0 48px;"></div>
+
+    <h3 class="r" style="font-size:clamp(22px,3.5vw,32px); font-weight:800; color:#1e1b4b; margin-bottom:12px; letter-spacing:-.02em;">
+      직접 계산해 보세요 —<br><span class="hl-red">내 절감 금액은 얼마?</span>
+    </h3>
+    <p class="lead r" style="margin-bottom:28px;">
+      오토튜브 웹 자동화 방식 vs 타사 유료 API 방식 기준
+    </p>
+
+    <div class="r" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
+      <div style="background:#d1fae5; border:1px solid #6ee7b7; border-radius:12px; padding:22px 24px;">
+        <div style="font-size:16px; font-weight:700; color:#065f46; margin-bottom:8px;">AutoTube Pro 웹 자동화 방식</div>
+        <div style="font-size:40px; font-weight:900; color:#059669; line-height:1; font-family:'Inter',sans-serif;">₩0원</div>
+        <div style="font-size:13px; color:#065f46; margin-top:6px; opacity:.85;">이미지 1장당 · 구글 계정 무료 할당 내</div>
+      </div>
+      <div style="background:#f8faff; border:1px solid #c7d2fe; border-radius:12px; padding:22px 24px;">
+        <div style="font-size:16px; font-weight:700; color:#6b7280; margin-bottom:8px;">타사 유료 API 방식 (Nano Banana 2)</div>
+        <div style="font-size:40px; font-weight:900; color:#1e1b4b; line-height:1; font-family:'Inter',sans-serif;">약 100원</div>
+        <div style="font-size:13px; color:#6b7280; margin-top:6px;">이미지 1장당 · 영상 1편(60장) = 약 6,000원</div>
+      </div>
+    </div>
+
+    <div class="r" style="background:#fff; border:1.5px solid #c7d2fe; border-radius:16px; padding:32px; margin-bottom:20px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <span style="font-size:17px; color:#4b5563; font-weight:600;">영상 제작 편수를 조절하여 절감 효과를 시뮬레이션 해 보세요</span>
+        <span style="font-size:32px; font-weight:900; color:#1e1b4b; font-family:'Inter',sans-serif;"><span id="cs-cnt">50</span>편</span>
+      </div>
+      <input type="range" min="1" max="200" value="50" step="1" id="cs-slider" style="width:100%; accent-color:#4f46e5; cursor:pointer;">
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:24px;">
+        <div style="background:#f8faff; border-radius:12px; padding:20px 16px; text-align:center;">
+          <div style="font-size:16px; color:#6b7280; margin-bottom:8px; line-height:1.5;">영상 1편<br>이미지 비용</div>
+          <div style="font-size:28px; font-weight:900; color:#dc2626; font-family:'Inter',sans-serif;">₩6,000</div>
+        </div>
+        <div style="background:#f8faff; border-radius:12px; padding:20px 16px; text-align:center;">
+          <div style="font-size:16px; color:#6b7280; margin-bottom:8px; line-height:1.5;">타사 API<br>총 비용</div>
+          <div style="font-size:28px; font-weight:900; color:#dc2626; font-family:'Inter',sans-serif;" id="cs-total">₩300,000</div>
+        </div>
+        <div style="background:#d1fae5; border-radius:12px; padding:20px 16px; text-align:center;">
+          <div style="font-size:16px; color:#065f46; font-weight:600; margin-bottom:8px; line-height:1.5;">AutoTube Pro<br>사용 시 절감금액</div>
+          <div style="font-size:28px; font-weight:900; color:#059669; font-family:'Inter',sans-serif;" id="cs-save">- ₩300,000</div>
         </div>
       </div>
     </div>
+
+    <div class="r" id="cs-story" style="background:#eef2ff; border-radius:12px; padding:22px 28px; margin-bottom:20px; font-size:16px; color:#312e81; line-height:1.9; border-left:4px solid #6366f1;"></div>
+
+    <div class="r" style="background:#fff; border:1.5px solid #c7d2fe; border-radius:16px; padding:24px 28px; margin-bottom:20px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #e5e7eb;">
+        <span style="font-size:16px; color:#6b7280;">AutoTube Pro 1년 라이선스</span>
+        <span style="font-size:18px; font-weight:800; color:#1e1b4b; font-family:'Inter',sans-serif;">₩980,000</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #e5e7eb;">
+        <span style="font-size:16px; color:#6b7280;">이미지 절감금액 (<span id="cs-lcnt">50</span>편 기준)</span>
+        <span style="font-size:18px; font-weight:800; color:#059669; font-family:'Inter',sans-serif;">- ₩<span id="cs-lsave">300,000</span></span>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 0 4px;">
+        <span style="font-size:17px; font-weight:700; color:#1e1b4b;">실제 부담 금액</span>
+        <span style="font-size:38px; font-weight:900; color:#059669; font-family:'Inter',sans-serif;" id="cs-remain">₩680,000</span>
+      </div>
+    </div>
+
+    <div class="r" style="background:#d1fae5; border-radius:16px; padding:24px 28px;">
+      <div style="font-size:20px; font-weight:700; color:#065f46; margin-bottom:16px;">여기에 추가 절감 가치는 덤으로...</div>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px;">
+        <div style="background:#fff; border-radius:12px; padding:20px 16px; text-align:center; border:1px solid #6ee7b7;">
+          <div style="font-size:26px; color:#059669; margin-bottom:10px;">🔄</div>
+          <div style="font-size:16px; font-weight:700; color:#065f46; line-height:1.6;">단순 반복<br>완전 자동화</div>
+          <div style="font-size:13px; color:#059669; opacity:.85; margin-top:6px; line-height:1.5;">이미지 · TTS · 자막<br>자동 생성</div>
+        </div>
+        <div style="background:#fff; border-radius:12px; padding:20px 16px; text-align:center; border:1px solid #6ee7b7;">
+          <div style="font-size:26px; color:#059669; margin-bottom:10px;">🎙️</div>
+          <div style="font-size:16px; font-weight:700; color:#065f46; line-height:1.6;">TTS 음성 생성<br>비용 0원</div>
+          <div style="font-size:13px; color:#059669; opacity:.85; margin-top:6px; line-height:1.5;">자체 서버<br>무료 사용</div>
+        </div>
+        <div style="background:#fff; border-radius:12px; padding:20px 16px; text-align:center; border:1px solid #6ee7b7;">
+          <div style="font-size:26px; color:#059669; margin-bottom:10px;">🎬</div>
+          <div style="font-size:16px; font-weight:700; color:#065f46; line-height:1.6;">CapCut 타임라인<br>자동 생성</div>
+          <div style="font-size:13px; color:#059669; opacity:.85; margin-top:6px; line-height:1.5;">편집 작업<br>완전 자동화</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:right; margin-top:12px; font-size:14px; color:#9ca3af;">
+      ※ 2026년 6월 기준 · 서버 상황에 따라 무료 생성 수량 변동 가능
+    </div>
+
   </div>
 </section>
+
+<script>
+(function() {
+  var slider = document.getElementById('cs-slider');
+  if (!slider) return;
+  function fmt(n) { return n.toLocaleString('ko-KR'); }
+  function update() {
+    var n = parseInt(slider.value);
+    var total = n * 6000;
+    var license = 980000;
+    var remain = Math.max(0, license - total);
+    var pct = Math.round(total / license * 100);
+    document.getElementById('cs-cnt').textContent = n;
+    document.getElementById('cs-total').textContent = '₩' + fmt(total);
+    document.getElementById('cs-save').textContent = '- ₩' + fmt(total);
+    document.getElementById('cs-lcnt').textContent = n;
+    document.getElementById('cs-lsave').textContent = fmt(total);
+    document.getElementById('cs-remain').textContent = remain === 0 ? '₩0 🎉' : '₩' + fmt(remain);
+    var story = document.getElementById('cs-story');
+    if (total >= license) {
+      story.innerHTML = '영상 <strong>' + n + '</strong>편 제작 시 절감 금액 <strong>₩' + fmt(total) + '</strong><br><strong style="color:#059669;">라이선스 비용 ₩980,000 전액 회수 완료! 🎉</strong><br>이 시점부터 AutoTube Pro는 <strong>완전히 공짜로 일하는 셈</strong>입니다.';
+    } else {
+      story.innerHTML = '영상 <strong>' + n + '</strong>편 제작 시 <strong style="color:#059669;">- ₩' + fmt(total) + '</strong> 절감 &nbsp;→&nbsp; 라이선스 비용의 <strong>' + pct + '%</strong>를 이미지 절감만으로 충당할 수 있습니다.<br>여기에 <strong>자동화 시간 절감 · 무료 TTS · CapCut 자동화</strong> 가치까지 더하면 실질 부담은 더욱 줄어듭니다.';
+    }
+  }
+  slider.addEventListener('input', update);
+  update();
+})();
+</script>
+
+
 
 <section class="section section--tinted" id="qc">
   <div class="w">
@@ -1222,12 +1403,12 @@ footer {
     <p class="story-body r">
       하지만, 이 툴은 <strong>모든 사람을 위한 프로그램이 아닙니다.</strong><br><br>
       캡컷, AI 툴, 엑셀을 이미 써본 적 있고,
-      유튜브 영상 제작 경험이 있으며,
+      유튜브 영상 제작 경험이 있으며,<br>
       설명서를 읽고 스스로 세팅할 수 있는 분들을 위한 도구입니다.<br><br>
       반대로 <strong>처음 유튜브를 시작하시거나,<br>
       AI 툴을 처음 접하시는 분들께는 맞지 않습니다.</strong><br>
       이 프로그램은 영상 제작 교육 강의가 아닙니다.<br>
-      이미 만들고 있는 분들의 <strong>반복 노가다를 없애주는 자동화 설비</strong>입니다.<br><br>
+      이미 영상을 만들고 있는 분들의 <strong>반복 노가다를 없애주는 자동화 설비</strong>입니다.<br><br>
       스스로 세팅하고 활용할 준비가 된 분들,<br>
       지금 겪고 있는 편집 노가다에서 벗어나고 싶으신 분들만
       신청해 주시기 바랍니다.
