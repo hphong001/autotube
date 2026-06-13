@@ -154,6 +154,7 @@
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
 html { scroll-behavior:smooth; }
 body { font-family: var(--body); background: var(--bg); color: var(--ink); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: clip; word-break: keep-all; overflow-wrap: break-word; }
+
 .price-period, .compare-time, .as-val, .ui-progress-label, .auto-tag, .step-badge, .pcard-label, .pc-label, .hero-notice, .final-note, .foot-copy, .topbar, .ui-section-label, .ui-field-label, .ui-field-input, .ui-field-btn, .ui-path-label, .ui-path-val, .ui-path-btn, .ui-title, .ui-btn, .vp-label, .vp-url-row, .circle-badge {
   font-family: var(--num) !important;
 }
@@ -215,7 +216,7 @@ nav {
 .nav-cta { background: linear-gradient(135deg, #6366f1, #4f46e5); color: #fff; padding: 10px 24px; border-radius: 8px; font-size: 15px; font-weight: 700; text-decoration: none; transition: all .2s ease; white-space: nowrap; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2); }
 .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3); }
 
-/* 그리드 유틸리티 클래스 (모바일 대응용) */
+/* 그리드 유틸리티 클래스 */
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .grid-sim { display: grid; grid-template-columns: 0.8fr 1fr 1.3fr; gap: 20px; }
@@ -310,14 +311,13 @@ footer { background: #020617; padding: 40px var(--gap); display: flex; justify-c
 .r.in { opacity: 1; transform: translateY(0); }
 
 /* ════════════════════════════════════
-   📱 반응형 — 태블릿 & 모바일 (그리드 자동 재배치 적용)
+   📱 반응형 — 태블릿 & 모바일 (텍스트 렌더링 최적화 포함)
 ════════════════════════════════════ */
 @media (max-width: 900px) {
   :root { --section: 80px; }
   h2 { font-size: clamp(28px, 4.5vw, 36px); }
   .pricing-grid, .install-row { grid-template-columns: 1fr; max-width: 500px; margin-left: auto; margin-right: auto; }
   
-  /* 강제 분리된 그리드를 모바일에서 1열로 세로 정렬 */
   .grid-2, .grid-3, .grid-sim { grid-template-columns: 1fr !important; }
   
   .pricing-frame { grid-template-columns: 1fr !important; gap: 20px !important; }
@@ -330,7 +330,14 @@ footer { background: #020617; padding: 40px var(--gap); display: flex; justify-c
 
 @media (max-width: 640px) {
   :root { --section: 60px; --gap: 20px; }
-  .mob-br { display: block; }
+  
+  /* 모바일 텍스트 줄바꿈 최적화: 자연스러운 단어 잘림 허용 */
+  body { word-break: break-word; overflow-wrap: break-word; }
+  
+  /* PC용으로 하드코딩된 특정 줄바꿈 무력화 */
+  h1 br, h2 br, h3 br, .lead br, .story-body br, .pc-desc br { display: none; }
+  .mob-br { display: block !important; }
+
   .topbar { font-size: 13px; padding: 10px 16px; line-height: 1.4; }
   nav { padding: 0 16px; height: 60px; }
   .nav-logo { font-size: 20px; }
@@ -932,7 +939,7 @@ footer { background: #020617; padding: 40px var(--gap); display: flex; justify-c
     </div>
 
     <div class="r" style="background:#fff; border:1px solid var(--line); border-radius:20px; padding:40px; margin-bottom:24px; box-shadow:var(--shadow-md);">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:24px;">
         <span style="font-size:22px; color:var(--gray); font-weight:600;">오토튜브로 영상시 절감 효과를 시뮬레이션 해 보세요.<br> 아래의 원을 이동 시켜서 시뮬레이션 해 보세요. </span>
         <span style="font-size:36px; font-weight:900; color:var(--ink); font-family:var(--num);"><span id="cs-cnt">50</span>편</span>
       </div>
@@ -949,7 +956,7 @@ footer { background: #020617; padding: 40px var(--gap); display: flex; justify-c
         </div>
         <div style="background:#f0fdf4; border-radius:16px; padding:24px 20px; text-align:center; border: 1px solid #dcfce7;">
           <div style="font-size:15px; color:#166534; font-weight:700; margin-bottom:12px;">AutoTube Pro<br>사용 시 절감금액</div>
-          <div style="font-size:clamp(20px, 2.5vw, 28px); font-weight:900; color:#16a34a; font-family:var(--num); white-space:nowrap;" id="cs-save">- ₩300,000</div>
+          <div style="font-size:clamp(20px, 2.5vw, 28px); font-weight:900; color:#16a34a; font-family:var(--num);" id="cs-save">-&nbsp;₩300,000</div>
         </div>
       </div>
     </div>
@@ -963,7 +970,7 @@ footer { background: #020617; padding: 40px var(--gap); display: flex; justify-c
       </div>
       <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--line);">
         <span style="font-size:17px; color:var(--gray);">이미지 절감금액 (<span id="cs-lcnt">50</span>편 기준)</span>
-        <span style="font-size:20px; font-weight:800; color:#16a34a; font-family:var(--num);">- ₩<span id="cs-lsave">300,000</span></span>
+        <span style="font-size:20px; font-weight:800; color:#16a34a; font-family:var(--num);">-&nbsp;₩<span id="cs-lsave">300,000</span></span>
       </div>
       <div style="display:flex; justify-content:space-between; align-items:center; padding:20px 0 8px;">
         <span style="font-size:19px; font-weight:700; color:var(--ink);">실제 부담 금액</span>
@@ -1012,7 +1019,6 @@ footer { background: #020617; padding: 40px var(--gap); display: flex; justify-c
     var remain = Math.max(0, license - total);
     var pct = Math.round(total / license * 100);
     
-    // 게이지 색상 동적 채우기
     var min = parseInt(slider.min);
     var max = parseInt(slider.max);
     var progress = ((n - min) / (max - min)) * 100;
@@ -1020,7 +1026,7 @@ footer { background: #020617; padding: 40px var(--gap); display: flex; justify-c
     
     document.getElementById('cs-cnt').textContent = n;
     document.getElementById('cs-total').textContent = '₩' + fmt(total);
-    document.getElementById('cs-save').textContent = '- ₩' + fmt(total);
+    document.getElementById('cs-save').innerHTML = '-&nbsp;₩' + fmt(total); // &nbsp; 적용
     document.getElementById('cs-lcnt').textContent = n;
     document.getElementById('cs-lsave').textContent = fmt(total);
     document.getElementById('cs-remain').textContent = remain === 0 ? '₩0 🎉' : '₩' + fmt(remain);
@@ -1029,7 +1035,7 @@ footer { background: #020617; padding: 40px var(--gap); display: flex; justify-c
     if (total >= license) {
       story.innerHTML = '영상 <strong>' + n + '</strong>편 제작 시 절감 금액 <strong>₩' + fmt(total) + '</strong><br><strong style="color:#16a34a;">라이선스 비용 ₩980,000 전액 회수 완료! 🎉</strong><br>이 시점부터 AutoTube Pro는 <strong>완전히 공짜로 일하는 셈</strong>입니다.';
     } else {
-      story.innerHTML = '영상 <strong>' + n + '</strong>편 제작 시 <strong style="color:#16a34a;">- ₩' + fmt(total) + '</strong> 절감 &nbsp;<br>→&nbsp; 라이선스 비용의 <strong>' + pct + '%</strong>를 이미지 절감만으로 충당할 수 있습니다.<br>여기에 <strong>자동화 시간 절감 · 무료 TTS · CapCut 자동화</strong> 가치까지 더하면 실질 부담은 더욱 줄어듭니다.';
+      story.innerHTML = '영상 <strong>' + n + '</strong>편 제작 시 <strong style="color:#16a34a;">-&nbsp;₩' + fmt(total) + '</strong> 절감 &nbsp;<br>→&nbsp; 라이선스 비용의 <strong>' + pct + '%</strong>를 이미지 절감만으로 충당할 수 있습니다.<br>여기에 <strong>자동화 시간 절감 · 무료 TTS · CapCut 자동화</strong> 가치까지 더하면 실질 부담은 더욱 줄어듭니다.';
     }
   }
   
