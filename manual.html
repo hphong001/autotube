@@ -4,10 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- ✅ SEO: title 키워드 강화 -->
 <title>AutoTube Pro 사용 설명서 — 캡컷 자동화 6단계 완전 가이드</title>
 
-<!-- Google Analytics GA4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-H5BXLB2FQQ"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -16,19 +14,15 @@
   gtag('config', 'G-H5BXLB2FQQ');
 </script>
 
-<!-- ✅ SEO: meta description 추가 -->
 <meta name="description" content="AutoTube Pro 캡컷 자동화 프로그램 사용 설명서. 대본 엑셀 준비부터 Gemini 이미지 자동 생성, Qwen3-TTS 음성 생성, Whisper 자막 추출, CapCut 1초 자동 조립까지 6단계 완전 가이드.">
 <meta name="keywords" content="AutoTube Pro 사용법, 캡컷 자동화 방법, 유튜브 영상 자동화 가이드, Whisper 자막 생성, Gemini 이미지 자동 생성, TTS 음성 생성, CapCut 자동 조립, 유튜브 편집 자동화 설명서">
 <meta name="robots" content="index, follow">
 <meta name="author" content="AutoTube Pro">
 
-<!-- ✅ SEO: canonical -->
 <link rel="canonical" href="https://aibaselab.com/manual.html">
 
-<!-- ✅ SEO: hreflang (index.html과 연결) -->
 <link rel="alternate" hreflang="ko" href="https://aibaselab.com/manual.html">
 
-<!-- ✅ SEO: Open Graph -->
 <meta property="og:type" content="article">
 <meta property="og:title" content="AutoTube Pro 사용 설명서 — 캡컷 자동화 6단계 완전 가이드">
 <meta property="og:description" content="대본 엑셀 준비부터 Gemini 이미지 자동 생성, TTS 음성 생성, Whisper 자막 추출, CapCut 1초 자동 조립까지 6단계 완전 가이드.">
@@ -40,7 +34,6 @@
 <meta property="og:image:height" content="1080">
 <meta property="og:image:alt" content="AutoTube Pro 유튜브 영상 제작 자동화 프로그램">
 
-<!-- ✅ SEO: Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="AutoTube Pro 사용 설명서 — 캡컷 자동화 6단계 완전 가이드">
 <meta name="twitter:description" content="대본 엑셀 준비부터 Gemini 이미지 자동 생성, TTS 음성 생성, Whisper 자막 추출, CapCut 1초 자동 조립까지 6단계 완전 가이드.">
@@ -48,7 +41,6 @@
 
 <meta name="theme-color" content="#4f46e5">
 
-<!-- ✅ SEO: HowTo 구조화 데이터 — 구글 리치 스니펫 노출용 -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -105,7 +97,6 @@
 }
 </script>
 
-<!-- ✅ SEO: TechArticle 구조화 데이터 -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -172,6 +163,7 @@ body {
   word-break: keep-all;
   overflow-wrap: break-word;
   overflow-x: hidden;
+  max-width: 100%;
 }
 
 /* ── SIDEBAR ── */
@@ -367,7 +359,6 @@ body {
   margin-top: 4px; margin-bottom: 4px;
 }
 
-/* ✅ SEO: sec-title을 h2처럼 보이되 실제 h2/h3로 렌더링 */
 .sec-title {
   font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
   font-size: 26px; font-weight: 900;
@@ -525,22 +516,6 @@ body {
 .dd strong { color: var(--ink); font-weight: 700; }
 .dd em { font-style: normal; color: var(--muted); font-size: 15px; }
 
-/* ── FILL BADGE ── */
-.fill-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: var(--accent); color: #fff;
-  font-size: 13px; font-weight: 800;
-  padding: 4px 12px; border-radius: 5px;
-  letter-spacing: 0.04em; vertical-align: middle;
-  animation: fill-pulse 1.8s ease-in-out infinite;
-  white-space: nowrap;
-}
-.fill-badge::before { content: '✏'; font-size: 13px; }
-@keyframes fill-pulse {
-  0%,100% { box-shadow: 0 2px 8px rgba(79,70,229,0.4); }
-  50%      { box-shadow: 0 2px 16px rgba(79,70,229,0.7); }
-}
-
 /* ── KEY BOX ── */
 .key-box {
   background: #eef2ff; border: 1.5px solid #c7d2fe;
@@ -580,95 +555,6 @@ body {
 .tag-req  { background: rgba(200,50,30,0.10); color: #c8321e; }
 .tag-once { background: rgba(232,124,30,0.10); color: #b85f10; }
 .tag-order{ background: rgba(5,150,105,0.10); color: #065f46; }
-
-/* ── OVERVIEW GRID ── */
-.ov-grid {
-  display: flex; flex-direction: column;
-  border-radius: 14px; overflow: hidden;
-  border: 1px solid var(--line); margin-bottom: 32px;
-  box-shadow: 0 4px 20px rgba(79,70,229,0.07);
-  background: var(--line);
-}
-.ov-row { display: flex; background: var(--line); gap: 2px; }
-.ov-cell {
-  flex: 1; background: var(--white); padding: 20px 14px;
-  text-align: center;
-}
-.ov-cell.ov-final {
-  flex: 1; background: #eef2ff;
-  border-top: 3px solid var(--accent);
-}
-.ov-arrow-h {
-  display: flex; align-items: center; justify-content: center;
-  background: var(--white); flex-shrink: 0;
-  width: 28px; color: var(--accent); font-size: 18px;
-  font-weight: 900; line-height: 1;
-}
-.ov-arrow-v-row {
-  display: flex; align-items: center;
-  background: var(--bg); padding: 6px 0; gap: 2px;
-}
-.ov-arrow-v-row .spacer { flex: 1; }
-.ov-arrow-v {
-  display: flex; align-items: center; justify-content: center;
-  width: 32px; height: 24px;
-  color: var(--accent); font-size: 18px;
-  font-weight: 900; line-height: 1;
-}
-.ov-final-row { display: flex; background: var(--line); gap: 2px; }
-.ov-icon { font-size: 24px; margin-bottom: 6px; }
-.ov-num {
-  font-size: 10px; font-weight: 700; color: var(--muted);
-  font-family: var(--mono); letter-spacing: 0.05em; margin-bottom: 4px;
-}
-.ov-name {
-  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
-  font-size: 14px; font-weight: 800; color: var(--ink); line-height: 1.35;
-}
-.ov-sub { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.45; }
-
-/* ── STEP4 흐름 ── */
-.step4-flow {
-  display: flex; align-items: stretch; gap: 12px; margin-bottom: 36px;
-}
-.s4f-item {
-  flex: 1; padding: 22px 18px; text-align: center;
-  background: var(--white); border: 2px solid var(--line);
-  border-radius: 12px;
-}
-.s4f-item.active {
-  background: #eef2ff; border-color: var(--accent);
-  box-shadow: 0 4px 20px rgba(79,70,229,0.10);
-}
-.s4f-item.colab-s {
-  background: #fff8f5; border-color: #c2410c;
-  box-shadow: 0 4px 20px rgba(194,65,12,0.08);
-}
-.s4f-num {
-  font-size: 11px; font-weight: 800; color: var(--muted);
-  font-family: var(--mono); letter-spacing: 0.05em; margin-bottom: 10px;
-}
-.s4f-where {
-  font-size: 11px; font-weight: 700; padding: 4px 12px;
-  border-radius: 20px; margin-bottom: 12px; display: inline-block;
-}
-.s4f-where.app {
-  background: rgba(79,70,229,0.10); color: var(--accent);
-  border: 1px solid rgba(79,70,229,0.2);
-}
-.s4f-where.colab {
-  background: rgba(194,65,12,0.10); color: #c2410c;
-  border: 1px solid rgba(194,65,12,0.2);
-}
-.s4f-title {
-  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
-  font-size: 14px; font-weight: 800; color: var(--ink); line-height: 1.55;
-}
-.s4f-arrow {
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; width: 28px; color: var(--accent);
-  font-size: 22px; font-weight: 900; line-height: 1;
-}
 
 /* ── CONCEPT BOX ── */
 .concept-box {
@@ -767,8 +653,29 @@ body {
   width: 100%;
 }
 
-/* ── 모바일 ── */
+/* ════════════════════════════════════
+   📱 모바일 뷰 최적화 (가로 스크롤 및 줄바꿈 해결)
+════════════════════════════════════ */
 @media (max-width: 768px) {
+  /* [추가] 텍스트 자연스러운 줄바꿈 및 화면 너비 고정 */
+  body, html, .main { max-width: 100vw; overflow-x: hidden; word-break: break-word; overflow-wrap: break-word; }
+
+  /* [추가] PC용 강제 줄바꿈(<br>) 무력화 */
+  .sec-desc br, .dt br, .dd br, .key-item br, .step-banner-sub br, .concept-d br, .io-val br { display: none; }
+  .mob-br { display: block !important; }
+
+  /* [추가] 표(Table)와 폴더 트리 가로 스크롤 허용 (화면 뚫림 방지) */
+  .folder-step-table { display: block; overflow-x: auto; width: 100%; white-space: nowrap; -webkit-overflow-scrolling: touch; border: 1px solid var(--line); border-radius: 8px; }
+  .folder-tree { overflow-x: auto; width: 100%; -webkit-overflow-scrolling: touch; padding: 16px; }
+  .ft-row { white-space: nowrap; }
+
+  /* [추가] 가로 배너 및 박스 세로 정렬 */
+  .step-banner, .prep-banner { flex-direction: column; align-items: flex-start; gap: 12px; padding: 20px 16px; }
+  .step-banner-divider, .prep-banner-divider { display: none; }
+  .step-banner-info, .prep-banner-info { width: 100%; min-width: 0; }
+  .concept-row { flex-direction: column; gap: 12px; }
+
+  /* 기존 모바일 스타일 */
   .sidebar {
     transform: translateX(-100%); width: 290px;
     z-index: 300; box-shadow: 4px 0 28px rgba(14,11,42,0.2);
@@ -776,44 +683,48 @@ body {
   .sidebar.open { transform: translateX(0); }
   .main { margin-left: 0; }
   .hamburger { display: flex; }
-  .top-bar { padding: 0 16px; height: 56px; gap: 10px; }
-  .top-bar-title { font-size: 14px; }
+  .top-bar { padding: 0 16px; height: 56px; gap: 10px; width: 100%; box-sizing: border-box; }
+  .top-bar-title { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .top-bar-divider, .breadcrumb, .top-bar-ver { display: none; }
-  .content { padding: 24px 18px 80px; }
+  .content { padding: 24px 18px 80px; width: 100%; box-sizing: border-box; }
+  
   body { font-size: 16px; }
   .sec-title { font-size: 21px; }
-  .sec-desc { font-size: 15px; margin-left: 10px; max-width: 100%; }
-  .dt { font-size: 16px; }
+  .sec-desc { font-size: 15px; margin-left: 0; width: 100%; }
+  .dt { font-size: 16px; line-height: 1.5; }
   .dd, .dd li { font-size: 15px; }
   .key-item { font-size: 15px; }
-  .step-banner { padding: 14px 16px; margin: 44px 0 28px; gap: 14px; border-radius: 10px; }
   .step-banner-title { font-size: 16px; }
-  .step-banner-sub { font-size: 11px; }
+  .step-banner-sub { font-size: 13px; line-height: 1.5; }
   .step-banner-badge { font-size: 11px; padding: 5px 10px; }
-  .prep-banner { padding: 14px 16px; margin: 0 0 28px; gap: 14px; border-radius: 10px; }
   .prep-banner-title { font-size: 16px; }
-  .desc-row { padding: 12px 14px; gap: 10px; }
-  .dbadge { width: 30px; height: 30px; font-size: 13px; }
-  .key-box { padding: 14px 16px; }
+  .desc-row { padding: 16px 14px; gap: 12px; flex-direction: column; }
+  .dbadge { width: 30px; height: 30px; font-size: 13px; margin-bottom: 4px; }
+  .key-box { padding: 16px; }
   .section { margin-bottom: 48px; }
-  .folder-tree { padding: 16px 18px; }
-  .ft-row { font-size: 12px; }
-  .io-box { flex-direction: column; }
+  .ft-row { font-size: 13px; }
+  
+  .io-box { flex-direction: column; align-items: stretch; }
+  .io-half { width: 100%; box-sizing: border-box; }
   .io-half + .io-half { border-left: none; border-top: 1px solid var(--line); }
   .step4-flow { flex-direction: column; }
-  .concept-box { padding: 20px 18px; }
-  .top-bar { padding: 0 14px; height: 56px; gap: 8px; left: 0; }
+  .concept-box { padding: 20px 16px; }
+  .top-bar { left: 0; }
   .main { padding-top: 56px; }
-  .pipe-row-2, .pipe-row-3 { flex-direction: column; align-items: center; }
-  .pipe-arrow-h { transform: rotate(90deg); padding: 4px 0; }
-  .pipe-card.pipe-parallel { max-width: 320px; width: 100%; }
+  
+  .pipe-row-2, .pipe-row-3 { flex-direction: column; align-items: center; width: 100%; }
+  .pipe-arrow-h { transform: rotate(90deg); padding: 4px 0; height: 28px; width: auto; }
+  .pipe-card.pipe-parallel { max-width: 100%; width: 100%; box-sizing: border-box; }
+  .pipe-card { max-width: 100%; box-sizing: border-box; }
+
+  footer { margin-left: 0 !important; padding: 24px 20px !important; width: 100%; box-sizing: border-box; }
+  footer > div { flex-direction: column; text-align: center; }
 }
 </style>
 </head>
 <body>
 <div class="sb-overlay" id="sbOverlay"></div>
 
-<!-- ═══ SIDEBAR ═══ -->
 <aside class="sidebar" id="sidebar">
   <div class="sb-head">
     <a href="index.html" class="sb-logo">AutoTube <span>Pro</span></a>
@@ -831,7 +742,7 @@ body {
     <div class="nav-grp">
       <div class="nav-grp-lbl">STEP 1 — 대본/기획</div>
       <a href="#s1a" class="nav-a" data-sid="s1a"><span class="nav-txt">파일 탐색기 &amp; 텍스트 에디터</span></a>
-      <a href="#s1b" class="nav-a" data-sid="s1b"><span class="nav-txt">엑셀 그리드 편집</span></a>
+      <a href="#s1b" class="nav-a" data-sid="s1b"><span class="nav-txt">엑셀 그리 편집</span></a>
     </div>
     <div class="nav-grp">
       <div class="nav-grp-lbl">STEP 2 — 대본 엑셀 준비</div>
@@ -860,7 +771,6 @@ body {
   <div class="sb-foot"><a href="index.html" class="sb-back">← 랜딩페이지로 돌아가기</a></div>
 </aside>
 
-<!-- ═══ MAIN ═══ -->
 <div class="main">
   <div class="top-bar">
     <div class="top-bar-left">
@@ -874,16 +784,13 @@ body {
 
   <div class="content">
 
-    <!-- ✅ SEO: h1 추가 — 시각적으로 숨기되 크롤러에 노출 -->
     <h1 style="font-family:'Pretendard','Noto Sans KR',sans-serif; font-size:clamp(22px,3vw,32px); font-weight:900; color:var(--ink); letter-spacing:-0.03em; line-height:1.3; margin-bottom:32px;">
       AutoTube Pro 사용 설명서 — 캡컷 자동화 6단계 완전 가이드
     </h1>
 
-    <!-- ────── OVERVIEW ────── -->
     <section id="s-ov" class="section">
       <div class="sec-hd">
         <div class="step-chip" style="background:#312e81;"></div>
-        <!-- ✅ SEO: div → h2 -->
         <h2 class="sec-title">전체 공정 개요</h2>
       </div>
       <div class="sec-desc">
@@ -953,7 +860,6 @@ body {
       </div>
     </section>
 
-    <!-- ────── 시작 전 준비 ────── -->
     <div class="prep-banner">
       <span class="prep-banner-badge">준비</span>
       <div class="prep-banner-divider"></div>
@@ -1032,7 +938,6 @@ body {
       </div>
     </section>
 
-    <!-- ██ STEP 1 배너 ██ -->
     <div class="step-banner">
       <span class="step-banner-badge">STEP 1</span>
       <div class="step-banner-divider"></div>
@@ -1057,7 +962,6 @@ body {
         <div class="io-half io-out"><div class="io-lbl">📤 이 단계가 끝나면</div><div class="io-val">올바른 구조의 엑셀 파일 (.xlsx)</div></div>
       </div>
       <div class="img-box">
-        <!-- ✅ SEO: alt 보강 -->
         <img src="그림3.png" alt="AutoTube Pro 엑셀 파일 필수 구조 — 이미지 생성 프롬프트 열과 성우녹음 시트 규칙">
         <div class="img-cap">▲ MS Excel — 필수 시트명 및 열 제목 확인 화면 (그림3)</div>
       </div>
@@ -1077,7 +981,6 @@ body {
       </div>
     </section>
 
-    <!-- ██ STEP 2 배너 ██ -->
     <div class="step-banner">
       <span class="step-banner-badge">STEP 2</span>
       <div class="step-banner-divider"></div>
@@ -1144,7 +1047,6 @@ body {
       </div>
     </section>
 
-    <!-- ██ STEP 3 배너 ██ -->
     <div class="step-banner">
       <span class="step-banner-badge">STEP 3</span>
       <div class="step-banner-divider"></div>
@@ -1176,9 +1078,12 @@ body {
       <div class="desc-list">
         <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">작업 파일 경로 &amp; 캐릭터 이미지 경로</div><div class="dd"><ul><li><strong>작업 파일 경로</strong>: 이미지를 생성할 엑셀 대본 파일을 선택합니다. <em>(<code>1_대본\</code> 폴더 안의 .xlsx 파일)</em></li><li><strong>캐릭터 이미지</strong>: 영상 전체 화풍과 캐릭터를 통일하기 위한 기준 이미지(.png)입니다. <em>AI가 이 이미지를 참고해 일관된 화풍으로 생성합니다.</em></li></ul></div></div></div>
         <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">생성 범위 설정 &amp; 끝번호 확인</div><div class="dd"><ul><li>엑셀 파일 지정 시 시작~끝 번호가 자동으로 채워집니다.</li><li><strong>개별생성</strong>: 특정 이미지만 다시 만들 때 번호를 직접 입력합니다.</li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">구글 로그인 / 이미지 자동 생성 시작 / 작업 중지</div><div class="dd"><ul><li><strong>구글 로그인</strong>: Gemini AI는 Google 계정 기반으로 동작하므로 작업 전 1회 로그인이 필요합니다. 이후 자동 유지됩니다.</li><li><strong>이미지 자동 생성 시작</strong>: 버튼 클릭 후 자리를 비워도 자동으로 진행됩니다.</li><li>완성 이미지는 <code>2_이미지\</code> 폴더에 <code>01.png</code>, <code>02.png</code> 형식으로 자동 저장됩니다.</li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">진행상태 패널</div><div class="dd"><ul><li>전체 / 현재 진행 / 남은 작업 / 진행률(%)을 실시간 표시합니다.</li></ul></div></div></div>
-        <div class="desc-row"><div class="dbadge">5</div><div class="dc"><div class="dt">실시간 이미지 미리보기</div><div class="dd"><ul><li>생성 완료된 이미지가 하단에 즉시 표시됩니다. 품질을 실시간으로 확인하세요.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">무료 이미지 생성 - 제미나이웹 컨트롤 방식 (체크박스로 선택)</div><div class="dd"><ul><li><strong>구글 로그인</strong>: Gemini AI는 Google 계정 기반으로 동작하므로 작업 전 1회 로그인이 필요합니다. 이후 자동 유지됩니다.</li><li><strong>이미지 자동 생성 시작</strong>: 버튼 클릭 후 자리를 비워도 자동으로 진행됩니다.</li><li>완성 이미지는 <code>2_이미지\</code> 폴더에 <code>01.png</code>, <code>02.png</code> 형식으로 자동 저장됩니다.</li></ul></div></div></div>
+        
+        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">유료 이미지 생성 - 구글 API 이용 방식 (체크박스로 선택)</div><div class="dd"><ul><li><strong>구글 API 키 저장 파일 지정</strong>: 구글에서 생성하신 개인별 API키 딱 한줄만 텍스트 파일으로 저장하신후, 파일을 선택해 주세요. (API Key 생성 방법은 AI를 통해 확인 하세요) </li><li><strong>이미지 자동 생성 시작</strong>: 버튼 클릭 후 자리를 비워도 자동으로 진행됩니다.</li><li>완성 이미지는 <code>2_이미지\</code> 폴더에 <code>01.png</code>, <code>02.png</code> 형식으로 자동 저장됩니다.</li></ul></div></div></div>
+        
+        <div class="desc-row"><div class="dbadge">5</div><div class="dc"><div class="dt">진행상태 패널</div><div class="dd"><ul><li>전체 / 현재 진행 / 남은 작업 / 진행률(%)을 실시간 표시합니다.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">6</div><div class="dc"><div class="dt">실시간 이미지 미리보기</div><div class="dd"><ul><li>생성 완료된 이미지가 하단에 즉시 표시됩니다. 품질을 실시간으로 확인하세요.</li></ul></div></div></div>
       </div>
       
       <div class="key-box">
@@ -1202,7 +1107,6 @@ body {
       </div>
     </section>
 
-    <!-- ██ STEP 4 배너 ██ -->
     <div class="step-banner">
       <span class="step-banner-badge">STEP 4</span>
       <div class="step-banner-divider"></div>
@@ -1336,7 +1240,6 @@ body {
       👉 <strong>종료 방법:</strong> 상단 메뉴 <strong>[런타임] ➔ [런타임 연결 해제 및 삭제]</strong>
     </div>
 
-    <!-- ██ STEP 5 배너 ██ -->
     <div class="step-banner">
       <span class="step-banner-badge">STEP 5</span>
       <div class="step-banner-divider"></div>
@@ -1377,7 +1280,6 @@ body {
       </div>
     </section>
 
-    <!-- ██ STEP 6 배너 ██ -->
     <div class="step-banner">
       <span class="step-banner-badge">STEP 6</span>
       <div class="step-banner-divider"></div>
