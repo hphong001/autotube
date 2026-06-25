@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AutoTube Pro Documentation — Complete 6-Step Guide to CapCut Automation</title>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H5BXLB2FQQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-H5BXLB2FQQ');
+</script>
+
+<meta name="description" content="Official user manual for AutoTube Pro CapCut automation pipeline. Step-by-step guide covering Excel script mapping, automated Gemini image generation, zero-cost Qwen3-TTS engine configuration, Whisper timecode extraction, and 1-second native CapCut assembly.">
+<meta name="keywords" content="AutoTube Pro manual, CapCut automation guide, YouTube video automation, Whisper subtitle timecode, Gemini batch image generation, AI TTS configuration, automated video editor pipeline, Windows RPA tools">
+<meta name="robots" content="index, follow">
+<meta name="author" content="AutoTube Pro">
+
+<link rel="canonical" href="https://aibaselab.com/en/manual.html">
+<link rel="alternate" hreflang="ko" href="https://aibaselab.com/manual.html">
+<link rel="alternate" hreflang="en" href="https://aibaselab.com/en/manual.html">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="AutoTube Pro Documentation — Complete 6-Step Guide to CapCut Automation">
+<meta property="og:description" content="Step-by-step technical guide covering Excel script mapping, automated Gemini image generation, Qwen3-TTS system integration, Whisper timecode extraction, and instant CapCut assembly.">
+<meta property="og:url" content="https://aibaselab.com/en/manual.html">
+<meta property="og:site_name" content="AutoTube Pro">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://aibaselab.com/autotube.jpg">
+<meta property="og:image:width" content="1920">
+<meta property="og:image:height" content="1080">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AutoTube Pro Documentation — Complete 6-Step Guide to CapCut Automation">
+<meta name="twitter:description" content="Step-by-step technical guide covering Excel script mapping, automated Gemini image generation, Qwen3-TTS system integration, Whisper timecode extraction, and instant CapCut assembly.">
+<meta name="twitter:image" content="https://aibaselab.com/그림8.png">
+
+<meta name="theme-color" content="#4f46e5">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Automate YouTube Video Production with AutoTube Pro",
+  "description": "A comprehensive 6-step framework to convert a single structured Excel data sheet into a fully populated, time-synchronized CapCut timeline via localized and cloud AI engines.",
+  "url": "https://aibaselab.com/en/manual.html",
+  "tool": [
+    { "@type": "HowToTool", "name": "AutoTube Pro" },
+    { "@type": "HowToTool", "name": "Google Gemini" },
+    { "@type": "HowToTool", "name": "Google Colab (Qwen3-TTS Cluster)" },
+    { "@type": "HowToTool", "name": "OpenAI Whisper Engine" },
+    { "@type": "HowToTool", "name": "CapCut Desktop Application" },
+    { "@type": "HowToTool", "name": "Microsoft Excel / CSV Grid" }
+  ],
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Directory Architecture Setup",
+      "text": "Extract the deployed core runtime package directly into your local root storage directory (C: Drive). This structural script populates the designated 1_Script, 2_Images, and 3_Audio_Subtitles target folders automatically."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Excel Script File Initialization",
+      "text": "Map your LLM prompt assets directly into the template matrix. Ensuring structural uniformity in the 'Image Prompt' column definitions and the dedicated 'Voiceover' data sheet is mandatory."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Sequential Automated Image Generation",
+      "text": "AutoTube Pro reads your layout scripts line-by-line, triggering independent cloud tasks to generate high-fidelity assets sequentially and save them instantly to the 2_Images directory."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": "Voiceover Tracking & TTS Render",
+      "text": "Spin up your remote Qwen3-TTS cluster via Google Colab. The client transmits your structured voiceover matrix strings to synthesize natural audio files, saving the outputs to the 3_Audio_Subtitles container."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "name": "Whisper Timecode Synch Calculations",
+      "text": "Run localized AI acoustic modeling on your consolidated master track. The pipeline automatically calculates exact subtitle boundaries, outputting standard SRT layers and injecting timecodes back into the active spreadsheet."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 6,
+      "name": "Unified Assets QC & CapCut Assembly",
+      "text": "Execute a synchronized preview quality control check over all assets. Click deploy to inject all computed layout structures directly into a native CapCut project matrix in under 1 second."
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ────────────────────────────────────
+    TOKENS — Deep Navy Theme Integration
+──────────────────────────────────── */
+:root {
+  --bg:    #f0f4ff;
+  --white: #ffffff;
+  --ink:    #1e1b4b;
+  --ink2:  #312e81;
+  --gray:  #4b5563;
+  --muted: #6b7280;
+  --line:  #c7d2fe;
+  --accent:#4f46e5;
+  --accent2:#6366f1;
+  --red:   #c8321e;
+  --green: #059669;
+  --sans:  'Inter', 'Pretendard', sans-serif;
+  --body:  'Inter', 'Pretendard', sans-serif;
+  --mono:  'DM Mono', monospace;
+  --num:   'Inter', 'DM Mono', monospace;
+  --sw: 280px;
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; overflow-x:hidden; }
+body {
+  font-family: var(--body);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: var(--sw);
+  background: var(--white);
+  border-right: 1px solid var(--line);
+  box-shadow: 2px 0 20px rgba(79,70,229,0.08);
+  display: flex; flex-direction: column;
+  overflow: hidden; z-index: 200;
+  transition: transform 0.3s ease;
+}
+.sb-head {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--line);
+  background: #1e1b4b;
+  flex-shrink: 0;
+}
+.sb-logo {
+  font-family: var(--sans);
+  font-size: 18px; font-weight: 900;
+  color: #e0e7ff; text-decoration: none;
+  letter-spacing: -0.03em;
+  display: flex; align-items: center; gap: 8px;
+}
+.sb-logo span { color: #c8321e; }
+.sb-sub {
+  font-size: 11px; color: rgba(199,210,254,0.45);
+  margin-top: 4px; font-weight: 500;
+  font-family: var(--mono);
+}
+.sb-scroll { flex: 1; overflow-y: auto; padding: 8px 0 20px; }
+.sb-scroll::-webkit-scrollbar { width: 4px; }
+.sb-scroll::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+.nav-grp { margin-top: 20px; margin-bottom: 2px; }
+.nav-grp:first-child { margin-top: 8px; }
+.nav-grp-lbl {
+  font-family: var(--sans);
+  font-size: 11px; font-weight: 800;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted); padding: 0 18px 8px;
+}
+.nav-a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 14px 9px 22px;
+  font-size: 13px; font-weight: 500;
+  color: var(--gray); text-decoration: none;
+  cursor: pointer; transition: all 0.12s;
+  border-left: 3px solid transparent;
+  line-height: 1.4;
+}
+.nav-a:hover { background: var(--bg); color: var(--ink); }
+.nav-a.on {
+  background: rgba(79,70,229,0.06);
+  color: var(--accent); border-left-color: var(--accent);
+  font-weight: 700;
+}
+.nav-a::before {
+  content: ''; width: 5px; height: 5px;
+  border-radius: 50%; background: var(--line);
+  flex-shrink: 0; transition: background 0.12s;
+}
+.nav-a.on::before { background: var(--accent); }
+.nav-txt { flex: 1; font-size: 13px; }
+.sb-foot {
+  padding: 12px 16px; border-top: 1px solid var(--line);
+  flex-shrink: 0; background: #eef2ff;
+}
+.sb-back {
+  display: block; text-align: center;
+  background: var(--white); border: 1px solid var(--line);
+  color: var(--muted); padding: 9px;
+  border-radius: 7px; font-size: 12px; font-weight: 600;
+  text-decoration: none; transition: all 0.12s;
+}
+.sb-back:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── HAMBURGER ── */
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer;
+  padding: 6px; border-radius: 6px; flex-shrink: 0;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--ink); border-radius: 2px; transition: all 0.25s;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.sb-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(14,11,42,0.55); z-index: 199;
+  backdrop-filter: blur(3px);
+}
+.sb-overlay.open { display: block; }
+
+/* ── MAIN ── */
+.main { margin-left: var(--sw); min-height: 100vh; padding-top: 62px; }
+.top-bar {
+  position: fixed; top: 0; left: var(--sw); right: 0; z-index: 100;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+  padding: 0 36px; height: 62px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.top-bar-left { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; }
+.top-bar-title {
+  font-family: var(--sans);
+  font-size: 18px; font-weight: 800; color: var(--ink);
+  letter-spacing: -0.03em; white-space: nowrap;
+}
+.top-bar-divider { width: 1px; height: 20px; background: var(--line); flex-shrink: 0; }
+.breadcrumb { font-size: 13px; color: var(--muted); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.breadcrumb strong { color: var(--accent); font-weight: 700; }
+.top-bar-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.top-bar-home {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 700; color: var(--accent);
+  background: #eef2ff; border: 1px solid var(--line);
+  padding: 6px 14px; border-radius: 6px;
+  text-decoration: none; white-space: nowrap;
+  transition: background .15s, border-color .15s;
+}
+.top-bar-home:hover { background: #e0e7ff; border-color: var(--accent); }
+
+/* Language Switcher Elements styling */
+.lang-switcher { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; background: var(--tinted); padding: 6px 12px; border-radius: 20px; border: 1px solid var(--line); margin-right: 4px; }
+.lang-switcher a { text-decoration: none; color: var(--muted); transition: color 0.2s; }
+.lang-switcher a:hover { color: var(--ink); }
+.lang-switcher a.active { color: var(--red); pointer-events: none; }
+.lang-divider { color: var(--line); font-weight: 400; }
+
+.content { padding: 52px 52px 120px; max-width: 900px; }
+
+/* ── STEP BANNER ── */
+.step-banner {
+  display: flex; align-items: center; gap: 20px;
+  margin: 68px 0 48px; padding: 20px 28px;
+  background: #1e1b4b;
+  border-radius: 12px;
+  border: 1px solid #312e81;
+}
+.step-banner-badge {
+  background: var(--accent); color: #fff;
+  font-size: 12px; font-weight: 900;
+  font-family: var(--mono); letter-spacing: 0.08em;
+  padding: 6px 16px; border-radius: 6px;
+  flex-shrink: 0; white-space: nowrap;
+}
+.step-banner-divider {
+  width: 1px; height: 36px;
+  background: rgba(199,210,254,0.15); flex-shrink: 0;
+}
+.step-banner-info { flex: 1; }
+.step-banner-title {
+  font-family: var(--sans);
+  font-size: 19px; font-weight: 900;
+  color: #e0e7ff; letter-spacing: -0.03em; line-height: 1.2;
+}
+.step-banner-sub {
+  font-size: 13px; color: rgba(199,210,254,0.5);
+  margin-top: 4px; font-weight: 500;
+}
+
+/* ── PREP BANNER ── */
+.prep-banner {
+  display: flex; align-items: center; gap: 20px;
+  margin: 0 0 48px; padding: 20px 28px;
+  background: #e8edff;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+.prep-banner-badge {
+  background: #312e81; color: #c7d2fe;
+  font-size: 12px; font-weight: 900;
+  font-family: var(--mono); letter-spacing: 0.08em;
+  padding: 6px 16px; border-radius: 6px;
+  flex-shrink: 0; white-space: nowrap;
+}
+.prep-banner-divider {
+  width: 1px; height: 36px;
+  background: rgba(79,70,229,0.2); flex-shrink: 0;
+}
+.prep-banner-info { flex: 1; }
+.prep-banner-title {
+  font-family: var(--sans);
+  font-size: 19px; font-weight: 900;
+  color: #1e1b4b; letter-spacing: -0.03em; line-height: 1.2;
+}
+
+/* ── SECTION ── */
+.section { margin-bottom: 76px; scroll-margin-top: 84px; }
+.sec-hd { display: flex; align-items: stretch; gap: 18px; margin-bottom: 14px; }
+.step-chip {
+  width: 5px; min-width: 5px; border-radius: 3px;
+  align-self: stretch; flex-shrink: 0;
+  margin-top: 4px; margin-bottom: 4px;
+}
+.sec-title {
+  font-family: var(--sans);
+  font-size: 26px; font-weight: 900;
+  color: var(--ink); letter-spacing: -0.03em; line-height: 1.35;
+  margin: 0;
+}
+.sec-desc {
+  font-size: 17px; color: var(--gray); line-height: 1.9;
+  margin-left: 23px; margin-bottom: 24px; max-width: 720px;
+}
+
+/* ── IO BOX ── */
+.io-box {
+  display: flex; align-items: center; gap: 0;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 10px; overflow: hidden; margin-bottom: 28px;
+}
+.io-half { flex: 1; padding: 14px 20px; }
+.io-half + .io-half { border-left: 1px solid var(--line); }
+.io-lbl {
+  font-size: 11px; font-weight: 800; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 5px;
+}
+.io-in .io-lbl { color: var(--accent); }
+.io-out .io-lbl { color: #059669; }
+.io-val { font-size: 14px; color: var(--ink); font-weight: 600; line-height: 1.6; }
+
+/* ── IMAGE BOX ── */
+.img-box {
+  border: 1px solid var(--line); border-radius: 12px;
+  overflow: hidden; margin-bottom: 32px;
+  box-shadow: 0 4px 20px rgba(79,70,229,0.07);
+}
+.img-box img { display: block; width: 100%; height: auto; }
+.img-cap {
+  background: #eef2ff; border-top: 1px solid var(--line);
+  padding: 8px 18px; font-size: 13px; color: var(--muted); font-weight: 600;
+}
+.img-note {
+  background: #fffbeb; border: 1px solid #fde68a;
+  border-radius: 0 0 12px 12px; padding: 10px 18px;
+  font-size: 14px; color: #92400e; font-weight: 600;
+  margin-top: -1px; margin-bottom: 32px;
+}
+
+/* ── FOLDER TREE ── */
+.folder-tree {
+  background: #14113a; border-radius: 14px;
+  padding: 24px 28px; margin-bottom: 24px;
+  border: 1px solid #2e2a5a;
+}
+.ft-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 3px 0; font-family: var(--mono);
+  font-size: 14.5px; line-height: 1.6;
+}
+.ft-indent {
+  margin-left: 22px; padding-left: 14px;
+  border-left: 1px dashed #2e2a5a;
+}
+.ft-icon { font-size: 15px; flex-shrink: 0; }
+.ft-name { color: #e0e7ff; font-weight: 500; }
+.ft-path { color: #818cf8; font-size: 13px; }
+.ft-note { color: #4c4982; font-size: 13px; font-family: var(--body); margin-left: 6px; }
+.ft-req {
+  color: #f87171; font-size: 12px; font-weight: 700;
+  font-family: var(--body);
+  background: rgba(248,113,113,0.12); padding: 1px 8px;
+  border-radius: 4px; margin-left: 6px;
+}
+.ft-badge {
+  font-size: 11px; font-weight: 800; padding: 2px 8px;
+  border-radius: 4px; font-family: var(--body);
+  margin-left: 8px; white-space: nowrap; flex-shrink: 0;
+}
+.ft-s1  { background: rgba(79,70,229,0.18); color: #a5b4fc; }
+.ft-s3  { background: rgba(180,83,9,0.2);   color: #fcd34d; }
+.ft-s45 { background: rgba(194,65,12,0.2);  color: #fdba74; }
+
+/* ── FOLDER STEP TABLE ── */
+.folder-step-table {
+  width: 100%; border-collapse: collapse;
+  margin-bottom: 24px; font-size: 15px;
+}
+.folder-step-table th {
+  background: #1e1b4b; color: #c7d2fe;
+  padding: 10px 18px; text-align: left;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.04em;
+}
+.folder-step-table td {
+  padding: 12px 18px; border-bottom: 1px solid var(--line);
+  background: var(--white); vertical-align: middle;
+}
+.folder-step-table tr:last-child td { border-bottom: none; }
+.folder-step-table .fd-name {
+  font-family: var(--mono); font-size: 14px;
+  font-weight: 700; color: var(--ink);
+}
+.folder-step-table .fd-step span {
+  display: inline-block; font-size: 11px; font-weight: 800;
+  padding: 2px 8px; border-radius: 4px; margin: 2px 3px 2px 0;
+}
+
+/* ── DESCRIPTION LIST ── */
+.desc-sec-title {
+  font-size: 12px; font-weight: 800; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.desc-sec-title::before { content:''; width: 18px; height: 2px; background: var(--line); }
+.desc-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.desc-row {
+  display: flex; align-items: flex-start; gap: 16px;
+  background: var(--white); border: 1px solid var(--line);
+  border-radius: 10px; padding: 18px 22px;
+  transition: border-color 0.12s;
+}
+.desc-row:hover { border-color: #a5b4fc; }
+.dbadge {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--red); display: flex;
+  align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 900; color: white;
+  flex-shrink: 0; margin-top: 1px;
+  font-family: var(--num);
+  box-shadow: 0 2px 8 rgba(200,50,30,0.28);
+}
+.dc { flex: 1; min-width: 0; }
+.dt {
+  font-family: var(--sans);
+  font-size: 18px; font-weight: 800; color: var(--ink);
+  margin-bottom: 5px;
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: wrap; line-height: 1.4;
+  word-break: normal; overflow-wrap: break-word;
+}
+.dd {
+  font-size: 16px; color: var(--gray);
+  line-height: 1.85; word-break: normal; overflow-wrap: break-word;
+}
+.dd ul { padding-left: 18px; list-style: none; margin-top: 6px; display: flex; flex-direction: column; gap: 6px; }
+.dd li { position: relative; font-size: 16px; line-height: 1.85; }
+.dd li::before {
+  content: '·'; color: var(--accent);
+  font-weight: 900; position: absolute;
+  left: -15px; top: 2px;
+}
+.dd code {
+  background: #eef2ff; color: var(--accent);
+  padding: 1px 6px; border-radius: 4px;
+  font-family: var(--mono); font-size: 14px;
+}
+.dd strong { color: var(--ink); font-weight: 700; }
+.dd em { font-style: normal; color: var(--muted); font-size: 15px; }
+
+/* ── KEY DESCRIPTION BOX ── */
+.key-box {
+  background: #eef2ff; border: 1.5px solid #c7d2fe;
+  border-radius: 12px; padding: 20px 24px; margin-top: 8px;
+}
+.key-box-title {
+  font-family: var(--sans);
+  font-size: 14px; font-weight: 900; color: var(--accent);
+  letter-spacing: 0.04em; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.key-box-title::before {
+  content: ''; width: 16px; height: 3px;
+  background: var(--accent); border-radius: 2px; flex-shrink: 0;
+}
+.key-list { display: flex; flex-direction: column; gap: 10px; }
+.key-item {
+  position: relative; padding-left: 22px;
+  display: block; font-size: 16px;
+  color: var(--ink2); line-height: 1.8;
+}
+.key-item::before {
+  content: '✓'; color: var(--accent);
+  font-weight: 900; position: absolute;
+  left: 0; top: 3px; font-size: 15px; line-height: 1;
+}
+.key-item strong { color: var(--accent); font-weight: 800; }
+.key-item em { font-style: normal; color: var(--gray); font-size: 15px; }
+
+/* ── FLAGS/TAGS ── */
+.tag {
+  display: inline-flex; align-items: center;
+  font-size: 12px; font-weight: 800;
+  padding: 2px 8px; border-radius: 4px;
+  letter-spacing: 0.03em; vertical-align: middle;
+}
+.tag-req  { background: rgba(200,50,30,0.10); color: #c8321e; }
+.tag-once { background: rgba(232,124,30,0.10); color: #b85f10; }
+.tag-order{ background: rgba(5,150,105,0.10); color: #065f46; }
+
+/* ── CORE CONCEPT BOX ── */
+.concept-box {
+  background: var(--white); border: 1px solid var(--line);
+  border-radius: 14px; padding: 28px 32px; margin-bottom: 32px;
+}
+.concept-box-title {
+  font-size: 12px; font-weight: 800; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+}
+.concept-box-title::before { content: ''; width: 16px; height: 2px; background: var(--line); }
+.concept-row { display: flex; gap: 16px; align-items: flex-start; }
+.concept-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.concept-t {
+  font-family: var(--sans);
+  font-size: 17px; font-weight: 800; color: var(--ink); margin-bottom: 5px;
+}
+.concept-d { font-size: 15px; color: var(--gray); line-height: 1.8; }
+.concept-d code {
+  background: #eef2ff; color: var(--accent);
+  padding: 1px 6px; border-radius: 4px;
+  font-family: var(--mono); font-size: 13px;
+}
+.concept-d strong { color: var(--ink); font-weight: 700; }
+.concept-flow {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 12px; padding: 12px 18px;
+  background: var(--bg); border-radius: 8px;
+  font-size: 14px; font-weight: 600; color: var(--gray); flex-wrap: wrap;
+}
+.concept-flow span.arr { color: var(--accent); }
+.concept-divider { height: 1px; background: var(--line); margin: 20px 0; }
+
+/* ── AUTOMATION PIPELINE GRAPH ── */
+.pipeline-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 0; margin-bottom: 32px;
+}
+.pipe-row {
+  display: flex; flex-direction: column;
+  align-items: center; width: 100%;
+}
+.pipe-row-2 {
+  flex-direction: row; justify-content: center;
+  gap: 2px; width: 100%;
+}
+.pipe-row-3 {
+  flex-direction: row; justify-content: center;
+  gap: 2px; width: 100%;
+}
+.pipe-card {
+  background: var(--white); border: 1px solid var(--line);
+  border-radius: 12px; padding: 20px 18px; text-align: center;
+  width: 100%; max-width: 280px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  transition: border-color .15s;
+}
+.pipe-card:hover { border-color: #a5b4fc; }
+.pipe-card.pipe-prep { background: #eef2ff; border-color: #c7d2fe; max-width: 320px; }
+.pipe-card.pipe-parallel { flex: 1; max-width: none; border-radius: 10px; }
+.pipe-card.pipe-final {
+  background: #1e1b4b; border-color: #c8321e;
+  max-width: 360px; padding: 24px 32px;
+}
+.pipe-card.pipe-final .pipe-name { color: #e0e7ff; }
+.pipe-card.pipe-final .pipe-sub  { color: rgba(199,210,254,.6); }
+.pipe-badge {
+  font-family: var(--mono); font-size: 11px; font-weight: 900;
+  letter-spacing: .06em; padding: 3px 12px;
+  border-radius: 20px; margin-bottom: 2px;
+}
+.pipe-icon { font-size: 26px; line-height: 1; }
+.pipe-icon-lg { font-size: 34px; line-height: 1; }
+.pipe-name {
+  font-family: var(--sans);
+  font-size: 14px; font-weight: 800; color: var(--ink); line-height: 1.35;
+}
+.pipe-sub { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.pipe-arrow {
+  font-size: 20px; color: var(--accent); font-weight: 900;
+  padding: 8px 0; line-height: 1;
+}
+.pipe-arrow-h {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; color: var(--accent); font-weight: 900;
+  padding: 0 6px; flex-shrink: 0;
+}
+.pipe-arrow-center {
+  font-size: 20px; color: var(--accent); font-weight: 900;
+  padding: 8px 0; text-align: center; line-height: 1;
+  width: 100%;
+}
+
+/* ════════════════════════════════════
+    MOBILE VIEW RENDER OPTIMIZATION
+════════════════════════════════════ */
+@media (max-width: 768px) {
+  body, html, .main { max-width: 100vw; overflow-x: hidden; word-break: break-word; overflow-wrap: break-word; }
+
+  .sec-desc br, .dt br, .dd br, .key-item br, .step-banner-sub br, .concept-d br, .io-val br { display: none; }
+  .mob-br { display: block !important; }
+
+  .folder-step-table { display: block; overflow-x: auto; width: 100%; white-space: nowrap; -webkit-overflow-scrolling: touch; border: 1px solid var(--line); border-radius: 8px; }
+  .folder-tree { overflow-x: auto; width: 100%; -webkit-overflow-scrolling: touch; padding: 16px; }
+  .ft-row { white-space: nowrap; }
+
+  .step-banner, .prep-banner { flex-direction: column; align-items: flex-start; gap: 12px; padding: 20px 16px; }
+  .step-banner-divider, .prep-banner-divider { display: none; }
+  .step-banner-info, .prep-banner-info { width: 100%; min-width: 0; }
+  .concept-row { flex-direction: column; gap: 12px; }
+
+  .sidebar {
+    transform: translateX(-100%); width: 290px;
+    z-index: 300; box-shadow: 4px 0 28px rgba(14,11,42,0.2);
+  }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .hamburger { display: flex; }
+  .top-bar { padding: 0 16px; height: 56px; gap: 10px; width: 100%; box-sizing: border-box; }
+  .top-bar-title { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .top-bar-divider, .breadcrumb { display: none; }
+  .content { padding: 24px 18px 80px; width: 100%; box-sizing: border-box; }
+  
+  body { font-size: 16px; }
+  .sec-title { font-size: 21px; }
+  .sec-desc { font-size: 15px; margin-left: 0; width: 100%; }
+  .dt { font-size: 16px; line-height: 1.5; }
+  .dd, .dd li { font-size: 15px; }
+  .key-item { font-size: 15px; }
+  .step-banner-title { font-size: 16px; }
+  .step-banner-sub { font-size: 13px; line-height: 1.5; }
+  .step-banner-badge { font-size: 11px; padding: 5px 10px; }
+  .prep-banner-title { font-size: 16px; }
+  .desc-row { padding: 16px 14px; gap: 12px; flex-direction: column; }
+  .dbadge { width: 30px; height: 30px; font-size: 13px; margin-bottom: 4px; }
+  .key-box { padding: 16px; }
+  .section { margin-bottom: 48px; }
+  .ft-row { font-size: 13px; }
+  
+  .io-box { flex-direction: column; align-items: stretch; }
+  .io-half { width: 100%; box-sizing: border-box; }
+  .io-half + .io-half { border-left: none; border-top: 1px solid var(--line); }
+  .concept-box { padding: 20px 16px; }
+  .top-bar { left: 0; }
+  .main { padding-top: 56px; }
+  
+  .pipe-row-2, .pipe-row-3 { flex-direction: column; align-items: center; width: 100%; }
+  .pipe-arrow-h { transform: rotate(90deg); padding: 4px 0; height: 28px; width: auto; }
+  .pipe-card.pipe-parallel { max-width: 100%; width: 100%; box-sizing: border-box; }
+  .pipe-card { max-width: 100%; box-sizing: border-box; }
+
+  footer { margin-left: 0 !important; padding: 24px 20px !important; width: 100%; box-sizing: border-box; }
+  footer > div { flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+<body>
+<div class="sb-overlay" id="sbOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sb-head">
+    <a href="index.html" class="sb-logo">AutoTube <span>Pro</span></a>
+    <div class="sb-sub">Documentation v1.0</div>
+  </div>
+  <div class="sb-scroll">
+    <div class="nav-grp">
+      <div class="nav-grp-lbl">Overall Workflow</div>
+      <a href="#s-ov" class="nav-a on" data-sid="s-ov"><span class="nav-txt">Complete Process Overview</span></a>
+    </div>
+    <div class="nav-grp">
+      <div class="nav-grp-lbl">Prerequisites</div>
+      <a href="#s-prep" class="nav-a" data-sid="s-prep"><span class="nav-txt">Folder Structure Configuration</span></a>
+    </div>
+    <div class="nav-grp">
+      <div class="nav-grp-lbl">STEP 1 — Script &amp; Planning</div>
+      <a href="#s1a" class="nav-a" data-sid="s1a"><span class="nav-txt">File Explorer &amp; Text Editor</span></a>
+      <a href="#s1b" class="nav-a" data-sid="s1b"><span class="nav-txt">Excel Grid Editor</span></a>
+    </div>
+    <div class="nav-grp">
+      <div class="nav-grp-lbl">STEP 2 — Script Sheet Mapping</div>
+      <a href="#s2" class="nav-a" data-sid="s2"><span class="nav-txt">Mandatory Structural Rules</span></a>
+    </div>
+    <div class="nav-grp">
+      <div class="nav-grp-lbl">STEP 3 — Visual Generation</div>
+      <a href="#s3" class="nav-a" data-sid="s3"><span class="nav-txt">Automated Gemini Engine</span></a>
+    </div>
+    <div class="nav-grp">
+      <div class="nav-grp-lbl">STEP 4 — Audio Tracking</div>
+      <a href="#s4a" class="nav-a" data-sid="s4a"><span class="nav-txt">① Prepare Client Interface</span></a>
+      <a href="#s4c" class="nav-a" data-sid="s4c"><span class="nav-txt">② Launch Colab TTS Server</span></a>
+      <a href="#s4b" class="nav-a" data-sid="s4b"><span class="nav-txt">③ Execute Voiceover Tracks</span></a>
+    </div>
+    <div class="nav-grp">
+      <div class="nav-grp-lbl">STEP 5 — Timed Captions</div>
+      <a href="#s5" class="nav-a" data-sid="s5"><span class="nav-txt">Whisper Timecode Synch</span></a>
+    </div>
+    <div class="nav-grp">
+      <div class="nav-grp-lbl">STEP 6 — QC &amp; Deployment</div>
+      <a href="#s6a" class="nav-a" data-sid="s6a"><span class="nav-txt">Media Asset Verification (QC)</span></a>
+      <a href="#s6b" class="nav-a" data-sid="s6b"><span class="nav-txt">Instant CapCut Assembly</span></a>
+    </div>
+  </div>
+  <div class="sb-foot"><a href="index.html" class="sb-back">← Back to Landing Page</a></div>
+</aside>
+
+<div class="main">
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <button class="hamburger" id="hamburger" aria-label="Open Menu"><span></span><span></span><span></span></button>
+      <span class="top-bar-title">AutoTube Pro User Manual</span>
+    </div>
+    <div class="top-bar-right">
+      <div class="lang-switcher">
+        <a href="https://aibaselab.com/manual.html">KO</a>
+        <span class="lang-divider">|</span>
+        <a href="#" class="active">EN</a>
+      </div>
+      <a href="index.html" class="top-bar-home">← Back to Main</a>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <h1 style="font-family: var(--sans); font-size:clamp(22px,3vw,32px); font-weight:900; color:var(--ink); letter-spacing:-0.03em; line-height:1.3; margin-bottom:32px;">
+      AutoTube Pro User Manual — Complete 6-Step Guide to CapCut Automation
+    </h1>
+
+    <section id="s-ov" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#312e81;"></div>
+        <h2 class="sec-title">Complete Process Overview</h2>
+      </div>
+      <div class="sec-desc">
+        ① Populate our standardized Excel matrix template with your structured scripts, voiceover tracks, and image prompt arguments generated from your primary LLMs.<br>
+        ② The software automatically runs sequential cloud/local background routines to batch render image frames, high-fidelity voice tracks, and subtitle timestamps.<br>
+        ③ Following a localized synchronized review, click deploy to compile your individual media elements into a fully populated, native CapCut project matrix.<br>
+        ④ Open CapCut to immediately apply localized transitions, background music layers, and branding presets before exporting your final video file.<br><br>
+        ※ While the complete automation pipeline looks dense, navigating it step-by-step establishes an incredibly fast, logical creation cadence.
+      </div>
+      <div class="pipeline-wrap">
+        <div class="pipe-row">
+          <div class="pipe-card pipe-prep">
+            <div class="pipe-badge" style="background:#312e81;color:#a5b4fc;">PREREQ</div>
+            <div class="pipe-icon">📁</div>
+            <div class="pipe-name">Directory Setup</div>
+            <div class="pipe-sub">Extract Runtimes · Place into C: Drive</div>
+          </div>
+          <div class="pipe-arrow">↓</div>
+        </div>
+        <div class="pipe-row pipe-row-2">
+          <div class="pipe-card">
+            <div class="pipe-badge" style="background:#4f46e5;color:#fff;">STEP 1</div>
+            <div class="pipe-icon">📄</div>
+            <div class="pipe-name">Script &amp; Planning</div>
+            <div class="pipe-sub">Edit Prompt Strings · Manage Files</div>
+          </div>
+          <div class="pipe-arrow-h"> </div>
+          <div class="pipe-card">
+            <div class="pipe-badge" style="background:#4f46e5;color:#fff;">STEP 2</div>
+            <div class="pipe-icon">📋</div>
+            <div class="pipe-name">Excel Sheet Mapping</div>
+            <div class="pipe-sub">Mandatory Sheet &amp; Header Structure</div>
+          </div>
+        </div>
+        <div class="pipe-arrow-center">↓</div>
+        <div class="pipe-row pipe-row-3">
+          <div class="pipe-card pipe-parallel">
+            <div class="pipe-badge" style="background:#b45309;color:#fff;">STEP 3</div>
+            <div class="pipe-icon">🖼️</div>
+            <div class="pipe-name">Automated Image Generation</div>
+            <div class="pipe-sub">Sequential Gemini Logic<br>Populates 2_Images Folder</div>
+          </div>
+          <div class="pipe-card pipe-parallel">
+            <div class="pipe-badge" style="background:#c2410c;color:#fff;">STEP 4</div>
+            <div class="pipe-icon">🎙️</div>
+            <div class="pipe-name">Voiceover Synthesis</div>
+            <div class="pipe-sub">Colab TTS Cluster Execution<br>Populates 3_Audio_Subtitles</div>
+          </div>
+          <div class="pipe-card pipe-parallel">
+            <div class="pipe-badge" style="background:#0d9488;color:#fff;">STEP 5</div>
+            <div class="pipe-icon">💬</div>
+            <div class="pipe-name">Caption Synchronization</div>
+            <div class="pipe-sub">Whisper Timecode Analysis<br>Extracts Native SRT Data</div>
+          </div>
+        </div>
+        <div class="pipe-arrow-center">↓</div>
+        <div class="pipe-row">
+          <div class="pipe-card pipe-final">
+            <div class="pipe-badge" style="background:#c8321e;color:#fff;">STEP 6</div>
+            <div class="pipe-icon-lg">✅</div>
+            <div class="pipe-name" style="font-size:17px;">QC Review &amp; Completion</div>
+            <div class="pipe-sub">Unified Asset QC Validation · 1-Sec CapCut Build</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="prep-banner">
+      <span class="prep-banner-badge">SETUP</span>
+      <div class="prep-banner-divider"></div>
+      <div class="prep-banner-info">
+        <div class="prep-banner-title">Initial Prerequisites — Directory Architecture Configuration</div>
+        <div class="step-banner-sub" style="color:#6b7280;">Extract Core Package Assets · Place inside Local C: Root Storage Path · Validate Directory Subfolders</div>
+      </div>
+    </div>
+
+    <section id="s-prep" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#312e81;"></div>
+        <h2 class="sec-title">Folder Structure Configuration</h2>
+      </div>
+      <div class="sec-desc">
+        AutoTube Pro's automation pipeline relies strictly on a standardized directory schema to read and write media files seamlessly. Before booting the core runtime, verify that your local environment matches the framework outlined below.
+      </div>
+      <div class="desc-sec-title">Deployment Steps</div>
+      <div class="desc-list">
+        <div class="desc-row">
+          <div class="dbadge" style="background:#312e81;box-shadow:0 2px 8px rgba(49,46,129,0.3);">1</div>
+          <div class="dc">
+            <div class="dt">Download Core Software Package</div>
+            <div class="dd"><ul><li>Extract the native runtime archive asset bundle archive (.zip) provided via email upon system clearance.</li></ul></div>
+          </div>
+        </div>
+        <div class="desc-row">
+          <div class="dbadge" style="background:#312e81;box-shadow:0 2px 8px rgba(49,46,129,0.3);">2</div>
+          <div class="dc">
+            <div class="dt">Extract Directly to Local C: Root Directory <span class="tag tag-req">★ Critical Path</span></div>
+            <div class="dd"><ul><li>Unpack the elements directly into the root layer of your primary storage block. Unpacking must generate the precise local schema route: <code>C:\YouTube_Production\</code></li></ul></div>
+          </div>
+        </div>
+        <div class="desc-row">
+          <div class="dbadge" style="background:#312e81;box-shadow:0 2px 8px rgba(49,46,129,0.3);">3</div>
+          <div class="dc">
+            <div class="dt">Instantiating New Production Projects</div>
+            <div class="dd"><ul><li>Inside the root directory, configure custom projects by creating unique subfolders, duplicating the standard subfolder structure for each new video track.</li><li>Example: <code>C:\YouTube_Production\Video_Projects\Surviving_Earnings_Season\</code></li></ul></div>
+          </div>
+        </div>
+      </div>
+      <div class="desc-sec-title">Directory Schema Layout</div>
+      <div class="folder-tree">
+        <div class="ft-row"><span class="ft-icon">💻</span><span class="ft-name" style="color:#818cf8;">C:\</span></div>
+        <div class="ft-indent">
+          <div class="ft-row"><span class="ft-icon">📁</span><span class="ft-name">YouTube_Production\</span><span class="ft-req">← Must reside strictly at local root path</span></div>
+          <div class="ft-indent">
+            <div class="ft-row"><span class="ft-icon">📁</span><span class="ft-name">Video_Projects\</span></div>
+            <div class="ft-indent">
+              <div class="ft-row"><span class="ft-icon">📁</span><span class="ft-name" style="color:#a5b4fc;">Surviving_Earnings_Season\</span><span class="ft-note">← Distinct Project Identifier (Custom Name)</span></div>
+              <div class="ft-indent">
+                <div class="ft-row"><span class="ft-icon">📂</span><span class="ft-name" style="color:#93c5fd;">1_Script\</span><span class="ft-badge ft-s1">STEP 1 · 2</span><span class="ft-note">Stores core Excel automation sheets</span></div>
+                <div class="ft-row"><span class="ft-icon">📂</span><span class="ft-name" style="color:#fcd34d;">2_Images\</span><span class="ft-badge ft-s3">STEP 3</span><span class="ft-note">Target folder for automated visual outputs</span></div>
+                <div class="ft-row"><span class="ft-icon">📂</span><span class="ft-name" style="color:#fdba74;">3_Audio_Subtitles\</span><span class="ft-badge ft-s45">STEP 4 · 5</span><span class="ft-note">Target folder for synthesized vocal &amp; timed SRT data</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <table class="folder-step-table">
+        <thead><tr><th>Target Folder</th><th>Linked Pipeline Step</th><th>Output File Types</th></tr></thead>
+        <tbody>
+          <tr><td class="fd-name">📂 1_Script\</td><td class="fd-step"><span style="background:rgba(79,70,229,0.10);color:#4f46e5;">STEP 1</span><span style="background:rgba(79,70,229,0.10);color:#4f46e5;">STEP 2</span></td><td>Spreadsheet Config Templates (.xlsx)</td></tr>
+          <tr><td class="fd-name">📂 2_Images\</td><td class="fd-step"><span style="background:rgba(180,83,9,0.10);color:#b45309;">STEP 3</span></td><td>Numbered Video Frame Sequences (01.png, 02.png, 03.png...)</td></tr>
+          <tr><td class="fd-name">📂 3_Audio_Subtitles\</td><td class="fd-step"><span style="background:rgba(194,65,12,0.10);color:#c2410c;">STEP 4</span><span style="background:rgba(13,148,136,0.10);color:#0d9488;">STEP 5</span></td><td>Raw Vocal Clips, Master Mix tracks (master.wav), Subtitle Data (captions.srt)</td></tr>
+        </tbody>
+      </table>
+      <div class="key-box">
+        <div class="key-box-title">Core Directives</div>
+        <div class="key-list">
+          <div class="key-item">Deploying resources to <strong>any alternate target directory route outside the explicit C: drive structure</strong> will compromise structural automated path tracing hooks.</div>
+          <div class="key-item">When preparing a new content project, simply <strong>instantiate a clean parent project block (e.g., Market_Crash_Secrets)</strong>, keeping the subfolder child architecture completely uniform.</div>
+          <div class="key-item">Ensure your client module maps targets explicitly to these specific subfolders during individual pipeline setup steps.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="step-banner">
+      <span class="step-banner-badge">STEP 1</span>
+      <div class="step-banner-divider"></div>
+      <div class="step-banner-info">
+        <div class="step-banner-title">Excel Script Mapping Structure</div>
+        <div class="step-banner-sub">Mandatory Sheet Declarations · Column Key Definitions · Structural Integrity Verification</div>
+      </div>
+    </div>
+
+    <section id="s2" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#7c3aed;"></div>
+        <h2 class="sec-title">Mandatory Structural Rules <span class="tag tag-req">★ Compulsory Spec</span></h2>
+      </div>
+      <div class="sec-desc">
+        To allow the image engine and localized acoustic transcription tasks to loop across data sheets without pathing failures, your spreadsheet layout must strictly comply with the parameters below.<br>
+        Configure your baseline text prompt formatting so that inputs copy and paste smoothly into these exact matrix slots.
+      </div>
+      <div class="io-box">
+        <div class="io-half io-in"><div class="io-lbl">📥 Pipeline Inputs</div><div class="io-val">Raw text outputs generated via standard LLM prompt files</div></div>
+        <div class="io-half io-out"><div class="io-lbl">📤 Expected Outputs</div><div class="io-val">Perfectly structured Excel template file (.xlsx)</div></div>
+      </div>
+      <div class="img-box">
+        <div style="padding: 24px 28px; background: #14113a; color: #fff; font-family: var(--mono); font-size: 14px; border-bottom: 1px solid var(--line);">
+          [Excel Layout Map Example]<br>
+          Sheet 1 Title: <span style="color: #fdba74;">"Script"</span> → Column Header Required: <span style="color: #93c5fd;">"Image Prompt"</span><br>
+          Sheet 2 Title: <span style="color: #fdba74;">"Voiceover"</span> → Column Header Required: <span style="color: #93c5fd;">"Voiceover Script"</span>
+        </div>
+        <div class="img-cap">▲ MS Excel Data Scheme Configuration Framework Verification (Fig.1)</div>
+      </div>
+      <div class="desc-sec-title">Component Specifications</div>
+      <div class="desc-list">
+        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">Core Script Sheet Matrix</div><div class="dd"><ul><li>The primary computational sheet holding your narrative arc and asset assignments.</li><li>You can construct custom administrative variables across custom surrounding columns.</li><li>However, to feed the batch rendering engine, you must contain a column titled exactly <strong>"Image Prompt"</strong>.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">"Image Prompt" Character Header Definition <span class="tag tag-req">★ Required</span></div><div class="dd"><ul><li>The automation engine queries this exact column string parameter to feed background rendering loops.</li><li>Column grid placement is flexible, but the key phrase string must match exactly: <strong>"Image Prompt"</strong>.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">Voiceover Data Sheet Configuration <span class="tag tag-req">★ Required</span></div><div class="dd"><ul><li>The core vocal generator parses this target layer to process language blocks and output audio formats.</li><li>The data sheet name container must match exactly: <strong>"Voiceover"</strong>.</li><li>The processing header holding text blocks for acoustic rendering must be explicitly titled: <strong>"Voiceover Script"</strong>.</li><li>Refer to the reference file: <code>AI_Voiceover_Script_Generation_Prompt.txt</code>.</li></ul></div></div></div>
+      </div>
+      <div class="key-box">
+        <div class="key-box-title">System Verification Requirements</div>
+        <div class="key-list">
+          <div class="key-item">The data sheet title identifier must match exactly: <strong>"Voiceover"</strong> — case parameters, character spacing, and syntax are checked strictly.</div>
+          <div class="key-item">The processing column header must match exactly: <strong>"Image Prompt"</strong> — alternate names will break the automated parsing loops.</div>
+          <div class="key-item">Failing to align these key naming tokens will cause <strong>media asset file loops to throw unexpected execution faults.</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="step-banner">
+      <span class="step-banner-badge">STEP 2</span>
+      <div class="step-banner-divider"></div>
+      <div class="step-banner-info">
+        <div class="step-banner-title">Script Management &amp; Content Preparation</div>
+        <div class="step-banner-sub">Local Asset Tracking · Real-time Grid Testing · Utilizing the 1_Script Storage Folder</div>
+      </div>
+    </div>
+
+    <section id="s1a" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#1d4ed8;"></div>
+        <h2 class="sec-title">File Explorer &amp; Text Editor</h2>
+      </div>
+      <div class="sec-desc">
+        This panel serves as your primary terminal hub upon software startup.<br>
+        It provides a built-in markdown/text editor to quickly open, view, modify, and update prompt assets stored inside your local <code>1_Script\</code> path.<br>
+        Utilize the <strong>Copy All</strong> mechanism to quickly export prompt arguments to primary cloud models (ChatGPT, Claude) to extract your text data blocks.
+      </div>
+      <div class="io-box">
+        <div class="io-half io-in"><div class="io-lbl">📥 Local Initial Input</div><div class="io-val">Target text files (.txt) inside the local 1_Script\ path</div></div>
+        <div class="io-half io-out"><div class="io-lbl">📤 Direct Pipeline Output</div><div class="io-val">Formatted script blocks copied to clipboard for cloud queries</div></div>
+      </div>
+      <div class="img-box">
+        <div style="padding: 40px; text-align: center; background: #0f172a; color: #94a3b8; font-size: 14px;">
+          [AutoTube Pro Client UI Layout Placeholder — Script &amp; Text Editor Panel]
+        </div>
+        <div class="img-cap">▲ Main Client Application Terminal Layout — Live Text Processing (Fig.2)</div>
+      </div>
+      <div class="desc-sec-title">Functional Controls</div>
+      <div class="desc-list">
+        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">Primary Content Control Tab</div><div class="dd"><ul><li>Indicates that the primary application interface is actively focused on the <strong>Script &amp; Planning</strong> section.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">Directory Path Parameter Input</div><div class="dd"><ul><li>Click <strong>Browse</strong> to map your local workspace explicitly to the active <code>1_Script\</code> pathway.</li><li>Updating this path updates the integrated sub-tree rendering list instantly.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">Integrated Document Sub-tree Explorer</div><div class="dd"><ul><li><strong>Double-click any target .txt file</strong> to stream its characters directly into the code editor panel on the right.</li><li>📁 Double-click folders to dive deeper / Double-click <strong>...</strong> to step back up one folder layer.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">Dual-mode View Toggle (Text Editor / Excel Grid)</div><div class="dd"><ul><li>📄 <strong>Text Editor Mode</strong>: Used for editing raw configuration instructions and copying text blocks quickly.</li><li>📊 <strong>Excel Grid Mode</strong>: Displays a clean, embedded rendering of your active spreadsheet data for quick validation.</li></ul></div></div></div>
+      </div>
+      <div class="key-box">
+        <div class="key-box-title">Workflow Execution Notes</div>
+        <div class="key-list">
+          <div class="key-item">Utilize the <strong>Copy All</strong> function to export instructions, feed cloud AI modules, and drop the resulting spreadsheet maps back into the designated local <code>1_Script\</code> path.</div>
+          <div class="key-item">Commit text modifications by clicking the <strong>💾 Save Asset</strong> command. Closing files without saving will discard updates.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="s1b" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#1d4ed8;"></div>
+        <h2 class="sec-title">Excel Grid Editor</h2>
+      </div>
+      <div class="sec-desc">
+        Double-clicking any standard spreadsheet asset (<strong>.xlsx</strong>) inside the directory tree automatically opens this tab view.<br>
+        It streams the content of your spreadsheet into an embedded workspace grid, allowing you to audit, review, and fine-tune prompt rows effortlessly.
+      </div>
+      <div class="desc-sec-title">Operational Features</div>
+      <div class="desc-list">
+        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">Active Matrix Interface Activation</div><div class="dd"><ul><li>Opening a valid .xlsx file switches the editor mode automatically to show the layout grid.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">Target Multi-line Layout Selector Dropdown</div><div class="dd"><ul><li>Select the precise structural <strong>column reference target</strong> to optimize row height boundaries <em>(e.g., Voiceover Script)</em>.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">↔ Dynamic Auto-Fit Calculation Control</div><div class="dd"><ul><li>Automatically adjusts row boundaries based on text density to <strong>ensure all data rows are clearly readable</strong>.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">Numbered Sequence Realignment Utility</div><div class="dd"><ul><li>Re-indexes sequence ordering integers starting from 1 if you add or remove rows.</li><li>Requires the first column identifier to contain the text label <strong>'Index' or 'No'</strong> to run correctly.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">5</div><div class="dc"><div class="dt">Lower Navigation Tabs (Script / Voiceover)</div><div class="dd"><ul><li>Displays individual sheets present within the spreadsheet structure.</li><li><strong>Voiceover Sheet</strong>: The mandatory processing layer for speech synthesis tracking <em>(See Step 2 Rules)</em>.</li></ul></div></div></div>
+      </div>
+    </section>
+
+    <div class="step-banner">
+      <span class="step-banner-badge">STEP 3</span>
+      <div class="step-banner-divider"></div>
+      <div class="step-banner-info">
+        <div class="step-banner-title">Automated Gemini Visual Generation</div>
+        <div class="step-banner-sub">Hands-free Cloud Asset Rendering · Seamless 2_Images Subfolder Export</div>
+      </div>
+    </div>
+
+    <section id="s3" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#b45309;"></div>
+        <h2 class="sec-title">Image Generation &amp; Video Asset Integration</h2>
+      </div>
+      <div class="sec-desc">
+        Located inside the <strong>Media Generation Engine</strong> hub ➔ <strong>[1] Image Asset Generation</strong> control block.<br>
+        The automation engine reads your mapped text prompt sequences and directs Google Gemini models to render video frames sequentially, saving the output files directly to your local <code>2_Images\</code> folder.
+      </div>
+      <div class="io-box">
+        <div class="io-half io-in"><div class="io-lbl">📥 Required Setup Assets</div><div class="io-val">Excel Template Schema + Character Visual Spec File (.png)</div></div>
+        <div class="io-half io-out"><div class="io-lbl">📤 Process Outputs</div><div class="io-val">Populates 2_Images\ with sequential image clips (01.png, 02.png...)</div></div>
+      </div>
+      <div class="img-box">
+        <div style="padding: 40px; text-align: center; background: #0f172a; color: #94a3b8; font-size: 14px;">
+          [AutoTube Pro Visual Automation Module — Real-time Generation Dashboard]
+        </div>
+        <div class="img-cap">▲ Image Generation Module — Real-time Rendering Monitor Pipeline (Fig.3)</div>
+      </div>
+      <div class="desc-sec-title">Operational Step Controls</div>
+      <div class="desc-list">
+        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">Input Workspace &amp; Character Anchor Reference Configuration</div><div class="dd"><ul><li><strong>Target Sheet Path</strong>: Select your active source spreadsheet file located inside the <code>1_Script\</code> path.</li><li><strong>Character Visual Spec Anchor</strong>: Upload a high-quality reference file (.png) defining your character style. <em>The engine injects this profile into your prompt loops to maintain consistent style across all images.</em></li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">Sequence Range Mapping &amp; Individual Overrides</div><div class="dd"><ul><li>The system scans your sheet grid and automatically fills in the start and end row numbers.</li><li><strong>Target Frame Override</strong>: If you need to fix a single broken frame, select the specific row number to re-run that asset individual layout query.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">Free Generation Mode — Browser Automation Suite (Checkbox Selection)</div><div class="dd"><ul><li><strong>Google Account Authentication</strong>: Requires a one-time browser login session to link your Google account profile. This session persists for future automation loops.</li><li><strong>Trigger Automated Processing</strong>: Starts background image generation. The engine automatically saves completed assets to the local <code>2_Images\</code> directory using a standardized <code>01.png</code>, <code>02.png</code> file naming convention.</li></ul></div></div></div>
+        
+        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">Paid API Generation Mode — Secure API Hook Interface (Checkbox Selection)</div><div class="dd"><ul><li><strong>API Key File Route Mapping</strong>: Save your personal Google AI Studio API key token as a single string inside a plain text file, and map it here.</li><li><strong>Trigger Dedicated Run Pipeline</strong>: Executes rendering calls directly via high-speed API connections, bypassing browser sessions and saving numbered image frames straight to the <code>2_Images\</code> folder.</li></ul></div></div></div>
+        
+        <div class="desc-row"><div class="dbadge">5</div><div class="dc"><div class="dt">Real-time Generation Pipeline Activity Track</div><div class="dd"><ul><li>Provides live tracking metrics showing total volume, current task processing queues, and real-time completion percentages.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">6</div><div class="dc"><div class="dt">Live Media Asset Preview Windows</div><div class="dd"><ul><li>Displays generated image files in a live preview box as they drop into your local folder, allowing you to audit visual quality instantly.</li></ul></div></div></div>
+      </div>
+      
+      <div class="key-box">
+        <div class="key-box-title">Advanced Video Asset Integration</div>
+        <div class="key-list">
+          <div class="key-item">If you convert a generated image frame into an animated video clip, simply save the video asset using the same filename structure (<strong>.mp4</strong>) inside the images directory.
+            <br><em>Important: You must remove the original static image file so the system reads the video asset cleanly. There cannot be two identical base file identifiers.
+              <br>Example: If you animate <code>frame_05.png</code> into a video, save it as <code>frame_05.mp4</code> and delete the old <code>frame_05.png</code> file.</em>
+          </div>
+        </div>
+      </div>
+
+      <div class="key-box">
+        <div class="key-box-title">Optimization Best Practices</div>
+        <div class="key-list">
+          <div class="key-item">Google account browser authentication is only required **once during initial system configuration**.</div>
+          <div class="key-item">To maximize your processing efficiency, you can run **Step 4 (Audio Generation) and image loops simultaneously** if your machine has sufficient memory and resources.</div>
+          <div class="key-item">Output naming structures are matched automatically to your script coordinates, removing the need for any manual file renaming.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="step-banner">
+      <span class="step-banner-badge">STEP 4</span>
+      <div class="step-banner-divider"></div>
+      <div class="step-banner-info">
+        <div class="step-banner-title">High-Fidelity Voiceover Synthesis Pipeline</div>
+        <div class="step-banner-sub">① Setup App Parameters → ② Launch Colab TTS Server Cluster → ③ Run Synthesis Tasks</div>
+      </div>
+    </div>
+
+    <div class="concept-box">
+      <div class="concept-box-title">Technical Concept Overview — Audio Pipeline Mechanics</div>
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div class="concept-row">
+          <div class="concept-icon" style="background:#eef2ff;">🔊</div>
+          <div>
+            <div class="concept-t">What is the underlying TTS architecture?</div>
+            <div class="concept-d">Text-to-Speech (TTS) technology converts written data parameters into synthesized natural voice frequencies. AutoTube Pro implements specialized Qwen3-TTS weights to match the exact pitch, intonation, and tone of your target vocal audio sample reference files.</div>
+          </div>
+        </div>
+        <div class="concept-divider"></div>
+        <div class="concept-row">
+          <div class="concept-icon" style="background:#fff7ed;">☁️</div>
+          <div>
+            <div class="concept-t">Why leverage Google Colab server structures?</div>
+            <div class="concept-d">Processing high-fidelity voice cloning models require substantial GPU computing power. Utilizing Google Colab lets you host the model on a remote cloud server for free, avoiding high local hardware resource usage while maximizing speech synthesis speeds.</div>
+          </div>
+        </div>
+        <div class="concept-divider"></div>
+        <div class="concept-row">
+          <div class="concept-icon" style="background:#f0fff4;">🔗</div>
+          <div>
+            <div class="concept-t">System Connection Lifecycle Mapping</div>
+            <div class="concept-d">Launching your Colab script generates a secure, unique live tunnel link (`gradio.live`). AutoTube Pro uses this link to send script strings directly to the cloud model, which processes the speech synthesis task and returns clean audio streams back to your PC instantly.</div>
+            <div class="concept-flow">
+              <span>AutoTube Pro Client</span>
+              <span class="arr">→</span>
+              <span>Transmits Text Blocks</span>
+              <span class="arr">→</span>
+              <span>Remote Colab Server Cluster (Compute Audio)</span>
+              <span class="arr">→</span>
+              <span>Returns Streamed Audio Files Logged Locally</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section id="s4a" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#c2410c;"></div>
+        <h2 class="sec-title">1) Client Application — Audio Parameters Setup</h2>
+      </div>
+      <div class="sec-desc">
+        Configure your voice profiling targets within the application client workspace before initiating remote server execution routines.<br>
+        Prepare a clean, 10-second reference voice snippet saved as a standard WAV file.
+      </div>
+      <div class="img-box">
+        <div style="padding: 40px; text-align: center; background: #0f172a; color: #94a3b8; font-size: 14px;">
+          [AutoTube Pro Voice Architecture Interface — Parameter Mapping Panel]
+        </div>
+        <div class="img-cap">▲ [2] Audio Automation Module — Primary Client Variable Configuration (Fig.4)</div>
+      </div>
+      <div class="desc-sec-title">Functional Form Configuration</div>
+      <div class="desc-list">
+        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">Select your reference voice snippet (.wav file) used to guide model synthesis pitch characteristics.</div></div></div>
+        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">Select the companion transcription file (.txt) mapping the text content of your target reference voice snippet.</div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">Language target mode profile selection box.</div></div></div>
+        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">Select the source spreadsheet file mapping your video script data rows.</div></div></div>
+        <div class="desc-row"><div class="dbadge">5</div><div class="dc"><div class="dt">Define the starting and ending row indices for automated sequence loop targeting.</div></div></div>
+        <div class="desc-row"><div class="dbadge">6</div><div class="dc"><div class="dt">Activate row exceptions via individual checkboxes, using comma-separated row index numbers for targeted rendering.</div></div></div>
+        <div class="desc-row"><div class="dbadge">7</div><div class="dc"><div class="dt">Click to launch the cloud notebook link and boot the server cluster. Refer to the instructions below to complete setup.</div></div></div>
+      </div>
+    </section>
+
+    <section id="s4c" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#c2410c;"></div>
+        <h2 class="sec-title">2) Google Colab — Launching the Remote Model Server</h2>
+      </div>
+      <div class="sec-desc">
+        <strong>Google Colab</strong> operates your isolated, cloud-hosted machine learning model environment.<br>
+        This allows high-speed speech synthesis processing without placing any heavy computing load on your local PC.
+      </div>
+      <div class="img-box">
+        <div style="padding: 40px; text-align: center; background: #0f172a; color: #94a3b8; font-size: 14px;">
+          [Google Colab Interface View — Cloud GPU Initialization Layout]
+        </div>
+        <div class="img-cap">▲ Google Colab Cloud Console Terminal Environment — Remote Cluster Execution (Fig.5)</div>
+      </div>
+      <div class="desc-sec-title">Cloud Console Step-by-Step Instructions</div>
+      <div class="desc-list">
+        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">Clicking the launcher button opens this web dashboard inside your primary web browser window.</div></div></div>
+        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">Set your computing instance type parameter: Edit ➔ Notebook Settings ➔ Select T4 GPU ➔ Save changes.</div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">Click the run icon on the environment block to execute package installations.</div></div></div>
+        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">Wait for the console log to display a successful system dependencies installation message.</div></div></div>
+        <div class="desc-row"><div class="dbadge">5</div><div class="dc"><div class="dt">Click the run icon on the server application block to mount model weights and generate network routes.</div></div></div>
+        <div class="desc-row"><div class="dbadge">6</div><div class="dc"><div class="dt">Wait 1 to 3 minutes for network configuration to complete. Locate the second generated live connection link (`gradio.live`) in the console log and copy it precisely.</div></div></div>
+      </div>
+    </section>
+
+    <section id="s4b" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#c2410c;"></div>
+        <h2 class="sec-title">3) Client Application — Launching Automated Voice Tracking</h2>
+      </div>
+      <div class="sec-desc">
+        After initializing your cloud instance, **return to the AutoTube Pro client interface** to trigger processing loops.
+      </div>
+      <div class="img-box">
+        <div style="padding: 40px; text-align: center; background: #0f172a; color: #94a3b8; font-size: 14px;">
+          [AutoTube Pro Client Interface View — Audio Recording Processing Suite]
+        </div>
+        <div class="img-cap">▲ [2] Audio Automation Module — Client Pipeline Execution Hub</div>
+      </div>
+      <div class="desc-sec-title">Functional Actions</div>
+      <div class="desc-list">
+        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">Paste the connection URL copied from your remote cloud notebook instance into this link field.</div></div></div>
+        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">Trigger the automated generation pipeline to start processing sequence tracking parameters.</div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">Provides a safety-stop control to interrupt rendering tasks. Progressive audio stitching requires continuous processing loops.</div></div></div>
+        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">Consolidates separate track row outputs into one single optimized master audio file (`master.wav`), essential for step 5 caption tracing.</div></div></div>
+      </div>
+      <div class="key-box">
+        <div class="key-box-title">Technical Operations Notes</div>
+        <div class="key-list">
+          <div class="key-item">Ensure reference audio text files align with your voice sample assets to achieve high translation accuracy and natural vocal spacing.</div>
+          <div class="key-item">Once the row batch synthesis tasks conclude, you **must trigger the Consolidation Utility**. Without creating a unified `master.wav` file, step 5 caption synchronization tools cannot map speech boundaries.</div>
+          <div class="key-item">If connection session tracking errors appear, reload the server block cell within your cloud dashboard to generate a clean network route.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="sec-desc" style="background-color: #fff8e1; color: #d32f2f; padding: 15px 20px; border-left: 5px solid #d32f2f; border-radius: 4px; font-family: sans-serif; line-height: 1.6;">
+      <strong style="font-size: 1.1em;">🚨 [Important] Mandatory TTS Server Manual Shutdown Requirement</strong><br>
+      <strong>AutoTube Pro leaves cloud resources active to accommodate continuous video production tasks across different sessions.</strong><br>
+      You must manually turn off your cloud notebook instance when video generation loops are complete.<br>
+      <span style="font-size: 0.95em; color: #555;">(Free users: Prevents account tracking flags and compute restrictions / Premium users: Avoids unexpected background credit consumption)</span><br><br>
+      👉  **Shutdown Procedure:** Navigate to the upper web console toolbar menu: **Runtime ➔ Disconnect and delete runtime**
+    </div>
+
+    <div class="step-banner">
+      <span class="step-banner-badge">STEP 5</span>
+      <div class="step-banner-divider"></div>
+      <div class="step-banner-info">
+        <div class="step-banner-title">Automated Whisper Caption Generation</div>
+        <div class="step-banner-sub">Extract SRT Data Layers · Synchronize Matrix Timecodes · Local 3_Audio_Subtitles Export</div>
+      </div>
+    </div>
+
+    <section id="s5" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#0d9488;"></div>
+        <h2 class="sec-title">Whisper Subtitle Extraction &amp; Timecode Synch Calculations</h2>
+      </div>
+      <div class="sec-desc">
+        Located inside the **Media Generation Engine** hub ➔ **[3] Subtitle Tracking &amp; Matrix Correction** workspace.<br>
+        The integrated OpenAI Whisper engine parses your consolidated master track, mapping language strings to pinpoint precise frame timing, and injecting timecode entries back into the source spreadsheet cells.
+      </div>
+      <div class="io-box">
+        <div class="io-half io-in"><div class="io-lbl">📥 Pipeline Inputs</div><div class="io-val">Excel Template Path Config + Mapped Consolidated Master track (`master.wav`)</div></div>
+        <div class="io-half io-out"><div class="io-lbl">📤 Expected Outputs</div><div class="io-val">Populates 3_Audio_Subtitles with structured captions (.srt) and updates Excel time metrics</div></div>
+      </div>
+      <div class="img-box">
+        <div style="padding: 40px; text-align: center; background: #0f172a; color: #94a3b8; font-size: 14px;">
+          [AutoTube Pro Whisper Module Interface — Subtitle Generation Terminal view]
+        </div>
+        <div class="img-cap">▲ [3] Subtitle Processing and Time Tracking Terminal — Active Acoustic Tracing (Fig.6)</div>
+      </div>
+      <div class="desc-sec-title">Operational Controls Description</div>
+      <div class="desc-list">
+        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">Configure Source Data Sheet Document &amp; Consolidated Audio Track Paths</div><div class="dd"><ul><li><strong>Source Sheet Route</strong>: Map the path to the active project spreadsheet located inside your <code>1_Script\</code> path.</li><li><strong>Master Track Route</strong>: Point this path argument directly to the consolidated <code>master.wav</code> file inside the <code>3_Audio_Subtitles\</code> directory.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">Phase 1: Generate Master Caption SRT ➔ Phase 2: Apply Image Placement Timecodes to Excel <span class="tag tag-order">★ Critical Sequencing</span></div><div class="dd"><ul><li><strong>Phase 1 — Generate Master Caption SRT</strong>: Launches localized Whisper AI tools to read the master audio track and export standard SRT files.</li><li><strong>Phase 2 — Apply Image Placement Timecodes to Excel</strong>: Merges timecode calculations back into column J of your spreadsheet. *This mapping data tells CapCut exactly when to show specific image layers.*</li><li>Ensure you execute **both tasks in sequence**.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">Live Caption Processing Monitor Panel</div><div class="dd"><ul><li>Displays live transcription outputs and processing progress logs text data lines in real time.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">Audit Flag Review Field Log</div><div class="dd"><ul><li>Note sequence index numbers that contain complex phrasing or missaligned words <em>(e.g., 4, 12, 19)</em>.</li><li>This field is read by Step 6 validation tools to perform selective single-frame adjustments.</li></ul></div></div></div>
+      </div>
+      <div class="key-box">
+        <div class="key-box-title">Critical System Requirements</div>
+        <div class="key-list">
+          <div class="key-item">Do not skip executing the **Phase 2 Matrix Mapping action** after generating your base SRT data.</div>
+          <div class="key-item">Skipping this step will break the time layout model, causing **CapCut to map image layers onto mismatched audio tracks**.</div>
+          <div class="key-item">Logging problematic rows inside the flag field simplifies your final asset quality review checks in Step 6.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="step-banner">
+      <span class="step-banner-badge">STEP 6</span>
+      <div class="step-banner-divider"></div>
+      <div class="step-banner-info">
+        <div class="step-banner-title">Media Asset Quality Review (QC) &amp; Automated Layout Generation</div>
+        <div class="step-banner-sub">Unified Asset QC Player · Target Frame Adjustments · Under 1-Second CapCut Deployment</div>
+      </div>
+    </div>
+
+    <section id="s6a" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#059669;"></div>
+        <h2 class="sec-title">Media Asset Verification (QC)</h2>
+      </div>
+      <div class="sec-desc">
+        Located inside the primary **Asset Verification &amp; Playback Review** console dashboard.<br>
+        This panel combines image clips, audio tracks, and subtitles into a unified monitor player, allowing you to run quality control checks on individual video segments and execute target row overrides before final assembly.
+      </div>
+      <div class="io-box">
+        <div class="io-half io-in"><div class="io-lbl">📥 Required Source Assets</div><div class="io-val">Images folder contents + consolidated track (`master.wav`) + SRT subtitle asset + mapped script sheet</div></div>
+        <div class="io-half io-out"><div class="io-lbl">📤 Output Results</div><div class="io-val">Deploys native, fully functional CapCut project folder package</div></div>
+      </div>
+      <div class="img-box">
+        <div style="padding: 40px; text-align: center; background: #0f172a; color: #94a3b8; font-size: 14px;">
+          [AutoTube Pro Asset Verification Dashboard — Integrated Playback Review &amp; CapCut Deployment Console]
+        </div>
+        <div class="img-cap">▲ Asset Verification Console Terminal — Unified Project Playback &amp; Deployment Engine (Fig.7)</div>
+      </div>
+      <div class="desc-sec-title">Asset Verification Checklist</div>
+      <div class="desc-list" style="margin-bottom:20px;">
+        <div class="desc-row" style="background:#f0fdf4;border-color:#bbf7d0;">
+          <div class="dbadge" style="background:#059669;box-shadow:0 2px 8px rgba(5,150,105,0.3);font-size:14px;">✓</div>
+          <div class="dc"><div class="dt" style="font-size:16px;">Visual Quality Check</div><div class="dd" style="font-size:15px;">Verify that background environments match script requirements and contain no visual artifacts.</div></div>
+        </div>
+        <div class="desc-row" style="background:#f0fdf4;border-color:#bbf7d0;">
+          <div class="dbadge" style="background:#059669;box-shadow:0 2px 8px rgba(5,150,105,0.3);font-size:14px;">✓</div>
+          <div class="dc"><div class="dt" style="font-size:16px;">Vocal Audio Audit</div><div class="dd" style="font-size:15px;">Confirm pronunciation flow sounds natural and contains no pacing glitches or sudden dropouts.</div></div>
+        </div>
+        <div class="desc-row" style="background:#f0fdf4;border-color:#bbf7d0;">
+          <div class="dbadge" style="background:#059669;box-shadow:0 2px 8px rgba(5,150,105,0.3);font-size:14px;">✓</div>
+          <div class="dc"><div class="dt" style="font-size:16px;">Subtitle Sync Validation</div><div class="dd" style="font-size:15px;">Verify that text strings align perfectly with spoken audio cues and contain zero phrase overlaps.</div></div>
+        </div>
+      </div>
+      <div class="desc-sec-title">Interface Guide</div>
+      <div class="desc-list">
+        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">Operational Environment Focus Flag</div><div class="dd"><ul><li>Confirms the system dashboard focus is actively locked onto the **Asset Verification (QC)** workspace.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">Import Grid Script Data Stream</div><div class="dd"><ul><li>Select your project file path and click <strong>Load Workbook Assets</strong> to parse data rows into the interactive review grid.</li><li>The review grid maps your narration text, subtitles, asset indicators, and play controls into a single view.</li><li>Missing assets trigger a clear red "Missing Asset" or "Null Caption" warning tag immediately.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">Range-bound Playback Tracing Matrix</div><div class="dd"><ul><li>Define customized sequence index parameters to focus your manual asset reviews on specific script rows.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">Playback Controls Suite &amp; Live Matrix Data Sync Updates</div><div class="dd"><ul><li><strong>Automated Matrix Review Playback</strong>: Loops your video sequence rows in order, updating video frames, audio tracking bars, and text overlays in sync.</li><li><strong>Commit Matrix Adjustments</strong>: Saves any manual text string modifications directly back to the source Excel file.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">5</div><div class="dc"><div class="dt">Bulk Selection Reset Tool</div><div class="dd"><ul><li>Quickly clears all flagged review rows once targeting fixes are complete.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">6</div><div class="dc"><div class="dt">CapCut Storage Target Location Path</div><div class="dd"><ul><li>Maps the output folder for CapCut project files. Defaults automatically to your local CapCut Desktop workspace path.</li></ul></div></div></div>
+        <div class="desc-row"><div class="dbadge">7</div><div class="dc"><div class="dt">Compile Native CapCut Project Schema <span class="tag tag-req">★ Final Assembly</span></div><div class="dd"><ul><li>Click to package your project assets. AutoTube Pro automatically injects all image sequences, audio tracks, and synchronized SRT captions into your CapCut timeline in **under 1 second**.</li></ul></div></div></div>
+      </div>
+      <div class="key-box">
+        <div class="key-box-title">Quality Control Best Practices</div>
+        <div class="key-list">
+          <div class="key-item">If an asset needs fixing, simply flag the row checkbox to **highlight it in pink**, then step back to the corresponding step panel to re-run that specific generation row task.</div>
+          <div class="key-item">This targeted workflow removes the need to re-run your entire project script, allowing you to fix problem frames independently.</div>
+          <div class="key-item">Double-check that your CapCut deployment path coordinates are mapped accurately before executing the compilation routine.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="s6b" class="section">
+      <div class="sec-hd">
+        <div class="step-chip" style="background:#c8321e;"></div>
+        <h2 class="sec-title">Instant CapCut Assembly — Completed Video Editing Project Layout</h2>
+      </div>
+      <div class="sec-desc">
+        Launch your CapCut desktop app as soon as the project builder confirms deployment.<br>
+        Your image sequences, audio tracks, and subtitle layers are automatically positioned inside a fully populated editing timeline.
+      </div>
+      <div class="img-box">
+        <div style="padding: 40px; text-align: center; background: #0f172a; color: #94a3b8; font-size: 14px;">
+          [AutoTube Pro Video Layout Dimensions Configuration Panel — Aspect Ratio Options Screen]
+        </div>
+        <div class="img-cap">▲ CapCut Timeline Compilation Settings — Aspect Ratio Selection Matrix</div>
+      </div>
+      <div class="desc-list">
+        <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">Verify and link your active project spreadsheet database layout file.</div></div></div>
+        <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">Displays your target CapCut runtime installation path. We recommend leaving this configuration at system defaults.</div></div></div>
+        <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">Select your output format profile: 16:9 widescreen long-form format or 9:16 vertical shorts layout template.</div></div></div>
+        <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">Click to generate a native CapCut project workspace with all media items perfectly aligned on the track timelines.</div></div></div>
+      </div>
+      <div class="img-box">
+        <div style="padding: 40px; text-align: center; background: #0f172a; color: #94a3b8; font-size: 14px;">
+          [Native CapCut Interface View — Fully Populated Multi-track Automation Output Workspace]
+        </div>
+        <div class="img-cap">▲ Native CapCut App Workspace — Fully Populated Timeline Layout After Deployment (Fig.8)</div>
+      </div>
+      <div class="key-box">
+        <div class="key-box-title">Timeline Optimization and Finalization</div>
+        <div class="key-list">
+          <div class="key-item">All image frames are automatically scaled to match vocal clip intervals, and **captions are locked to matching timecode points**.</div>
+          <div class="key-item">With editing grunt work handled by automation, you can focus on adding advanced pan/zoom effects, adjusting sound levels, and dropping in background music tracks.</div>
+          <div class="key-item">By automating repetitive timeline placement, you free up your time to focus on creative storytelling and script refinement.</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<footer style="margin-left: var(--sw); background: #0f0d2e; border-top: 1px solid #2e2a5a; padding: 32px 40px; color: #64748b; text-align: center;">
+  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+    <div style="font-family: var(--sans); font-size: 18px; font-weight: 900; color: #c7d2fe; flex-shrink:0;">
+      AutoTube <span style="color:#c8321e;">Pro</span>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:8px; flex:1; min-width:0;">
+      <div style="display:flex; gap:16px; font-size:13px; flex-wrap:wrap; justify-content:center;">
+        <a href="index.html#how"      style="color:#a5b4fc; text-decoration:none;">How It Works</a>
+        <a href="index.html#pricing"  style="color:#a5b4fc; text-decoration:none;">Pricing</a>
+        <a href="manual.html"         style="color:#a5b4fc; text-decoration:none;">Documentation</a>
+        <a href="privacy.html"        style="color:#a5b4fc; text-decoration:none;">Privacy Policy</a>
+        <a href="terms.html"          style="color:#a5b4fc; text-decoration:none;">Terms of Service</a>
+      </div>
+      <div style="font-size:12.5px; color:#6b7280;">
+        Enterprise Development Inquiries: 
+        <a href="mailto:hp.biz001@gmail.com" style="color:#818cf8; text-decoration:none;">hp.biz001@gmail.com</a>
+      </div>
+      <div style="font-family: var(--mono); font-size: 12.5px; color: #818cf8;">
+        © 2026 AutoTube Pro. All rights reserved.
+      </div>
+    </div>
+    <div style="width:140px; flex-shrink:0;"></div>
+  </div>
+</footer>
+
+<button id="scrollTopBtn" aria-label="Back to Top">↑</button>
+
+<script>
+const sections = document.querySelectorAll('.section[id]');
+const navLinks = document.querySelectorAll('.nav-a[data-sid]');
+const bc = document.getElementById('bc');
+const bcMap = {
+  's-ov':   'Process Overview',
+  's-prep': 'Prerequisites · Directory Architecture Config',
+  's2':    'STEP 1 · Excel Structure Rules',
+  's1a':   'STEP 2 · File Explorer & Text Terminal View',
+  's1b':   'STEP 2 · Spreadsheet Matrix Grid Editor',
+  's3':    'STEP 3 · Gemini Automated Video Frames Engine',
+  's4a':   'STEP 4-① · Client Workspace Parameter Mapping',
+  's4c':   'STEP 4-② · Google Colab TTS Cluster Activation',
+  's4b':   'STEP 4-③ · Pipeline Vocal Tracking Runs',
+  's5':    'STEP 5 · Whisper Subtitle Extraction and Synch',
+  's6a':   'STEP 6 · Integrated Playback Review (QC)',
+  's6b':   'STEP 6 · Native CapCut Timeline Deployment',
+};
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const sid = e.target.id;
+      navLinks.forEach(a => a.classList.toggle('on', a.dataset.sid === sid));
+      if (bc) bc.innerHTML = '<strong>' + (bcMap[sid] || sid) + '</strong>';
+    }
+  });
+}, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
+sections.forEach(s => io.observe(s));
+navLinks.forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const el = document.getElementById(a.dataset.sid);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    closeSidebar();
+  });
+});
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sbOverlay');
+const hamburger = document.getElementById('hamburger');
+function openSidebar() {
+  sidebar.classList.add('open');
+  overlay.classList.add('open');
+  hamburger.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeSidebar() {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('open');
+  hamburger.classList.remove('open');
+  document.body.style.overflow = '';
+}
+hamburger.addEventListener('click', () => {
+  sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+});
+overlay.addEventListener('click', closeSidebar);
+
+(function() {
+  var btn = document.getElementById('scrollTopBtn');
+  window.addEventListener('scroll', function() {
+    btn.classList.toggle('show', window.scrollY > 400);
+  }, { passive: true });
+  btn.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+
+</body>
+</html>
