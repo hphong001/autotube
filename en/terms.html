@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service — AutoTube Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+
+    :root {
+      --ink:    #1a202c;
+      --muted:  #64748b;
+      --red:    #e53e3e;
+      --bg:     #f8fafc;
+      --card:   #ffffff;
+      --border: #e2e8f0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.85;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+    }
+    .header-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .logo span { color: var(--red); }
+    .back-link {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--red); }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 780px;
+      margin: 48px auto;
+      padding: 0 24px 100px;
+    }
+
+    /* ── DOC HEADER ── */
+    .doc-header {
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 2px solid var(--border);
+    }
+    .doc-header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .doc-header .meta {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* ── TOC ── */
+    .toc {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 40px;
+    }
+    .toc-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .toc-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 24px;
+    }
+    .toc-list a {
+      font-size: 13px;
+      color: #334155;
+      text-decoration: none;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      padding: 2px 0;
+    }
+    .toc-list a:hover { color: var(--red); }
+    .toc-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--red);
+      flex-shrink: 0;
+      min-width: 56px;
+    }
+
+    /* ── TYPOGRAPHY ── */
+    h2 {
+      font-size: 17px;
+      font-weight: 700;
+      margin: 44px 0 14px;
+      padding-left: 12px;
+      border-left: 3px solid var(--red);
+      line-height: 1.4;
+    }
+    h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 24px 0 8px;
+      color: #334155;
+    }
+    p {
+      margin-bottom: 12px;
+      color: #334155;
+      font-size: 15px;
+      line-height: 1.85;
+    }
+    ul {
+      padding-left: 20px;
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    ul li {
+      color: #334155;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+    ul li strong { color: var(--ink); }
+    a { color: var(--red); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── TABLE ── */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 16px 0 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      min-width: 440px;
+    }
+    th {
+      background: #f1f5f9;
+      padding: 10px 16px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      color: #334155;
+      vertical-align: top;
+      line-height: 1.6;
+    }
+    tr:last-child td { border-bottom: none; }
+
+    /* ── DIVIDER ── */
+    .sec-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 0;
+    }
+
+    /* ── SCROLL TOP ── */
+    #scrollTopBtn {
+      position: fixed;
+      bottom: 32px; right: 32px;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--red); color: #fff;
+      border: none; cursor: pointer;
+      font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 14px rgba(229,62,62,0.32);
+      opacity: 0; transform: translateY(12px);
+      transition: opacity .25s, transform .25s, background .15s;
+      pointer-events: none; z-index: 999;
+    }
+    #scrollTopBtn.show { opacity:1; transform:translateY(0); pointer-events:auto; }
+    #scrollTopBtn:hover { background: #c53030; }
+
+    /* ── FOOTER ── */
+    footer.doc-footer {
+      background: #0f0d2e;
+      border-top: 1px solid #2e2a5a;
+      padding: 32px 24px;
+    }
+    .footer-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .foot-logo {
+      font-size: 18px;
+      font-weight: 900;
+      color: #c7d2fe;
+      letter-spacing: -0.02em;
+    }
+    .foot-logo span { color: #c8321e; }
+    .foot-links {
+      display: flex; gap: 20px;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .foot-links a {
+      font-size: 13px; color: #a5b4fc;
+      text-decoration: none;
+    }
+    .foot-links a:hover { color: #e0e7ff; }
+    .foot-copy {
+      font-size: 12px; color: #818cf8;
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 600px) {
+      header { padding: 12px 0; }
+      .header-inner { padding: 0 16px; }
+      main { margin: 28px auto; padding: 0 16px 80px; }
+      .doc-header { margin-bottom: 28px; }
+      .doc-header h1 { font-size: 22px; }
+      .toc { padding: 16px 18px; }
+      .toc-list { grid-template-columns: 1fr; gap: 6px; }
+      .toc-list a { font-size: 14px; padding: 3px 0; }
+      h2 { font-size: 16px; margin: 36px 0 12px; }
+      h3 { font-size: 14px; }
+      p, ul li { font-size: 14px; }
+      .table-wrap { border-radius: 6px; }
+      table { min-width: 380px; font-size: 13px; }
+      th, td { padding: 9px 12px; }
+      footer.doc-footer { padding: 24px 16px; }
+      .footer-inner { flex-direction: column; text-align: center; gap: 16px; }
+      .foot-links { gap: 16px; }
+      #scrollTopBtn { bottom: 20px; right: 16px; width: 42px; height: 42px; font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">AutoTube<span>Pro</span></a>
+    <a href="index.html" class="back-link">← Back to Home</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- Document Header -->
+  <div class="doc-header">
+    <h1>Terms of Service</h1>
+    <p class="meta">Effective Date: January 1, 2025 &nbsp;|&nbsp; Last Updated: June 21, 2026</p>
+  </div>
+
+  <p>These Terms of Service ("Terms") govern your use of the AutoTube Pro software (the "Software") provided by its operator (the "Operator"). By purchasing or using the Software, you are deemed to have agreed to these Terms.</p>
+
+  <!-- Table of Contents -->
+  <div class="toc">
+    <div class="toc-title">Table of Contents</div>
+    <ul class="toc-list">
+      <li><a href="#s1"><span class="toc-num">Art. 1</span>Definitions</a></li>
+      <li><a href="#s2"><span class="toc-num">Art. 2</span>License & Device Limit</a></li>
+      <li><a href="#s3"><span class="toc-num">Art. 3</span>Payment & Term</a></li>
+      <li><a href="#s4"><span class="toc-num">Art. 4</span>Refund Policy</a></li>
+      <li><a href="#s5"><span class="toc-num">Art. 5</span>Restrictions</a></li>
+      <li><a href="#s6"><span class="toc-num">Art. 6</span>AI & Third Parties</a></li>
+      <li><a href="#s7"><span class="toc-num">Art. 7</span>Service Changes</a></li>
+      <li><a href="#s8"><span class="toc-num">Art. 8</span>Liability</a></li>
+      <li><a href="#s9"><span class="toc-num">Art. 9</span>IP Rights</a></li>
+      <li><a href="#s10"><span class="toc-num">Art. 10</span>Changes to Terms</a></li>
+      <li><a href="#s11"><span class="toc-num">Art. 11</span>Governing Law</a></li>
+      <li><a href="#contact"><span class="toc-num">Contact</span>Contact Us</a></li>
+    </ul>
+  </div>
+
+  <!-- Article 1 -->
+  <div id="s1">
+    <h2>Article 1 (Definitions)</h2>
+    <ul>
+      <li><strong>Software</strong>: AutoTube Pro, a Windows-based YouTube content automation tool</li>
+      <li><strong>License</strong>: A 1-year right to use the Software, granted by the Operator to the User under these Terms</li>
+      <li><strong>User</strong>: Any individual or entity that purchases or uses the Software</li>
+      <li><strong>Third-Party Services</strong>: External platforms and open-source models the Software integrates with, including Google Gemini, Google Colab, and Qwen3-TTS</li>
+    </ul>
+  </div>
+
+  <div class="sec-divider"></div>
+
+  <!-- Article 2 -->
+  <div id="s2">
+    <h2>Article 2 (License and Device Limit)</h2>
+    <div class="table-wrap">
+      <table>
+        <tr>
+          <th>Plan</th>
+          <th>Installable Devices</th>
+          <th>Concurrent Use</th>
+        </tr>
+        <tr>
+          <td>AutoTube Pro</td>
+          <td>3 PCs</td>
+          <td>Not allowed</td>
+        </tr>
+      </table>
+    </div>
+    <p>Annual license pricing follows the rates listed on our official website (<a href="https://aibaselab.com/en/">aibaselab.com</a>); the final amount charged will be confirmed on the Gumroad checkout page at the time of purchase.</p>
+    <p><strong>Installing or using the Software on more devices than allowed, or using it concurrently, is a violation of these Terms and may result in immediate license termination.</strong></p>
+  </div>
+
+  <div class="sec-divider"></div>
+
+  <!-- Article 3 -->
+  <div id="s3">
+    <h2>Article 3 (Payment and Subscription Term)</h2>
+    <ul>
+      <li>The Software is provided as a <strong>1-year license</strong>.</li>
+      <li>International card payments are processed through Gumroad.com, and Gumroad's own Terms of Service and Privacy Policy apply in addition to these Terms.</li>
+      <li><strong>Auto-renewal is not enabled.</strong> To continue using the Software after your license expires, you must repurchase it directly through our website.</li>
+      <li>An expiration notice may be sent by email before your license expires.</li>
+      <li>After expiration, use of the Software will be restricted.</li>
+    </ul>
+  </div>
+
+  <div class="sec-divider"></div>
+
+  <!-- Article 4 -->
+  <div id="s4">
+    <h2>Article 4 (Refund Policy)</h2>
+    <p>The Software offers a <strong>full-featured 5-day free trial</strong> before purchase, with no functional restrictions compared to the paid version.</p>
+    <p>Because the free trial allows for thorough evaluation before you buy, <strong>refunds for change of mind after purchase are not available.</strong> We recommend fully testing the Software during the 5-day trial before purchasing. We never pressure users to buy during the trial period.</p>
+    <p>However, if normal use is not possible due to a <strong>technical defect in the Software itself</strong> (e.g., a license activation error), please contact the Operator — we will review the issue and provide support or a refund. Inquiries can be sent by email to <a href="mailto:hp.biz001@gmail.com">hp.biz001@gmail.com</a>.</p>
+    <p style="font-size:14px; color:var(--muted);">Note: Feature limitations caused by changes to <strong>third-party services</strong> (e.g., Google) are not covered under this Article and are handled per Article 7.</p>
+  </div>
+
+  <div class="sec-divider"></div>
+
+  <!-- Article 5 -->
+  <div id="s5">
+    <h2>Article 5 (Restrictions and Prohibited Conduct)</h2>
+    <p>Users must not engage in any of the following:</p>
+
+    <h3>General Prohibited Conduct</h3>
+    <ul>
+      <li>Reverse engineering, decompiling, or extracting source code from the Software</li>
+      <li>Duplicating, sharing, or reselling license keys</li>
+      <li>Installing or using the Software on more devices than permitted</li>
+      <li>Using the Software to create content that infringes copyright</li>
+      <li>Transferring or lending usage rights to a third party</li>
+    </ul>
+
+    <h3>Prohibited Conduct Related to AI Voice Synthesis (TTS)</h3>
+    <p>The Software's TTS voice generation feature operates based on voice samples provided by the user. Users must not:</p>
+    <ul>
+      <li>Use someone else's voice as a sample without that person's consent</li>
+      <li>Clone or imitate the voice of a specific public figure (celebrity, voice actor, broadcaster, etc.) without authorization</li>
+      <li>Use generated AI voice to deceive a third party into believing it is a real person's voice</li>
+      <li>Use generated voice for defamation, fraud, spreading misinformation, or other unlawful purposes</li>
+      <li>Use copyrighted voice content (commercial recordings, broadcast audio, etc.) as a sample without authorization</li>
+    </ul>
+    <p><strong>Users warrant that they hold lawful rights to any voice sample they use. Users bear full legal responsibility for any violation of likeness rights, copyright, defamation, or similar claims arising from such use, and the Operator bears no responsibility in connection with this.</strong></p>
+
+    <h3>Prohibited Conduct Related to AI Image Generation</h3>
+    <ul>
+      <li>Using another person's copyrighted work as a character reference image without authorization</li>
+      <li>Defamation, privacy violation, or copyright infringement of others through generated images</li>
+      <li>Using generated content to create deceptive material such as misinformation or deepfakes</li>
+    </ul>
+    <p>Users are solely responsible for copyright ownership and any third-party rights infringement related to generated image and voice content. The Operator bears no legal responsibility for content generated by users.</p>
+  </div>
+
+  <div class="sec-divider"></div>
+
+  <!-- Article 6 -->
+  <div id="s6">
+    <h2>Article 6 (AI Features and Third-Party Services)</h2>
+    <p>The Software integrates with the following third-party services and open-source models. Users are responsible for reviewing and complying with each service's own terms of use.</p>
+    <div class="table-wrap">
+      <table>
+        <tr>
+          <th>Service</th>
+          <th>Purpose</th>
+          <th>Usage Method</th>
+        </tr>
+        <tr>
+          <td><strong>Google Gemini</strong></td>
+          <td>Automated image generation</td>
+          <td>Accessed via the user's own Google account</td>
+        </tr>
+        <tr>
+          <td><strong>Google Colab</strong></td>
+          <td>TTS server operation</td>
+          <td>Accessed via the user's own Google account</td>
+        </tr>
+        <tr>
+          <td><strong>Qwen3-TTS</strong></td>
+          <td>AI voice synthesis</td>
+          <td>Open-source model (run on Colab)</td>
+        </tr>
+        <tr>
+          <td><strong>Whisper</strong></td>
+          <td>Automatic subtitle generation</td>
+          <td>Open-source model (run locally)</td>
+        </tr>
+      </table>
+    </div>
+
+    <h3>Important Notes Regarding Google Services</h3>
+    <ul>
+      <li>The automated image generation and TTS server features operate through <strong>the user's own Google account</strong>. These features may be temporarily restricted due to changes in Google's service policies, and the Operator is not liable for any resulting damages.</li>
+      <li><strong>Use of your Google account may be restricted under Google's own Terms of Service.</strong> Users are responsible for reviewing Google's terms before using the Software, and bear sole responsibility for any account restrictions.</li>
+      <li>When changes to Google's services are identified, the Operator will make <strong>reasonable efforts to restore functionality promptly</strong> through software updates.</li>
+    </ul>
+    <p>Qwen3-TTS and Whisper are open-source models that run in the user's local PC environment or on Google Colab. Please comply with the applicable open-source licenses (e.g., Apache 2.0) when using these models.</p>
+  </div>
+
+  <div class="sec-divider"></div>
+
+  <!-- Article 7 -->
+  <div id="s7">
+    <h2>Article 7 (Service Changes and Discontinuation)</h2>
+    <ul>
+      <li>The Operator may modify or update the Software's features in order to improve the service.</li>
+      <li>If the service is to be discontinued, the Operator will notify users by email at least <strong>30 days</strong> in advance.</li>
+      <li><strong>If the service is discontinued due to circumstances on the Operator's side, a reasonable refund will be issued for the remaining license period.</strong></li>
+      <li>Feature limitations caused by changes to third-party services (e.g., Google Gemini) are not considered service discontinuation, and the Operator will make reasonable efforts to restore functionality through updates.</li>
+    </ul>
+  </div>
+
+  <div class="sec-divider"></div>
+
+  <!-- Article 8 -->
+  <div id="s8">
+    <h2>Article 8 (Limitation of Liability)</h2>
+    <ul>
+      <li>The Operator bears no legal responsibility for content generated by a user.</li>
+      <li>The Operator is not liable for feature limitations caused by the user's PC environment, internet connection, or changes to external services (YouTube, Google, etc.).</li>
+      <li>The Operator is not liable for indirect or incidental damages arising from use of the Software.</li>
+      <li>The Operator is not liable for disputes with third parties, copyright infringement, defamation, or similar claims arising from images, voice, or subtitle content generated by users.</li>
+      <li>Given the nature of AI models, the Operator does not guarantee the accuracy, quality, or suitability of generated output. <strong>Final judgment and responsibility for any generated output rests with the user.</strong></li>
+    </ul>
+  </div>
+
+  <div class="sec-divider"></div>
+
+  <!-- Article 9 -->
+  <div id="s9">
+    <h2>Article 9 (Intellectual Property)</h2>
+    <p>All intellectual property rights related to the Software belong to the Operator. Users are granted only a right to use the Software under these Terms and do not acquire ownership of the Software.</p>
+    <p>Copyright in content (images, voice, subtitles, etc.) that a user generates through the Software belongs to that user. However, rights attribution may vary depending on the terms of use of any third-party service involved in the generation process.</p>
+  </div>
+
+  <div class="sec-divider"></div>
+
+  <!-- Article 10 -->
+  <div id="s10">
+    <h2>Article 10 (Changes to These Terms)</h2>
+    <p>The Operator may revise these Terms as necessary. Any changes will be announced via a website notice and email at least <strong>7 days</strong> in advance. Continued use of the Software after a change takes effect constitutes acceptance of the revised Terms.</p>
+  </div>
+
+  <div class="sec-divider"></div>
+
+  <!-- Article 11 -->
+  <div id="s11">
+    <h2>Article 11 (Governing Law and Dispute Resolution)</h2>
+    <p>These Terms are governed by the laws of the Republic of Korea. In the event of a dispute, the court having jurisdiction over the Operator's place of business shall be the agreed court of jurisdiction.</p>
+  </div>
+
+  <div class="sec-divider"></div>
+
+  <!-- Contact -->
+  <div id="contact">
+    <h2>Contact Us</h2>
+    <div class="table-wrap">
+      <table>
+        <tr>
+          <th style="width:120px;">Item</th>
+          <th>Details</th>
+        </tr>
+        <tr>
+          <td>Operator</td>
+          <td>AutoTube Pro Operator</td>
+        </tr>
+        <tr>
+          <td>Email</td>
+          <td><a href="mailto:hp.biz001@gmail.com">hp.biz001@gmail.com</a></td>
+        </tr>
+        <tr>
+          <td>Website</td>
+          <td><a href="https://aibaselab.com" target="_blank">https://aibaselab.com</a></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── FOOTER ── -->
+<footer class="doc-footer">
+  <div class="footer-inner">
+    <div class="foot-logo">AutoTube <span>Pro</span></div>
+    <div class="foot-links">
+      <a href="index.html">Home</a>
+      <a href="manual.html">User Manual</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+    </div>
+    <div class="foot-copy">© 2026 AutoTube Pro. All rights reserved.</div>
+  </div>
+</footer>
+
+<button id="scrollTopBtn" aria-label="Back to top">↑</button>
+
+<script>
+(function() {
+  var btn = document.getElementById('scrollTopBtn');
+  window.addEventListener('scroll', function() {
+    btn.classList.toggle('show', window.scrollY > 400);
+  }, { passive: true });
+  btn.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+
+</body>
+</html>

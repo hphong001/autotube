@@ -106,15 +106,15 @@ h2 { font-size: clamp(32px, 4.5vw, 48px); font-weight: 800; color: var(--ink); l
 nav { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(226, 232, 240, 0.8); height: 72px; display: flex; align-items: center; padding: 0 var(--gap); justify-content: space-between; }
 .nav-logo { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
 .nav-logo span { color: #dc2626; }
-.nav-menu-wrap { display: flex; align-items: center; background: var(--tinted); padding: 4px; border-radius: 40px; list-style: none; gap: 4px; border: 1px solid var(--line); }
+.nav-menu-wrap { display: flex; align-items: center; background: var(--tinted); padding: 4px; border-radius: 40px; list-style: none; gap: 4px; border: 1px solid var(--line); position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
 .nav-menu-wrap a { font-size: 15px; font-weight: 600; color: var(--gray); padding: 8px 20px; border-radius: 30px; text-decoration: none; transition: all .2s ease; display: block; }
 .nav-menu-wrap a:hover { background: var(--white); color: var(--ink); box-shadow: var(--shadow-sm); }
 .nav-cta { background: linear-gradient(135deg, #6366f1, #4f46e5); color: #fff; padding: 10px 24px; border-radius: 8px; font-size: 15px; font-weight: 700; text-decoration: none; white-space: nowrap; margin-left: 12px; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2); transition: transform 0.2s; }
 .nav-cta:hover { transform: translateY(-1px); }
 
 .kpi-row { display: flex; gap: 16px; margin-bottom: 44px; }
-.kpi { flex: 1; background: var(--white); padding: 32px 24px; text-align: center; border-radius: 20px; border: 1px solid var(--line); box-shadow: var(--shadow-sm); }
-.kpi-num { font-size: clamp(32px, 5vw, 48px); font-weight: 900; line-height: 1; color: var(--ink); margin-bottom: 12px; }
+.kpi { flex: 1; background: var(--white); padding: 28px 20px; text-align: center; border-radius: 20px; border: 1px solid var(--line); box-shadow: var(--shadow-sm); }
+.kpi-num { font-size: clamp(28px, 5vw, 48px); font-weight: 900; line-height: 1; color: var(--ink); margin-bottom: 12px; }
 .kpi-label { font-size: 16px; font-weight: 700; color: var(--ink); margin-top: 16px; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
 .pain-list { list-style: none; display: flex; flex-direction: column; gap: 16px; margin: 36px 0; }
@@ -147,8 +147,42 @@ nav { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0
 @media (max-width: 640px) {
   :root { --section: 60px; --gap: 20px; }
   .kpi-row { flex-direction: column; }
-  .nav-menu-wrap { display: none; }
   h2 { font-size: 26px; }
+}
+
+.hamburger {
+  display: none; flex-direction: column; justify-content: center;
+  gap: 5px; width: 40px; height: 40px; padding: 8px;
+  background: none; border: none; cursor: pointer; flex-shrink: 0;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--ink); border-radius: 2px;
+  transition: transform .3s, opacity .3s;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* IMPORTANT: hide nav-cta at the SAME breakpoint the hamburger appears,
+   so the trial/CTA button and the hamburger never overlap or crowd each other */
+@media (max-width: 860px) {
+  .hamburger { display: flex; }
+  .nav-cta { display: none; }
+  .nav-menu-wrap {
+    display: none; flex-direction: column;
+    position: absolute; top: 72px; left: 0; right: 0; transform: none;
+    background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--line); box-shadow: var(--shadow-md);
+    padding: 16px 0; gap: 0; border-radius: 0; border-left: none; border-right: none; border-top: none;
+    z-index: 998;
+  }
+  .nav-menu-wrap.open { display: flex; }
+  .nav-menu-wrap a {
+    padding: 16px 24px; border-radius: 0; font-size: 16px; font-weight: 700;
+    border-bottom: 1px solid var(--line); background: transparent;
+  }
+  .nav-menu-wrap a:last-child { border-bottom: none; }
 }
 
 #cs-slider { -webkit-appearance: none; width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; outline: none; margin: 16px 0; }
@@ -159,18 +193,21 @@ nav { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0
 
 <nav>
   <a href="#" class="nav-logo" onclick="window.scrollTo(0,0);">AutoTube <span>Pro</span></a>
-  <div style="display: flex; align-items: center; margin-left: auto;">
+  <ul class="nav-menu-wrap" id="navMenu">
+    <li><a href="#how" onclick="closeMenu()">How It Works</a></li>
+    <li><a href="#pricing" onclick="closeMenu()">Pricing</a></li>
+    <li><a href="https://aibaselab.com/en/manual.html" onclick="closeMenu()" style="color:var(--red);">User Manual</a></li>
+  </ul>
+  <div style="display: flex; align-items: center; gap: 8px; margin-left: auto;">
+    <a href="#pricing" class="nav-cta">Get Started →</a>
     <div class="lang-switcher">
       <a href="https://aibaselab.com/">KO</a>
       <span class="lang-divider">|</span>
       <a href="#" class="active">EN</a>
     </div>
-    <ul class="nav-menu-wrap" id="navMenu">
-      <li><a href="#how">How It Works</a></li>
-      <li><a href="#pricing">Pricing</a></li>
-      <li><a href="https://aibaselab.com/en/manual.html" style="color:var(--red);">User Manual</a></li>
-    </ul>
-    <a href="#pricing" class="nav-cta">Get Started →</a>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
 
@@ -182,7 +219,7 @@ nav { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0
         <h2 style="font-size: clamp(20px, 3vw, 24px); font-weight: 700; color: var(--gray); margin: 0 0 12px 0;">
           Eliminate 90% of Manual Editing Tasks
         </h2>
-        <div style="font-size: clamp(42px, 6vw, 64px); font-weight: 900; color: var(--ink); line-height: 1.1;">
+        <div style="font-size: clamp(34px, 6vw, 64px); font-weight: 900; color: var(--ink); line-height: 1.1;">
           AutoTube <span style="color: #ef4444;">Pro</span>
         </div>
       </div>
@@ -335,6 +372,9 @@ nav { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0
       <a href="https://bizhawk.gumroad.com/l/rdkvs" target="_blank" style="display:block; background:#4f46e5; color:#fff; padding:16px; font-size:16px; font-weight:700; text-decoration:none; border-radius:10px; transition: transform 0.2s; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);">
         Get Secure Access via Gumroad
       </a>
+      <div style="font-size:13px; color:var(--muted); margin-top:16px; line-height:1.6;">
+        💬 You're not talking to a support team — the developer who built this personally answers every inquiry.
+      </div>
     </div>
 
     <!-- Refund Policy Trust Box -->
@@ -342,7 +382,7 @@ nav { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0
       <div style="font-size: 17px; font-weight: 800; color: var(--ink); margin-bottom: 8px;">Try Before You Buy: 5-DAY Risk-Free Trial</div>
       <div style="font-size: 14.5px; color: var(--gray); line-height: 1.6;">
         We provide a fully functional <strong>5-DAY Free Trial</strong> so you can verify the software's performance on your own PC setup. <br><br>
-        Because we ensure you have ample time to test everything risk-free before making a commitment, <strong>all sales are final once purchased.</strong>
+        Because we ensure you have ample time to test everything risk-free before making a commitment, <strong>all sales are final once purchased.</strong> However, if the software has a technical defect (e.g. a license activation error) that prevents normal use, we will provide a full refund or fix — just email us.
       </div>
       <div style="margin-top: 16px;">
         <a href="https://forms.gle/G6VReQVV3MjY88GL7" target="_blank" style="font-size: 20px; font-weight: 700; color: #4f46e5; text-decoration: underline;">Request your 5-DAY Trial Key Here →</a>
@@ -360,7 +400,8 @@ nav { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0
     <h3 class="r" style="font-size:clamp(20px,2.8vw,24px); font-weight:800; color:var(--ink); margin-bottom:16px;">① Time — How much human effort is reduced per video?</h3>
     <div style="display:flex; flex-direction:column; gap:24px; align-items:stretch; background: #0f172a; padding: 36px 28px; border-radius: 20px; box-shadow: var(--shadow-lg); margin-bottom: 48px;">
       <div style="text-align: center; margin-bottom: 4px;">
-        <span style="color: #ffffff; font-size: 17px; font-weight: 700; letter-spacing: -0.02em;">Comparison of 'Human Intervention (Labor)' Time for an 8-10 Minute Long-form Video</span>
+        <span style="color: #ffffff; font-size: clamp(15px, 4vw, 17px); font-weight: 700; letter-spacing: -0.02em;">Comparison of 'Human Intervention (Labor)' Time for an 8-10 Minute Long-form Video</span>
+        <div style="color: rgba(255,255,255,0.5); font-size: clamp(11.5px, 3vw, 13px); font-weight: 500; line-height:1.6; margin-top:6px;">*Excludes planning/scriptwriting and AI generation wait time — measures only hands-on assembly & review time.</div>
       </div>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
         <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 22px 16px; text-align: center;">
@@ -371,10 +412,11 @@ nav { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0
           <div style="font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 600; margin-bottom: 10px;">Individual AI Tools</div>
           <div style="font-size: 22px; color: #cbd5e1; font-weight: 700;">Min. 2 Hours +</div>
         </div>
-        <div style="background: rgba(79, 70, 229, 0.15); border: 2px solid #6366f1; border-radius: 12px; padding: 22px 16px; text-align: center; position: relative;">
-          <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #6366f1; color: #fff; font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 12px;">Manual Labor Eliminated</div>
+        <div style="background: rgba(79, 70, 229, 0.15); border: 2px solid #6366f1; border-radius: 12px; padding: 34px 16px 22px; text-align: center; position: relative;">
+          <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #6366f1; color: #fff; font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 12px; white-space: nowrap;">Labor Eliminated</div>
           <div style="font-size: 14px; color: #a5b4fc; font-weight: 700; margin-bottom: 10px;">AutoTube Pro</div>
-          <div style="font-size: 26px; color: #ffffff; font-weight: 800;">Approx. 15 Mins +</div>
+          <div style="font-size: 26px; color: #ffffff; font-weight: 800;">Approx. 15–30 Mins</div>
+          <div style="font-size: 11.5px; color: rgba(255,255,255,0.5); margin-top: 6px;">*Decreases with experience</div>
         </div>
       </div>
       <div style="background: rgba(0,0,0,0.4); padding: 20px 24px; border-radius: 12px; border-left: 4px solid #6366f1;">
@@ -406,22 +448,28 @@ When you hit Google's free limit, or when you need fast and stable generation, s
     <div class="r" style="background:#fff; border:1px solid var(--line); border-radius:20px; padding:36px; box-shadow:var(--shadow-md);">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:24px;">
         <span style="font-size:16px; color:var(--gray); font-weight:600;">Monthly Video Production (Based on 60 cuts, with 30 free cuts generated)</span>
-        <span style="font-size:28px; font-weight:900; color:var(--ink); font-family:var(--num);"><span id="cs-cnt">30</span> Videos</span>
+        <span style="font-size:28px; font-weight:900; color:var(--ink); font-family:var(--num);"><span id="cs-cnt">10</span> Videos</span>
       </div>
-      <input type="range" min="1" max="100" value="30" step="1" id="cs-slider">
+      <input type="range" min="1" max="100" value="10" step="1" id="cs-slider">
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top:32px;">
-        <div style="background:var(--bg); border-radius:16px; padding:24px; border: 1px solid var(--line);">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-top:32px;">
+        <div style="background:var(--bg); border-radius:16px; padding:20px; border: 1px solid var(--line);">
           <div style="font-size:14px; color:var(--gray); margin-bottom:8px; font-weight:500;">Standard API Tool Cost (100% Paid)</div>
-          <div style="font-size:28px; font-weight:900; color:var(--muted); font-family:var(--num);" id="cs-total">$180</div>
+          <div style="font-size:clamp(22px,6vw,28px); font-weight:900; color:var(--muted); font-family:var(--num);" id="cs-total">$60</div>
         </div>
-        <div style="background:#f0fdf4; border-radius:16px; padding:24px; border: 1px solid #dcfce7;">
+        <div style="background:#f0fdf4; border-radius:16px; padding:20px; border: 1px solid #dcfce7;">
           <div style="font-size:14px; color:#166534; font-weight:700; margin-bottom:8px;">AutoTube Pro Hybrid Cost (50% Offset)</div>
-          <div style="font-size:28px; font-weight:900; color:#16a34a; font-family:var(--num);" id="cs-hybrid">$90</div>
+          <div style="font-size:clamp(22px,6vw,28px); font-weight:900; color:#16a34a; font-family:var(--num);" id="cs-hybrid">$30</div>
         </div>
       </div>
       <div style="text-align: center; margin-top: 24px; font-size: 18px; font-weight: 700; color: var(--ink);">
-        You definitively save <span style="color:#ef4444;" id="cs-save">$90</span> every single month.
+        You can expect to save around <span style="color:#ef4444;" id="cs-save">$30</span> every month.
+      </div>
+      <div style="text-align: center; margin-top: 16px;">
+        <div style="display: inline-block; background: #eef2ff; border: 1px solid #e0e7ff; border-radius: 12px; padding: 14px 28px; font-size: 16px; color: var(--ink2); line-height: 1.7;">
+          Honestly, the cost savings are just a bonus.<br>
+          The real value is saving your <strong style="color:#ef4444;">precious time</strong> by cutting the grunt work out of every video.
+        </div>
       </div>
     </div>
   </div>
@@ -454,32 +502,54 @@ When you hit Google's free limit, or when you need fast and stable generation, s
 })();
 </script>
 
-<script>
-(function() {
-  var slider = document.getElementById('cs-slider');
-  if (!slider) return;
-  function update() {
-    var n = parseInt(slider.value);
-    // Logic: 60 images per video. API is $0.10/img -> $6.00 per video standard.
-    var standardTotal = n * 6;
-    // Hybrid logic: 50% free -> $3.00 per video.
-    var hybridTotal = n * 3;
-    var savings = standardTotal - hybridTotal;
-    
-    var min = parseInt(slider.min);
-    var max = parseInt(slider.max);
-    var progress = ((n - min) / (max - min)) * 100;
-    slider.style.background = `linear-gradient(to right, #4f46e5 ${progress}%, #e2e8f0 ${progress}%)`;
-    
-    document.getElementById('cs-cnt').textContent = n;
-    document.getElementById('cs-total').textContent = '$' + standardTotal;
-    document.getElementById('cs-hybrid').textContent = '$' + hybridTotal;
-    document.getElementById('cs-save').textContent = '$' + savings;
-  }
-  slider.addEventListener('input', update);
-  update();
-})();
-</script>
+<!-- LOCAL vs CLOUD COMPARISON -->
+<section class="section section--tinted" id="comparison">
+  <div class="w">
+    <span class="eyebrow r">Runs Independently On Your PC</span>
+    <h2 class="r">Your Scripts and Prompts <br><span class="hl-red">Never Leave Your Computer.</span></h2>
+
+    <blockquote style="border-left: 4px solid var(--red2); padding: 24px 32px; background: var(--white); border-radius: 0 16px 16px 0; margin: 32px 0; font-size: 19px; color: var(--ink2); line-height: 1.6; box-shadow: var(--shadow-sm); border: 1px solid var(--line); border-left-width: 4px;" class="r">
+      If you're making one or two videos casually, a cloud-based service is convenient.<br>
+      But if you're running multiple channels professionally and need to cut costs, <strong>local processing is the more realistic choice.</strong>
+    </blockquote>
+
+    <div class="r" style="background:var(--white);border:1px solid var(--line);border-radius:16px;overflow-x:auto;margin-top:32px;box-shadow:var(--shadow-sm);">
+      <table style="width:100%;border-collapse:collapse;font-size:15px;min-width:520px;">
+        <thead>
+          <tr style="background:var(--bg);">
+            <th style="padding:14px 20px;text-align:left;color:var(--gray);font-size:13px;font-weight:700;border-bottom:1px solid var(--line);">Comparison</th>
+            <th style="padding:14px 20px;text-align:left;color:var(--gray);font-size:13px;font-weight:700;border-bottom:1px solid var(--line);">Cloud-based Service</th>
+            <th style="padding:14px 20px;text-align:left;color:var(--red);font-size:13px;font-weight:700;border-bottom:1px solid var(--line);">AutoTube Pro</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--line);">
+            <td style="padding:16px 20px;font-weight:700;color:var(--ink);">🔒 Data Security</td>
+            <td style="padding:16px 20px;color:var(--gray);">Scripts & prompts stored on external servers</td>
+            <td style="padding:16px 20px;color:var(--ink);">Processed <strong>100% on your own PC</strong></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--line);">
+            <td style="padding:16px 20px;font-weight:700;color:var(--ink);">💳 Cost Structure</td>
+            <td style="padding:16px 20px;color:var(--gray);">Monthly subscription + per-video credit deductions</td>
+            <td style="padding:16px 20px;color:var(--ink);">Uses your own free quota — <strong>target $0 extra running cost</strong></td>
+          </tr>
+          <tr>
+            <td style="padding:16px 20px;font-weight:700;color:var(--ink);">🏢 Service Dependency</td>
+            <td style="padding:16px 20px;color:var(--gray);">Stops working immediately if the service has an outage or shuts down</td>
+            <td style="padding:16px 20px;color:var(--ink);">Works any time your PC is on — <strong>a facility that never stops</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="r" style="background:var(--white); border:1px solid var(--line); border-radius:16px; padding:24px 28px; margin-top:24px; text-align:center;">
+      <div style="font-size:15px; color:var(--gray); line-height:1.7;">
+        <strong>Cloud-based services have real advantages too.</strong> They're convenient for getting started with zero setup, and great for casual use.<br>
+        But if you're scaling up and need to cut costs while running a channel professionally, local infrastructure is the more realistic choice.
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- FAQ -->
 <section class="section section--white">
@@ -493,7 +563,7 @@ When you hit Google's free limit, or when you need fast and stable generation, s
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="faq(this)">Does this work on Mac (macOS)?<span class="fq-ico">+</span></button>
-        <div class="faq-a"><div class="faq-a-in">No. AutoTube Pro is a high-performance standalone application built exclusively for <strong>Windows OS</strong>.</div></div>
+        <div class="faq-a"><div class="faq-a-in">Currently Windows-only. If you have a Windows PC, no virtual machine or extra setup is needed — AutoTube Pro runs natively right out of the box.</div></div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="faq(this)">What happens if Google updates its UI or limits?<span class="fq-ico">+</span></button>
@@ -503,6 +573,29 @@ When you hit Google's free limit, or when you need fast and stable generation, s
         <button class="faq-q" onclick="faq(this)">How do I contact support?<span class="fq-ico">+</span></button>
         <div class="faq-a"><div class="faq-a-in">For technical inquiries, licensing issues, or custom enterprise deployments, please email our support desk at <strong>hp.biz001@gmail.com</strong>. We aim to respond within 24-48 business hours.</div></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="section section--tinted" id="story">
+  <div class="w">
+    <span class="eyebrow r">Why We Built This</span>
+    <h2 class="r">This Wasn't Built To Be <span class="hl-red">Sold</span> From Day One.</h2>
+
+    <div style="max-width: 680px; margin-top: 32px;">
+      <p style="font-size: 17px; color: var(--gray); margin-bottom: 24px; line-height: 1.8;" class="r">
+        Running my own YouTube channels, the hardest part was never the planning — it was the repetitive grunt work: dragging images, fixing captions, matching timing. As I tried to scale to multiple channels, I decided to solve this inefficiency myself.
+      </p>
+      <p style="font-size: 17px; color: var(--gray); margin-bottom: 24px; line-height: 1.8;" class="r">
+        Drawing on 25 years of experience as a systems engineer, I spent six months building an automation engine — AI voice generation, batch image generation, caption correction, and CapCut assembly — refined entirely around what I actually needed for my own workflow.
+      </p>
+      <blockquote style="border-left: 4px solid var(--red2); padding: 24px 32px; background: var(--white); border-radius: 0 16px 16px 0; margin: 32px 0; font-size: 19px; color: var(--ink2); line-height: 1.6; box-shadow: var(--shadow-sm); border: 1px solid var(--line); border-left-width: 4px;" class="r">
+        Other creators around me started asking, "How are you making videos this fast, by yourself?" That's when I first considered releasing it publicly.
+      </blockquote>
+      <p style="font-size: 17px; color: var(--gray); margin-bottom: 24px; line-height: 1.8;" class="r">
+        Even so, this isn't built for absolutely everyone. If you're already running a channel and want to cut down on repetitive editing work, you'll get the most out of it. If you're just getting started, the 5-day free trial is the best way to see if it fits your workflow.
+      </p>
     </div>
   </div>
 </section>
@@ -519,9 +612,9 @@ When you hit Google's free limit, or when you need fast and stable generation, s
       </a>
     </div>
     <div style="display: flex; gap: 24px; justify-content: center; font-size: 14px; margin-bottom: 32px; flex-wrap: wrap;">
-      <a href="https://aibaselab.com/manual.html" style="color:#64748b; text-decoration:none;">Documentation</a>
-      <a href="privacy.html" style="color:#64748b; text-decoration:none;">Privacy Policy</a>
-      <a href="terms.html" style="color:#64748b; text-decoration:none;">Terms of Service</a>
+      <a href="https://aibaselab.com/en/manual.html" style="color:#64748b; text-decoration:none;">Documentation</a>
+      <a href="https://aibaselab.com/en/privacy.html" style="color:#64748b; text-decoration:none;">Privacy Policy</a>
+      <a href="https://aibaselab.com/en/terms.html" style="color:#64748b; text-decoration:none;">Terms of Service</a>
     </div>
     <div style="font-size: 13px; color: #475569;">© 2026 AutoTube Pro. All rights reserved.</div>
   </div>
@@ -538,6 +631,15 @@ function faq(btn) {
   const isOpen = item.classList.contains('open');
   document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
   if (!isOpen) item.classList.add('open');
+}
+
+function toggleMenu() {
+  document.getElementById('navMenu').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('navMenu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
 }
 </script>
 </body>
