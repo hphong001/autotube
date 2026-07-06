@@ -6,12 +6,10 @@
 <title>HP Hong QUANTUM TRADE // AI Base Lab (Real-time)</title>
 <style>
   :root {
-    /* VS Code / GitHub Slate Dark Style Base */
     --bg-base: #0d1117;
     --panel-bg: rgba(22, 27, 34, 0.85);
     --panel-border: rgba(48, 54, 61, 0.9);
     
-    /* Cybernetic Neon Accents */
     --cyber-cyan: #58a6ff;
     --cyber-green: #2ea043;
     --cyber-red: #f85149;
@@ -19,12 +17,10 @@
     --cyber-purple: #bc8cff;
     --cyber-gold: #ffb000;
     
-    /* Text Colors */
     --text-main: #e6edf3;
     --text-dim: #a0aab5;
     --text-muted: #6e7681;
     
-    /* Typography */
     --font-ui: 'Segoe UI', -apple-system, sans-serif;
     --font-mono: 'Consolas', 'Cascadia Code', 'SF Mono', monospace;
     
@@ -38,10 +34,9 @@
     background-color: var(--bg-base);
     color: var(--text-main);
     font-family: var(--font-ui);
-    overflow: hidden; 
+    overflow: hidden; /* 전체 페이지 스크롤 방지, 내부 패널만 스크롤 */
   }
 
-  /* Cyber Grid Background */
   body::before {
     content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
     background: 
@@ -63,8 +58,8 @@
     position: relative; z-index: 1;
     display: grid; width: 100%; height: 100%;
     padding: 12px; gap: 10px;
-    grid-template-rows: auto auto 1fr auto;
-    grid-template-areas: "header" "macro" "main" "footer";
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas: "header" "macro" "main";
   }
 
   /* --- HEADER --- */
@@ -78,16 +73,10 @@
   }
   
   #brand { display: flex; align-items: center; gap: 14px; }
-  .pulse-dot {
-    width: 12px; height: 12px; border-radius: 50%; background: var(--cyber-cyan);
-    box-shadow: 0 0 10px var(--cyber-cyan), 0 0 20px var(--cyber-cyan);
-    animation: pulse 2s infinite;
-  }
+  .pulse-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--cyber-cyan); box-shadow: 0 0 10px var(--cyber-cyan), 0 0 20px var(--cyber-cyan); animation: pulse 2s infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-  
   #brand h1 { margin: 0; font-size: clamp(18px, 1.8vw, 26px); font-weight: 800; letter-spacing: 1.5px; font-family: var(--font-mono); }
   #brand h1 span { color: var(--cyber-cyan); text-shadow: 0 0 12px var(--cyber-cyan); }
-  
   #brand .sub { font-size: 11px; color: var(--text-dim); letter-spacing: 2px; margin-top: 4px; font-family: var(--font-mono); font-weight: bold; }
   .highlight-ai { color: var(--cyber-gold); font-weight: 900; text-shadow: 0 0 10px rgba(255, 176, 0, 0.6); letter-spacing: 3px; }
 
@@ -101,20 +90,11 @@
   .vix-badge .lab { color: var(--cyber-cyan); font-weight: bold; }
   .vix-badge .val { color: var(--text-main); text-shadow: 0 0 8px var(--cyber-cyan); }
 
-  .status-chip {
-    font-size: 13px; font-weight: 700; padding: 6px 16px; border-radius: 4px;
-    border: 1px solid var(--cyber-green); color: var(--cyber-green);
-    background: rgba(46, 160, 67, 0.1); box-shadow: 0 0 10px rgba(46, 160, 67, 0.2); font-family: var(--font-mono);
-  }
+  .status-chip { font-size: 13px; font-weight: 700; padding: 6px 16px; border-radius: 4px; border: 1px solid var(--cyber-green); color: var(--cyber-green); background: rgba(46, 160, 67, 0.1); box-shadow: 0 0 10px rgba(46, 160, 67, 0.2); font-family: var(--font-mono); }
 
-  /* --- MACRO BAR (TradingView Tickers) --- */
-  #macro {
-    grid-area: macro; display: flex; gap: 10px; overflow-x: auto; padding-bottom: 2px;
-  }
-  .macro-item {
-    flex: 1 1 0; min-width: 220px; height: 80px;
-    overflow: hidden; display: flex; align-items: center; justify-content: center;
-  }
+  /* --- MACRO BAR --- */
+  #macro { grid-area: macro; display: flex; gap: 10px; overflow-x: auto; padding-bottom: 2px; }
+  .macro-item { flex: 1 1 0; min-width: 220px; height: 80px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
 
   /* --- MAIN GRID --- */
   #main {
@@ -124,43 +104,45 @@
 
   .panel { display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
   .panel-h {
-    flex: 0 0 auto; padding: 12px 14px;
-    font-size: 13px; font-weight: 700; letter-spacing: 1.5px;
+    flex: 0 0 auto; padding: 12px 14px; font-size: 13px; font-weight: 700; letter-spacing: 1.5px;
     color: var(--text-main); border-bottom: 1px solid var(--panel-border);
     display: flex; align-items: center; gap: 10px; font-family: var(--font-mono);
     background: linear-gradient(90deg, rgba(88, 166, 255, 0.05), transparent);
   }
   .panel-h::before {
     content: ''; width: 8px; height: 8px; background: var(--cyber-cyan);
-    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-    box-shadow: 0 0 6px var(--cyber-cyan);
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); box-shadow: 0 0 6px var(--cyber-cyan);
   }
-  .panel-body { flex: 1; overflow-y: auto; min-height: 0; }
+  
+  /* 패널 바디 스크롤 허용 */
+  .panel-body { flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0; }
 
   /* Left Column */
   #leftCol { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
   #watchlistPanel { flex: 1; min-height: 0; }
+  
+  /* Zoom Container for Watchlist (Iframe 강제 확대) */
+  .zoom-container { width: 100%; height: 100%; zoom: 1.35; /* Chrome/Edge 전용 확대 기능 */ }
 
   /* Center Column */
   #centerCol { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
   #chartPanel { flex: 1.5 1 0; min-height: 0; }
-  #chartContainer { flex: 1; position: relative; background: transparent; overflow: hidden; width: 100%; height: 100%; }
   
-  /* 4x2 Mini Charts Grid */
   #miniChartsPanel { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; }
+  /* 미니차트 영역 스크롤 추가 */
   .mini-charts-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr);
-    gap: 8px; padding: 8px; width: 100%; height: 100%; flex: 1;
+    display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 200px); /* 높이 고정 및 스크롤 유도 */
+    gap: 8px; padding: 8px; width: 100%; flex: 1;
   }
-  .mini-chart-box { overflow: hidden; border-radius: 4px; border: 1px solid rgba(48, 54, 61, 0.5); }
+  .mini-chart-box { overflow: hidden; border-radius: 4px; border: 1px solid rgba(48, 54, 61, 0.5); min-height: 150px; }
 
-  /* Right Column (Mockup Kept as requested) */
+  /* Right Column */
   #rightCol { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
   #hogaPanel { flex: 1.1 1 0; min-height: 0; }
   #newsPanel { flex: 1 1 0; min-height: 0; }
   #earningsPanel { flex: .8 1 0; min-height: 0; }
 
-  /* Right Panel Mockup Styles */
+  /* Mockup Styles */
   .hoga-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; font-size: 13px; padding: 5px 6px; font-family: var(--font-mono); }
   .hoga-row .va { color: var(--text-dim); text-align: left; }
   .hoga-row .vb { color: var(--text-dim); text-align: right; }
@@ -175,10 +157,6 @@
   .earn-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; font-size: 14px; border-bottom: 1px dashed var(--panel-border); }
   .earn-dday { font-family: var(--font-mono); font-weight: 700; padding: 3px 8px; border-radius: 4px; background: rgba(210, 153, 34, 0.1); color: var(--cyber-yellow); font-size: 12px; border: 1px solid var(--cyber-yellow); }
 
-  /* --- FOOTER (Hidden to give more space to charts, or can be kept) --- */
-  #footer { display: none; } 
-
-  /* Scrollbars Optimization */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--cyber-cyan); }
@@ -188,6 +166,7 @@
 <body>
 <div id="app">
 
+  <!-- HEADER -->
   <div id="header" class="glass">
     <div id="brand">
       <div class="pulse-dot"></div>
@@ -197,36 +176,25 @@
       </div>
     </div>
     <div class="hdr-badges">
-      <div class="hdr-badge">
-        <div class="lab">USD/KRW 환율</div>
-        <div class="val">1,535.00</div>
-      </div>
-      <div class="hdr-badge vix-badge">
-        <div class="lab">MARKET VOLATILITY (VIX)</div>
-        <div class="val">14.30 <span style="font-size:12px; color:var(--cyber-green);">[안정]</span></div>
-      </div>
-      <div class="hdr-badge">
-        <div class="lab">TOTAL LIQUIDITY (KRW)</div>
-        <div class="val" style="color:var(--cyber-green)">₩ 5,228,410</div>
-      </div>
+      <div class="hdr-badge"><div class="lab">USD/KRW 환율</div><div class="val">1,535.00</div></div>
+      <div class="hdr-badge vix-badge"><div class="lab">MARKET VOLATILITY (VIX)</div><div class="val">14.30 <span style="font-size:12px; color:var(--cyber-green);">[안정]</span></div></div>
+      <div class="hdr-badge"><div class="lab">TOTAL LIQUIDITY (KRW)</div><div class="val" style="color:var(--cyber-green)">₩ 5,228,410</div></div>
       <div class="status-chip">SYS_OPEN // REALTIME</div>
     </div>
   </div>
 
+  <!-- MACRO INDICATORS (에러 없는 Futures 심볼로 교체) -->
   <div id="macro">
     <script>
-      const macroSymbols = ["NASDAQ:NDX", "SP:SPX", "DJ:DJI", "TVC:DXY", "TVC:US10Y"];
+      // NQ1!(나스닥선물), ES1!(S&P선물), YM1!(다우선물), DXY(달러인덱스), US10Y(국채금리)
+      const macroSymbols = ["CME_MINI:NQ1!", "CME_MINI:ES1!", "CBOT:YM1!", "TVC:DXY", "TVC:US10Y"];
       macroSymbols.forEach(sym => {
         document.write(`
           <div class="macro-item glass">
             <div class="tradingview-widget-container" style="width:100%; height:100%;">
               <div class="tradingview-widget-container__widget"></div>
               <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
-              {
-                "symbol": "${sym}",
-                "width": "100%", "height": "100%", "colorTheme": "dark",
-                "isTransparent": true, "locale": "kr"
-              }
+              { "symbol": "${sym}", "width": "100%", "height": "100%", "colorTheme": "dark", "isTransparent": true, "locale": "kr" }
               <\/script>
             </div>
           </div>
@@ -235,57 +203,55 @@
     </script>
   </div>
 
+  <!-- MAIN AREA -->
   <div id="main">
 
+    <!-- LEFT: Real-time Top 20 Watchlist (zoom-container로 1.35배 확대 적용) -->
     <div id="leftCol">
       <div class="panel glass" id="watchlistPanel">
         <div class="panel-h">TRACKING WATCHLIST (TOP 20)</div>
-        <div class="panel-body" style="overflow: hidden;">
-          <div class="tradingview-widget-container" style="width:100%; height:100%;">
-            <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px); width:100%;"></div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
-            {
-              "width": "100%", "height": "100%",
-              "symbolsGroups": [
-                {
-                  "name": "US Tech Top 20",
-                  "originalName": "Indices",
-                  "symbols": [
-                    {"name": "NASDAQ:AAPL"}, {"name": "NASDAQ:MSFT"}, {"name": "NASDAQ:NVDA"},
-                    {"name": "NASDAQ:GOOGL"}, {"name": "NASDAQ:AMZN"}, {"name": "NASDAQ:META"},
-                    {"name": "NASDAQ:TSLA"}, {"name": "NASDAQ:AVGO"}, {"name": "NYSE:LLY"},
-                    {"name": "NYSE:TSM"}, {"name": "NYSE:V"}, {"name": "NYSE:JPM"},
-                    {"name": "NYSE:WMT"}, {"name": "NYSE:UNH"}, {"name": "NYSE:MA"},
-                    {"name": "NYSE:PG"}, {"name": "NYSE:JNJ"}, {"name": "NYSE:XOM"},
-                    {"name": "NYSE:HD"}, {"name": "NYSE:ORCL"}
-                  ]
-                }
-              ],
-              "showSymbolLogo": true, "isTransparent": true, "colorTheme": "dark", "locale": "kr"
-            }
-            </script>
+        <div class="panel-body">
+          <div class="zoom-container">
+            <div class="tradingview-widget-container" style="width:100%; height:100%;">
+              <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px); width:100%;"></div>
+              <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+              {
+                "width": "100%", "height": "100%",
+                "symbolsGroups": [
+                  {
+                    "name": "US Tech Top 20", "originalName": "Indices",
+                    "symbols": [
+                      {"name": "AAPL"}, {"name": "MSFT"}, {"name": "NVDA"}, {"name": "GOOGL"}, {"name": "AMZN"},
+                      {"name": "META"}, {"name": "TSLA"}, {"name": "AVGO"}, {"name": "LLY"}, {"name": "TSM"},
+                      {"name": "V"}, {"name": "JPM"}, {"name": "WMT"}, {"name": "UNH"}, {"name": "MA"},
+                      {"name": "PG"}, {"name": "JNJ"}, {"name": "XOM"}, {"name": "HD"}, {"name": "ORCL"}
+                    ]
+                  }
+                ],
+                "showSymbolLogo": true, "isTransparent": true, "colorTheme": "dark", "locale": "kr"
+              }
+              </script>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- CENTER -->
     <div id="centerCol">
       <div class="panel glass" id="chartPanel">
-        <div class="panel-h" style="justify-content: space-between;">
-          <span>QUANTUM ADVANCED CHART (TSLA)</span>
-        </div>
-        <div class="panel-body" style="padding:0;">
+        <div class="panel-h"><span>QUANTUM ADVANCED CHART (TSLA)</span></div>
+        <div class="panel-body" style="padding:0; overflow:hidden;">
           <div class="tradingview-widget-container" style="height:100%; width:100%;">
             <div id="tv_main_chart" style="height:100%; width:100%;"></div>
             <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
             <script type="text/javascript">
             new TradingView.widget({
-              "autosize": true, "symbol": "NASDAQ:TSLA", "interval": "15",
-              "timezone": "Asia/Seoul", "theme": "dark", "style": "1",
-              "locale": "kr", "enable_publishing": false,
-              "backgroundColor": "rgba(0,0,0,0)", /* 투명 배경 */
-              "gridColor": "rgba(48, 54, 61, 0.3)",
+              "autosize": true, "symbol": "NASDAQ:TSLA", "interval": "1",
+              "timezone": "Asia/Seoul", "theme": "dark", "style": "1", "locale": "kr",
+              "enable_publishing": false, "backgroundColor": "rgba(0,0,0,0)", "gridColor": "rgba(48, 54, 61, 0.3)",
               "hide_top_toolbar": false, "hide_legend": false, "save_image": false,
+              "extended_hours": true, /* 프리장/애프터장 세션 활성화 */
               "container_id": "tv_main_chart"
             });
             </script>
@@ -295,30 +261,29 @@
 
       <div class="panel glass" id="miniChartsPanel">
         <div class="panel-h">MARKET CAP TOP 8 // REAL-TIME FLOW</div>
-        <div class="mini-charts-grid">
-          <script>
-            const top8Symbols = ["NASDAQ:AAPL", "NASDAQ:MSFT", "NASDAQ:NVDA", "NASDAQ:GOOGL", "NASDAQ:AMZN", "NASDAQ:META", "NASDAQ:TSLA", "NASDAQ:AVGO"];
-            top8Symbols.forEach(sym => {
-              document.write(`
-                <div class="mini-chart-box">
-                  <div class="tradingview-widget-container" style="width:100%; height:100%;">
-                    <div class="tradingview-widget-container__widget"></div>
-                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
-                    {
-                      "symbol": "${sym}", "width": "100%", "height": "100%",
-                      "locale": "kr", "dateRange": "1D", "colorTheme": "dark",
-                      "isTransparent": true, "autosize": true, "largeChartUrl": ""
-                    }
-                    <\/script>
+        <div class="panel-body">
+          <div class="mini-charts-grid">
+            <script>
+              const top8Symbols = ["AAPL", "MSFT", "NVDA", "GOOGL", "AMZN", "META", "TSLA", "AVGO"];
+              top8Symbols.forEach(sym => {
+                document.write(`
+                  <div class="mini-chart-box">
+                    <div class="tradingview-widget-container" style="width:100%; height:100%;">
+                      <div class="tradingview-widget-container__widget"></div>
+                      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                      { "symbol": "${sym}", "width": "100%", "height": "100%", "locale": "kr", "dateRange": "1D", "colorTheme": "dark", "isTransparent": true, "autosize": true }
+                      <\/script>
+                    </div>
                   </div>
-                </div>
-              `);
-            });
-          </script>
+                `);
+              });
+            </script>
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- RIGHT: Mockups -->
     <div id="rightCol">
       <div class="panel glass" id="hogaPanel">
         <div class="panel-h">ORDER BOOK // L2 실시간 잔량</div>
@@ -338,7 +303,6 @@
 </div>
 
 <script>
-  // 우측 패널 목업 렌더링 유지 (디자인 유지를 위해)
   function renderHoga(){
     const asks = [380.10,380.05,380.00,379.98,379.95,379.92,379.90,379.88,379.85,379.80];
     const bids = [379.71,379.68,379.65,379.60,379.55,379.50,379.45,379.40,379.35,379.30];
@@ -356,10 +320,7 @@
   ];
   function renderNews(){
     document.getElementById('newsBody').innerHTML = news.map(n=>`
-      <div class="news-row">
-        <div class="ntime"><span class="news-tag">${n[1]}</span> ${n[0]}</div>
-        <div class="ntitle">${n[2]}</div>
-      </div>`).join('');
+      <div class="news-row"><div class="ntime"><span class="news-tag">${n[1]}</span> ${n[0]}</div><div class="ntitle">${n[2]}</div></div>`).join('');
   }
 
   const earnings = [['TSLA','D-3'],['META','D-5'],['GOOGL','D-9'],['AMZN','D-14']];
@@ -368,9 +329,7 @@
       <div class="earn-row"><span>${e[0]}</span><span class="earn-dday">${e[1]}</span></div>`).join('');
   }
 
-  renderHoga();
-  renderNews();
-  renderEarnings();
+  renderHoga(); renderNews(); renderEarnings();
 </script>
 </body>
 </html>
