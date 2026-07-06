@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HP Hong QUANTUM TRADE // AI Base Lab</title>
+<title>HP Hong QUANTUM TRADE // AI Base Lab (Real-time)</title>
 <style>
   :root {
     /* VS Code / GitHub Slate Dark Style Base */
@@ -17,7 +17,7 @@
     --cyber-red: #f85149;
     --cyber-yellow: #d29922;
     --cyber-purple: #bc8cff;
-    --cyber-gold: #ffb000; /* AI BASE LAB 강조용 신규 컬러 */
+    --cyber-gold: #ffb000;
     
     /* Text Colors */
     --text-main: #e6edf3;
@@ -38,7 +38,7 @@
     background-color: var(--bg-base);
     color: var(--text-main);
     font-family: var(--font-ui);
-    overflow: hidden; /* 데스크탑 기본: 스크롤 방지 */
+    overflow: hidden; 
   }
 
   /* Cyber Grid Background */
@@ -50,7 +50,6 @@
     background-size: 35px 35px;
   }
 
-  /* Glass Panel Styling */
   .glass {
     background: var(--panel-bg);
     border: 1px solid var(--panel-border);
@@ -89,14 +88,8 @@
   #brand h1 { margin: 0; font-size: clamp(18px, 1.8vw, 26px); font-weight: 800; letter-spacing: 1.5px; font-family: var(--font-mono); }
   #brand h1 span { color: var(--cyber-cyan); text-shadow: 0 0 12px var(--cyber-cyan); }
   
-  /* AI BASE LAB 강조 스타일 */
   #brand .sub { font-size: 11px; color: var(--text-dim); letter-spacing: 2px; margin-top: 4px; font-family: var(--font-mono); font-weight: bold; }
-  .highlight-ai {
-    color: var(--cyber-gold);
-    font-weight: 900;
-    text-shadow: 0 0 10px rgba(255, 176, 0, 0.6);
-    letter-spacing: 3px;
-  }
+  .highlight-ai { color: var(--cyber-gold); font-weight: 900; text-shadow: 0 0 10px rgba(255, 176, 0, 0.6); letter-spacing: 3px; }
 
   .hdr-badges { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
   .hdr-badge { text-align: right; font-family: var(--font-mono); padding: 4px 14px; border-right: 1px solid var(--panel-border); }
@@ -104,43 +97,29 @@
   .hdr-badge .lab { font-size: 11px; color: var(--text-dim); letter-spacing: 1px; margin-bottom: 2px; }
   .hdr-badge .val { font-size: clamp(15px, 1.4vw, 19px); font-weight: 700; }
 
-  /* VIX Highlight Badge */
-  .vix-badge {
-    background: rgba(88, 166, 255, 0.07);
-    border: 1px solid var(--cyber-cyan);
-    border-radius: 6px;
-    padding: 6px 16px;
-    box-shadow: 0 0 10px rgba(88, 166, 255, 0.15) inset;
-  }
+  .vix-badge { background: rgba(88, 166, 255, 0.07); border: 1px solid var(--cyber-cyan); border-radius: 6px; padding: 6px 16px; box-shadow: 0 0 10px rgba(88, 166, 255, 0.15) inset; }
   .vix-badge .lab { color: var(--cyber-cyan); font-weight: bold; }
   .vix-badge .val { color: var(--text-main); text-shadow: 0 0 8px var(--cyber-cyan); }
 
   .status-chip {
     font-size: 13px; font-weight: 700; padding: 6px 16px; border-radius: 4px;
     border: 1px solid var(--cyber-green); color: var(--cyber-green);
-    background: rgba(46, 160, 67, 0.1);
-    box-shadow: 0 0 10px rgba(46, 160, 67, 0.2); font-family: var(--font-mono);
+    background: rgba(46, 160, 67, 0.1); box-shadow: 0 0 10px rgba(46, 160, 67, 0.2); font-family: var(--font-mono);
   }
 
-  /* --- MACRO BAR --- */
+  /* --- MACRO BAR (TradingView Tickers) --- */
   #macro {
     grid-area: macro; display: flex; gap: 10px; overflow-x: auto; padding-bottom: 2px;
   }
   .macro-item {
-    flex: 1 1 0; min-width: 170px; display: flex; align-items: center; gap: 12px;
-    padding: 12px 16px;
+    flex: 1 1 0; min-width: 220px; height: 80px;
+    overflow: hidden; display: flex; align-items: center; justify-content: center;
   }
-  .signal { width: 5px; height: 18px; border-radius: 3px; flex: 0 0 auto; }
-  .signal.green { background: var(--cyber-green); box-shadow: 0 0 8px var(--cyber-green); }
-  .signal.yellow { background: var(--cyber-yellow); box-shadow: 0 0 8px var(--cyber-yellow); }
-  .signal.red { background: var(--cyber-red); box-shadow: 0 0 8px var(--cyber-red); }
-  .macro-text .name { font-size: 12px; color: var(--text-dim); font-weight: 600; font-family: var(--font-mono); }
-  .macro-text .num { font-family: var(--font-mono); font-size: 15px; font-weight: 700; margin-top: 2px; }
 
   /* --- MAIN GRID --- */
   #main {
     grid-area: main; min-height: 0; display: grid;
-    grid-template-columns: minmax(250px, 16vw) 1fr minmax(330px, 20vw); gap: 10px;
+    grid-template-columns: minmax(280px, 18vw) 1fr minmax(330px, 20vw); gap: 10px;
   }
 
   .panel { display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
@@ -156,171 +135,54 @@
     clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
     box-shadow: 0 0 6px var(--cyber-cyan);
   }
-  .panel-body { flex: 1; overflow-y: auto; padding: 12px 10px; min-height: 0; }
-
-  /* Global Color Utilities */
-  .up { color: var(--cyber-green); font-weight: 600; }
-  .down { color: var(--cyber-red); font-weight: 600; }
+  .panel-body { flex: 1; overflow-y: auto; min-height: 0; }
 
   /* Left Column */
   #leftCol { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
-  #watchlistPanel { flex: 1.4 1 0; min-height: 0; }
-  #moversPanel { flex: 1 1 0; min-height: 0; }
+  #watchlistPanel { flex: 1; min-height: 0; }
 
-  .stock-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 10px; margin-bottom: 6px; border-radius: 4px; cursor: pointer;
-    border: 1px solid transparent; background: rgba(0,0,0,0.15); transition: 0.15s;
-  }
-  .stock-row:hover { background: rgba(88, 166, 255, 0.08); border-color: rgba(88, 166, 255, 0.25); }
-  .stock-row.active { background: rgba(88, 166, 255, 0.12); border-left: 4px solid var(--cyber-cyan); border-color: rgba(88, 166, 255, 0.2); }
-  .stock-row .sym { font-weight: 700; font-size: 14px; font-family: var(--font-mono); }
-  .stock-row .sub { font-size: 12px; color: var(--text-dim); font-family: var(--font-mono); margin-top: 3px;}
-  .stock-row .px { font-size: 15px; font-weight: 700; text-align: right; font-family: var(--font-mono); }
-  .stock-row .pct { font-size: 13px; text-align: right; }
-  
-  .mover-row {
-    display: flex; justify-content: space-between; font-family: var(--font-mono);
-    font-size: 13px; padding: 8px 6px; border-bottom: 1px solid var(--panel-border);
-  }
-  .mover-row:last-child { border-bottom: none; }
-
-  /* Center Column (Chart & Main Scanner) */
+  /* Center Column */
   #centerCol { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
-  #chartPanel { flex: 1.8 1 0; min-height: 0; }
-  #chartHeaderBar { flex: 0 0 auto; display: flex; align-items: baseline; gap: 16px; padding: 12px 20px; border-bottom: 1px solid var(--panel-border); background: rgba(0,0,0,0.2); }
-  #chartSymbol { font-size: 24px; font-weight: 800; font-family: var(--font-mono); color: var(--cyber-cyan); }
-  #chartPrice { font-size: 22px; font-weight: 700; font-family: var(--font-mono); }
-  #chartPct { font-size: 14px; font-family: var(--font-mono); padding: 2px 8px; border-radius: 4px; background: rgba(46, 160, 67, 0.15); }
+  #chartPanel { flex: 1.5 1 0; min-height: 0; }
+  #chartContainer { flex: 1; position: relative; background: transparent; overflow: hidden; width: 100%; height: 100%; }
   
-  #chartContainer { flex: 1; position: relative; background: #070a0f; overflow: hidden; }
-  #tslaChart { width: 100%; height: 100%; display: block; }
+  /* 4x2 Mini Charts Grid */
+  #miniChartsPanel { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; }
+  .mini-charts-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr);
+    gap: 8px; padding: 8px; width: 100%; height: 100%; flex: 1;
+  }
+  .mini-chart-box { overflow: hidden; border-radius: 4px; border: 1px solid rgba(48, 54, 61, 0.5); }
 
-  #sectorRankPanel { flex: 1.1 1 0; min-height: 0; display: flex; }
-  .sector-col { flex: 1; display: flex; flex-direction: column; padding: 0 6px; border-right: 1px solid var(--panel-border); }
-  .sector-col:last-child { border-right: none; }
-  
-  /* 개선된 포트폴리오 섹터 리스트 영역 */
-  .my-hold-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 6px; border-bottom: 1px dashed rgba(255,255,255,0.05); }
-  .my-hold-row .sname { font-size: 12px; font-weight: 600; color: var(--text-dim); }
-  .myhold-tags { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
-  .myhold-tag { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: rgba(188, 140, 255, 0.1); border: 1px solid var(--cyber-purple); color: var(--cyber-purple); font-family: var(--font-mono); }
-
-  #gainersLosersPanel { flex: 1.2 1 0; min-height: 0; display: flex; }
-  .gl-col { flex: 1; display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--panel-border); padding: 0 6px;}
-  .gl-col-title { font-size: 12px; letter-spacing: 1px; padding: 8px; font-weight: 700; font-family: var(--font-mono); text-align: center; background: rgba(0,0,0,0.2); }
-  .gl-col.gainers .gl-col-title { color: var(--cyber-green); border-bottom: 1px solid rgba(46, 160, 67, 0.2); }
-  .gl-col.losers .gl-col-title { color: var(--cyber-red); border-bottom: 1px solid rgba(248, 81, 73, 0.2); }
-  .gl-list { flex: 1; overflow-y: auto; padding: 4px 6px; }
-  .gl-row { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 13px; padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.02); }
-  .gl-rank { color: var(--text-muted); width: 22px; display: inline-block; }
-
-  /* Right Column */
+  /* Right Column (Mockup Kept as requested) */
   #rightCol { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
   #hogaPanel { flex: 1.1 1 0; min-height: 0; }
   #newsPanel { flex: 1 1 0; min-height: 0; }
   #earningsPanel { flex: .8 1 0; min-height: 0; }
 
+  /* Right Panel Mockup Styles */
   .hoga-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; font-size: 13px; padding: 5px 6px; font-family: var(--font-mono); }
   .hoga-row .va { color: var(--text-dim); text-align: left; }
   .hoga-row .vb { color: var(--text-dim); text-align: right; }
   .hoga-row .pa { color: var(--cyber-red); text-align: center; font-weight: 700; }
   .hoga-row .pb { color: var(--cyber-cyan); text-align: center; font-weight: 700; }
   .hoga-divider { border-top: 1px solid var(--panel-border); border-bottom: 1px solid var(--panel-border); background: rgba(0,0,0,0.25); padding: 6px 0; margin: 4px 0; text-align: center; font-size: 12px; color: var(--text-main); font-family: var(--font-mono); }
-
   .news-row { padding: 10px 8px; border-bottom: 1px solid var(--panel-border); }
   .news-row:hover { background: rgba(88, 166, 255, 0.04); }
   .news-row .ntime { font-size: 11px; color: var(--text-dim); font-family: var(--font-mono); display: flex; gap: 6px; align-items: center; }
   .news-row .ntitle { font-size: 13.5px; margin-top: 6px; line-height: 1.45; }
   .news-tag { font-size: 10px; padding: 1px 5px; border-radius: 4px; border: 1px solid var(--cyber-purple); color: var(--cyber-purple); background: rgba(188, 140, 255, 0.05); }
-
-  .earn-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 6px; font-size: 14px; border-bottom: 1px dashed var(--panel-border); }
+  .earn-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; font-size: 14px; border-bottom: 1px dashed var(--panel-border); }
   .earn-dday { font-family: var(--font-mono); font-weight: 700; padding: 3px 8px; border-radius: 4px; background: rgba(210, 153, 34, 0.1); color: var(--cyber-yellow); font-size: 12px; border: 1px solid var(--cyber-yellow); }
 
-  /* --- FOOTER & 개선된 GAUGE --- */
-  #footer {
-    grid-area: footer; display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 10px;
-    height: clamp(120px, 14vh, 160px);
-  }
-  .foot-row { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 12px; border-bottom: 1px solid var(--panel-border); }
-  .foot-row .ftime { color: var(--cyber-cyan); font-family: var(--font-mono); font-size: 12px; }
-  
-  .sentiment-gauge { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
-  .gauge-arc { width: 180px; height: 90px; position: relative; overflow: hidden; margin-bottom: 5px; }
-  /* 색상이 들어간 실제 계기판 효과 */
-  .gauge-color-band {
-    position: absolute; top: 0; left: 0; width: 180px; height: 180px;
-    border-radius: 50%;
-    border: 12px solid transparent;
-    border-top-color: var(--cyber-yellow); /* 위쪽 중앙 */
-    border-left-color: var(--cyber-red);   /* 왼쪽 공포 */
-    border-right-color: var(--cyber-green);/* 오른쪽 탐욕 */
-    transform: rotate(45deg);
-    opacity: 0.8;
-  }
-  /* 게이지 바늘 */
-  .gauge-needle {
-    position: absolute; bottom: 0; left: 50%; width: 4px; height: 75px; 
-    background: #fff; transform-origin: bottom center; 
-    transform: translateX(-50%) rotate(5deg); /* Neutral 52 위치 */
-    box-shadow: 0 0 10px #fff; border-radius: 2px 2px 0 0; z-index: 2;
-  }
-  .gauge-needle::after {
-    content: ''; position: absolute; bottom: -6px; left: -4px; width: 12px; height: 12px; 
-    background: var(--text-main); border-radius: 50%; border: 2px solid #000;
-  }
-  .gauge-label { font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: var(--cyber-yellow); text-shadow: 0 0 10px rgba(210, 153, 34, 0.4); margin-top: 6px; }
-  .gauge-sub { font-size: 12px; color: var(--text-dim); font-family: var(--font-mono); }
+  /* --- FOOTER (Hidden to give more space to charts, or can be kept) --- */
+  #footer { display: none; } 
 
   /* Scrollbars Optimization */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--cyber-cyan); }
   ::-webkit-scrollbar-track { background: transparent; }
-
-  /* =========================================
-     📱 모바일 반응형 대응 (Media Query)
-     화면 900px 이하일 때 세로 스크롤 레이아웃 변환
-  ========================================= */
-  @media (max-width: 900px) {
-    html, body {
-      overflow-y: auto; /* 세로 스크롤 허용 */
-      height: auto;
-    }
-    #app {
-      height: auto;
-      display: flex;
-      flex-direction: column; /* 패널들을 한 줄로 길게 배치 */
-      overflow: visible;
-    }
-    #header {
-      flex-direction: column; /* 헤더 요소들 세로 정렬 */
-      align-items: flex-start;
-    }
-    #main {
-      display: flex;
-      flex-direction: column; /* 좌/중앙/우측 컬럼 수직 배치 */
-      gap: 10px;
-    }
-    #footer {
-      display: flex;
-      flex-direction: column;
-      height: auto;
-    }
-    #leftCol, #centerCol, #rightCol {
-      min-height: 400px; /* 각 컬럼이 모바일에서 적절한 높이를 가지도록 */
-    }
-    #chartContainer { min-height: 250px; }
-    .panel { min-height: 250px; flex: none; }
-    .hdr-badges { gap: 10px; width: 100%; justify-content: space-between; }
-    .hdr-badge { border: none; text-align: left; background: rgba(255,255,255,0.05); border-radius: 4px; padding: 8px 12px; flex: 1; min-width: 140px; }
-    .sector-col { border-right: none; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; margin-bottom: 10px; }
-    .sector-col:last-child { border-bottom: none; }
-    #sectorRankPanel .panel-body { flex-direction: column; }
-    #gainersLosersPanel .panel-body { flex-direction: column; }
-    .gl-col { border-right: none; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; }
-    .gl-col:last-child { border-bottom: none; }
-  }
 </style>
 </head>
 <body>
@@ -347,80 +209,112 @@
         <div class="lab">TOTAL LIQUIDITY (KRW)</div>
         <div class="val" style="color:var(--cyber-green)">₩ 5,228,410</div>
       </div>
-      <div class="status-chip">SYS_OPEN // 정규장</div>
+      <div class="status-chip">SYS_OPEN // REALTIME</div>
     </div>
   </div>
 
   <div id="macro">
-    <div class="macro-item glass">
-      <div class="signal green"></div>
-      <div class="macro-text"><div class="name">NASDAQ 100</div><div class="num">18,920.4 <span class="up">+0.82%</span></div></div>
-    </div>
-    <div class="macro-item glass">
-      <div class="signal green"></div>
-      <div class="macro-text"><div class="name">S&amp;P 500</div><div class="num">6,015.2 <span class="up">+0.41%</span></div></div>
-    </div>
-    <div class="macro-item glass">
-      <div class="signal yellow"></div>
-      <div class="macro-text"><div class="name">DOW JONES</div><div class="num">42,880.1 <span class="down">-0.12%</span></div></div>
-    </div>
-    <div class="macro-item glass">
-      <div class="signal yellow"></div>
-      <div class="macro-text"><div class="name">DXY 달러인덱스</div><div class="num">103.80</div><div class="desc">국제 기축통화 중립 수준</div></div>
-    </div>
-    <div class="macro-item glass">
-      <div class="signal red"></div>
-      <div class="macro-text"><div class="name">美 국채 10년물 금리</div><div class="num">4.42%</div><div class="desc">고금리 장기화 부담 존재</div></div>
-    </div>
+    <script>
+      const macroSymbols = ["NASDAQ:NDX", "SP:SPX", "DJ:DJI", "TVC:DXY", "TVC:US10Y"];
+      macroSymbols.forEach(sym => {
+        document.write(`
+          <div class="macro-item glass">
+            <div class="tradingview-widget-container" style="width:100%; height:100%;">
+              <div class="tradingview-widget-container__widget"></div>
+              <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
+              {
+                "symbol": "${sym}",
+                "width": "100%", "height": "100%", "colorTheme": "dark",
+                "isTransparent": true, "locale": "kr"
+              }
+              <\/script>
+            </div>
+          </div>
+        `);
+      });
+    </script>
   </div>
 
   <div id="main">
 
     <div id="leftCol">
       <div class="panel glass" id="watchlistPanel">
-        <div class="panel-h">TRACKING WATCHLIST</div>
-        <div class="panel-body" id="stockList"></div>
-      </div>
-      <div class="panel glass" id="moversPanel">
-        <div class="panel-h">VOLATILITY TOP MOVERS</div>
-        <div class="panel-body" id="moversList"></div>
+        <div class="panel-h">TRACKING WATCHLIST (TOP 20)</div>
+        <div class="panel-body" style="overflow: hidden;">
+          <div class="tradingview-widget-container" style="width:100%; height:100%;">
+            <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px); width:100%;"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+            {
+              "width": "100%", "height": "100%",
+              "symbolsGroups": [
+                {
+                  "name": "US Tech Top 20",
+                  "originalName": "Indices",
+                  "symbols": [
+                    {"name": "NASDAQ:AAPL"}, {"name": "NASDAQ:MSFT"}, {"name": "NASDAQ:NVDA"},
+                    {"name": "NASDAQ:GOOGL"}, {"name": "NASDAQ:AMZN"}, {"name": "NASDAQ:META"},
+                    {"name": "NASDAQ:TSLA"}, {"name": "NASDAQ:AVGO"}, {"name": "NYSE:LLY"},
+                    {"name": "NYSE:TSM"}, {"name": "NYSE:V"}, {"name": "NYSE:JPM"},
+                    {"name": "NYSE:WMT"}, {"name": "NYSE:UNH"}, {"name": "NYSE:MA"},
+                    {"name": "NYSE:PG"}, {"name": "NYSE:JNJ"}, {"name": "NYSE:XOM"},
+                    {"name": "NYSE:HD"}, {"name": "NYSE:ORCL"}
+                  ]
+                }
+              ],
+              "showSymbolLogo": true, "isTransparent": true, "colorTheme": "dark", "locale": "kr"
+            }
+            </script>
+          </div>
+        </div>
       </div>
     </div>
 
     <div id="centerCol">
       <div class="panel glass" id="chartPanel">
-        <div id="chartHeaderBar">
-          <span id="chartSymbol">TSLA</span>
-          <span id="chartPrice" class="up">379.71</span>
-          <span id="chartPct" class="up">+1.22%</span>
+        <div class="panel-h" style="justify-content: space-between;">
+          <span>QUANTUM ADVANCED CHART (TSLA)</span>
         </div>
-        <div id="chartContainer">
-          <canvas id="tslaChart"></canvas>
-        </div>
-      </div>
-
-      <div class="panel glass" id="sectorRankPanel">
-        <div class="panel-h">SECTOR MATRIX & EXPOSURE</div>
-        <div class="panel-body" style="display:flex; gap:10px;">
-          <div class="sector-col" id="sectorRankList" style="flex:1;"></div>
-          <div class="sector-col" style="flex:1; background:rgba(0,0,0,0.2); padding: 8px; border-radius: 6px;">
-            <div style="font-size:12px; color:var(--text-dim); margin-bottom:10px; font-weight:bold;">포트폴리오 업종 노출도</div>
-            <div id="myHoldingsSector"></div>
+        <div class="panel-body" style="padding:0;">
+          <div class="tradingview-widget-container" style="height:100%; width:100%;">
+            <div id="tv_main_chart" style="height:100%; width:100%;"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+            <script type="text/javascript">
+            new TradingView.widget({
+              "autosize": true, "symbol": "NASDAQ:TSLA", "interval": "15",
+              "timezone": "Asia/Seoul", "theme": "dark", "style": "1",
+              "locale": "kr", "enable_publishing": false,
+              "backgroundColor": "rgba(0,0,0,0)", /* 투명 배경 */
+              "gridColor": "rgba(48, 54, 61, 0.3)",
+              "hide_top_toolbar": false, "hide_legend": false, "save_image": false,
+              "container_id": "tv_main_chart"
+            });
+            </script>
           </div>
         </div>
       </div>
 
-      <div class="panel glass" id="gainersLosersPanel">
-        <div class="panel-h">MARKET SCANNER // 시총 TOP 200 변동성</div>
-        <div class="panel-body" style="display:flex; padding: 0;">
-          <div class="gl-col gainers">
-            <div class="gl-col-title">▲ BULLISH (상승률 TOP)</div>
-            <div class="gl-list" id="gainersList"></div>
-          </div>
-          <div class="gl-col losers">
-            <div class="gl-col-title">▼ BEARISH (하락률 TOP)</div>
-            <div class="gl-list" id="losersList"></div>
-          </div>
+      <div class="panel glass" id="miniChartsPanel">
+        <div class="panel-h">MARKET CAP TOP 8 // REAL-TIME FLOW</div>
+        <div class="mini-charts-grid">
+          <script>
+            const top8Symbols = ["NASDAQ:AAPL", "NASDAQ:MSFT", "NASDAQ:NVDA", "NASDAQ:GOOGL", "NASDAQ:AMZN", "NASDAQ:META", "NASDAQ:TSLA", "NASDAQ:AVGO"];
+            top8Symbols.forEach(sym => {
+              document.write(`
+                <div class="mini-chart-box">
+                  <div class="tradingview-widget-container" style="width:100%; height:100%;">
+                    <div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {
+                      "symbol": "${sym}", "width": "100%", "height": "100%",
+                      "locale": "kr", "dateRange": "1D", "colorTheme": "dark",
+                      "isTransparent": true, "autosize": true, "largeChartUrl": ""
+                    }
+                    <\/script>
+                  </div>
+                </div>
+              `);
+            });
+          </script>
         </div>
       </div>
     </div>
@@ -441,108 +335,10 @@
     </div>
 
   </div>
-
-  <div id="footer">
-    <div class="panel glass">
-      <div class="panel-h">ECONOMIC EVENT CALENDAR (이번주 주요 일정)</div>
-      <div class="panel-body" id="calendarBody" style="padding:0;"></div>
-    </div>
-    <div class="panel glass">
-      <div class="panel-h">UNUSUAL VOLUME STRATEGY (특이 대량거래 포착)</div>
-      <div class="panel-body" id="volumeAlertBody" style="padding:0;"></div>
-    </div>
-    <div class="panel glass">
-      <div class="panel-h">SOCIAL SENTIMENT (커뮤니티 빅데이터 언급량)</div>
-      <div class="panel-body sentiment-gauge">
-        <div class="gauge-arc">
-          <div class="gauge-color-band"></div>
-          <div class="gauge-needle"></div>
-        </div>
-        <div class="gauge-label">NEUTRAL // 52</div>
-        <div class="gauge-sub">TSLA 실시간 언급량 +18% (24h)</div>
-      </div>
-    </div>
-  </div>
-
 </div>
 
 <script>
-  // 목업용 시뮬레이션 데이터 데이터베이스
-  const watchlist = [
-    {sym:'AAPL', px:283.78, pct:3.14, volRatio:142, dayPos:68},
-    {sym:'MSFT', px:372.97, pct:5.71, volRatio:88, dayPos:54},
-    {sym:'NVDA', px:192.53, pct:-1.64, volRatio:210, dayPos:22},
-    {sym:'GOOGL', px:337.39, pct:-1.84, volRatio:97, dayPos:31},
-    {sym:'AMZN', px:232.69, pct:2.50, volRatio:121, dayPos:74},
-    {sym:'META', px:550.25, pct:1.36, volRatio:103, dayPos:60},
-    {sym:'LLY', px:1208.12, pct:7.13, volRatio:305, dayPos:91},
-    {sym:'AVGO', px:365.02, pct:-3.67, volRatio:140, dayPos:15},
-    {sym:'TSLA', px:379.71, pct:1.22, volRatio:118, dayPos:57, active:true}
-  ];
-
-  function cls(p){ return p>0?'up':p<0?'down':'flat'; }
-
-  function renderWatchlist(){
-    const sorted = [...watchlist].sort((a,b)=>b.pct-a.pct);
-    const box = document.getElementById('stockList');
-    box.innerHTML = sorted.map(s=>`
-      <div class="stock-row ${s.active?'active':''}">
-        <div>
-          <div class="sym">${s.sym}</div>
-          <div class="sub">거래비율 ${s.volRatio}%</div>
-        </div>
-        <div class="right">
-          <div class="px ${cls(s.pct)}">${s.px.toFixed(2)}</div>
-          <div class="pct ${cls(s.pct)}">${s.pct>0?'+':''}${s.pct.toFixed(2)}%</div>
-          <div class="rangebar"><div class="fill" style="left:${s.dayPos}%"></div></div>
-        </div>
-      </div>`).join('');
-  }
-
-  function renderMovers(){
-    const sorted = [...watchlist].sort((a,b)=>Math.abs(b.pct)-Math.abs(a.pct)).slice(0,6);
-    document.getElementById('moversList').innerHTML = sorted.map((s,i)=>`
-      <div class="mover-row">
-        <span><span style="color:var(--text-muted); font-size:12px;">0${i+1}</span> &nbsp;${s.sym}</span>
-        <span class="${cls(s.pct)}">${s.pct>0?'+':''}${s.pct}%</span>
-      </div>`).join('');
-  }
-
-  // 좌측 섹터 강도 렌더링
-  const sectors = [
-    {name:'반도체/장비', pct:2.8}, {name:'빅테크 AI/SW', pct:2.1}, {name:'바이오 헬스케어', pct:1.4},
-    {name:'글로벌 커머스', pct:0.6}, {name:'디지털 미디어', pct:-0.3}, {name:'자동차/테슬라', pct:-1.1},
-    {name:'에너지/인프라', pct:-1.9}, {name:'대형 금융기관', pct:-2.4}
-  ];
-  function renderSectors(){
-    document.getElementById('sectorRankList').innerHTML = sectors.map(s=>`
-      <div class="sector-bar-row">
-        <span class="sname">${s.name}</span>
-        <div class="sector-bar-track">
-          <div class="sector-bar-fill ${s.pct>=0?'pos':'neg'}" style="width:${Math.min(Math.abs(s.pct)*20,100)}%; ${s.pct<0?'margin-left:auto;':''}"></div>
-        </div>
-        <span class="sval ${cls(s.pct)}">${s.pct>0?'+':''}${s.pct}%</span>
-      </div>`).join('');
-
-    // 우측 개선된 포트폴리오 노출도 렌더링
-    document.getElementById('myHoldingsSector').innerHTML = `
-      <div class="my-hold-row"><span class="sname">반도체/장비</span><div class="myhold-tags"><span class="myhold-tag">NVDA</span><span class="myhold-tag">AVGO</span></div></div>
-      <div class="my-hold-row"><span class="sname">빅테크 AI/SW</span><div class="myhold-tags"><span class="myhold-tag">MSFT</span><span class="myhold-tag">GOOGL</span></div></div>
-      <div class="my-hold-row"><span class="sname">글로벌 커머스</span><div class="myhold-tags"><span class="myhold-tag">AMZN</span><span class="myhold-tag">AAPL</span></div></div>
-      <div class="my-hold-row"><span class="sname">자동차/EV</span><div class="myhold-tags"><span class="myhold-tag">TSLA</span></div></div>
-      <div class="my-hold-row"><span class="sname">바이오 헬스케어</span><div class="myhold-tags"><span class="myhold-tag">LLY</span></div></div>
-    `;
-  }
-
-  const gainers = [['PLTR','+12.4%'],['SMCI','+9.8%'],['COIN','+8.1%'],['MSTR','+7.6%'],['ARM','+6.9%'],['CRWD','+6.2%']];
-  const losers = [['INTC','-9.2%'],['BA','-7.5%'],['DIS','-6.1%'],['PYPL','-5.4%'],['NKE','-4.9%'],['T','-4.2%']];
-  function renderGainersLosers(){
-    document.getElementById('gainersList').innerHTML = gainers.map((g,i)=>`
-      <div class="gl-row"><span><span class="gl-rank">${i+1}</span>${g[0]}</span><span class="up">${g[1]}</span></div>`).join('');
-    document.getElementById('losersList').innerHTML = losers.map((g,i)=>`
-      <div class="gl-row"><span><span class="gl-rank">${i+1}</span>${g[0]}</span><span class="down">${g[1]}</span></div>`).join('');
-  }
-
+  // 우측 패널 목업 렌더링 유지 (디자인 유지를 위해)
   function renderHoga(){
     const asks = [380.10,380.05,380.00,379.98,379.95,379.92,379.90,379.88,379.85,379.80];
     const bids = [379.71,379.68,379.65,379.60,379.55,379.50,379.45,379.40,379.35,379.30];
@@ -572,120 +368,9 @@
       <div class="earn-row"><span>${e[0]}</span><span class="earn-dday">${e[1]}</span></div>`).join('');
   }
 
-  const calendar = [
-    ['22:30','미국 핵심 CPI (소비자물가지수) 발표 — 시장 인프라 변동성 요인'],
-    ['익일 03:00','연준 FOMC 정례회의록 의사록 전격 공개']
-  ];
-  function renderCalendar(){
-    document.getElementById('calendarBody').innerHTML = calendar.map(c=>`
-      <div class="foot-row"><span class="ftime">[${c[0]}]</span><span>${c[1]}</span></div>`).join('');
-  }
-
-  const volAlerts = [
-    ['LLY','장외 옵션 시장 내 대규모 콜 포지션 평소 대비 305% 급증 스캐닝'],
-    ['NVDA','기관 다크풀 블록딜 특이 대형 매수 세력 추적 체포']
-  ];
-  function renderVolAlerts(){
-    document.getElementById('volumeAlertBody').innerHTML = volAlerts.map(v=>`
-      <div class="foot-row"><span class="up">${v[0]}</span><span>${v[1]}</span></div>`).join('');
-  }
-
-  // 📈 60개 데이터 기반의 밀집(Dense) 일본식 캔들스틱 차트 그리기 엔진
-  function drawDenseChart() {
-    const canvas = document.getElementById('tslaChart');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    
-    // 리사이즈 및 해상도 최적화 (DPR 대응)
-    const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.parentNode.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    ctx.scale(dpr, dpr);
-    
-    const w = rect.width; const h = rect.height;
-    
-    // 차트 백그라운드 그리드
-    ctx.strokeStyle = 'rgba(48, 54, 61, 0.3)';
-    ctx.lineWidth = 1;
-    for (let y = 30; y < h; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
-    for (let x = 60; x < w; x += 60) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
-    
-    // 데이터 60개 시뮬레이션 생성 알고리즘
-    const denseCandles = [];
-    let currentPx = 360;
-    let maxP = -9999, minP = 9999;
-    
-    for(let i=0; i<60; i++) {
-        let open = currentPx;
-        let volatility = (Math.random() * 6) + 1; 
-        let high = open + (Math.random() * volatility);
-        let low = open - (Math.random() * volatility);
-        let close = low + Math.random() * (high - low);
-        if (i === 59) close = 379.71; // 마지막은 종가 매칭
-        
-        denseCandles.push({o: open, h: high, l: low, c: close});
-        if(high > maxP) maxP = high;
-        if(low < minP) minP = low;
-        
-        currentPx = close + (Math.random() - 0.5) * 4; 
-    }
-
-    const priceRange = maxP - minP;
-    function getScaleY(price) { return h - ((price - minP) / priceRange) * (h - 60) - 30; }
-
-    // 최고/최저 점선 가이드
-    const hY = getScaleY(maxP); const lY = getScaleY(minP);
-    ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
-    
-    ctx.strokeStyle = 'rgba(248, 81, 73, 0.5)';
-    ctx.beginPath(); ctx.moveTo(0, hY); ctx.lineTo(w, hY); ctx.stroke();
-    ctx.strokeStyle = 'rgba(88, 166, 255, 0.5)';
-    ctx.beginPath(); ctx.moveTo(0, lY); ctx.lineTo(w, lY); ctx.stroke();
-    
-    ctx.setLineDash([]);
-    ctx.font = 'bold 11px Consolas'; 
-    ctx.fillStyle = '#f85149'; ctx.fillText(`HIGH $${maxP.toFixed(2)}`, 10, hY - 5);
-    ctx.fillStyle = '#58a6ff'; ctx.fillText(`LOW $${minP.toFixed(2)}`, 10, lY + 15);
-
-    // 60개 캔들스틱 렌더링
-    const len = denseCandles.length;
-    const padOuter = 10;
-    const availW = w - padOuter * 2;
-    const cWidth = Math.max(1, Math.min(8, (availW / len) * 0.6)); 
-    const spacing = (availW / len);
-    
-    denseCandles.forEach((c, i) => {
-      const cX = padOuter + i * spacing + cWidth / 2;
-      const yO = getScaleY(c.o), yC = getScaleY(c.c), yH = getScaleY(c.h), yL = getScaleY(c.l);
-      
-      const isUp = c.c >= c.o;
-      const colorStyle = isUp ? '#f85149' : '#58a6ff';
-      ctx.strokeStyle = colorStyle; ctx.fillStyle = colorStyle;
-      
-      ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.moveTo(cX, yH); ctx.lineTo(cX, yL); ctx.stroke();
-      
-      const rectH = Math.max(Math.abs(yO - yC), 1.5);
-      const rectY = Math.min(yO, yC);
-      ctx.fillRect(cX - cWidth / 2, rectY, cWidth, rectH);
-    });
-  }
-
-  // 모듈 통합 초기화 호출
-  renderWatchlist();
-  renderMovers();
-  renderSectors();
-  renderGainersLosers();
   renderHoga();
   renderNews();
   renderEarnings();
-  renderCalendar();
-  renderVolAlerts();
-  
-  // 차트 초기 렌더링 및 창 크기 변경 이벤트(모바일 대응)
-  drawDenseChart();
-  window.addEventListener('resize', drawDenseChart);
 </script>
 </body>
 </html>
