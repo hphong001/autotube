@@ -19,7 +19,6 @@
     
     --text-main: #e6edf3;
     --text-dim: #a0aab5;
-    --text-muted: #6e7681;
     
     --font-ui: 'Segoe UI', -apple-system, sans-serif;
     --font-mono: 'Consolas', 'Cascadia Code', 'SF Mono', monospace;
@@ -34,7 +33,7 @@
     background-color: var(--bg-base);
     color: var(--text-main);
     font-family: var(--font-ui);
-    overflow: hidden; /* 전체 페이지 스크롤 방지, 내부 패널만 스크롤 */
+    overflow: hidden; 
   }
 
   body::before {
@@ -64,14 +63,10 @@
 
   /* --- HEADER --- */
   #header {
-    grid-area: header;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 24px;
-    border-bottom: 2px solid var(--cyber-cyan);
-    box-shadow: 0 4px 20px rgba(88, 166, 255, 0.15);
-    flex-wrap: wrap; gap: 12px;
+    grid-area: header; display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 24px; border-bottom: 2px solid var(--cyber-cyan);
+    box-shadow: 0 4px 20px rgba(88, 166, 255, 0.15); flex-wrap: wrap; gap: 12px;
   }
-  
   #brand { display: flex; align-items: center; gap: 14px; }
   .pulse-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--cyber-cyan); box-shadow: 0 0 10px var(--cyber-cyan), 0 0 20px var(--cyber-cyan); animation: pulse 2s infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
@@ -79,18 +74,15 @@
   #brand h1 span { color: var(--cyber-cyan); text-shadow: 0 0 12px var(--cyber-cyan); }
   #brand .sub { font-size: 11px; color: var(--text-dim); letter-spacing: 2px; margin-top: 4px; font-family: var(--font-mono); font-weight: bold; }
   .highlight-ai { color: var(--cyber-gold); font-weight: 900; text-shadow: 0 0 10px rgba(255, 176, 0, 0.6); letter-spacing: 3px; }
-
+  
   .hdr-badges { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
   .hdr-badge { text-align: right; font-family: var(--font-mono); padding: 4px 14px; border-right: 1px solid var(--panel-border); }
   .hdr-badge:last-child { border-right: none; }
   .hdr-badge .lab { font-size: 11px; color: var(--text-dim); letter-spacing: 1px; margin-bottom: 2px; }
   .hdr-badge .val { font-size: clamp(15px, 1.4vw, 19px); font-weight: 700; }
-
   .vix-badge { background: rgba(88, 166, 255, 0.07); border: 1px solid var(--cyber-cyan); border-radius: 6px; padding: 6px 16px; box-shadow: 0 0 10px rgba(88, 166, 255, 0.15) inset; }
   .vix-badge .lab { color: var(--cyber-cyan); font-weight: bold; }
-  .vix-badge .val { color: var(--text-main); text-shadow: 0 0 8px var(--cyber-cyan); }
-
-  .status-chip { font-size: 13px; font-weight: 700; padding: 6px 16px; border-radius: 4px; border: 1px solid var(--cyber-green); color: var(--cyber-green); background: rgba(46, 160, 67, 0.1); box-shadow: 0 0 10px rgba(46, 160, 67, 0.2); font-family: var(--font-mono); }
+  .status-chip { font-size: 13px; font-weight: 700; padding: 6px 16px; border-radius: 4px; border: 1px solid var(--cyber-green); color: var(--cyber-green); background: rgba(46, 160, 67, 0.1); font-family: var(--font-mono); }
 
   /* --- MACRO BAR --- */
   #macro { grid-area: macro; display: flex; gap: 10px; overflow-x: auto; padding-bottom: 2px; }
@@ -99,7 +91,8 @@
   /* --- MAIN GRID --- */
   #main {
     grid-area: main; min-height: 0; display: grid;
-    grid-template-columns: minmax(280px, 18vw) 1fr minmax(330px, 20vw); gap: 10px;
+    /* 🚨 수정됨: 좌측 컬럼 너비를 280px -> 380px 로 대폭 확장하여 글자 확대 후 공간 확보 */
+    grid-template-columns: minmax(380px, 24vw) 1fr minmax(330px, 20vw); gap: 10px;
   }
 
   .panel { display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
@@ -109,64 +102,44 @@
     display: flex; align-items: center; gap: 10px; font-family: var(--font-mono);
     background: linear-gradient(90deg, rgba(88, 166, 255, 0.05), transparent);
   }
-  .panel-h::before {
-    content: ''; width: 8px; height: 8px; background: var(--cyber-cyan);
-    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); box-shadow: 0 0 6px var(--cyber-cyan);
-  }
-  
-  /* 패널 바디 스크롤 허용 */
+  .panel-h::before { content: ''; width: 8px; height: 8px; background: var(--cyber-cyan); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
   .panel-body { flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0; }
 
   /* Left Column */
   #leftCol { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
   #watchlistPanel { flex: 1; min-height: 0; }
-  
-  /* Zoom Container for Watchlist (Iframe 강제 확대) */
-  .zoom-container { width: 100%; height: 100%; zoom: 1.35; /* Chrome/Edge 전용 확대 기능 */ }
+  /* 글자 확대를 유지하면서 레이아웃 깨짐을 방지하기 위한 zoom */
+  .zoom-container { width: 100%; height: 100%; zoom: 1.35; }
 
   /* Center Column */
   #centerCol { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
   #chartPanel { flex: 1.5 1 0; min-height: 0; }
   
   #miniChartsPanel { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; }
-  /* 미니차트 영역 스크롤 추가 */
-  .mini-charts-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 200px); /* 높이 고정 및 스크롤 유도 */
-    gap: 8px; padding: 8px; width: 100%; flex: 1;
-  }
+  .mini-charts-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 200px); gap: 8px; padding: 8px; width: 100%; flex: 1; }
   .mini-chart-box { overflow: hidden; border-radius: 4px; border: 1px solid rgba(48, 54, 61, 0.5); min-height: 150px; }
 
-  /* Right Column */
+  /* Right Column Mockups */
   #rightCol { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
   #hogaPanel { flex: 1.1 1 0; min-height: 0; }
   #newsPanel { flex: 1 1 0; min-height: 0; }
   #earningsPanel { flex: .8 1 0; min-height: 0; }
-
-  /* Mockup Styles */
   .hoga-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; font-size: 13px; padding: 5px 6px; font-family: var(--font-mono); }
-  .hoga-row .va { color: var(--text-dim); text-align: left; }
-  .hoga-row .vb { color: var(--text-dim); text-align: right; }
   .hoga-row .pa { color: var(--cyber-red); text-align: center; font-weight: 700; }
   .hoga-row .pb { color: var(--cyber-cyan); text-align: center; font-weight: 700; }
-  .hoga-divider { border-top: 1px solid var(--panel-border); border-bottom: 1px solid var(--panel-border); background: rgba(0,0,0,0.25); padding: 6px 0; margin: 4px 0; text-align: center; font-size: 12px; color: var(--text-main); font-family: var(--font-mono); }
+  .hoga-divider { border-top: 1px solid var(--panel-border); border-bottom: 1px solid var(--panel-border); background: rgba(0,0,0,0.25); padding: 6px 0; margin: 4px 0; text-align: center; font-size: 12px; }
   .news-row { padding: 10px 8px; border-bottom: 1px solid var(--panel-border); }
-  .news-row:hover { background: rgba(88, 166, 255, 0.04); }
-  .news-row .ntime { font-size: 11px; color: var(--text-dim); font-family: var(--font-mono); display: flex; gap: 6px; align-items: center; }
+  .news-row .ntime { font-size: 11px; color: var(--text-dim); display: flex; gap: 6px; align-items: center; }
   .news-row .ntitle { font-size: 13.5px; margin-top: 6px; line-height: 1.45; }
-  .news-tag { font-size: 10px; padding: 1px 5px; border-radius: 4px; border: 1px solid var(--cyber-purple); color: var(--cyber-purple); background: rgba(188, 140, 255, 0.05); }
-  .earn-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; font-size: 14px; border-bottom: 1px dashed var(--panel-border); }
-  .earn-dday { font-family: var(--font-mono); font-weight: 700; padding: 3px 8px; border-radius: 4px; background: rgba(210, 153, 34, 0.1); color: var(--cyber-yellow); font-size: 12px; border: 1px solid var(--cyber-yellow); }
+  .earn-row { display: flex; justify-content: space-between; padding: 8px 12px; font-size: 14px; border-bottom: 1px dashed var(--panel-border); }
 
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--cyber-cyan); }
-  ::-webkit-scrollbar-track { background: transparent; }
 </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- HEADER -->
   <div id="header" class="glass">
     <div id="brand">
       <div class="pulse-dot"></div>
@@ -183,11 +156,9 @@
     </div>
   </div>
 
-  <!-- MACRO INDICATORS (에러 없는 Futures 심볼로 교체) -->
   <div id="macro">
     <script>
-      // NQ1!(나스닥선물), ES1!(S&P선물), YM1!(다우선물), DXY(달러인덱스), US10Y(국채금리)
-      const macroSymbols = ["CME_MINI:NQ1!", "CME_MINI:ES1!", "CBOT:YM1!", "TVC:DXY", "TVC:US10Y"];
+      const macroSymbols = ["CAPITALCOM:US100", "CAPITALCOM:US500", "CAPITALCOM:US30", "TVC:DXY", "TVC:US10Y"];
       macroSymbols.forEach(sym => {
         document.write(`
           <div class="macro-item glass">
@@ -203,10 +174,8 @@
     </script>
   </div>
 
-  <!-- MAIN AREA -->
   <div id="main">
 
-    <!-- LEFT: Real-time Top 20 Watchlist (zoom-container로 1.35배 확대 적용) -->
     <div id="leftCol">
       <div class="panel glass" id="watchlistPanel">
         <div class="panel-h">TRACKING WATCHLIST (TOP 20)</div>
@@ -237,7 +206,6 @@
       </div>
     </div>
 
-    <!-- CENTER -->
     <div id="centerCol">
       <div class="panel glass" id="chartPanel">
         <div class="panel-h"><span>QUANTUM ADVANCED CHART (TSLA)</span></div>
@@ -251,7 +219,7 @@
               "timezone": "Asia/Seoul", "theme": "dark", "style": "1", "locale": "kr",
               "enable_publishing": false, "backgroundColor": "rgba(0,0,0,0)", "gridColor": "rgba(48, 54, 61, 0.3)",
               "hide_top_toolbar": false, "hide_legend": false, "save_image": false,
-              "extended_hours": true, /* 프리장/애프터장 세션 활성화 */
+              "extended_hours": true, /* 정규장 시 실시간 적용 */
               "container_id": "tv_main_chart"
             });
             </script>
@@ -283,7 +251,6 @@
       </div>
     </div>
 
-    <!-- RIGHT: Mockups -->
     <div id="rightCol">
       <div class="panel glass" id="hogaPanel">
         <div class="panel-h">ORDER BOOK // L2 실시간 잔량</div>
@@ -304,31 +271,20 @@
 
 <script>
   function renderHoga(){
-    const asks = [380.10,380.05,380.00,379.98,379.95,379.92,379.90,379.88,379.85,379.80];
-    const bids = [379.71,379.68,379.65,379.60,379.55,379.50,379.45,379.40,379.35,379.30];
     let html = '';
-    for(let i=4;i>=0;i--) html += `<div class="hoga-row"><span class="va">${(Math.random()*900+100).toFixed(0)}</span><span class="pa">${asks[i].toFixed(2)}</span><span></span></div>`;
-    html += `<div class="hoga-divider">총매도 4,820 // 총매수 5,140</div>`;
-    for(let i=0;i<5;i++) html += `<div class="hoga-row"><span></span><span class="pb">${bids[i].toFixed(2)}</span><span class="vb">${(Math.random()*900+100).toFixed(0)}</span></div>`;
+    for(let i=0;i<5;i++) html += `<div class="hoga-row"><span></span><span class="pa">0.00</span><span></span></div>`;
+    html += `<div class="hoga-divider">MARKET MOCKUP DATA</div>`;
+    for(let i=0;i<5;i++) html += `<div class="hoga-row"><span></span><span class="pb">0.00</span><span></span></div>`;
     document.getElementById('hogaBody').innerHTML = html;
   }
-
-  const news = [
-    ['10:52','TSLA','테슬라, 신형 차세대 배터리 셀 건식 전극 양산 공정 성공 발표 — 제조원가 15% 이상 혁신 기대'],
-    ['10:41','NVDA','엔비디아 차세대 B300 칩 글로벌 파운드리 추가 대량 수주 루머 확산'],
-    ['10:33','FED','FOMC 매파 성향 위원 발언 발발, "인플레이션 재발 리스크 방어 위해 추가 금리 인하 신중 유기할 것"']
-  ];
   function renderNews(){
-    document.getElementById('newsBody').innerHTML = news.map(n=>`
-      <div class="news-row"><div class="ntime"><span class="news-tag">${n[1]}</span> ${n[0]}</div><div class="ntitle">${n[2]}</div></div>`).join('');
+    const news = [['10:52','TSLA','테슬라, 신형 배터리 공정 성공'],['10:41','NVDA','차세대 B300 대량 수주']];
+    document.getElementById('newsBody').innerHTML = news.map(n=>`<div class="news-row"><div class="ntime">${n[0]}</div><div class="ntitle">${n[2]}</div></div>`).join('');
   }
-
-  const earnings = [['TSLA','D-3'],['META','D-5'],['GOOGL','D-9'],['AMZN','D-14']];
   function renderEarnings(){
-    document.getElementById('earningsBody').innerHTML = earnings.map(e=>`
-      <div class="earn-row"><span>${e[0]}</span><span class="earn-dday">${e[1]}</span></div>`).join('');
+    const earnings = [['TSLA','D-3'],['META','D-5']];
+    document.getElementById('earningsBody').innerHTML = earnings.map(e=>`<div class="earn-row"><span>${e[0]}</span><span>${e[1]}</span></div>`).join('');
   }
-
   renderHoga(); renderNews(); renderEarnings();
 </script>
 </body>
