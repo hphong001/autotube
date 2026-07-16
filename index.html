@@ -55,7 +55,7 @@
   "url": "https://aibaselab.com/",
   "offers": {
     "@type": "Offer",
-    "price": "980000",
+    "price": "150000",
     "priceCurrency": "KRW",
     "availability": "https://schema.org/InStock",
     "seller": {
@@ -105,7 +105,7 @@
       "name": "세금계산서 발행이 되나요?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "기본 결제(Gumroad)는 해외 결제 영수증만 제공됩니다. 세금계산서가 필요하신 사업자는 카카오톡 채널로 문의 주시면 원화 무통장 결제로 안내드리며, 이 경우 정상적으로 세금계산서 발행이 가능합니다."
+        "text": "본 제품은 개인 크리에이터를 위한 1인 개발 소프트웨어로, 세금계산서 발행 시스템을 운영하고 있지 않습니다. 사업자 구매가 필요하신 경우 Gumroad 해외결제 영수증을 비용 처리에 활용하실 수 있습니다."
       }
     },
     {
@@ -113,7 +113,7 @@
       "name": "환불이 가능한가요?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "구매 전 5일 무료체험으로 충분히 테스트해보실 수 있도록 설계했습니다. 그래서 결제 후 단순 변심 환불은 진행하지 않습니다. 다만 라이선스 인증 오류 등 프로그램 자체의 결함으로 정상 사용이 안 되는 경우엔 100% 환불 또는 조치해 드립니다."
+        "text": "구매 전 7일 무료체험으로 충분히 테스트해보실 수 있도록 설계했습니다. 그래서 결제 후 단순 변심 환불은 진행하지 않습니다. 다만 라이선스 인증 오류 등 프로그램 자체의 결함으로 정상 사용이 안 되는 경우엔 100% 환불 또는 조치해 드립니다."
       }
     },
     {
@@ -454,12 +454,152 @@ footer { background: #020617; padding: 40px var(--gap); display: flex; justify-c
   border: 3px solid #ffffff;
   box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
 }
+/* 원화결제 안내 팝업 */
+.pay-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 9000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.pay-overlay.open { display: flex; }
+.pay-modal {
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px 36px 32px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.18);
+  position: relative;
+  text-align: center;
+}
+.pay-modal-close {
+  position: absolute;
+  top: 14px; right: 18px;
+  font-size: 22px;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  line-height: 1;
+}
+.pay-modal-close:hover { color: var(--ink); }
+.pay-modal-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.pay-modal-sub {
+  font-size: 14px;
+  color: var(--gray);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.pay-account-box {
+  background: var(--tinted);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 22px 24px;
+  text-align: left;
+  margin-bottom: 20px;
+}
+.pay-account-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 15px;
+}
+.pay-account-row:last-child { border-bottom: none; }
+.pay-account-row .label { color: var(--gray); font-weight: 500; }
+.pay-account-row .value { font-weight: 700; color: var(--ink); font-family: var(--num); }
+.pay-account-row .value.amount { color: #16a34a; font-size: 18px; }
+.pay-modal-note {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.pay-modal-btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.pay-modal-btn:hover { background: #1e293b; }
 </style>
 </head>
 <body>
+
+<!-- 원화결제 안내 팝업 -->
+<div class="pay-overlay" id="payOverlay" onclick="closePayModal(event)">
+  <div class="pay-modal">
+    <button class="pay-modal-close" onclick="closePayModal()">✕</button>
+    <div style="font-size:32px; margin-bottom:12px;">🏦</div>
+    <div class="pay-modal-title">원화 결제 안내</div>
+    <div class="pay-modal-sub">아래 계좌로 입금해 주시면 확인 후<br>라이선스 키를 이메일로 발송해 드립니다.</div>
+    <div class="pay-account-box">
+      <div class="pay-account-row">
+        <span class="label">은행명</span>
+        <span class="value">하나은행</span>
+      </div>
+      <div class="pay-account-row">
+        <span class="label">계좌번호</span>
+        <span class="value">346-910025-28638</span>
+      </div>
+      <div class="pay-account-row">
+        <span class="label">예금주</span>
+        <span class="value">홍O표</span>
+      </div>
+      <div class="pay-account-row">
+        <span class="label">입금 금액</span>
+        <span class="value amount">₩150,000</span>
+      </div>
+    </div>
+    <div class="pay-modal-note">입금 확인 후 이메일로 라이센스키를 전송해 드립니다.<br>문의: hp.biz001@gmail.com</div>
+
+    <!-- 구분선 -->
+    <div style="border-top:1px dashed var(--line); margin-bottom:18px;"></div>
+
+    <!-- 안내 문구 -->
+    <div style="font-size:13.5px; color:var(--ink); font-weight:700; margin-bottom:6px;">📧 입금 후 아래 정보를 입력해 주세요</div>
+    <div style="font-size:13px; color:var(--gray); line-height:1.6; margin-bottom:16px;">
+      라이센스키 발송을 위해 <strong>이메일 주소</strong>와 <strong>송금자 성함</strong>을 정확히 입력 후 전송해 주세요.<br>
+      <span style="color:#ef4444;">이메일 오류 또는 송금자 성함이 확인되지 않으면 처리가 어렵습니다.</span>
+    </div>
+
+    <!-- 입력 폼 -->
+    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
+      <input type="email" id="payEmail" placeholder="이메일 주소 (예: yourname@gmail.com)"
+        style="width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:8px; font-size:14px; font-family:var(--body); outline:none; transition:border 0.2s;"
+        onfocus="this.style.borderColor='#4f46e5'" onblur="this.style.borderColor='var(--line)'">
+      <input type="text" id="paySender" placeholder="송금자 성함 (예: 홍길동)"
+        style="width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:8px; font-size:14px; font-family:var(--body); outline:none; transition:border 0.2s;"
+        onfocus="this.style.borderColor='#4f46e5'" onblur="this.style.borderColor='var(--line)'">
+    </div>
+    <div id="payMsg" style="font-size:13px; color:#ef4444; margin-bottom:10px; min-height:18px;"></div>
+
+    <button class="pay-modal-btn" onclick="submitPayInfo()" style="background:#4f46e5;">
+      ✉️ 정보 전송하기
+    </button>
+    <button style="display:block; width:100%; margin-top:10px; padding:10px; background:none; border:1px solid var(--line); border-radius:10px; font-size:14px; color:var(--gray); cursor:pointer;" onclick="closePayModal()">닫기</button>
+  </div>
+</div>
 <div class="topbar">
   <span class="dot-live-top"></span>
-  <strong>론칭 기념 얼리버드 가격으로 분양 중입니다.</strong>
+  <strong>🔖 얼리유저 특가 진행 중 — 영구 라이선스 ₩150,000 · 추후 가격 인상 예정</strong>
 </div>
 
 <nav>
@@ -671,91 +811,101 @@ footer { background: #020617; padding: 40px var(--gap); display: flex; justify-c
 <section class="section section--white" id="pricing">
   <div class="w">
     <span class="eyebrow r">가격</span>
-    <h2 class="r">외주 편집자 한 달 월급으로,<br><span class="hl-red">1년 내내 일하는 자동화 설비</span></h2>
-    <p class="lead r">월 10편 기준, 단 <strong>1.5개월</strong>에 라이선스 비용이 전액 회수됩니다.<br>이후 남은 기간은 <strong>공짜로 일하는 자동화 직원</strong>이 생기는 효과와 같습니다.</p>
+    <h2 class="r">한 번 결제,<br><span class="hl-red">평생 내 것</span></h2>
+    <p class="lead r">구독 없음. 갱신 없음. <strong>한 번 결제로 영구 사용</strong>합니다.<br>외주 편집자 한 달 월급도 안 되는 비용으로 <strong>평생 일하는 자동화 프로그램</strong>이 생깁니다.</p>
 
+    <!-- 얼리유저 특가 안내 -->
     <div class="urgency r">
       <span class="dot-live"></span>
       <span style="font-size:16px; line-height:1.6;">
-        <strong>🔥 론칭 기념 얼리버드 가격</strong><br>
-        지금은 얼리버드 특가로 분양 중이며, 추후 정가로 전환될 수 있습니다.
+        <strong>🔖 얼리유저 특가 진행 중</strong><br>
+        초기 사용자 피드백을 반영하며 제품을 고도화하고 있습니다. 기능 업데이트와 함께 가격은 순차 인상될 예정입니다.<br>
+        <strong>지금 구매하신 분은 영구 라이선스로, 이후 가격 인상과 무관하게 계속 사용 가능합니다.</strong>
       </span>
     </div>
 
-    <div class="r" style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:16px; padding:28px; margin-bottom:32px; display:flex; align-items:flex-start; gap:18px; box-shadow:var(--shadow-sm);">
-      <span style="font-size:28px; flex-shrink:0;">🎁</span>
-      <div>
-        <div style="font-size:19px; font-weight:800; color:#14532d; margin-bottom:8px;">먼저 <span style="color:#16a34a;">5일간 무료</span>로 사용해 보세요.</div>
-        <div style="font-size:15px; color:#166534; line-height:1.7;">대본이 이미지·음성·자막을 거쳐 완성 캡컷 타임라인으로 조립되는 과정을 직접 경험한 후 구매를 결정하세요. <strong>5일 무료체험 완료 후 구매 강요 없음.</strong></div>
+    <!-- 무료체험 -->
+    <div class="r" style="max-width:560px; margin:0 auto 16px;">
+      <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:16px; padding:24px 28px; box-shadow:var(--shadow-sm);">
+        <div style="font-size:17px; font-weight:800; color:#14532d; margin-bottom:8px;">🎁 7일 무료체험</div>
+        <div style="font-size:15px; color:#166534; line-height:1.7; margin-bottom:20px;">대본이 이미지·음성·자막을 거쳐 완성 캡컷 타임라인으로 조립되는 과정을 직접 경험한 후 구매를 결정하세요. <strong>체험 완료 후 구매 강요 없음.</strong></div>
+        <a href="https://forms.gle/EViTc2rboeocEWhR8" target="_blank" style="display:block; text-align:center; background:#16a34a; color:#fff; font-weight:700; font-size:15px; padding:14px; border-radius:10px; text-decoration:none;">
+          🎁 무료 체험 신청하기
+        </a>
       </div>
     </div>
 
-    <div class="price-card-single r">
-      <div class="pop-badge">PC 3대까지 설치 가능</div>
-      <div class="pc-title">AutoTube Pro</div>
-      <div class="pc-desc">대본 한 장으로 이미지·음성·자막·캡컷 조립까지<br>전부 자동화하는 1년 라이선스</div>
-
-      <div class="pc-price-strike">₩1,280,000 / 년</div>
-      <div class="pc-price">₩980,000 <span>/년</span></div>
-      <div style="font-size:13px; color:var(--muted); margin-top:8px; text-align:center;">$650 상당 · 해외 카드결제는 VAT 별도</div>
-
-      <div class="pc-setup">동일 라이선스로 PC 3대까지 설치 (동시접속 불가)</div>
-
-      <div style="font-size:14px; color:var(--ink2); background:var(--tinted); text-align:center; padding:12px 16px; border-radius:8px; margin-bottom:12px; line-height:1.6;">
-        💬 상담원이 아니라, <strong>프로그램을 직접 만든 사람이 문의에 답변</strong>해 드립니다.
-      </div>
-
-      <div style="font-size:13px; color:var(--muted); margin-top:8px; text-align:center;">아래에서 결제 방법을 선택해 주세요</div>
+    <!-- 구분선 -->
+    <div class="r" style="max-width:560px; margin:0 auto 24px; text-align:center; color:var(--muted); font-size:13px; font-weight:600;">
+      <div style="border-top:1px dashed var(--line); margin-bottom:12px;"></div>
+      체험 후 구매를 결정하셨다면 ↓
     </div>
 
-    <!-- 결제수단 분리: 카드(USD) / 무통장(KRW) -->
-    <div class="r grid-2" style="margin-top:28px; max-width:760px; margin-left:auto; margin-right:auto;">
-      <div style="background:#fff; border:2px solid #ef4444; border-radius:18px; padding:28px 24px; display:flex; flex-direction:column; box-shadow:var(--shadow-sm);">
-        <div style="font-size:14px; font-weight:700; color:#ef4444; margin-bottom:10px;">💳 해외 카드결제 (Gumroad)</div>
-        <div style="font-size:28px; font-weight:900; color:var(--ink); font-family:var(--num); margin-bottom:4px;">$650<span style="font-size:14px; color:var(--muted); font-weight:500;"> /년</span></div>
-        <div style="font-size:15px; color:var(--muted); margin-bottom:18px;">VAT 10% 별도 ($650 + $65 = $715) </div>
-        <a href="https://bizhawk.gumroad.com/l/rdkvs" target="_blank" class="price-cta" style="display:block; text-align:center; margin-top:auto; background:#ef4444; color:#fff; padding:15px; font-size:15.5px; font-weight:700; text-decoration:none; border-radius:10px;">
+    <!-- 구매 가격 -->
+    <div class="r" style="max-width:560px; margin:0 auto 24px;">
+      <div style="font-size:13px; font-weight:700; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase; margin-bottom:12px;">구매 가격</div>
+      <div style="background:var(--white); border:2px solid #ef4444; border-radius:20px; padding:32px 28px; text-align:center; box-shadow:var(--shadow-md); position:relative;">
+        <div style="position:absolute; top:-14px; left:50%; transform:translateX(-50%); background:#ef4444; color:#fff; font-size:13px; font-weight:700; padding:5px 20px; border-radius:20px; white-space:nowrap;">영구 사용 · 얼리유저 특가 · 추후 인상 예정</div>
+        <div style="font-size:22px; font-weight:800; color:var(--ink); margin-bottom:6px;">AutoTube Pro</div>
+        <div style="font-size:14px; color:var(--gray); margin-bottom:20px; line-height:1.6;">대본 한 장으로 이미지·음성·자막·캡컷 조립까지<br>전부 자동화하는 <strong>영구 라이선스</strong></div>
+        <div style="font-size:42px; font-weight:900; color:var(--ink); font-family:var(--num); letter-spacing:-0.03em; line-height:1;">₩150,000</div>
+        <div style="font-size:13px; color:var(--gray); background:var(--tinted); border-radius:8px; padding:10px 14px; line-height:1.6; margin-top:20px;">동일 라이선스로 PC 3대까지 설치 (동시접속 불가)</div>
+      </div>
+    </div>
+
+    <!-- 결제 방법 선택 -->
+    <div class="r" style="max-width:560px; margin:0 auto 16px;">
+      <div style="font-size:13px; font-weight:700; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase; margin-bottom:12px;">결제 방법 선택</div>
+
+      <!-- 결제방법 1: 무통장 (추천) -->
+      <div style="background:#fff; border:2px solid #16a34a; border-radius:16px; padding:26px 28px; margin-bottom:24px; position:relative; box-shadow:var(--shadow-sm);">
+        <div style="position:absolute; top:-12px; left:20px; background:#16a34a; color:#fff; font-size:12px; font-weight:700; padding:4px 14px; border-radius:12px;">결제방법 1 · 추천</div>
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
+          <div>
+            <div style="font-size:16px; font-weight:700; color:#15803d; margin-bottom:2px;">🏦 원화 무통장 입금</div>
+            <div style="font-size:13px; color:#16a34a; font-weight:600;">부가세 없는 현금가</div>
+          </div>
+          <div style="font-size:30px; font-weight:900; color:var(--ink); font-family:var(--num);">₩150,000</div>
+        </div>
+        <button onclick="openPayModal()" style="display:block; width:100%; text-align:center; background:#16a34a; color:#fff; font-weight:700; font-size:15px; padding:14px; border-radius:10px; border:none; cursor:pointer;">
+          🏦 원화 무통장 결제 안내 보기
+        </button>
+      </div>
+
+      <!-- 결제방법 2: 해외카드 -->
+      <div style="background:#fff; border:1px solid var(--line); border-radius:16px; padding:26px 28px; margin-bottom:24px; position:relative; box-shadow:var(--shadow-sm);">
+        <div style="position:absolute; top:-12px; left:20px; background:var(--gray); color:#fff; font-size:12px; font-weight:700; padding:4px 14px; border-radius:12px;">결제방법 2</div>
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:6px;">
+          <div>
+            <div style="font-size:16px; font-weight:700; color:var(--ink); margin-bottom:2px;">💳 해외 카드결제 (Gumroad)</div>
+            <div style="font-size:13px; color:#ef4444; font-weight:600;">부가세(VAT) 10% 별도 · 실질 $121</div>
+          </div>
+          <div style="font-size:30px; font-weight:900; color:var(--ink); font-family:var(--num);">$110</div>
+        </div>
+        <div style="font-size:13px; color:var(--muted); margin-bottom:14px;">해외 카드로 즉시 결제 · 영수증 자동 발송</div>
+        <a href="https://bizhawk.gumroad.com/l/rdkvs" target="_blank" style="display:block; text-align:center; background:var(--ink); color:#fff; font-weight:700; font-size:15px; padding:14px; border-radius:10px; text-decoration:none;">
           카드로 즉시 결제하기
         </a>
-        <div style="font-size:15px; color:var(--muted); margin-top:10px; text-align:center;">사업자번호 입력시 부과세 차감된 금액 결제</div>
       </div>
-      <div style="background:#fff; border:2px solid #16a34a; border-radius:18px; padding:28px 24px; display:flex; flex-direction:column; box-shadow:var(--shadow-sm);">
-        <div style="font-size:14px; font-weight:700; color:#16a34a; margin-bottom:10px;">🏦 원화 무통장 입금</div>
-        <div style="font-size:28px; font-weight:900; color:var(--ink); font-family:var(--num); margin-bottom:4px;">₩980,000<span style="font-size:14px; color:var(--muted); font-weight:500;"> /년</span></div>
-        <div style="font-size:15px; color:var(--muted); margin-bottom:18px;">환율 고려시 해외결제보다 일반적으로 저렴</div>
-        <a href="http://pf.kakao.com/_pVunX/chat" target="_blank" class="price-cta" style="display:block; text-align:center; margin-top:auto; background:#16a34a; color:#fff; padding:15px; font-size:15.5px; font-weight:700; text-decoration:none; border-radius:10px;">
-          💬 카카오톡으로 결제 정보 확인
-        </a>
-        <div style="font-size:15px; color:var(--muted); margin-top:10px; text-align:center;">.</div>
+
+      <!-- 세금계산서 안내 -->
+      <div style="background:#f8fafc; border:1px solid var(--line); border-radius:12px; padding:16px 20px; font-size:13.5px; color:var(--gray); line-height:1.7; margin-bottom:16px;">
+        💡 <strong style="color:var(--ink);">세금계산서 발행이 안 되나요?</strong><br>
+        본 제품은 개인 크리에이터를 위한 1인 개발 소프트웨어로, 세금계산서 발행 시스템을 운영하고 있지 않습니다. 사업자 구매가 필요하신 경우 Gumroad 해외결제 영수증을 비용 처리에 활용하실 수 있습니다.
       </div>
-    </div>
 
-    <div style="text-align:center; margin-top:20px;">
-      <a href="https://forms.gle/EViTc2rboeocEWhR8" target="_blank" style="display:inline-block; text-align:center; background:var(--white); color:var(--ink); font-weight:700; font-size:15px; padding:14px 32px; border-radius:12px; border:1px solid var(--line); text-decoration:none;">
-        🎁 구매 전, 5일 무료 체험 먼저 신청하기
-      </a>
-    </div>
-
-  
-
-    <div class="r" style="margin-top:16px; padding: 18px 24px; background: var(--bg); border: 1px solid var(--line); border-radius: 12px; font-size: 14px; color: var(--gray); line-height:1.7;">
-      <strong style="color:var(--ink);">환불 안내</strong> <br>구매 전 5일 무료체험으로 충분히 테스트해보실 수 있도록 설계했습니다. 그래서 결제 후 단순 변심 환불은 진행하지 않습니다.<br> 다만 프로그램 자체의 결함으로 정상 사용이 안 되는 경우엔 100% 환불 또는 조치해 드립니다.
-    </div>
-
-    <div class="r" style="background:#eef2ff; border:1px solid #e0e7ff; border-radius:16px; padding:26px 28px; margin-top:28px; text-align:center;">
-      <div style="font-size:17px; font-weight:700; color:var(--red); line-height:1.7;">
-        ₩980,000이 부담스러우신가요?<br>이미지 생성 비용 절감만으로도 그 이상을 회수합니다.<br>
-        <span style="font-size:15px; font-weight:500; color:var(--ink2);">여기에 TTS 음성·자막 생성이 무제한 무료이고, 단순 반복 작업과 캡컷 배치까지 자동화되는 가치를 더하면 — 실질적인 회수 효과는 계산보다 훨씬 큽니다.</span>
+      <!-- 환불 안내 -->
+      <div style="padding:16px 20px; background:var(--bg); border:1px solid var(--line); border-radius:12px; font-size:13.5px; color:var(--gray); line-height:1.7;">
+        <strong style="color:var(--ink);">환불 안내</strong><br>
+        구매 전 7일 무료체험으로 충분히 테스트해보실 수 있도록 설계했습니다. 결제 후 단순 변심 환불은 진행하지 않습니다.
       </div>
-      <a href="#cost-saving" style="display:inline-block; margin-top:14px; font-size:14.5px; font-weight:700; color:#fff; background:var(--red); padding:10px 24px; border-radius:8px; text-decoration:none;">
-        ↓ 절감 금액 직접 계산해보기
-      </a>
+
     </div>
   </div>
 </section>
 
 <!-- ============ COST / ROI (merged) — 가격 바로 다음 배치 ============ -->
-<section class="section section--tinted" id="cost-saving">
+<section class="section section--tinted">
   <div class="w">
     <span class="eyebrow r">비용과 시간, 두 가지 효율</span>
     <h2 class="r">수작업 대비 <span class="hl-red">압도적인 효율</span></h2>
@@ -804,66 +954,8 @@ footer { background: #020617; padding: 40px var(--gap); display: flex; justify-c
       </div>
     </div>
 
-    <h3 class="r" style="font-size:20px; font-weight:800; color:var(--ink); margin-bottom:16px;">현실적인 API 절감액 계산기</h3>
-    <p class="r" style="color:var(--gray); font-size:15px; margin-bottom:24px;">첫날부터 100% API 과금을 강제하는 타사 툴과 비교하여, <strong>보수적으로 50%의 하이브리드 상쇄 (영상 1편당 이미지 60장 중 30장은 무료 Web 모드 / 30장은 유료 API 사용)</strong>를 가정했을 때의 절감액입니다.</p>
-
-    <div class="r" style="background:#fff; border:1px solid var(--line); border-radius:20px; padding:36px; box-shadow:var(--shadow-md);">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:24px;">
-        <span style="font-size:16px; color:var(--gray); font-weight:600;">월간 영상 제작 편수 (각 60컷 기준 30컷 무료 생성시)</span>
-        <span style="font-size:28px; font-weight:900; color:var(--ink); font-family:var(--num);"><span id="cs-cnt">10</span> 편</span>
-      </div>
-      <input type="range" min="1" max="100" value="10" step="1" id="cs-slider">
-
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-top:32px;">
-        <div style="background:var(--bg); border-radius:16px; padding:20px; border: 1px solid var(--line);">
-          <div style="font-size:14px; color:var(--gray); margin-bottom:8px; font-weight:500;">표준 API 툴 비용 (100% 유료)</div>
-          <div style="font-size:clamp(22px,6vw,28px); font-weight:900; color:var(--muted); font-family:var(--num);" id="cs-total">₩60,000</div>
-        </div>
-        <div style="background:#f0fdf4; border-radius:16px; padding:20px; border: 1px solid #dcfce7;">
-          <div style="font-size:14px; color:#166534; font-weight:700; margin-bottom:8px;">AutoTube Pro 하이브리드 비용 (50% 상쇄)</div>
-          <div style="font-size:clamp(22px,6vw,28px); font-weight:900; color:#16a34a; font-family:var(--num);" id="cs-hybrid">₩30,000</div>
-        </div>
-      </div>
-      <div style="text-align: center; margin-top: 24px; font-size: 18px; font-weight: 700; color: var(--ink);">
-        매월 <span style="color:#ef4444;" id="cs-save">₩30,000</span> 절감을 기대할 수 있습니다.
-      </div>
-      <div style="text-align: center; margin-top: 16px;">
-        <div style="display: inline-block; background: #eef2ff; border: 1px solid #e0e7ff; border-radius: 12px; padding: 14px 28px; font-size: 16px; color: var(--ink2); line-height: 1.7;">
-          사실 비용 절감은 덤입니다.<br>
-          진짜 가치는 반복되던 단순 노동을 줄여 <strong style="color:#ef4444;">당신의 귀한 시간</strong>을 아껴주는 데 있습니다.
-        </div>
-      </div>
-    </div>
   </div>
 </section>
-
-<script>
-(function() {
-  var slider = document.getElementById('cs-slider');
-  if (!slider) return;
-  function fmt(n) { return n.toLocaleString('ko-KR'); }
-  function update() {
-    var n = parseInt(slider.value);
-    // 영상 1편당 이미지 60장. 1장당 약 100원으로 계산시 표준 비용 6,000원
-    var standardTotal = n * 6000;
-    // 하이브리드 로직: 보수적 50% 무료 (30장 무료, 30장 유료) -> 영상당 3,000원 비용 발생
-    var hybridTotal = n * 3000;
-    var savings = standardTotal - hybridTotal;
-    
-    var min = parseInt(slider.min);
-    var max = parseInt(slider.max);
-    var progress = ((n - min) / (max - min)) * 100;
-    slider.style.background = `linear-gradient(to right, #4f46e5 ${progress}%, #e2e8f0 ${progress}%)`;
-    
-    document.getElementById('cs-cnt').textContent = n;
-    document.getElementById('cs-total').textContent = '₩' + fmt(standardTotal);
-    document.getElementById('cs-hybrid').textContent = '₩' + fmt(hybridTotal);
-    document.getElementById('cs-save').textContent = '₩' + fmt(savings);
-  }
-  slider.addEventListener('input', update);
-  update();
-})();
-</script>
 
 <!-- ============ DEMO VIDEOS ============ -->
 <section class="section section--white" id="videos-section">
@@ -955,14 +1047,14 @@ footer { background: #020617; padding: 40px var(--gap); display: flex; justify-c
         <button class="faq-q" onclick="faq(this)">세금계산서 발행이 되나요?<span class="fq-ico">+</span></button>
         <div class="faq-a">
           <div class="faq-a-in">
-            기본 결제(<strong>Gumroad</strong>)는 해외 결제 영수증만 제공됩니다.<br><br>
-            <strong>세금계산서가 필요하신 사업자</strong>는 카카오톡 채널로 문의 주시면 원화 무통장 결제로 안내드리며, 이 경우 정상적으로 세금계산서 발행이 가능합니다.
+            본 제품은 개인 크리에이터를 위한 <strong>1인 개발 소프트웨어</strong>로, 세금계산서 발행 시스템을 운영하고 있지 않습니다.<br><br>
+            사업자 구매가 필요하신 경우 <strong>Gumroad 해외결제 영수증</strong>을 비용 처리에 활용하실 수 있습니다.
           </div>
         </div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="faq(this)">환불이 가능한가요?<span class="fq-ico">+</span></button>
-        <div class="faq-a"><div class="faq-a-in">구매 전 5일 무료체험으로 충분히 테스트해보실 수 있도록 설계했습니다. 그래서 결제 후 단순 변심 환불은 진행하지 않습니다. 다만 라이선스 인증 오류 등 프로그램 자체의 결함으로 정상 사용이 안 되는 경우엔 <strong>100% 환불 또는 조치</strong>해 드립니다.</div></div>
+        <div class="faq-a"><div class="faq-a-in">구매 전 7일 무료체험으로 충분히 테스트해보실 수 있도록 설계했습니다. 그래서 결제 후 단순 변심 환불은 진행하지 않습니다. 다만 라이선스 인증 오류 등 프로그램 자체의 결함으로 정상 사용이 안 되는 경우엔 <strong>100% 환불 또는 조치</strong>해 드립니다.</div></div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="faq(this)">구글 정책이 바뀌면 이미지 생성이 안 될 수도 있나요?<span class="fq-ico">+</span></button>
@@ -989,7 +1081,7 @@ footer { background: #020617; padding: 40px var(--gap); display: flex; justify-c
         주변 유튜버 분들이 "어떻게 혼자서 이렇게 빨리 만들어요?" 하고 연락이 오기 시작했고, 그때 처음으로 공개를 고민했습니다.
       </blockquote>
       <p class="story-body r">
-        다만 캡컷이나 엑셀이 낯설어도 사용설명서를 따라가면 충분히 세팅할 수 있습니다. 이 툴의 효과를 가장 크게 보는 분은, 이미 채널을 운영 중이고 반복되는 편집 작업을 줄이고 싶은 분들입니다. 영상 제작을 이제 막 시작하신 분도 환영하지만, 그 경우엔 5일 무료체험으로 먼저 우리 채널에 맞는지 확인해보시길 추천합니다.
+        다만 캡컷이나 엑셀이 낯설어도 사용설명서를 따라가면 충분히 세팅할 수 있습니다. 이 툴의 효과를 가장 크게 보는 분은, 이미 채널을 운영 중이고 반복되는 편집 작업을 줄이고 싶은 분들입니다. 영상 제작을 이제 막 시작하신 분도 환영하지만, 그 경우엔 7일 무료체험으로 먼저 우리 채널에 맞는지 확인해보시길 추천합니다.
       </p>
     </div>
   </div>
@@ -1005,7 +1097,7 @@ footer { background: #020617; padding: 40px var(--gap); display: flex; justify-c
     </h2>
     <p class="final-sub r" style="max-width:640px; margin:0 auto 48px; color:#cbd5e1; font-size:19px;">
       영상의 성패는 <strong style="color:#ffffff;">어떤 대본을 쓰고, 어떻게 연출하느냐</strong>에 달려 있습니다.<br>
-      AutoTube Pro는 이미지·음성·자막을 정밀하게 조율해 캡컷 타임라인에 배열해 두는 <strong style="color:#a5b4fc;">자동화 조수</strong>입니다.
+      AutoTube Pro는 이미지·음성·자막을 정밀하게 조율해 캡컷 타임라인에 배열해 두는 <strong style="color:#a5b4fc;">자동화 프로그램</strong>입니다.
     </p>
     <div class="r" style="display:flex; flex-direction:column; align-items:center; gap:24px;">
       <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
@@ -1058,6 +1150,70 @@ function faq(btn) {
   document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
   if (!isOpen) item.classList.add('open');
 }
+
+function submitPayInfo() {
+  var email = document.getElementById('payEmail').value.trim();
+  var sender = document.getElementById('paySender').value.trim();
+  var msg = document.getElementById('payMsg');
+
+  // 유효성 검사
+  if (!email || !sender) {
+    msg.style.color = '#ef4444';
+    msg.textContent = '이메일 주소와 송금자 성함을 모두 입력해 주세요.';
+    return;
+  }
+  var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    msg.style.color = '#ef4444';
+    msg.textContent = '이메일 주소 형식이 올바르지 않습니다.';
+    return;
+  }
+
+  // 버튼 비활성화 + 전송 중 표시
+  var btn = document.querySelector('.pay-modal-btn');
+  btn.disabled = true;
+  btn.textContent = '전송 중...';
+  msg.style.color = '#64748b';
+  msg.textContent = '잠시만 기다려 주세요.';
+
+  // 이미지 태그로 GET 요청 (CORS 완전 우회)
+  var WEBHOOK = 'https://script.google.com/macros/s/AKfycbyWH8SQQPodXt9nzIq5sPzSiEuFtFHf-RrY-ctrsszsLewra8ZPpN_WihD7MnWV5lct/exec';
+  var url = WEBHOOK + '?sender=' + encodeURIComponent(sender) + '&email=' + encodeURIComponent(email);
+  var img = new Image();
+  img.src = url;
+
+  setTimeout(function() {
+    msg.style.color = '#16a34a';
+    msg.textContent = '✅ 전송 완료! 입금 확인 후 라이센스키를 발송해 드립니다.';
+    btn.textContent = '전송 완료';
+    document.getElementById('payEmail').value = '';
+    document.getElementById('paySender').value = '';
+  }, 1500);
+}
+
+
+function openPayModal() {
+  // 팝업 열 때 초기화
+  document.getElementById('payEmail').value = '';
+  document.getElementById('paySender').value = '';
+  document.getElementById('payMsg').textContent = '';
+  document.getElementById('payMsg').style.color = '#ef4444';
+  var btn = document.querySelector('.pay-modal-btn');
+  btn.disabled = false;
+  btn.textContent = '✉️ 정보 전송하기';
+
+  document.getElementById('payOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closePayModal(e) {
+  if (e && e.target !== document.getElementById('payOverlay')) return;
+  document.getElementById('payOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closePayModal();
+});
+
 
 function toggleMenu() {
   document.getElementById('navMenu').classList.toggle('open');
