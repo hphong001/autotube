@@ -185,8 +185,6 @@ nav { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0
   .nav-menu-wrap a:last-child { border-bottom: none; }
 }
 
-#cs-slider { -webkit-appearance: none; width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; outline: none; margin: 16px 0; }
-#cs-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 32px; height: 32px; border-radius: 50%; background: #4f46e5; cursor: pointer; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); }
 </style>
 </head>
 <body>
@@ -263,7 +261,7 @@ nav { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0
         <div style="font-size:15px; font-weight:700; color:var(--gray); margin-top:6px;">SaaS Fees</div>
         <div class="kpi-num"><span class="hl-red">$0</span></div>
         <div class="kpi-label">No Recurring Subscriptions</div>
-        <div style="font-size:14px; color:var(--muted); margin-top:16px; line-height:1.8;">✓ Stop paying monthly SaaS limits<br>✓ Leverage free local & open-source tools<br>✓ Own your 1-year software license</div>
+        <div style="font-size:14px; color:var(--muted); margin-top:16px; line-height:1.8;">✓ Stop paying monthly SaaS limits<br>✓ Leverage free local & open-source tools<br>✓ Own your <strong>lifetime</strong> software license</div>
       </div>
     </div>
   </div>
@@ -359,39 +357,78 @@ nav { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0
 <!-- PRICING & REFUND POLICY -->
 <section class="section section--white" id="pricing">
   <div class="w">
-    <span class="eyebrow r">Transparent Pricing</span>
-    <h2 class="r">A Year-Round Automated Employee for the Cost of <span class="hl-red">One Freelance Project</span></h2>
+    <span class="eyebrow r">Pricing</span>
+    <h2 class="r">One Payment,<br><span class="hl-red">Yours Forever</span></h2>
+    <p class="lead r">No subscriptions. No renewals. <strong>One payment for lifetime access.</strong><br>A fully automated program that works for you forever — for less than one freelance editing session.</p>
 
-    <div class="price-card-single r">
-      <div style="position: absolute; top: -16px; left: 50%; transform: translateX(-50%); background: #ef4444; color: #fff; padding: 7px 22px; border-radius: 20px; font-size: 14px; font-weight: 700;">1-Year License</div>
-      <div class="pc-title" style="font-size: 26px; margin-bottom: 10px;">AutoTube Pro</div>
-      <div style="font-size: 15.5px; color: var(--gray); margin-bottom: 28px; line-height: 1.6;">Automate images, TTS, captions, and CapCut assembly.<br>Installable on up to 3 PCs.</div>
-      <div class="pc-price">$650 <span style="font-size: 16px; color: var(--muted); font-weight: 500;">/ year</span></div>
-      <div style="font-size:13px; color:var(--muted); margin-bottom: 24px;">Excludes VAT/Sales Tax based on your region.</div>
+    <!-- 얼리유저 urgency -->
+    <div class="r" style="background:#fffbeb; border:1px solid #fde68a; border-radius:16px; padding:24px 32px; margin-bottom:32px; display:flex; align-items:flex-start; gap:16px; font-size:16px; color:#92400e; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+      <span style="width:10px; height:10px; background:#fbbf24; border-radius:50%; margin-top:7px; animation:pulse 1.5s ease-in-out infinite; flex-shrink:0; display:inline-block;"></span>
+      <span style="font-size:16px; line-height:1.6;">
+        <strong>🔖 Early User Special Price</strong><br>
+        We're actively improving the product based on early user feedback. As features grow, the price will increase accordingly.<br>
+        <strong>Anyone who purchases now will continue using it at the current price — forever.</strong>
+      </span>
+    </div>
 
-      <a href="https://bizhawk.gumroad.com/l/dbmhf" target="_blank" style="display:block; background:#4f46e5; color:#fff; padding:16px; font-size:16px; font-weight:700; text-decoration:none; border-radius:10px; transition: transform 0.2s; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);">
-        Get Secure Access via Gumroad
-      </a>
-      <div style="font-size:13px; color:var(--muted); margin-top:16px; line-height:1.6;">
-        💬 You're not talking to a support team — the developer who built this personally answers every inquiry.
+    <!-- 7일 무료체험 -->
+    <div class="r" style="max-width:560px; margin:0 auto 16px;">
+      <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:16px; padding:24px 28px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+        <div style="font-size:17px; font-weight:800; color:#14532d; margin-bottom:8px;">🎁 7-Day Free Trial</div>
+        <div style="font-size:15px; color:#166534; line-height:1.7; margin-bottom:20px;">Experience the full pipeline — script to images, voice, captions, and CapCut assembly — before you commit. <strong>No purchase pressure after the trial.</strong></div>
+        <a href="https://forms.gle/G6VReQVV3MjY88GL7" target="_blank" style="display:block; text-align:center; background:#16a34a; color:#fff; font-weight:700; font-size:15px; padding:14px; border-radius:10px; text-decoration:none;">
+          🎁 Request Free Trial Key →
+        </a>
       </div>
     </div>
 
-    <!-- Refund Policy Trust Box -->
-    <div class="r" style="max-width: 600px; margin: 32px auto 0; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 24px; text-align: center;">
-      <div style="font-size: 17px; font-weight: 800; color: var(--ink); margin-bottom: 8px;">Try Before You Buy: 5-DAY Risk-Free Trial</div>
-      <div style="font-size: 14.5px; color: var(--gray); line-height: 1.6;">
-        We provide a fully functional <strong>5-DAY Free Trial</strong> so you can verify the software's performance on your own PC setup. <br><br>
-        Because we ensure you have ample time to test everything risk-free before making a commitment, <strong>all sales are final once purchased.</strong> However, if the software has a technical defect (e.g. a license activation error) that prevents normal use, we will provide a full refund or fix — just email us.
+    <!-- 구분선 -->
+    <div class="r" style="max-width:560px; margin:0 auto 24px; text-align:center; color:var(--muted); font-size:13px; font-weight:600;">
+      <div style="border-top:1px dashed var(--line); margin-bottom:12px;"></div>
+      Ready to purchase after your trial? ↓
+    </div>
+
+    <!-- 구매 가격 카드 -->
+    <div class="r" style="max-width:560px; margin:0 auto 24px;">
+      <div style="font-size:13px; font-weight:700; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase; margin-bottom:12px;">Purchase Price</div>
+      <div style="background:var(--white); border:2px solid #ef4444; border-radius:20px; padding:32px 28px; text-align:center; box-shadow:0 10px 15px -3px rgba(0,0,0,0.05); position:relative;">
+        <div style="position:absolute; top:-14px; left:50%; transform:translateX(-50%); background:#ef4444; color:#fff; font-size:13px; font-weight:700; padding:5px 20px; border-radius:20px; white-space:nowrap;">Lifetime · Early User Price · Will Rise</div>
+        <div style="font-size:22px; font-weight:800; color:var(--ink); margin-bottom:6px;">AutoTube Pro</div>
+        <div style="font-size:14px; color:var(--gray); margin-bottom:20px; line-height:1.6;">Automate images, TTS, captions, and CapCut assembly.<br>Installable on <strong>up to 3 PCs</strong> with the same license.</div>
+        <div style="font-size:42px; font-weight:900; color:var(--ink); font-family:var(--num); letter-spacing:-0.03em; line-height:1;">$110</div>
+        <div style="font-size:13px; color:var(--muted); margin-top:6px; margin-bottom:20px;">Lifetime license · VAT/Sales Tax may apply by region</div>
+        <div style="font-size:13px; color:var(--gray); background:var(--tinted); border-radius:8px; padding:10px 14px; line-height:1.6;">Same license installs on up to 3 PCs (no simultaneous use)</div>
       </div>
-      <div style="margin-top: 16px;">
-        <a href="https://forms.gle/G6VReQVV3MjY88GL7" target="_blank" style="font-size: 20px; font-weight: 700; color: #4f46e5; text-decoration: underline;">Request your 5-DAY Trial Key Here →</a>
+    </div>
+
+    <!-- 결제 방법 -->
+    <div class="r" style="max-width:560px; margin:0 auto 16px;">
+      <div style="font-size:13px; font-weight:700; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase; margin-bottom:12px;">Payment</div>
+
+      <div style="background:#fff; border:2px solid #4f46e5; border-radius:16px; padding:26px 28px; margin-bottom:24px; position:relative; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:6px;">
+          <div>
+            <div style="font-size:16px; font-weight:700; color:#4f46e5; margin-bottom:2px;">💳 Credit Card (Gumroad)</div>
+            <div style="font-size:13px; color:#ef4444; font-weight:600;">VAT 10% may be added · ~$121 total</div>
+          </div>
+          <div style="font-size:30px; font-weight:900; color:var(--ink); font-family:var(--num);">$110</div>
+        </div>
+        <div style="font-size:13px; color:var(--muted); margin-bottom:14px;">Instant delivery · License key sent to your email automatically</div>
+        <a href="https://bizhawk.gumroad.com/l/dbmhf" target="_blank" style="display:block; text-align:center; background:#4f46e5; color:#fff; font-weight:700; font-size:15px; padding:14px; border-radius:10px; text-decoration:none; box-shadow:0 4px 14px rgba(79,70,229,0.3);">
+          Get Secure Access via Gumroad →
+        </a>
+      </div>
+
+      <!-- 환불 안내 -->
+      <div style="padding:16px 20px; background:var(--bg); border:1px solid var(--line); border-radius:12px; font-size:13.5px; color:var(--gray); line-height:1.7;">
+        <strong style="color:var(--ink);">Refund Policy</strong><br>
+        A 7-day free trial is provided so you can test everything before purchasing. All sales are final once purchased.
       </div>
     </div>
   </div>
 </section>
 
-<section class="section section--tinted" id="cost-saving">
+<section class="section section--tinted">
   <div class="w">
     <span class="eyebrow r">Cost and Time, Two Types of Efficiency</span>
     <h2 class="r">Overwhelming Efficiency <br><span class="hl-red">Compared to Manual Work</span></h2>
@@ -431,76 +468,17 @@ nav { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0
 
     <div class="r" style="background: #0f172a; padding: 36px 32px; border-radius: 20px; box-shadow: var(--shadow-lg); margin-bottom: 48px;">
       <div style="display: flex; flex-direction: column; gap: 20px; color: #e2e8f0; line-height: 1.7; font-size: 16px;">
-        <p><strong style="color: #f97316;">Method 1 (Free) : When you want to minimize image generation costs... (Based on Gemini Advanced subscribers)</strong><br> 
+        <p><strong style="color: #f97316;">Method 1 (Free) : When you want to minimize image generation costs... (Based on Gemini Advanced subscribers)</strong><br>
 Maximize the free image generation quota provided daily based on Google's server traffic using the <strong>Free Web Mode</strong>. On days with good server conditions, you can even lower your image generation costs down to $0.</p>
-
-<p><strong style="color: #f97316;">Method 2 (Paid) : When you need uninterrupted, stable, and fast continuous image generation...</strong><br> 
+        <p><strong style="color: #f97316;">Method 2 (Paid) : When you need uninterrupted, stable, and fast continuous image generation...</strong><br>
 When you hit Google's free limit, or when you need fast and stable generation, simply use the <strong>API Mode</strong>.</p>
-</div>
+      </div>
       <div style="margin-top: 24px; background: rgba(79, 70, 229, 0.2); border-left: 4px solid #6366f1; padding: 16px 20px; border-radius: 0 8px 8px 0; font-size: 14px; color: #a5b4fc;">
         <em>* Disclaimer: Free daily quotas fluctuate based on external server limits (Google). AutoTube Pro is designed to help you secure all available free bandwidth first before relying on paid APIs.</em>
       </div>
     </div>
-
-    <h3 class="r" style="font-size:20px; font-weight:800; color:var(--ink); margin-bottom:16px;">Realistic API Savings Calculator</h3>
-    <p class="r" style="color:var(--gray); font-size:15px; margin-bottom:24px;">Compared to other tools that force 100% API billing from day one, this represents the savings assuming a <strong>conservative 50% hybrid offset (For 60 images per video, 30 are generated via Free Web Mode / 30 via Paid API)</strong>.</p>
-
-    <div class="r" style="background:#fff; border:1px solid var(--line); border-radius:20px; padding:36px; box-shadow:var(--shadow-md);">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:24px;">
-        <span style="font-size:16px; color:var(--gray); font-weight:600;">Monthly Video Production (Based on 60 cuts, with 30 free cuts generated)</span>
-        <span style="font-size:28px; font-weight:900; color:var(--ink); font-family:var(--num);"><span id="cs-cnt">10</span> Videos</span>
-      </div>
-      <input type="range" min="1" max="100" value="10" step="1" id="cs-slider">
-
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-top:32px;">
-        <div style="background:var(--bg); border-radius:16px; padding:20px; border: 1px solid var(--line);">
-          <div style="font-size:14px; color:var(--gray); margin-bottom:8px; font-weight:500;">Standard API Tool Cost (100% Paid)</div>
-          <div style="font-size:clamp(22px,6vw,28px); font-weight:900; color:var(--muted); font-family:var(--num);" id="cs-total">$60</div>
-        </div>
-        <div style="background:#f0fdf4; border-radius:16px; padding:20px; border: 1px solid #dcfce7;">
-          <div style="font-size:14px; color:#166534; font-weight:700; margin-bottom:8px;">AutoTube Pro Hybrid Cost (50% Offset)</div>
-          <div style="font-size:clamp(22px,6vw,28px); font-weight:900; color:#16a34a; font-family:var(--num);" id="cs-hybrid">$30</div>
-        </div>
-      </div>
-      <div style="text-align: center; margin-top: 24px; font-size: 18px; font-weight: 700; color: var(--ink);">
-        You can expect to save around <span style="color:#ef4444;" id="cs-save">$30</span> every month.
-      </div>
-      <div style="text-align: center; margin-top: 16px;">
-        <div style="display: inline-block; background: #eef2ff; border: 1px solid #e0e7ff; border-radius: 12px; padding: 14px 28px; font-size: 16px; color: var(--ink2); line-height: 1.7;">
-          Honestly, the cost savings are just a bonus.<br>
-          The real value is saving your <strong style="color:#ef4444;">precious time</strong> by cutting the grunt work out of every video.
-        </div>
-      </div>
-    </div>
   </div>
 </section>
-
-<script>
-(function() {
-  var slider = document.getElementById('cs-slider');
-  if (!slider) return;
-  function update() {
-    var n = parseInt(slider.value);
-    // Standard logic: 60 images per video. API is approx $0.10/img -> $6.00 per video standard.
-    var standardTotal = n * 6;
-    // Hybrid logic: 30 free cuts -> 30 paid cuts -> $3.00 per video.
-    var hybridTotal = n * 3;
-    var savings = standardTotal - hybridTotal;
-    
-    var min = parseInt(slider.min);
-    var max = parseInt(slider.max);
-    var progress = ((n - min) / (max - min)) * 100;
-    slider.style.background = `linear-gradient(to right, #4f46e5 ${progress}%, #e2e8f0 ${progress}%)`;
-    
-    document.getElementById('cs-cnt').textContent = n;
-    document.getElementById('cs-total').textContent = '$' + standardTotal;
-    document.getElementById('cs-hybrid').textContent = '$' + hybridTotal;
-    document.getElementById('cs-save').textContent = '$' + savings;
-  }
-  slider.addEventListener('input', update);
-  update();
-})();
-</script>
 
 <!-- LOCAL vs CLOUD COMPARISON -->
 <section class="section section--tinted" id="comparison">
@@ -594,7 +572,7 @@ When you hit Google's free limit, or when you need fast and stable generation, s
         Other creators around me started asking, "How are you making videos this fast, by yourself?" That's when I first considered releasing it publicly.
       </blockquote>
       <p style="font-size: 17px; color: var(--gray); margin-bottom: 24px; line-height: 1.8;" class="r">
-        Even so, this isn't built for absolutely everyone. If you're already running a channel and want to cut down on repetitive editing work, you'll get the most out of it. If you're just getting started, the 5-day free trial is the best way to see if it fits your workflow.
+        Even so, this isn't built for absolutely everyone. If you're already running a channel and want to cut down on repetitive editing work, you'll get the most out of it. If you're just getting started, the 7-day free trial is the best way to see if it fits your workflow.
       </p>
     </div>
   </div>
