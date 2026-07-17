@@ -839,7 +839,7 @@ body {
       <div class="prep-banner-divider"></div>
       <div class="prep-banner-info">
         <div class="prep-banner-title">Initial Prerequisites — Directory Architecture Configuration</div>
-        <div class="step-banner-sub" style="color:#6b7280;">Extract Core Package Assets · Place inside Local C: Root Storage Path · Validate Directory Subfolders</div>
+        <div class="step-banner-sub" style="color:#6b7280;">Enter a video title · Click [Create New Project Folder] · Verify folder structure in Explorer</div>
       </div>
     </div>
 
@@ -849,29 +849,36 @@ body {
         <h2 class="sec-title">Folder Structure Configuration</h2>
       </div>
       <div class="sec-desc">
-        AutoTube Pro's automation pipeline relies strictly on a standardized directory schema to read and write media files seamlessly. Before booting the core runtime, verify that your local environment matches the framework outlined below.
+        Every new video project gets its own folder, created automatically with a single button click. No manual setup required.
       </div>
-      <div class="desc-sec-title">Deployment Steps</div>
+      <div class="desc-sec-title">Starting a New Project</div>
       <div class="desc-list">
         <div class="desc-row">
           <div class="dbadge" style="background:#312e81;box-shadow:0 2px 8px rgba(49,46,129,0.3);">1</div>
           <div class="dc">
-            <div class="dt">Download Core Software Package</div>
-            <div class="dd"><ul><li>Extract the native runtime archive asset bundle archive (.zip) provided via email upon system clearance.</li></ul></div>
+            <div class="dt">Enter a video title and click the button</div>
+            <div class="dd">
+              <ul>
+                <li>In the <strong>Script / Planning</strong> tab, type your video title into the input field and click <strong>[Create New Project Folder]</strong>.</li>
+              </ul>
+              <div style="margin-top:14px;">
+                <img src="그림10.png" alt="Create New Project Folder button" style="max-width:100%;border:1px solid #334155;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.3);">
+                <div style="font-size:0.82em;color:#94a3b8;margin-top:6px;text-align:center;">▲ Script / Planning tab — New Project creation area (Fig. 10)</div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="desc-row">
           <div class="dbadge" style="background:#312e81;box-shadow:0 2px 8px rgba(49,46,129,0.3);">2</div>
           <div class="dc">
-            <div class="dt">Extract Directly to Local C: Root Directory <span class="tag tag-req">★ Critical Path</span></div>
-            <div class="dd"><ul><li>Unpack the elements directly into the root layer of your primary storage block. Unpacking must generate the precise local schema route: <code>C:\YouTube_Production\</code></li></ul></div>
-          </div>
-        </div>
-        <div class="desc-row">
-          <div class="dbadge" style="background:#312e81;box-shadow:0 2px 8px rgba(49,46,129,0.3);">3</div>
-          <div class="dc">
-            <div class="dt">Instantiating New Production Projects</div>
-            <div class="dd"><ul><li>Inside the root directory, configure custom projects by creating unique subfolders, duplicating the standard subfolder structure for each new video track.</li><li>Example: <code>C:\YouTube_Production\Video_Projects\Surviving_Earnings_Season\</code></li></ul></div>
+            <div class="dt">Verify the folder structure in Explorer — ✅ Ready</div>
+            <div class="dd">
+              <ul>
+                <li>Windows Explorer opens automatically once the folder is created. Confirm the directory structure below is in place.</li>
+                <li>The script Excel file is also renamed to match your video title and saved inside <code>1_Script\</code> automatically.</li>
+                <li>Once the structure matches the layout below, you're ready to start.</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -894,19 +901,17 @@ body {
         </div>
       </div>
       <table class="folder-step-table">
-        <thead><tr><th>Target Folder</th><th>Linked Pipeline Step</th><th>Output File Types</th></tr></thead>
+        <thead><tr><th>Target Folder</th><th>Purpose</th><th>Output File Types</th></tr></thead>
         <tbody>
-          <tr><td class="fd-name">📂 1_Script\</td><td class="fd-step"><span style="background:rgba(79,70,229,0.10);color:#4f46e5;">STEP 1</span><span style="background:rgba(79,70,229,0.10);color:#4f46e5;">STEP 2</span></td><td>Spreadsheet Config Templates (.xlsx)</td></tr>
-          <tr><td class="fd-name">📂 2_Images\</td><td class="fd-step"><span style="background:rgba(180,83,9,0.10);color:#b45309;">STEP 3</span></td><td>Numbered Video Frame Sequences (01.png, 02.png, 03.png...)</td></tr>
-          <tr><td class="fd-name">📂 3_Audio_Subtitles\</td><td class="fd-step"><span style="background:rgba(194,65,12,0.10);color:#c2410c;">STEP 4</span><span style="background:rgba(13,148,136,0.10);color:#0d9488;">STEP 5</span></td><td>Raw Vocal Clips, Master Mix tracks (master.wav), Subtitle Data (captions.srt)</td></tr>
+          <tr><td class="fd-name">📂 1_Script\</td><td>Stores the script Excel file</td><td>Spreadsheet Config Templates (.xlsx)</td></tr>
+          <tr><td class="fd-name">📂 2_Images\</td><td>Stores AI-generated images</td><td>01.png, 02.png, 03.png …</td></tr>
+          <tr><td class="fd-name">📂 3_Audio_Subtitles\</td><td>Stores TTS audio &amp; subtitle files</td><td>001.wav … master.wav, captions.srt</td></tr>
         </tbody>
       </table>
       <div class="key-box">
-        <div class="key-box-title">Core Directives</div>
+        <div class="key-box-title">Note</div>
         <div class="key-list">
-          <div class="key-item">Deploying resources to <strong>any alternate target directory route outside the explicit C: drive structure</strong> will compromise structural automated path tracing hooks.</div>
-          <div class="key-item">When preparing a new content project, simply <strong>instantiate a clean parent project block (e.g., Market_Crash_Secrets)</strong>, keeping the subfolder child architecture completely uniform.</div>
-          <div class="key-item">Ensure your client module maps targets explicitly to these specific subfolders during individual pipeline setup steps.</div>
+          <div class="key-item">⚠️ Project folders are always created on the <strong>C: drive</strong>. Placing them on any other drive will break the automation path routing.</div>
         </div>
       </div>
     </section>
