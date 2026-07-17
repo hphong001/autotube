@@ -875,30 +875,36 @@ body {
         <h2 class="sec-title">폴더 구조 설정</h2>
       </div>
       <div class="sec-desc">
-        AutoTube Pro의 모든 자동화 기능은 정해진 폴더 구조를 기반으로 동작합니다.<br>
-        작업을 시작하기 전에 아래 순서대로 폴더를 설정하세요.
+        새 영상 작업을 시작할 때는 버튼 하나로 프로젝트 폴더를 자동 생성할 수 있습니다.
       </div>
-      <div class="desc-sec-title">설치 순서</div>
+      <div class="desc-sec-title">신규 프로젝트 시작하기</div>
       <div class="desc-list">
         <div class="desc-row">
           <div class="dbadge" style="background:#312e81;box-shadow:0 2px 8px rgba(49,46,129,0.3);">1</div>
           <div class="dc">
-            <div class="dt">제공된 패키지 파일 다운로드</div>
-            <div class="dd"><ul><li>AutoTube Pro 구매 후 제공되는 패키지 파일(.zip)을 다운로드합니다.</li></ul></div>
+            <div class="dt">영상 제목 입력 후 버튼 클릭</div>
+            <div class="dd">
+              <ul>
+                <li><strong>대본/기획</strong> 탭 상단 입력란에 영상 제목을 입력한 후 <strong>[신규 영상 작업 폴더 생성]</strong> 버튼을 클릭합니다.</li>
+              </ul>
+              <div style="margin-top:14px;">
+                <img src="그림10.png" alt="신규 영상 프로젝트 생성 버튼 화면" style="max-width:100%;border:1px solid #334155;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.3);">
+                <div style="font-size:0.82em;color:#94a3b8;margin-top:6px;text-align:center;">▲ 대본/기획 탭 상단 — 신규 영상 프로젝트 생성 영역 (그림10)</div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="desc-row">
           <div class="dbadge" style="background:#312e81;box-shadow:0 2px 8px rgba(49,46,129,0.3);">2</div>
           <div class="dc">
-            <div class="dt">C: 드라이브에 압축 해제 <span class="tag tag-req">★ 위치 필수</span></div>
-            <div class="dd"><ul><li>다운로드한 파일을 <strong>반드시 C: 드라이브 최상단</strong>에 압축 해제합니다.</li><li>압축 해제 후 <code>C:\유튜브_영상제작\</code> 폴더가 생성됩니다.</li></ul></div>
-          </div>
-        </div>
-        <div class="desc-row">
-          <div class="dbadge" style="background:#312e81;box-shadow:0 2px 8px rgba(49,46,129,0.3);">3</div>
-          <div class="dc">
-            <div class="dt">새 영상 작업 시 프로젝트 폴더 추가</div>
-            <div class="dd"><ul><li><code>영상_작업파일\</code> 안에 새 프로젝트명으로 폴더를 만들고 하위 3개 폴더를 그대로 복사합니다.</li><li>예: <code>어닝시즌에살아남기\</code> → <code>금리인하의비밀\</code></li></ul></div>
+            <div class="dt">탐색기에서 폴더 구조 확인 후 ✅ 완료</div>
+            <div class="dd">
+              <ul>
+                <li>버튼 클릭 후 탐색기가 자동으로 열리며, 아래와 같은 폴더 구조가 생성됩니다.</li>
+                <li>대본 엑셀 파일 이름도 입력한 영상 제목으로 자동 변경되어 <code>1_대본\</code> 폴더 안에 저장됩니다.</li>
+                <li>폴더 구조가 아래와 같이 확인되면 준비 완료입니다.</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -921,19 +927,17 @@ body {
         </div>
       </div>
       <table class="folder-step-table">
-        <thead><tr><th>폴더</th><th>관련 STEP</th><th>자동 저장되는 파일</th></tr></thead>
+        <thead><tr><th>폴더</th><th>용도</th><th>자동 저장되는 파일</th></tr></thead>
         <tbody>
-          <tr><td class="fd-name">📂 1_대본\</td><td class="fd-step"><span style="background:rgba(79,70,229,0.10);color:#4f46e5;">STEP 1</span><span style="background:rgba(79,70,229,0.10);color:#4f46e5;">STEP 2</span></td><td>엑셀 대본 파일 (.xlsx)</td></tr>
-          <tr><td class="fd-name">📂 2_이미지\</td><td class="fd-step"><span style="background:rgba(180,83,9,0.10);color:#b45309;">STEP 3</span></td><td>01.png, 02.png, 03.png …</td></tr>
-          <tr><td class="fd-name">📂 3_오디오_자막\</td><td class="fd-step"><span style="background:rgba(194,65,12,0.10);color:#c2410c;">STEP 4</span><span style="background:rgba(13,148,136,0.10);color:#0d9488;">STEP 5</span></td><td>001.wav … 합본.wav, 자막.srt</td></tr>
+          <tr><td class="fd-name">📂 1_대본\</td><td>대본 엑셀 파일 저장</td><td>엑셀 대본 파일 (.xlsx)</td></tr>
+          <tr><td class="fd-name">📂 2_이미지\</td><td>AI로 자동 생성된 이미지 저장</td><td>01.png, 02.png, 03.png …</td></tr>
+          <tr><td class="fd-name">📂 3_오디오_자막\</td><td>TTS 음성 파일 및 자막 파일 저장</td><td>001.wav … 합본.wav, 자막.srt</td></tr>
         </tbody>
       </table>
       <div class="key-box">
-        <div class="key-box-title">핵심설명</div>
+        <div class="key-box-title">주의</div>
         <div class="key-list">
-          <div class="key-item"><strong>C: 드라이브가 아닌 다른 위치</strong>에 설치하면 자동화가 동작하지 않습니다.</div>
-          <div class="key-item">새 영상 작업 시 <strong>프로젝트 폴더(예: 어닝시즌에살아남기)만 새로 만들면</strong> 됩니다. 하위 3개 폴더 구조는 동일하게 유지합니다.</div>
-          <div class="key-item">각 STEP에서 경로를 지정할 때 <strong>해당 폴더를 직접 선택</strong>하면 됩니다.</div>
+          <div class="key-item">⚠️ 프로젝트 폴더는 반드시 <strong>C: 드라이브</strong>에 생성됩니다. 다른 드라이브에서는 자동화가 동작하지 않습니다.</div>
         </div>
       </div>
     </section>
