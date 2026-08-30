@@ -308,11 +308,11 @@
             display: flex;
             gap: 8px;
             flex-shrink: 0;
-            height: 125px;
+            height: 135px;
         }
 
         .vbar-section {
-            flex: 0.95;
+            flex: 1;
             background: #12121e;
             border-radius: 8px;
             padding: 8px 6px;
@@ -326,13 +326,13 @@
             background: #333;
             border-radius: 3px;
             position: relative;
-            margin-left: 55px;
+            margin-left: 60px;
             height: 100%;
         }
 
         .vmarker {
             position: absolute;
-            left: 60px;
+            left: 65px;
             width: 0;
             height: 0;
             border-top: 6px solid transparent;
@@ -351,7 +351,7 @@
             font-weight: bold;
             color: #44aaff;
             z-index: 11;
-            width: 48px;
+            width: 55px;
             text-align: right;
         }
 
@@ -360,7 +360,7 @@
             position: relative;
             height: 100%;
         }
-        /* 💡 수정: 가격(v-val)과 태그(v-tag)가 트랙 선과 조금 떨어지도록 여백 10px 부여 */
+
         .vlabel-item {
             position: absolute;
             width: 100%;
@@ -369,14 +369,14 @@
             align-items: center;
             transform: translateY(-50%);
             font-size: 11px;
-            gap: 4px;
-            padding-left: 10px;
+            gap: 6px;
+            padding-left: 12px;
         }
 
         .v-val {
             font-weight: bold;
             color: #fff;
-            min-width: 38px;
+            min-width: 45px;
         }
 
         .v-tag {
@@ -384,6 +384,7 @@
             padding: 1px 3px;
             border-radius: 3px;
             font-size: 10px;
+            white-space: nowrap;
         }
 
             .v-tag.res {
@@ -403,7 +404,7 @@
             }
 
         .reason-section {
-            flex: 1.55;
+            flex: 1.5;
             background: #12121e;
             border-radius: 8px;
             padding: 8px 10px;
@@ -471,15 +472,17 @@
             margin-left: 2px;
         }
 
+        /* 💡 수정: 호가창 영역 세로 길이를 260px로 대폭 확장하여 짤림 원천 방지 및 내부 정렬 최적화 */
         .oi-section {
             flex-shrink: 0;
-            height: 165px;
+            height: 260px;
             background: #12121e;
             border-radius: 8px;
-            padding: 8px;
+            padding: 10px 8px;
             display: flex;
             flex-direction: column;
             border: 1px solid #2a2a3e;
+            overflow: hidden;
         }
 
         .oi-title {
@@ -491,6 +494,7 @@
             justify-content: space-between;
             padding-bottom: 4px;
             border-bottom: 1px solid #2a2a3e;
+            flex-shrink: 0;
         }
 
         .oi-rows {
@@ -498,19 +502,16 @@
             display: flex;
             flex-direction: column;
             justify-content: space-around;
-            gap: 2px;
         }
 
-        /* 💡 수정: 호가창 완벽 대칭 구조로 그리드 재설계 (막대-거래량-등락률-행사가-등락률-거래량-막대) */
         .oi-row {
             display: grid;
-            grid-template-columns: 1fr 40px 42px 50px 42px 40px 1fr;
+            grid-template-columns: 1fr 32px 42px 46px 42px 32px 1fr;
             align-items: center;
             gap: 4px;
-            font-size: 10px;
+            font-size: 11px;
         }
 
-        /* 💡 수정: 사이버펑크 네온 그라데이션 막대 디자인 */
         .oi-bar-wrap {
             display: flex;
             width: 100%;
@@ -526,39 +527,47 @@
             }
 
         .oi-bar.call {
-            height: 10px;
-            border-radius: 4px 0 0 4px;
-            background: linear-gradient(90deg, rgba(255,68,68,0.1) 0%, #cc3333 100%);
+            height: 9px;
+            border-radius: 2px 0 0 2px;
+            background: rgba(255, 68, 68, 0.9);
+            box-shadow: 0 0 5px rgba(255,68,68,0.4);
         }
 
         .oi-bar.put {
-            height: 10px;
-            border-radius: 0 4px 4px 0;
-            background: linear-gradient(270deg, rgba(68,136,255,0.1) 0%, #3366cc 100%);
+            height: 9px;
+            border-radius: 0 2px 2px 0;
+            background: rgba(68, 136, 255, 0.9);
+            box-shadow: 0 0 5px rgba(68,136,255,0.4);
         }
 
-        /* 💡 수정: 중앙 가격(행사가) ATM 강조 디자인 */
         .oi-strike {
             text-align: center;
             font-weight: bold;
-            color: #eee;
-            font-size: 11px;
+            color: #ddd;
+            font-size: 12px;
             padding: 2px 0;
+            background: #1a1a2e;
+            border-radius: 4px;
+            width: 100%;
         }
 
             .oi-strike.atm {
-                color: #fff;
-                background: #2a2a4a;
-                border: 1px solid #555588;
-                border-radius: 4px;
-                box-shadow: 0 0 6px rgba(100, 150, 255, 0.3);
+                color: #000;
+                background: #ffcc00;
+                padding: 2px 0;
+                line-height: 1.2;
+                border: 1px solid #fff;
+                box-shadow: 0 0 8px rgba(255, 204, 0, 0.8);
+                display: inline-block;
+                width: 100%;
             }
 
-        /* 💡 수정: 거래량은 차분하게, 등락률은 선명하게 (위계 분리) */
         .oi-vol {
             font-weight: normal;
-            color: #999;
+            color: #ffffff;
             font-size: 10px;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
             .oi-vol.call {
@@ -573,6 +582,8 @@
             font-size: 10px;
             font-weight: bold;
             text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
             .oi-chg.up {
@@ -589,7 +600,7 @@
 
         .chart-section {
             flex: 1;
-            min-height: 140px;
+            min-height: 250px;
             background: #07070c;
             border-radius: 8px;
             overflow: hidden;
@@ -597,10 +608,10 @@
             position: relative;
         }
 
-            /* 💡 수정: 트레이딩뷰 위젯 내부 빈 공간(블랙홀)을 강제로 100% 꽉 채우는 마법의 치트키 */
             .chart-section iframe, .chart-section > div {
                 height: 100% !important;
                 min-height: 100% !important;
+                width: 100% !important;
             }
 
         .iv-alert {
@@ -621,7 +632,7 @@
             }
 
         /* ========================================================
-           모바일 최적화 (독립된 카드형 UI 적용)
+           📱 스마트폰/모바일 최적화 (가로 1100px 이하일 때만 발동)
         ======================================================== */
         @media screen and (max-width: 1100px) {
             body {
@@ -658,18 +669,36 @@
             }
 
             .vbar-section {
-                height: 80px;
-                margin-bottom: 10px;
+                height: 140px;
+                margin-bottom: 12px;
             }
 
+            /* 모바일 호가창 높이도 260px로 여유 있게 일치화 */
             .oi-section {
-                height: 190px;
+                height: 260px;
+            }
+
+            .oi-row {
+                grid-template-columns: 1fr 28px 36px 42px 36px 28px 1fr;
+                gap: 2px;
+            }
+
+            .oi-strike {
+                font-size: 11px;
+            }
+
+            .oi-vol {
+                font-size: 9px;
+            }
+
+            .oi-chg {
+                font-size: 9px;
             }
 
             .chart-section {
-                /* 모바일에서 차트 높이 고정 (화면 비율에 맞춰 예쁘게 세팅) */
-                height: 280px;
-                min-height: 280px;
+                flex: none !important;
+                height: 400px !important;
+                min-height: 400px !important;
                 max-height: none;
             }
         }
@@ -736,7 +765,7 @@
                     </div>
 
                     <div class="oi-section">
-                        <div class="oi-title"><span>콜 (저항구간)</span><span id="p${i}-oi-status" style="font-size:13px;">수급 분석</span><span>풋 (지지구간)</span></div>
+                        <div class="oi-title"><span>콜 (Call)</span><span id="p${i}-oi-status" style="font-size:13px;">수급 분석</span><span>풋 (Put)</span></div>
                         <div class="oi-rows" id="p${i}-oi">─</div>
                     </div>
 
@@ -800,7 +829,6 @@
             chgEl.textContent = (d.change > 0 ? '▲ +' : d.change < 0 ? '▼ ' : '') + d.change.toFixed(2) + '%';
             chgEl.className = 'price-chg ' + (d.change > 0 ? 'up' : d.change < 0 ? 'dn' : 'neu');
 
-            const sessMap = { 'REG': ['정규장', 'sess-open'], 'PRE': ['프리마켓', 'sess-pre'], 'POST': ['애프터', 'sess-after'], 'CLOSED': ['휴장', 'sess-closed'] };
             let rawSess = d.sessionLabel || 'CLOSED';
             let isDteErr = d.dte < 0 && d.dte !== -999;
 
@@ -930,7 +958,6 @@
             el.innerHTML = rs.map(r => `<div class="reason-item"><div class="rdot ${r.c}"></div>${r.m} <span class="reason-val">${r.v}</span></div>`).join('');
         }
 
-        // 💡 수정: 호가창 완벽 대칭 재배치 (막대-수량-등락률-행사가-등락률-수량-막대) 및 네온 글로우 스타일
         function updateOI(p, rows, isMarketOpen, currentPrice) {
             const el = document.getElementById(p + 'oi');
             const statusEl = document.getElementById(p + 'oi-status');
@@ -956,9 +983,9 @@
                 let putPct = (putPower / totalPower * 100).toFixed(0);
 
                 if (callPower > putPower) {
-                    statusEl.innerHTML = `<span style="color:#ff6666; font-weight:bold; text-shadow: 0 0 5px rgba(255,100,100,0.4);">🔥 콜 우세 (${callPct}%)</span>`;
+                    statusEl.innerHTML = `<span style="color:#ff6666; font-weight:bold; text-shadow: 0 0 5px rgba(255,100,100,0.4);">콜 우세 (${callPct}%)</span>`;
                 } else {
-                    statusEl.innerHTML = `<span style="color:#66aaff; font-weight:bold; text-shadow: 0 0 5px rgba(100,150,255,0.4);">🌊 풋 우세 (${putPct}%)</span>`;
+                    statusEl.innerHTML = `<span style="color:#66aaff; font-weight:bold; text-shadow: 0 0 5px rgba(100,150,255,0.4);">풋 우세 (${putPct}%)</span>`;
                 }
             } else {
                 statusEl.textContent = '수급 우세 분석';
@@ -969,7 +996,6 @@
             let safeMax = maxOI > 0 ? maxOI : 1;
             let maxPx = 75;
 
-            // ATM 판단을 위한 로직 (현재가와 가장 가까운 행사가 찾기)
             let atmStrike = sorted.reduce((prev, curr) => Math.abs(curr.strike - currentPrice) < Math.abs(prev.strike - currentPrice) ? curr : prev).strike;
 
             el.innerHTML = sorted.map(r => {
@@ -982,7 +1008,6 @@
                 let cTxt = (r.callChg > 0 ? '+' : '') + r.callChg.toFixed(1) + '%';
                 let pTxt = (r.putChg > 0 ? '+' : '') + r.putChg.toFixed(1) + '%';
 
-                // ATM 라인 시각적 강조
                 let isAtm = r.strike === atmStrike;
                 let strikeClass = isAtm ? 'oi-strike atm' : 'oi-strike';
 
