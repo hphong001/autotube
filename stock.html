@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-    <!-- 파이어베이스 SDK 추가 (외부 웹 호환용) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -28,7 +25,7 @@
             flex-direction: column;
         }
 
-        /* 1. 최상단 글로벌 바 (지수 및 날짜/시간 폰트 대폭 확대) */
+        /* 1. 최상단 글로벌 바 */
         .top-bar {
             background: #12121e;
             border-bottom: 1px solid #2a2a3e;
@@ -50,7 +47,6 @@
             text-shadow: 0 0 8px rgba(112,144,255,0.4);
         }
 
-        /* 네온사인 지수 전광판 (폰트 확대) */
         .neon-ticker-bar {
             display: flex;
             align-items: center;
@@ -68,26 +64,11 @@
             letter-spacing: 0.5px;
         }
 
-            .neon-item.up {
-                color: #ff5555;
-                text-shadow: 0 0 6px rgba(255,85,85,0.6);
-            }
+        .neon-item.up { color: #ff5555; text-shadow: 0 0 6px rgba(255,85,85,0.6); }
+        .neon-item.dn { color: #55aaff; text-shadow: 0 0 6px rgba(85,170,255,0.6); }
+        .neon-item.neu { color: #ddd; }
+        .neon-vix-warn { color: #ffcc00; text-shadow: 0 0 6px rgba(255,204,0,0.6); }
 
-            .neon-item.dn {
-                color: #55aaff;
-                text-shadow: 0 0 6px rgba(85,170,255,0.6);
-            }
-
-            .neon-item.neu {
-                color: #ddd;
-            }
-
-        .neon-vix-warn {
-            color: #ffcc00;
-            text-shadow: 0 0 6px rgba(255,204,0,0.6);
-        }
-
-        /* 우측 날짜 및 시간 영역 확대 */
         .top-time-area {
             display: flex;
             align-items: center;
@@ -104,24 +85,16 @@
             background: #333;
         }
 
-            .live-dot.active {
-                background: #00ff66;
-                box-shadow: 0 0 10px #00ff66;
-                animation: blink 1.2s infinite ease-in-out;
-            }
+        .live-dot.active {
+            background: #00ff66;
+            box-shadow: 0 0 10px #00ff66;
+            animation: blink 1.2s infinite ease-in-out;
+        }
 
         @keyframes blink {
-            0% {
-                opacity: 0.3;
-            }
-
-            50% {
-                opacity: 1;
-            }
-
-            100% {
-                opacity: 0.3;
-            }
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
         }
 
         /* 2. 패널 그리드 */
@@ -144,11 +117,8 @@
             overflow-y: auto;
         }
 
-            .panel:last-child {
-                border-right: none;
-            }
+        .panel:last-child { border-right: none; }
 
-        /* [핵심 수정] 패널 헤더: 종목명 옆에 현재가와 등락을 바짝 붙임 */
         .ph {
             display: flex;
             justify-content: flex-start;
@@ -161,56 +131,18 @@
             border: 1px solid #2a2a3e;
         }
 
-        .ticker-group {
-            display: flex;
-            align-items: baseline;
-            gap: 6px;
-        }
+        .ticker-group { display: flex; align-items: baseline; gap: 6px; }
+        .ticker { font-size: 22px; font-weight: bold; }
+        .ticker-sub { font-size: 13px; color: #8899aa; }
+        .price-group { display: flex; align-items: baseline; gap: 8px; }
+        .price-now { font-size: 22px; font-weight: bold; }
+        .price-diff { font-size: 13px; font-weight: bold; }
+        .price-chg { font-size: 13px; font-weight: bold; }
 
-        .ticker {
-            font-size: 22px;
-            font-weight: bold;
-        }
+        .up { color: #ff5555; }
+        .dn { color: #55aaff; }
+        .neu { color: #aaaaaa; }
 
-        .ticker-sub {
-            font-size: 13px;
-            color: #8899aa;
-        }
-
-        .price-group {
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-        }
-
-        .price-now {
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        .price-diff {
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .price-chg {
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .up {
-            color: #ff5555;
-        }
-
-        .dn {
-            color: #55aaff;
-        }
-
-        .neu {
-            color: #aaaaaa;
-        }
-
-        /* 매매 전략 박스 */
         .strategy-box {
             border: 1px solid #aaaa22;
             border-radius: 8px;
@@ -228,21 +160,9 @@
             margin-bottom: 10px;
         }
 
-        .sb-title {
-            color: #ffff44;
-            font-size: 15px;
-            font-weight: bold;
-        }
+        .sb-title { color: #ffff44; font-size: 15px; font-weight: bold; }
+        .sb-trend { font-size: 11px; color: #ddd; background: #1a1a2e; padding: 3px 6px; border-radius: 4px; }
 
-        .sb-trend {
-            font-size: 11px;
-            color: #ddd;
-            background: #1a1a2e;
-            padding: 3px 6px;
-            border-radius: 4px;
-        }
-
-        /* 타점 온도계 (8%~92% 안전 여백) */
         .timeline {
             position: relative;
             height: 70px;
@@ -270,13 +190,8 @@
             white-space: nowrap;
         }
 
-        .node-top {
-            bottom: 45px;
-        }
-
-        .node-bottom {
-            top: 45px;
-        }
+        .node-top { bottom: 45px; }
+        .node-bottom { top: 45px; }
 
         .dot {
             position: absolute;
@@ -286,19 +201,8 @@
             box-shadow: 0 0 5px rgba(0,0,0,0.8);
         }
 
-        .dot-small {
-            width: 10px;
-            height: 10px;
-            z-index: 2;
-        }
-
-        .dot-large {
-            width: 14px;
-            height: 14px;
-            z-index: 10;
-            border: 2px solid #fff;
-            box-shadow: 0 0 10px;
-        }
+        .dot-small { width: 10px; height: 10px; z-index: 2; }
+        .dot-large { width: 14px; height: 14px; z-index: 10; border: 2px solid #fff; box-shadow: 0 0 10px; }
 
         .lbl-box {
             display: flex;
@@ -309,51 +213,18 @@
             border-radius: 4px;
         }
 
-        .lbl {
-            font-size: 10px;
-            color: #aaa;
-            font-weight: bold;
-            margin-bottom: 1px;
-        }
+        .lbl { font-size: 10px; color: #aaa; font-weight: bold; margin-bottom: 1px; }
+        .val { font-size: 12px; font-weight: bold; }
 
-        .val {
-            font-size: 12px;
-            font-weight: bold;
-        }
+        .c-red { color: #ff5555; }
+        .bg-red { background: #ff5555; }
+        .c-green { color: #44ff66; }
+        .bg-green { background: #44ff66; }
+        .c-blue { color: #55aaff; }
+        .bg-blue { background: #55aaff; }
+        .c-gold { color: #ffcc00; }
+        .bg-gold { background: #ffcc00; }
 
-        .c-red {
-            color: #ff5555;
-        }
-
-        .bg-red {
-            background: #ff5555;
-        }
-
-        .c-green {
-            color: #44ff66;
-        }
-
-        .bg-green {
-            background: #44ff66;
-        }
-
-        .c-blue {
-            color: #55aaff;
-        }
-
-        .bg-blue {
-            background: #55aaff;
-        }
-
-        .c-gold {
-            color: #ffcc00;
-        }
-
-        .bg-gold {
-            background: #ffcc00;
-        }
-
-        /* 실시간 14단 옵션 체인 박스 */
         .oi-box {
             border: 1px solid #2a2a3e;
             border-radius: 8px;
@@ -369,20 +240,8 @@
             margin-bottom: 8px;
         }
 
-        .oi-title {
-            font-size: 15px;
-            font-weight: bold;
-            color: #88aaff;
-        }
-
-        .oi-dte {
-            background: #aa33ff;
-            color: #fff;
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 11px;
-            font-weight: bold;
-        }
+        .oi-title { font-size: 15px; font-weight: bold; color: #88aaff; }
+        .oi-dte { background: #aa33ff; color: #fff; padding: 3px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
 
         .oi-summary {
             display: flex;
@@ -398,9 +257,7 @@
             border-radius: 6px;
         }
 
-        .oi-sum-item b {
-            color: #fff;
-        }
+        .oi-sum-item b { color: #fff; }
 
         .oi-grid-header {
             display: grid;
@@ -421,31 +278,12 @@
             margin-bottom: 3px;
         }
 
-        .oi-bar-wrap {
-            display: flex;
-            width: 100%;
-            align-items: center;
-        }
+        .oi-bar-wrap { display: flex; width: 100%; align-items: center; }
+        .oi-bar-wrap.left { justify-content: flex-end; }
+        .oi-bar-wrap.right { justify-content: flex-start; }
 
-            .oi-bar-wrap.left {
-                justify-content: flex-end;
-            }
-
-            .oi-bar-wrap.right {
-                justify-content: flex-start;
-            }
-
-        .oi-bar.call {
-            height: 7px;
-            border-radius: 2px 0 0 2px;
-            background: #ff5555;
-        }
-
-        .oi-bar.put {
-            height: 7px;
-            border-radius: 0 2px 2px 0;
-            background: #55aaff;
-        }
+        .oi-bar.call { height: 7px; border-radius: 2px 0 0 2px; background: #ff5555; }
+        .oi-bar.put { height: 7px; border-radius: 0 2px 2px 0; background: #55aaff; }
 
         .strike-box {
             background: #1a1a2e;
@@ -458,20 +296,9 @@
             font-size: 12px;
         }
 
-            .strike-box.atm {
-                background: #ffcc00;
-                color: #000;
-                box-shadow: 0 0 5px #ffcc00;
-            }
+        .strike-box.atm { background: #ffcc00; color: #000; box-shadow: 0 0 5px #ffcc00; }
+        .oi-vol { font-size: 11px; color: #f0f0f0; white-space: nowrap; font-weight: bold; }
 
-        .oi-vol {
-            font-size: 11px;
-            color: #f0f0f0;
-            white-space: nowrap;
-            font-weight: bold;
-        }
-
-        /* 차트 영역 */
         .chart-section {
             flex: 1;
             min-height: 180px;
@@ -483,64 +310,22 @@
             position: relative;
         }
 
-        /* 반응형 미디어 쿼리 */
         @media screen and (max-width: 1200px) {
-            .dashboard-grid {
-                flex-direction: column;
-                overflow-y: auto;
-            }
-
-            html, body {
-                overflow-y: auto;
-                height: auto;
-            }
-
-            .panel {
-                height: auto;
-                min-height: 750px;
-                border-right: none;
-                border-bottom: 2px solid #2a2a3e;
-            }
+            .dashboard-grid { flex-direction: column; overflow-y: auto; }
+            html, body { overflow-y: auto; height: auto; }
+            .panel { height: auto; min-height: 750px; border-right: none; border-bottom: 2px solid #2a2a3e; }
         }
 
         @media screen and (max-width: 600px) {
-            .top-bar {
-                padding: 0 10px;
-                height: auto;
-                padding-top: 8px;
-                padding-bottom: 8px;
-                justify-content: center;
-            }
-
-            .neon-ticker-bar {
-                width: 100%;
-                justify-content: center;
-                margin-top: 5px;
-            }
-
-            .panel {
-                padding: 8px;
-                gap: 8px;
-                min-height: 700px;
-            }
-
-            .ph {
-                gap: 10px;
-            }
-
-            .ticker {
-                font-size: 18px;
-            }
-
-            .price-now {
-                font-size: 18px;
-            }
+            .top-bar { padding: 0 10px; height: auto; padding-top: 8px; padding-bottom: 8px; justify-content: center; }
+            .neon-ticker-bar { width: 100%; justify-content: center; margin-top: 5px; }
+            .panel { padding: 8px; gap: 8px; min-height: 700px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 최상단 글로벌 바 (확대된 네온 지수 전광판 및 날짜/시간) -->
+    <!-- 최상단 글로벌 바 -->
     <div class="top-bar">
         <span class="top-title">OPTIONS DASHBOARD</span>
 
@@ -562,55 +347,54 @@
     <div class="dashboard-grid">
         <script>
             document.write([0, 1, 2].map(i => `
-                        <div class="panel" id="panel-${i}">
-                            <div class="ph">
-                                <div class="ticker-group">
-                                    <span class="ticker" id="p${i}-ticker">WAIT</span>
-                                    <span class="ticker-sub" id="p${i}-sub">대기중</span>
-                                </div>
-                                <div class="price-group">
-                                    <span class="price-now neu" id="p${i}-price">─</span>
-                                    <span class="price-diff neu" id="p${i}-diff">─</span>
-                                    <span class="price-chg neu" id="p${i}-chg">─</span>
-                                </div>
-                            </div>
+                <div class="panel" id="panel-${i}">
+                    <div class="ph">
+                        <div class="ticker-group">
+                            <span class="ticker" id="p${i}-ticker">WAIT</span>
+                            <span class="ticker-sub" id="p${i}-sub">대기중</span>
+                        </div>
+                        <div class="price-group">
+                            <span class="price-now neu" id="p${i}-price">─</span>
+                            <span class="price-diff neu" id="p${i}-diff">─</span>
+                            <span class="price-chg neu" id="p${i}-chg">─</span>
+                        </div>
+                    </div>
 
-                            <div class="strategy-box">
-                                <div class="sb-header">
-                                    <span class="sb-title" id="p${i}-sigtitle">🟡 방향성 탐색 (관망)</span>
-                                    <span class="sb-trend" id="p${i}-trend">대기중</span>
-                                </div>
+                    <div class="strategy-box">
+                        <div class="sb-header">
+                            <span class="sb-title" id="p${i}-sigtitle">🟡 방향성 탐색 (관망)</span>
+                            <span class="sb-trend" id="p${i}-trend">대기중</span>
+                        </div>
+                        <div class="timeline" id="p${i}-timeline"></div>
+                    </div>
 
-                                <div class="timeline" id="p${i}-timeline"></div>
-                            </div>
+                    <div class="oi-box">
+                        <div class="oi-header">
+                            <span class="oi-title">📊 실시간 14단 옵션 체인</span>
+                            <span class="oi-dte" id="p${i}-dte">🗓️ 대기중</span>
+                        </div>
 
-                            <div class="oi-box">
-                                <div class="oi-header">
-                                    <span class="oi-title">📊 실시간 14단 옵션 체인</span>
-                                    <span class="oi-dte" id="p${i}-dte">🗓️ 대기중</span>
-                                </div>
+                        <div class="oi-summary">
+                            <span class="oi-sum-item" id="p${i}-sum-power">수급 대기중</span>
+                            <span class="oi-sum-item" id="p${i}-sum-env">지수 대기중</span>
+                            <span class="oi-sum-item" id="p${i}-sum-hoga">호가 대기중</span>
+                        </div>
 
-                                <div class="oi-summary">
-                                    <span class="oi-sum-item" id="p${i}-sum-power">수급 대기중</span>
-                                    <span class="oi-sum-item" id="p${i}-sum-env">지수 대기중</span>
-                                    <span class="oi-sum-item" id="p${i}-sum-hoga">호가 대기중</span>
-                                </div>
+                        <div class="oi-grid-header">
+                            <div style="text-align:right; padding-right:8px;">콜 수급</div>
+                            <div>OI/Vol</div><div>등락</div><div>행사가</div><div>등락</div><div>OI/Vol</div>
+                            <div style="text-align:left; padding-left:8px;">풋 수급</div>
+                        </div>
+                        <div id="p${i}-oi-rows"></div>
+                    </div>
 
-                                <div class="oi-grid-header">
-                                    <div style="text-align:right; padding-right:8px;">콜 수급</div>
-                                    <div>OI/Vol</div><div>등락</div><div>행사가</div><div>등락</div><div>OI/Vol</div>
-                                    <div style="text-align:left; padding-left:8px;">풋 수급</div>
-                                </div>
-                                <div id="p${i}-oi-rows"></div>
-                            </div>
-
-                            <div class="chart-section" id="chart-${i}"></div>
-                        </div>`).join(''));
+                    <div class="chart-section" id="chart-${i}"></div>
+                </div>`).join(''));
         </script>
     </div>
 
     <script>
-        const nameMap = { "TSLA": "테슬ラ", "NVDA": "엔비디아", "PLTR": "팔란티어", "AAPL": "애플", "MSFT": "마이크로소프트" };
+        const nameMap = { "TSLA": "테슬라", "NVDA": "엔비디아", "PLTR": "팔란티어", "AAPL": "애플", "MSFT": "마이크로소프트" };
         let globQqq = 0, globSpy = 0, globVix = 0, globVixState = "안정";
         let lastMsgTime = 0;
 
@@ -619,7 +403,7 @@
             if (dot && Date.now() - lastMsgTime > 15000) dot.classList.remove('active');
         }, 1000);
 
-        // 1. 기존 윈폼 C# 통신 완벽 유지
+        // [공통 수신 처리기] 윈폼 다이렉트든 외부 웹 파이어베이스든 이 함수로 데이터를 받아 그려줍니다.
         window.onWsMessage = function (d) {
             if (!d || !d.type) return;
 
@@ -644,37 +428,51 @@
             if (d.type === 'optionUpdate') updatePanel(d.panel, d);
         };
 
-        // 2. [추가] 외부 웹/브라우저 접속 시 파이어베이스 서버에서 실시간 구독하는 기능
-        const firebaseConfig = {
-            databaseURL: "https://hphong-2cb03-default-rtdb.asia-southeast1.firebasedatabase.app/"
-        };
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
+        // [환경 분기 처리]
+        // 1. 만약 로컬 윈폼(WebView2) 안에서 실행 중이라면 파이어베이스 리스너를 실행하지 않고 C# 다이렉트 통신만 사용합니다.
+        // 2. 외부 웹브라우저로 접속한 경우에만 파이어베이스 서버 구독을 활성화합니다.
+        const isWinForms = window.chrome && window.chrome.webview; // WebView2 환경 감지
+
+        if (!isWinForms) {
+            // 외부 웹 사용자용 파이어베이스 연동
+            const scriptApp = document.createElement('script');
+            scriptApp.src = "https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js";
+            scriptApp.onload = function() {
+                const scriptDb = document.createElement('script');
+                scriptDb.src = "https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js";
+                scriptDb.onload = function() {
+                    const firebaseConfig = {
+                        databaseURL: "https://hphong-2cb03-default-rtdb.asia-southeast1.firebasedatabase.app/"
+                    };
+                    if (!firebase.apps.length) {
+                        firebase.initializeApp(firebaseConfig);
+                    }
+                    
+                    const dbRef = firebase.database().ref('tickers');
+                    const dashTickersMap = ["TSLA", "NVDA", "PLTR"];
+
+                    dbRef.on('value', (snapshot) => {
+                        const data = snapshot.val();
+                        if (!data) return;
+
+                        let firstKey = Object.keys(data)[0];
+                        if (firstKey && data[firstKey].header) {
+                            window.onWsMessage(data[firstKey].header);
+                        }
+
+                        dashTickersMap.forEach((tName, idx) => {
+                            if (data[tName] && data[tName].panel) {
+                                let pData = data[tName].panel;
+                                pData.panel = idx;
+                                window.onWsMessage(pData);
+                            }
+                        });
+                    });
+                };
+                document.head.appendChild(scriptDb);
+            };
+            document.head.appendChild(scriptApp);
         }
-        
-        // C#에서 푸시하는 데이터 경로('tickers') 감시
-        const dbRef = firebase.database().ref('tickers');
-        const dashTickersMap = ["TSLA", "NVDA", "PLTR"]; // 윈폼 패널 순서 배열
-
-        dbRef.on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (!data) return;
-
-            // 상단 글로벌 헤더 갱신 데이터 추출 (첫 번째 티커 기준)
-            let firstKey = Object.keys(data)[0];
-            if (firstKey && data[firstKey].header) {
-                window.onWsMessage(data[firstKey].header);
-            }
-
-            // 패널별 옵션 데이터 추출 및 매핑
-            dashTickersMap.forEach((tName, idx) => {
-                if (data[tName] && data[tName].panel) {
-                    let pData = data[tName].panel;
-                    pData.panel = idx; // 패널 인덱스 일치시키기
-                    window.onWsMessage(pData);
-                }
-            });
-        });
 
         function updateNeonTicker(qqq, spy, vix, vixState) {
             const qEl = document.getElementById('neon-qqq');
@@ -701,7 +499,6 @@
             pxEl.textContent = '$' + (d.price ? d.price.toFixed(2) : '0.00');
             pxEl.className = 'price-now ' + (d.change > 0 ? 'up' : d.change < 0 ? 'dn' : 'neu');
 
-            // 어제 대비 달러 변동액 (priceDiff) 출력
             const diffEl = document.getElementById(p + 'diff');
             const diffVal = d.priceDiff || 0;
             diffEl.textContent = (diffVal > 0 ? '(+$' : '(-$') + Math.abs(diffVal).toFixed(2) + ')';
