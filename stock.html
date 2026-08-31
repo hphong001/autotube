@@ -9,31 +9,34 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: 'Malgun Gothic',sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+            background: #07070c;
+            color: #ffffff;
         }
 
         body {
-            font-family: 'Malgun Gothic',sans-serif;
-            background: #07070c;
-            color: #ffffff;
-            display: grid;
-            grid-template-rows: 50px 1fr;
-            grid-template-columns: 1fr 1fr 1fr;
-            min-height: 100vh;
-            min-width: 360px;
-            overflow-x: auto;
-            overflow-y: auto;
-            gap: 0;
+            display: flex;
+            flex-direction: column;
         }
 
+        /* 1. 최상단 글로벌 바 (지수 및 날짜/시간 폰트 대폭 확대) */
         .top-bar {
-            grid-column: 1/4;
             background: #12121e;
-            border-bottom: 2px solid #2a2a3e;
+            border-bottom: 1px solid #2a2a3e;
             display: flex;
             align-items: center;
+            justify-content: space-between;
             padding: 0 20px;
-            gap: 20px;
-            font-size: 15px;
+            height: 50px;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .top-title {
@@ -41,43 +44,54 @@
             font-weight: bold;
             color: #7090ff;
             letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(112,144,255,0.4);
         }
 
-        .idx-item {
+        /* 네온사인 지수 전광판 (폰트 확대) */
+        .neon-ticker-bar {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 18px;
+            background: rgba(0,0,0,0.5);
+            padding: 6px 18px;
+            border-radius: 20px;
+            border: 1px solid rgba(112,144,255,0.3);
+            box-shadow: inset 0 0 10px rgba(112,144,255,0.1), 0 0 10px rgba(112,144,255,0.2);
         }
 
-        .idx-label {
-            color: #8899aa;
-            font-weight: bold;
-        }
-
-        .idx-val {
+        .neon-item {
             font-size: 15px;
             font-weight: bold;
+            letter-spacing: 0.5px;
         }
 
-        .up {
-            color: #ff5555;
+            .neon-item.up {
+                color: #ff5555;
+                text-shadow: 0 0 6px rgba(255,85,85,0.6);
+            }
+
+            .neon-item.dn {
+                color: #55aaff;
+                text-shadow: 0 0 6px rgba(85,170,255,0.6);
+            }
+
+            .neon-item.neu {
+                color: #ddd;
+            }
+
+        .neon-vix-warn {
+            color: #ffcc00;
+            text-shadow: 0 0 6px rgba(255,204,0,0.6);
         }
 
-        .dn {
-            color: #5599ff;
-        }
-
-        .neu {
-            color: #aaaaaa;
-        }
-
+        /* 우측 날짜 및 시간 영역 확대 */
         .top-time-area {
-            margin-left: auto;
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 13px;
-            color: #aaa;
+            font-size: 14px;
+            font-weight: bold;
+            color: #ccc;
         }
 
         .live-dot {
@@ -85,12 +99,11 @@
             height: 10px;
             border-radius: 50%;
             background: #333;
-            box-shadow: 0 0 2px #000;
         }
 
             .live-dot.active {
                 background: #00ff66;
-                box-shadow: 0 0 8px #00ff66, 0 0 15px #00ff66;
+                box-shadow: 0 0 10px #00ff66;
                 animation: blink 1.2s infinite ease-in-out;
             }
 
@@ -108,60 +121,52 @@
             }
         }
 
-        .sess-badge {
-            font-size: 12px;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-weight: bold;
-            margin-left: 4px;
-        }
-
-        .sess-open {
-            background: #0a2a0a;
-            color: #22dd44;
-            border: 1px solid #226622;
-        }
-
-        .sess-closed {
-            background: #222;
-            color: #aaa;
-            border: 1px solid #555;
+        /* 2. 패널 그리드 */
+        .dashboard-grid {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            width: 100%;
         }
 
         .panel {
-            border-right: 2px solid #1a1a2e;
+            flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 8px 12px;
-            gap: 8px;
-            overflow: hidden;
+            padding: 10px;
+            gap: 10px;
+            border-right: 1px solid #1a1a2e;
+            height: 100%;
+            min-width: 320px;
+            overflow-y: auto;
         }
 
             .panel:last-child {
                 border-right: none;
             }
 
+        /* [핵심 수정] 패널 헤더: 종목명 옆에 현재가와 등락을 바짝 붙임 */
         .ph {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: baseline;
+            gap: 15px;
             flex-shrink: 0;
-            background: #12121e;
-            padding: 6px 10px;
+            background: #0b0b14;
+            padding: 8px 12px;
             border-radius: 6px;
             border: 1px solid #2a2a3e;
         }
 
-        .ph-left {
+        .ticker-group {
             display: flex;
             align-items: baseline;
-            gap: 8px;
+            gap: 6px;
         }
 
         .ticker {
             font-size: 22px;
             font-weight: bold;
-            color: #ffffff;
         }
 
         .ticker-sub {
@@ -169,347 +174,248 @@
             color: #8899aa;
         }
 
-        .ph-right {
+        .price-group {
             display: flex;
             align-items: baseline;
-            gap: 10px;
+            gap: 8px;
         }
 
         .price-now {
-            font-size: 24px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .price-diff {
+            font-size: 13px;
             font-weight: bold;
         }
 
         .price-chg {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
         }
 
-        .sig-box {
-            border-radius: 8px;
-            padding: 8px 12px;
-            flex-shrink: 0;
-        }
-
-            .sig-box.BUY {
-                background: #0a2a0a;
-                border: 2px solid #22aa44;
-            }
-
-            .sig-box.SELL {
-                background: #2a0a0a;
-                border: 2px solid #ff4444;
-            }
-
-            .sig-box.WAIT {
-                background: #1e1e0a;
-                border: 2px solid #aaaa22;
-            }
-
-        .sig-label {
-            font-size: 12px;
-            color: #aaaaaa;
-            margin-bottom: 4px;
-            font-weight: bold;
-        }
-
-        .sig-title {
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-            .sig-title.BUY {
-                color: #44ff66;
-            }
-
-            .sig-title.SELL {
-                color: #ff6666;
-            }
-
-            .sig-title.WAIT {
-                color: #ffff44;
-            }
-
-        .sig-prices {
-            display: flex;
-            gap: 8px;
-            margin-top: 6px;
-        }
-
-        .sig-price {
-            flex: 1;
-            text-align: center;
-        }
-
-        .sp-label {
-            font-size: 11px;
-            color: #999;
-            margin-bottom: 2px;
-        }
-
-        .sp-val {
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .sp-entry {
-            color: #44ff66;
-        }
-
-        .sp-target {
-            color: #66aaff;
-        }
-
-        .sp-stop {
-            color: #ff6666;
-        }
-
-        .mkt-row {
-            display: flex;
-            gap: 6px;
-            flex-shrink: 0;
-        }
-
-        .mkt-badge {
-            flex: 1;
-            text-align: center;
-            padding: 4px 2px;
-            border-radius: 5px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .mkt-sym {
-            font-weight: normal;
-            font-size: 11px;
-            display: block;
-            color: #ccc;
-        }
-
-        .mkt-badge.up {
-            background: #1a0a0a;
-            border: 1px solid #aa3333;
+        .up {
             color: #ff5555;
         }
 
-        .mkt-badge.dn {
-            background: #0a1a2a;
-            border: 1px solid #3355aa;
-            color: #5599ff;
+        .dn {
+            color: #55aaff;
         }
 
-        .mkt-badge.neu {
-            background: #222;
-            border: 1px solid #555;
-            color: #aaa;
+        .neu {
+            color: #aaaaaa;
         }
 
-        .mid-container {
-            display: flex;
-            gap: 8px;
-            flex-shrink: 0;
-            height: 135px;
-        }
-
-        .vbar-section {
-            flex: 1;
-            background: #12121e;
+        /* 매매 전략 박스 */
+        .strategy-box {
+            border: 1px solid #aaaa22;
             border-radius: 8px;
-            padding: 8px 6px;
-            position: relative;
-            border: 1px solid #2a2a3e;
+            padding: 10px;
+            background: #11111a;
+            flex-shrink: 0;
+        }
+
+        .sb-header {
             display: flex;
-        }
-
-        .vtrack {
-            width: 5px;
-            background: #333;
-            border-radius: 3px;
-            position: relative;
-            margin-left: 60px;
-            height: 100%;
-        }
-
-        .vmarker {
-            position: absolute;
-            left: 65px;
-            width: 0;
-            height: 0;
-            border-top: 6px solid transparent;
-            border-bottom: 6px solid transparent;
-            border-left: 8px solid #44aaff;
-            transition: top 0.5s ease-out;
-            transform: translateY(-6px);
-            z-index: 10;
-        }
-
-        .vmarker-price {
-            position: absolute;
-            left: 2px;
-            transform: translateY(-50%);
-            font-size: 11px;
-            font-weight: bold;
-            color: #44aaff;
-            z-index: 11;
-            width: 55px;
-            text-align: right;
-        }
-
-        .vlabels {
-            flex: 1;
-            position: relative;
-            height: 100%;
-        }
-
-        .vlabel-item {
-            position: absolute;
-            width: 100%;
-            display: flex;
-            justify-content: flex-start;
+            justify-content: space-between;
             align-items: center;
-            transform: translateY(-50%);
+            border-bottom: 1px dashed #333;
+            padding-bottom: 6px;
+            margin-bottom: 10px;
+        }
+
+        .sb-title {
+            color: #ffff44;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .sb-trend {
             font-size: 11px;
-            gap: 6px;
-            padding-left: 12px;
+            color: #ddd;
+            background: #1a1a2e;
+            padding: 3px 6px;
+            border-radius: 4px;
         }
 
-        .v-val {
-            font-weight: bold;
-            color: #fff;
-            min-width: 45px;
+        /* 타점 온도계 (8%~92% 안전 여백) */
+        .timeline {
+            position: relative;
+            height: 70px;
+            margin: 0 10px;
         }
 
-        .v-tag {
-            font-weight: bold;
-            padding: 1px 3px;
-            border-radius: 3px;
-            font-size: 10px;
+        .tl-track {
+            position: absolute;
+            top: 35px;
+            left: 8%;
+            right: 8%;
+            height: 3px;
+            background: #2a2a3e;
+            border-radius: 2px;
+        }
+
+        .node {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 75px;
+            transform: translateX(-50%);
+            text-align: center;
             white-space: nowrap;
         }
 
-            .v-tag.res {
-                color: #ff6666;
-            }
-
-            .v-tag.sup {
-                color: #66ff66;
-            }
-
-            .v-tag.pain {
-                color: #ffff66;
-            }
-
-            .v-tag.stop {
-                color: #ffaa44;
-            }
-
-        .reason-section {
-            flex: 1.5;
-            background: #12121e;
-            border-radius: 8px;
-            padding: 8px 10px;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #2a2a3e;
+        .node-top {
+            bottom: 45px;
         }
 
-        .reason-title {
-            font-size: 12px;
+        .node-bottom {
+            top: 45px;
+        }
+
+        .dot {
+            position: absolute;
+            top: 36.5px;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            box-shadow: 0 0 5px rgba(0,0,0,0.8);
+        }
+
+        .dot-small {
+            width: 10px;
+            height: 10px;
+            z-index: 2;
+        }
+
+        .dot-large {
+            width: 14px;
+            height: 14px;
+            z-index: 10;
+            border: 2px solid #fff;
+            box-shadow: 0 0 10px;
+        }
+
+        .lbl-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #11111a;
+            padding: 0 3px;
+            border-radius: 4px;
+        }
+
+        .lbl {
+            font-size: 10px;
             color: #aaa;
-            margin-bottom: 4px;
             font-weight: bold;
+            margin-bottom: 1px;
+        }
+
+        .val {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .c-red {
+            color: #ff5555;
+        }
+
+        .bg-red {
+            background: #ff5555;
+        }
+
+        .c-green {
+            color: #44ff66;
+        }
+
+        .bg-green {
+            background: #44ff66;
+        }
+
+        .c-blue {
+            color: #55aaff;
+        }
+
+        .bg-blue {
+            background: #55aaff;
+        }
+
+        .c-gold {
+            color: #ffcc00;
+        }
+
+        .bg-gold {
+            background: #ffcc00;
+        }
+
+        /* 실시간 14단 옵션 체인 박스 */
+        .oi-box {
+            border: 1px solid #2a2a3e;
+            border-radius: 8px;
+            padding: 10px;
+            background: #0b0b14;
+            flex-shrink: 0;
+        }
+
+        .oi-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .dte-badge {
-            background: #aa33ff;
-            color: #fff;
-            padding: 1px 6px;
-            border-radius: 8px;
-            font-size: 11px;
-        }
-
-        .reason-list {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .reason-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 6px;
-            font-size: 11px;
-            font-weight: bold;
-            color: #fff;
-        }
-
-        .rdot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            margin-top: 3px;
-            flex-shrink: 0;
-        }
-
-            .rdot.bull {
-                background: #44ff66;
-            }
-
-            .rdot.bear {
-                background: #ff4444;
-            }
-
-            .rdot.neu {
-                background: #ffff44;
-            }
-
-        .reason-val {
-            color: #99aaff;
-            font-weight: normal;
-            margin-left: 2px;
-        }
-
-        /* 💡 수정: 호가창 영역 세로 길이를 260px로 대폭 확장하여 짤림 원천 방지 및 내부 정렬 최적화 */
-        .oi-section {
-            flex-shrink: 0;
-            height: 260px;
-            background: #12121e;
-            border-radius: 8px;
-            padding: 10px 8px;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #2a2a3e;
-            overflow: hidden;
+            margin-bottom: 8px;
         }
 
         .oi-title {
-            font-size: 12px;
-            color: #aaa;
-            margin-bottom: 6px;
+            font-size: 15px;
             font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            padding-bottom: 4px;
-            border-bottom: 1px solid #2a2a3e;
-            flex-shrink: 0;
+            color: #88aaff;
         }
 
-        .oi-rows {
-            flex: 1;
+        .oi-dte {
+            background: #aa33ff;
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .oi-summary {
             display: flex;
-            flex-direction: column;
-            justify-content: space-around;
+            justify-content: center;
+            gap: 20px;
+            font-size: 12px;
+            color: #ccc;
+            border-bottom: 1px solid #2a2a3e;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+            background: #12121e;
+            padding-top: 6px;
+            border-radius: 6px;
+        }
+
+        .oi-sum-item b {
+            color: #fff;
+        }
+
+        .oi-grid-header {
+            display: grid;
+            grid-template-columns: 1fr 50px 42px 55px 42px 50px 1fr;
+            font-size: 11px;
+            color: #aaa;
+            margin-bottom: 6px;
+            text-align: center;
         }
 
         .oi-row {
             display: grid;
-            grid-template-columns: 1fr 32px 42px 46px 42px 32px 1fr;
+            grid-template-columns: 1fr 50px 42px 55px 42px 50px 1fr;
             align-items: center;
-            gap: 4px;
-            font-size: 11px;
+            gap: 3px;
+            font-size: 12px;
+            text-align: center;
+            margin-bottom: 3px;
         }
 
         .oi-bar-wrap {
@@ -527,80 +433,46 @@
             }
 
         .oi-bar.call {
-            height: 9px;
+            height: 7px;
             border-radius: 2px 0 0 2px;
-            background: rgba(255, 68, 68, 0.9);
-            box-shadow: 0 0 5px rgba(255,68,68,0.4);
+            background: #ff5555;
         }
 
         .oi-bar.put {
-            height: 9px;
+            height: 7px;
             border-radius: 0 2px 2px 0;
-            background: rgba(68, 136, 255, 0.9);
-            box-shadow: 0 0 5px rgba(68,136,255,0.4);
+            background: #55aaff;
         }
 
-        .oi-strike {
-            text-align: center;
-            font-weight: bold;
-            color: #ddd;
-            font-size: 12px;
-            padding: 2px 0;
+        .strike-box {
             background: #1a1a2e;
+            color: #fff;
+            padding: 2px 0;
             border-radius: 4px;
+            font-weight: bold;
             width: 100%;
+            display: block;
+            font-size: 12px;
         }
 
-            .oi-strike.atm {
-                color: #000;
+            .strike-box.atm {
                 background: #ffcc00;
-                padding: 2px 0;
-                line-height: 1.2;
-                border: 1px solid #fff;
-                box-shadow: 0 0 8px rgba(255, 204, 0, 0.8);
-                display: inline-block;
-                width: 100%;
+                color: #000;
+                box-shadow: 0 0 5px #ffcc00;
             }
 
         .oi-vol {
-            font-weight: normal;
-            color: #ffffff;
-            font-size: 10px;
+            font-size: 11px;
+            color: #f0f0f0;
             white-space: nowrap;
-            overflow: hidden;
-        }
-
-            .oi-vol.call {
-                text-align: right;
-            }
-
-            .oi-vol.put {
-                text-align: left;
-            }
-
-        .oi-chg {
-            font-size: 10px;
             font-weight: bold;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
         }
 
-            .oi-chg.up {
-                color: #ff6666;
-            }
-
-            .oi-chg.dn {
-                color: #66aaff;
-            }
-
-            .oi-chg.neu {
-                color: #888;
-            }
-
+        /* 차트 영역 */
         .chart-section {
             flex: 1;
-            min-height: 250px;
+            min-height: 180px;
+            height: 100%;
             background: #07070c;
             border-radius: 8px;
             overflow: hidden;
@@ -608,211 +480,179 @@
             position: relative;
         }
 
-            .chart-section iframe, .chart-section > div {
-                height: 100% !important;
-                min-height: 100% !important;
-                width: 100% !important;
-            }
-
-        .iv-alert {
-            background: #331a00;
-            border: 1px solid #ff9900;
-            border-radius: 6px;
-            padding: 6px;
-            font-size: 12px;
-            font-weight: bold;
-            color: #ffcc00;
-            display: none;
-            text-align: center;
-            margin-bottom: 6px;
-        }
-
-            .iv-alert.show {
-                display: block;
-            }
-
-        /* ========================================================
-           📱 스마트폰/모바일 최적화 (가로 1100px 이하일 때만 발동)
-        ======================================================== */
-        @media screen and (max-width: 1100px) {
-            body {
-                display: flex;
+        /* 반응형 미디어 쿼리 */
+        @media screen and (max-width: 1200px) {
+            .dashboard-grid {
                 flex-direction: column;
-                height: auto;
-                background: #020204;
-                padding: 10px;
-                gap: 15px;
+                overflow-y: auto;
             }
 
-            .top-bar {
-                width: 100%;
+            html, body {
+                overflow-y: auto;
                 height: auto;
-                min-height: 50px;
-                flex-wrap: wrap;
-                padding: 15px;
-                border-radius: 12px;
-                border: 1px solid #1a1a2e;
             }
 
             .panel {
-                width: 100%;
-                background: #0b0b14;
-                border: 1px solid #2a2a3e;
-                border-radius: 16px;
-                padding: 18px 12px;
-                box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-            }
-
-            .mid-container {
-                flex-direction: column;
                 height: auto;
+                min-height: 750px;
+                border-right: none;
+                border-bottom: 2px solid #2a2a3e;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            .top-bar {
+                padding: 0 10px;
+                height: auto;
+                padding-top: 8px;
+                padding-bottom: 8px;
+                justify-content: center;
             }
 
-            .vbar-section {
-                height: 140px;
-                margin-bottom: 12px;
+            .neon-ticker-bar {
+                width: 100%;
+                justify-content: center;
+                margin-top: 5px;
             }
 
-            /* 모바일 호가창 높이도 260px로 여유 있게 일치화 */
-            .oi-section {
-                height: 260px;
+            .panel {
+                padding: 8px;
+                gap: 8px;
+                min-height: 700px;
             }
 
-            .oi-row {
-                grid-template-columns: 1fr 28px 36px 42px 36px 28px 1fr;
-                gap: 2px;
+            .ph {
+                gap: 10px;
             }
 
-            .oi-strike {
-                font-size: 11px;
+            .ticker {
+                font-size: 18px;
             }
 
-            .oi-vol {
-                font-size: 9px;
-            }
-
-            .oi-chg {
-                font-size: 9px;
-            }
-
-            .chart-section {
-                flex: none !important;
-                height: 400px !important;
-                min-height: 400px !important;
-                max-height: none;
+            .price-now {
+                font-size: 18px;
             }
         }
     </style>
 </head>
 <body>
+
+    <!-- 최상단 글로벌 바 (확대된 네온 지수 전광판 및 날짜/시간) -->
     <div class="top-bar">
         <span class="top-title">OPTIONS DASHBOARD</span>
-        <div class="idx-item"><span class="idx-label">QQQ</span><span class="idx-val neu" id="h-qqq">─</span></div>
-        <div class="idx-item"><span class="idx-label">SPY</span><span class="idx-val neu" id="h-spy">─</span></div>
-        <div class="idx-item"><span class="idx-label">DIA</span><span class="idx-val neu" id="h-dia">─</span></div>
-        <span class="sess-badge sess-closed" id="h-sess">휴장</span>
+
+        <div class="neon-ticker-bar">
+            <span class="neon-item" id="neon-qqq">QQQ 0.00%</span>
+            <span style="color:#555;">|</span>
+            <span class="neon-item" id="neon-spy">SPY 0.00%</span>
+            <span style="color:#555;">|</span>
+            <span class="neon-item" id="neon-vix">VIX 0.00</span>
+        </div>
+
         <div class="top-time-area">
-            <div class="live-dot" id="live-indicator" title="데이터 수신 인디케이터"></div>
-            <span id="h-time">연도-월-일 00:00:00 갱신</span>
+            <div class="live-dot" id="live-indicator"></div>
+            <span id="h-time">0000-00-00 00:00:00 갱신</span>
         </div>
     </div>
 
-    <script>
-        document.write([0, 1, 2].map(i => `
-                <div class="panel" id="panel-${i}">
-                    <div class="ph">
-                        <div class="ph-left">
-                            <span class="ticker" id="p${i}-ticker">WAIT</span>
-                            <span class="ticker-sub" id="p${i}-sub">대기중</span>
-                        </div>
-                        <div class="ph-right">
-                            <div class="price-now neu" id="p${i}-price">─</div>
-                            <div class="price-chg neu" id="p${i}-chg">─</div>
-                        </div>
-                    </div>
+    <!-- 3분할 패널 그리드 -->
+    <div class="dashboard-grid">
+        <script>
+            document.write([0, 1, 2].map(i => `
+                        <div class="panel" id="panel-${i}">
+                            <div class="ph">
+                                <div class="ticker-group">
+                                    <span class="ticker" id="p${i}-ticker">WAIT</span>
+                                    <span class="ticker-sub" id="p${i}-sub">대기중</span>
+                                </div>
+                                <div class="price-group">
+                                    <span class="price-now neu" id="p${i}-price">─</span>
+                                    <span class="price-diff neu" id="p${i}-diff">─</span>
+                                    <span class="price-chg neu" id="p${i}-chg">─</span>
+                                </div>
+                            </div>
 
-                    <div class="sig-box WAIT" id="p${i}-sigbox">
-                        <div class="sig-label">매매 참고 신호 <span class="sess-badge sess-closed" id="p${i}-sess" style="padding:1px 6px; font-size:10px;">대기</span></div>
-                        <div class="sig-title WAIT" id="p${i}-sigtitle">데이터 수신 대기</div>
-                        <div class="sig-prices">
-                            <div class="sig-price"><div class="sp-label">지지(진입)</div><div class="sp-val sp-entry" id="p${i}-entry">─</div></div>
-                            <div class="sig-price"><div class="sp-label">저항(1차목표)</div><div class="sp-val sp-target" id="p${i}-target">─</div></div>
-                            <div class="sig-price"><div class="sp-label">손절 기준</div><div class="sp-val sp-stop" id="p${i}-stop">─</div></div>
-                        </div>
-                    </div>
+                            <div class="strategy-box">
+                                <div class="sb-header">
+                                    <span class="sb-title" id="p${i}-sigtitle">🟡 방향성 탐색 (관망)</span>
+                                    <span class="sb-trend" id="p${i}-trend">대기중</span>
+                                </div>
 
-                    <div class="mkt-row">
-                        <div class="mkt-badge neu" id="p${i}-qqq"><span class="mkt-sym">QQQ 흐름</span>─</div>
-                        <div class="mkt-badge neu" id="p${i}-spy"><span class="mkt-sym">SPY 흐름</span>─</div>
-                        <div class="mkt-badge neu" id="p${i}-hoga"><span class="mkt-sym">호가 잔량</span>─</div>
-                        <div class="mkt-badge neu" id="p${i}-score"><span class="mkt-sym">종합 점수</span>─</div>
-                    </div>
+                                <div class="timeline" id="p${i}-timeline"></div>
+                            </div>
 
-                    <div class="iv-alert" id="p${i}-ivalert">⚠ IV 급등 감지 — 신뢰도 낮음</div>
+                            <div class="oi-box">
+                                <div class="oi-header">
+                                    <span class="oi-title">📊 실시간 14단 옵션 체인</span>
+                                    <span class="oi-dte" id="p${i}-dte">🗓️ 대기중</span>
+                                </div>
 
-                    <div class="mid-container">
-                        <div class="vbar-section">
-                            <div class="vtrack"></div>
-                            <div class="vmarker-price" id="p${i}-vprice">-$</div>
-                            <div class="vmarker" id="p${i}-vmarker"></div>
-                            <div class="vlabels" id="p${i}-vlabels"></div>
-                        </div>
+                                <div class="oi-summary">
+                                    <span class="oi-sum-item" id="p${i}-sum-power">수급 대기중</span>
+                                    <span class="oi-sum-item" id="p${i}-sum-env">지수 대기중</span>
+                                    <span class="oi-sum-item" id="p${i}-sum-hoga">호가 대기중</span>
+                                </div>
 
-                        <div class="reason-section">
-                            <div class="reason-title">판단 근거 <span class="dte-badge" id="p${i}-dte">만기 D-?</span></div>
-                            <div class="reason-list" id="p${i}-reasons">수신 대기중...</div>
-                        </div>
-                    </div>
+                                <div class="oi-grid-header">
+                                    <div style="text-align:right; padding-right:8px;">콜 수급</div>
+                                    <div>OI/Vol</div><div>등락</div><div>행사가</div><div>등락</div><div>OI/Vol</div>
+                                    <div style="text-align:left; padding-left:8px;">풋 수급</div>
+                                </div>
+                                <div id="p${i}-oi-rows"></div>
+                            </div>
 
-                    <div class="oi-section">
-                        <div class="oi-title"><span>콜 (Call)</span><span id="p${i}-oi-status" style="font-size:13px;">수급 분석</span><span>풋 (Put)</span></div>
-                        <div class="oi-rows" id="p${i}-oi">─</div>
-                    </div>
-
-                    <div class="chart-section" id="chart-${i}"></div>
-                </div>`).join(''));
-    </script>
+                            <div class="chart-section" id="chart-${i}"></div>
+                        </div>`).join(''));
+        </script>
+    </div>
 
     <script>
         const nameMap = { "TSLA": "테슬라", "NVDA": "엔비디아", "PLTR": "팔란티어", "AAPL": "애플", "MSFT": "마이크로소프트" };
+        let globQqq = 0, globSpy = 0, globVix = 0, globVixState = "안정";
         let lastMsgTime = 0;
 
         setInterval(() => {
             const dot = document.getElementById('live-indicator');
-            if (dot && Date.now() - lastMsgTime > 15000) {
-                dot.classList.remove('active');
-            }
+            if (dot && Date.now() - lastMsgTime > 15000) dot.classList.remove('active');
         }, 1000);
 
         window.onWsMessage = function (d) {
             if (!d || !d.type) return;
+
             lastMsgTime = Date.now();
             const dot = document.getElementById('live-indicator');
             if (dot) dot.classList.add('active');
 
-            switch (d.type) {
-                case 'optionUpdate': updatePanel(d.panel, d); break;
-                case 'headerUpdate': updateHeader(d); break;
+            if (d.type === 'headerUpdate') {
+                globQqq = d.qqq || 0; globSpy = d.spy || 0;
+                globVix = d.vix || 0; globVixState = d.vixState || "안정";
+
+                updateNeonTicker(globQqq, globSpy, globVix, globVixState);
+
+                if (d.time) {
+                    const now = new Date();
+                    const yy = now.getFullYear();
+                    const mm = String(now.getMonth() + 1).padStart(2, '0');
+                    const dd = String(now.getDate()).padStart(2, '0');
+                    document.getElementById('h-time').textContent = `${yy}-${mm}-${dd} ${d.time} 갱신`;
+                }
             }
+            if (d.type === 'optionUpdate') updatePanel(d.panel, d);
         };
 
-        function updateHeader(d) {
-            function fmtIdx(v, el) {
-                if (v === undefined || v === null) return;
-                el.textContent = (v > 0 ? '+' : '') + v.toFixed(2) + '%';
-                el.className = 'idx-val ' + (v > 0 ? 'up' : v < 0 ? 'dn' : 'neu');
-            }
-            fmtIdx(d.qqq, document.getElementById('h-qqq'));
-            fmtIdx(d.spy, document.getElementById('h-spy'));
-            fmtIdx(d.dia, document.getElementById('h-dia'));
+        function updateNeonTicker(qqq, spy, vix, vixState) {
+            const qEl = document.getElementById('neon-qqq');
+            const sEl = document.getElementById('neon-spy');
+            const vEl = document.getElementById('neon-vix');
 
-            if (d.time) {
-                const now = new Date();
-                const yyyy = now.getFullYear();
-                const mm = String(now.getMonth() + 1).padStart(2, '0');
-                const dd = String(now.getDate()).padStart(2, '0');
-                document.getElementById('h-time').textContent = `${yyyy}-${mm}-${dd} ${d.time} 갱신`;
-            }
+            qEl.textContent = `QQQ ${qqq > 0 ? '+' : ''}${qqq.toFixed(2)}%`;
+            qEl.className = 'neon-item ' + (qqq > 0 ? 'up' : qqq < 0 ? 'dn' : 'neu');
+
+            sEl.textContent = `SPY ${spy > 0 ? '+' : ''}${spy.toFixed(2)}%`;
+            sEl.className = 'neon-item ' + (spy > 0 ? 'up' : spy < 0 ? 'dn' : 'neu');
+
+            vEl.textContent = `VIX ${vix.toFixed(2)} (${vixState})`;
+            vEl.className = 'neon-item ' + (vixState.includes('공포') ? 'up' : vixState.includes('주의') ? 'neon-vix-warn' : 'neu');
         }
 
         function updatePanel(panel, d) {
@@ -821,242 +661,141 @@
             document.getElementById(p + 'ticker').textContent = d.ticker;
             document.getElementById(p + 'sub').textContent = nameMap[d.ticker] || '';
 
-            const priceEl = document.getElementById(p + 'price');
-            priceEl.textContent = '$' + d.price.toFixed(2);
-            priceEl.className = 'price-now ' + (d.change > 0 ? 'up' : d.change < 0 ? 'dn' : 'neu');
+            const pxEl = document.getElementById(p + 'price');
+            pxEl.textContent = '$' + (d.price ? d.price.toFixed(2) : '0.00');
+            pxEl.className = 'price-now ' + (d.change > 0 ? 'up' : d.change < 0 ? 'dn' : 'neu');
+
+            // 어제 대비 달러 변동액 (priceDiff) 출력
+            const diffEl = document.getElementById(p + 'diff');
+            const diffVal = d.priceDiff || 0;
+            diffEl.textContent = (diffVal > 0 ? '(+$' : '(-$') + Math.abs(diffVal).toFixed(2) + ')';
+            diffEl.className = 'price-diff ' + (diffVal > 0 ? 'up' : diffVal < 0 ? 'dn' : 'neu');
 
             const chgEl = document.getElementById(p + 'chg');
-            chgEl.textContent = (d.change > 0 ? '▲ +' : d.change < 0 ? '▼ ' : '') + d.change.toFixed(2) + '%';
+            chgEl.textContent = (d.change > 0 ? '▲ +' : d.change < 0 ? '▼ ' : '') + (d.change || 0).toFixed(2) + '%';
             chgEl.className = 'price-chg ' + (d.change > 0 ? 'up' : d.change < 0 ? 'dn' : 'neu');
 
-            let rawSess = d.sessionLabel || 'CLOSED';
-            let isDteErr = d.dte < 0 && d.dte !== -999;
-
-            const sigBox = document.getElementById(p + 'sigbox');
             const sigTitle = document.getElementById(p + 'sigtitle');
-            const sig = d.signal || 'WAIT';
-            sigBox.className = 'sig-box ' + (isDteErr ? 'WAIT' : sig);
+            if (d.signal === 'BUY') { sigTitle.textContent = '🟢 매수 유리 (롱)'; sigTitle.style.color = '#44ff66'; }
+            else if (d.signal === 'SELL') { sigTitle.textContent = '🔴 매도 압박 (숏)'; sigTitle.style.color = '#ff5555'; }
+            else { sigTitle.textContent = '🟡 방향성 탐색 (관망)'; sigTitle.style.color = '#ffff44'; }
+            document.getElementById(p + 'trend').innerHTML = d.trendText || '대기중';
 
-            const sigMap = { 'BUY': '매수 유리 (롱 포지션)', 'SELL': '매도 압력 (숏 포지션)', 'WAIT': '방향성 탐색 (관망)' };
-            sigTitle.textContent = isDteErr ? '만기 데이터 (매매 금지)' : sigMap[sig];
-            sigTitle.className = 'sig-title ' + (isDteErr ? 'WAIT' : sig);
+            renderTimeline(p, d);
 
-            const sessEl = document.getElementById(p + 'sess');
-            sessEl.textContent = rawSess;
-            if (isDteErr) { sessEl.style.background = '#882222'; sessEl.style.color = '#fff'; border = 'none'; }
+            document.getElementById(p + 'dte').textContent = `🗓️ ${d.dteLabel}`;
 
-            document.getElementById(p + 'entry').textContent = '$' + d.support.toFixed(1);
-            document.getElementById(p + 'target').textContent = '$' + d.resistance.toFixed(1);
-            document.getElementById(p + 'stop').textContent = '$' + d.stopLoss.toFixed(1);
+            let powerStr = '팽팽함';
+            if ((d.score || 5) > 5.5) powerStr = `<b class="c-red">콜 우세</b> (${d.score.toFixed(1)}점)`;
+            else if ((d.score || 5) < 4.5) powerStr = `<b class="c-blue">풋 우세</b> (${d.score.toFixed(1)}점)`;
+            document.getElementById(p + 'sum-power').innerHTML = `수급: ${powerStr}`;
 
-            mktBadge(p + 'qqq', d.qqqChange, 'QQQ 흐름');
-            mktBadge(p + 'spy', d.spyChange, 'SPY 흐름');
+            const qStr = globQqq > 0 ? `<b class="c-red">▲ 상승</b>` : globQqq < 0 ? `<b class="c-blue">▼ 하락</b>` : '<b>- 보합</b>';
+            const sStr = globSpy > 0 ? `<b class="c-red">▲ 상승</b>` : globSpy < 0 ? `<b class="c-blue">▼ 하락</b>` : '<b>- 보합</b>';
+            const vColor = globVixState.includes('공포') ? 'c-red' : globVixState.includes('주의') ? 'c-gold' : 'c-green';
+            document.getElementById(p + 'sum-env').innerHTML = `지수: QQQ ${qStr} &nbsp;/&nbsp; SPY ${sStr} &nbsp;/&nbsp; VIX <b class="${vColor}">${globVixState}</b>`;
 
-            const hogaEl = document.getElementById(p + 'hoga');
-            hogaEl.className = 'mkt-badge ' + (d.imbalance > 0.1 ? 'up' : d.imbalance < -0.1 ? 'dn' : 'neu');
-            hogaEl.innerHTML = `<span class="mkt-sym">호가 잔량</span>${d.imbalance > 0.1 ? '매수 우위' : d.imbalance < -0.1 ? '매도 우위' : '팽팽함'}`;
+            const hStr = d.imbalance > 0.1 ? '<b class="c-red">매수우위</b>' : d.imbalance < -0.1 ? '<b class="c-blue">매도압박</b>' : '<b>팽팽함</b>';
+            document.getElementById(p + 'sum-hoga').innerHTML = `호가: ${hStr}`;
 
-            const scoreEl = document.getElementById(p + 'score');
-            scoreEl.className = 'mkt-badge ' + (d.score >= 7 ? 'up' : d.score <= 3 ? 'dn' : 'neu');
-            scoreEl.innerHTML = `<span class="mkt-sym">종합 점수</span>${d.score.toFixed(1)}점`;
-
-            const alertEl = document.getElementById(p + 'ivalert');
-            if (alertEl) alertEl.className = 'iv-alert' + (d.ivAlert ? ' show' : '');
-
-            const dteEl = document.getElementById(p + 'dte');
-            if (d.dte !== undefined && d.dte !== -999) {
-                if (d.dte < 0) { dteEl.textContent = `만기 지남 (D+${Math.abs(d.dte)})`; dteEl.style.background = '#ff2222'; dteEl.style.color = '#fff'; }
-                else if (d.dte === 0) { dteEl.textContent = '만기 당일 (D-0)'; dteEl.style.background = '#ffaa00'; dteEl.style.color = '#000'; }
-                else { dteEl.textContent = `만기 D-${d.dte}`; dteEl.style.background = '#aa33ff'; dteEl.style.color = '#fff'; }
-            } else { dteEl.textContent = '만기 D-?'; }
-
-            updateThermometer(p, d);
-            updateReasons(p, d);
-            if (d.optionRows && d.optionRows.length > 0) updateOI(p, d.optionRows, d.isMarketOpen, d.price);
+            if (d.optionRows && d.optionRows.length > 0) renderOiGrid(p, d.optionRows, d.price);
 
             if (!window['tvTicker' + panel] || window['tvTicker' + panel] !== d.ticker) {
                 window['tvTicker' + panel] = d.ticker;
                 new TradingView.widget({
-                    "autosize": true, "symbol": d.ticker, "interval": "3", "timezone": "exchange",
-                    "theme": "dark", "style": "1", "locale": "kr", "enable_publishing": false,
-                    "backgroundColor": "#07070c", "gridColor": "#1a1a2e", "hide_top_toolbar": true,
-                    "hide_legend": false, "save_image": false, "container_id": "chart-" + panel,
-                    "studies": ["VWAP@tv-basicstudies"]
+                    "autosize": true, "symbol": d.ticker, "interval": "3", "theme": "dark", "style": "1",
+                    "hide_top_toolbar": true, "container_id": "chart-" + panel
                 });
             }
         }
 
-        function updateThermometer(p, d) {
-            const vlabels = document.getElementById(p + 'vlabels');
-            const vmarker = document.getElementById(p + 'vmarker');
-            const vprice = document.getElementById(p + 'vprice');
+        function renderTimeline(p, d) {
+            const tl = document.getElementById(p + 'timeline');
+            let vals = [d.support2, d.support1, d.maxPain, d.price, d.resistance1, d.resistance2].filter(v => v > 0);
+            if (vals.length === 0) return;
 
-            let allVals = [d.resistance, d.maxPain, d.support, d.stopLoss, d.price];
-            let maxP = Math.max(...allVals) + 1;
-            let minP = Math.min(...allVals) - 1;
-            let span = maxP - minP;
-            if (span <= 0) return;
+            let minP = Math.min(...vals), maxP = Math.max(...vals);
+            let span = maxP - minP || 1;
+            minP -= span * 0.1; maxP += span * 0.1; span = maxP - minP;
 
-            const getPos = val => Math.max(0, Math.min(100, 100 - ((val - minP) / span * 100)));
+            const getPos = v => 8 + Math.max(0, Math.min(1, (v - minP) / span)) * 84;
 
-            let items = [
-                { val: d.resistance, tag: 'res', label: '저항' },
-                { val: d.maxPain, tag: 'pain', label: 'MaxPain' },
-                { val: d.support, tag: 'sup', label: '지지' },
-                { val: d.stopLoss, tag: 'stop', label: '손절' }
-            ];
+            let bots = [
+                { id: 's2', val: d.support2, lbl: '2차 지지', c: 'c-green', bg: 'bg-green' },
+                { id: 's1', val: d.support1, lbl: '1차 지지', c: 'c-green', bg: 'bg-green' },
+                { id: 'r1', val: d.resistance1, lbl: '1차 저항', c: 'c-red', bg: 'bg-red' },
+                { id: 'r2', val: d.resistance2, lbl: '2차 저항', c: 'c-red', bg: 'bg-red' }
+            ].filter(n => n.val > 0);
 
-            items.forEach(item => item.pos = getPos(item.val));
-            items.sort((a, b) => a.pos - b.pos);
-            for (let i = 1; i < items.length; i++) {
-                if (items[i].pos - items[i - 1].pos < 14) items[i].pos = items[i - 1].pos + 14;
+            bots.forEach(n => n.pos = getPos(n.val));
+            bots.sort((a, b) => a.pos - b.pos);
+            for (let i = 1; i < bots.length; i++) {
+                if (bots[i].pos - bots[i - 1].pos < 12) bots[i].pos = bots[i - 1].pos + 12;
             }
 
-            let html = '';
-            items.forEach(item => {
-                html += `<div class="vlabel-item" style="top: ${item.pos}%;">
-                                    <span class="v-val">$${item.val.toFixed(1)}</span>
-                                    <span class="v-tag ${item.tag}">${item.label}</span>
-                                 </div>`;
-            });
-            vlabels.innerHTML = html;
+            let tops = [
+                { id: 'pain', val: d.maxPain, lbl: '🧲 MaxPain', c: 'c-gold', bg: 'bg-gold', isLarge: false },
+                { id: 'now', val: d.price, lbl: '현재가', c: 'c-blue', bg: 'bg-blue', isLarge: true }
+            ].filter(n => n.val > 0);
 
-            let nowPos = getPos(d.price);
-            vmarker.style.top = nowPos + '%';
-            vprice.style.top = nowPos + '%';
-            vprice.textContent = '$' + d.price.toFixed(1);
+            tops.forEach(n => n.pos = getPos(n.val));
+            tops.sort((a, b) => a.pos - b.pos);
 
-            if (d.price >= d.resistance) vmarker.style.borderLeftColor = '#ff4444';
-            else if (d.price <= d.support) vmarker.style.borderLeftColor = '#44ff66';
-            else vmarker.style.borderLeftColor = '#44aaff';
-        }
-
-        function updateReasons(p, d) {
-            const el = document.getElementById(p + 'reasons');
-            let rs = [];
-
-            if (d.dte !== undefined && d.dte < 0 && d.dte !== -999) {
-                rs.push({ c: 'bear', m: '<span style="color:#ff4444; font-size:12px;">⚠ 만기 지난 데이터 (매매 금지)</span>', v: `D+${Math.abs(d.dte)}` });
+            if (tops.length === 2 && Math.abs(tops[1].pos - tops[0].pos) < 10) {
+                tops[0].transX = '-100%';
+                tops[1].transX = '0%';
             }
 
-            if (d.pcr < 0.7) rs.push({ c: 'bull', m: '콜 미결제약정 압도적 우세', v: 'PCR ' + d.pcr.toFixed(2) });
-            else if (d.pcr < 0.9) rs.push({ c: 'bull', m: '콜 매수세 약간 우세', v: 'PCR ' + d.pcr.toFixed(2) });
-            else if (d.pcr > 1.2) rs.push({ c: 'bear', m: '풋 미결제약정 압도적 우세', v: 'PCR ' + d.pcr.toFixed(2) });
-            else if (d.pcr > 1.0) rs.push({ c: 'bear', m: '풋 매수세 약간 우세', v: 'PCR ' + d.pcr.toFixed(2) });
+            let html = '<div class="tl-track"></div>';
 
-            let mp = d.price - d.maxPain;
-            if (Math.abs(mp) < 2) rs.push({ c: 'neu', m: 'MaxPain(균형점) 횡보장세', v: '$' + d.maxPain.toFixed(1) });
-            else if (mp > 0) rs.push({ c: 'bear', m: '균형점 대비 고평가 (하방압력)', v: '이격 +$' + mp.toFixed(1) });
-            else rs.push({ c: 'bull', m: '균형점 대비 저평가 (상방여력)', v: '이격 -$' + Math.abs(mp).toFixed(1) });
-
-            let mkt = (d.qqqChange > 0 ? 1 : -1) + (d.spyChange > 0 ? 1 : -1);
-            if (mkt === 2) rs.push({ c: 'bull', m: '시장 지수(QQQ, SPY) 동반 상승세', v: '' });
-            else if (mkt === -2) rs.push({ c: 'bear', m: '시장 지수(QQQ, SPY) 동반 하락세', v: '' });
-
-            if (!d.isMarketOpen) rs.push({ c: 'neu', m: '장 마감 상태 (최종 OI 기준 분석)', v: '' });
-
-            el.innerHTML = rs.map(r => `<div class="reason-item"><div class="rdot ${r.c}"></div>${r.m} <span class="reason-val">${r.v}</span></div>`).join('');
-        }
-
-        function updateOI(p, rows, isMarketOpen, currentPrice) {
-            const el = document.getElementById(p + 'oi');
-            const statusEl = document.getElementById(p + 'oi-status');
-
-            let sorted = rows.slice().sort((a, b) => (b.callOI + b.putOI) - (a.callOI + a.putOI))
-                .slice(0, 8).sort((a, b) => b.strike - a.strike);
-
-            let callPower = 0, putPower = 0;
-
-            sorted.forEach(r => {
-                if (isMarketOpen) {
-                    callPower += r.callOI * (1 + (r.callChg / 100));
-                    putPower += r.putOI * (1 + (r.putChg / 100));
-                } else {
-                    callPower += r.callOI;
-                    putPower += r.putOI;
-                }
+            bots.forEach(n => {
+                html += `
+                    <div class="node node-bottom" style="left: ${n.pos}%;">
+                        <div class="lbl-box"><span class="val ${n.c}">${n.val.toFixed(1)}</span><span class="lbl">${n.lbl}</span></div>
+                    </div>
+                    <div class="dot dot-small ${n.bg}" style="left: ${n.pos}%;"></div>`;
             });
 
-            let totalPower = callPower + putPower;
-            if (totalPower > 0) {
-                let callPct = (callPower / totalPower * 100).toFixed(0);
-                let putPct = (putPower / totalPower * 100).toFixed(0);
+            tops.forEach(n => {
+                let shift = n.transX ? `transform: translateX(${n.transX});` : '';
+                html += `
+                    <div class="node node-top" style="left: ${n.pos}%; ${shift} z-index: ${n.isLarge ? 20 : 10};">
+                        <div class="lbl-box"><span class="lbl ${n.c}">${n.lbl}</span><span class="val ${n.c}">${n.val.toFixed(1)}</span></div>
+                    </div>
+                    <div class="dot ${n.isLarge ? 'dot-large' : 'dot-small'} ${n.bg}" style="left: ${n.pos}%; z-index: ${n.isLarge ? 20 : 10};"></div>`;
+            });
 
-                if (callPower > putPower) {
-                    statusEl.innerHTML = `<span style="color:#ff6666; font-weight:bold; text-shadow: 0 0 5px rgba(255,100,100,0.4);">콜 우세 (${callPct}%)</span>`;
-                } else {
-                    statusEl.innerHTML = `<span style="color:#66aaff; font-weight:bold; text-shadow: 0 0 5px rgba(100,150,255,0.4);">풋 우세 (${putPct}%)</span>`;
-                }
-            } else {
-                statusEl.textContent = '수급 우세 분석';
-            }
+            tl.innerHTML = html;
+        }
 
-            let maxOI = 0;
-            sorted.forEach(r => { if (r.callOI > maxOI) maxOI = r.callOI; if (r.putOI > maxOI) maxOI = r.putOI; });
-            let safeMax = maxOI > 0 ? maxOI : 1;
-            let maxPx = 75;
+        function renderOiGrid(p, rows, price) {
+            let maxOi = Math.max(...rows.map(r => Math.max(r.callOI + r.callVol, r.putOI + r.putVol, 1)));
+            let atm = rows.reduce((prev, curr) => Math.abs(curr.strike - price) < Math.abs(prev.strike - price) ? curr : prev).strike;
+            const fmt = v => v >= 1000 ? (v / 1000).toFixed(1) + 'K' : (v === 0 ? '-' : v);
 
-            let atmStrike = sorted.reduce((prev, curr) => Math.abs(curr.strike - currentPrice) < Math.abs(prev.strike - currentPrice) ? curr : prev).strike;
+            let html = rows.map(r => {
+                let cw = Math.max(1, ((r.callOI + r.callVol) / maxOi) * 100);
+                let pw = Math.max(1, ((r.putOI + r.putVol) / maxOi) * 100);
+                let isAtm = r.strike === atm ? 'atm' : '';
 
-            el.innerHTML = sorted.map(r => {
-                let putW = Math.max(1, (r.putOI / safeMax) * maxPx);
-                let callW = Math.max(1, (r.callOI / safeMax) * maxPx);
-                let fmtK = v => v >= 1000 ? (v / 1000).toFixed(1) + 'K' : v.toFixed(0);
+                let cc = r.callChg > 0 ? 'up' : r.callChg < 0 ? 'dn' : 'neu';
+                let pc = r.putChg > 0 ? 'up' : r.putChg < 0 ? 'dn' : 'neu';
+                let ct = (r.callChg > 0 ? '+' : '') + (r.callChg).toFixed(1) + '%';
+                let pt = (r.putChg > 0 ? '+' : '') + (r.putChg).toFixed(1) + '%';
 
-                let cCls = r.callChg > 0 ? 'up' : r.callChg < 0 ? 'dn' : 'neu';
-                let pCls = r.putChg > 0 ? 'up' : r.putChg < 0 ? 'dn' : 'neu';
-                let cTxt = (r.callChg > 0 ? '+' : '') + r.callChg.toFixed(1) + '%';
-                let pTxt = (r.putChg > 0 ? '+' : '') + r.putChg.toFixed(1) + '%';
-
-                let isAtm = r.strike === atmStrike;
-                let strikeClass = isAtm ? 'oi-strike atm' : 'oi-strike';
-
-                return `<div class="oi-row">
-                            <div class="oi-bar-wrap left"><div class="oi-bar call" style="width:${callW}px;"></div></div>
-                            <div class="oi-vol call">${fmtK(r.callOI)}</div>
-                            <div class="oi-chg ${cCls}">${cTxt}</div>
-                            <div class="${strikeClass}">${r.strike.toFixed(1)}</div>
-                            <div class="oi-chg ${pCls}">${pTxt}</div>
-                            <div class="oi-vol put">${fmtK(r.putOI)}</div>
-                            <div class="oi-bar-wrap right"><div class="oi-bar put" style="width:${putW}px;"></div></div>
-                        </div>`;
+                return `
+                    <div class="oi-row">
+                        <div class="oi-bar-wrap left"><div class="oi-bar call" style="width:${cw}%;"></div></div>
+                        <div class="oi-vol">${fmt(r.callOI)}/${fmt(r.callVol)}</div>
+                        <div class="${cc}">${ct}</div>
+                        <div><span class="strike-box ${isAtm}">${r.strike.toFixed(1)}</span></div>
+                        <div class="${pc}">${pt}</div>
+                        <div class="oi-vol">${fmt(r.putOI)}/${fmt(r.putVol)}</div>
+                        <div class="oi-bar-wrap right"><div class="oi-bar put" style="width:${pw}%;"></div></div>
+                    </div>`;
             }).join('');
-        }
 
-        function mktBadge(id, val, label) {
-            const el = document.getElementById(id);
-            if (!el) return;
-            el.className = 'mkt-badge ' + (val > 0.1 ? 'up' : val < -0.1 ? 'dn' : 'neu');
-            el.innerHTML = `<span class="mkt-sym">${label}</span>${val > 0 ? '+' : ''}${val.toFixed(2)}%`;
-        }
-    </script>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script>
-        const firebaseConfig = {
-            databaseURL: "https://hphong-2cb03-default-rtdb.asia-southeast1.firebasedatabase.app/"
-        };
-
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const db = firebase.database();
-
-        const isWebView = window.chrome && window.chrome.webview;
-
-        if (!isWebView) {
-            console.log("외부 브라우저 접속 확인: 파이어베이스 실시간 수신을 시작합니다.");
-            db.ref('tickers').on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (!data) return;
-
-                Object.keys(data).forEach(ticker => {
-                    const item = data[ticker];
-                    if (item.header) window.onWsMessage(item.header);
-                    if (item.panel) window.onWsMessage(item.panel);
-                });
-            });
+            document.getElementById(p + 'oi-rows').innerHTML = html;
         }
     </script>
 </body>
