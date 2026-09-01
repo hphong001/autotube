@@ -540,44 +540,61 @@
             display: none;
         }
 
-        /* ── 사이드바 로고 (서브텍스트, 스탯 제거 후 단일 로고 극대화) ── */
+        /* ── 사이드바 로고 (우측 상단 샘플 이미지 완벽 재현) ── */
         .sidebar-logo {
-            background: #0b0c15; /* 샘플과 유사한 짙은 네이비/블랙 배경 */
-            border: 1px solid #1a2a40; /* 둥근 블루 계열 테두리 */
+            background: #0b0c15;
+            border: 1px solid #1a2a40;
             border-radius: 12px;
-            padding: 38px 10px; /* 상하 여백을 크게 늘려 빈 공간을 가득 채움 */
+            padding: 24px 16px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 110px; 
         }
 
         .sl-name {
             display: flex;
             align-items: baseline;
             justify-content: center;
-            white-space: nowrap; /* 글자가 밑으로 떨어지지 않게 고정 */
+            white-space: nowrap;
             line-height: 1;
             width: 100%;
         }
 
         .sl-strike {
-            font-size: 34px; /* 사이드바 가로폭에 맞춰 꽉 차게 폰트 최대화 */
+            font-size: 30px;
             font-weight: 900;
-            letter-spacing: -1px; /* 글자가 튀어나가지 않도록 자간 살짝 축소 */
+            letter-spacing: 0px;
             color: #ffdf00;
             text-shadow: 0 0 15px rgba(255,223,0,0.7), 0 0 30px rgba(255,200,0,0.4);
             text-transform: uppercase;
         }
 
         .sl-zone {
-            font-size: 34px;
+            font-size: 30px;
             font-weight: 900;
-            letter-spacing: -1px;
+            letter-spacing: 0px;
             color: #ff8800;
             text-shadow: 0 0 15px rgba(255,136,0,0.9), 0 0 30px rgba(255,100,0,0.5);
             text-transform: uppercase;
+        }
+
+        .sl-line {
+            height: 1px;
+            width: 90%;
+            background: linear-gradient(90deg, transparent, #ffcc00, transparent);
+            margin: 12px 0 10px;
+            box-shadow: 0 0 8px rgba(255,204,0,0.6);
+        }
+
+        .sl-sub {
+            font-size: 11.5px;
+            letter-spacing: 8px;
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.8);
+            text-transform: uppercase;
+            margin-right: -8px; /* 마지막 글자 자간 오프셋 보정 */
         }
 
         .sidebar-menu {
@@ -949,10 +966,10 @@
         <!-- ★ 상단 로고C: 골드+오렌지 -->
         <div class="logo-top">
             <div class="logo-top-main">
-                <span class="lt-strike">Strike</span><span class="lt-zone">Zone</span>
+                <span class="lt-strike">STRIKE</span><span class="lt-zone">ZONE</span>
             </div>
             <div class="logo-top-line"></div>
-            <div class="logo-top-sub">Stock &nbsp;·&nbsp; Options Flow</div>
+            <div class="logo-top-sub">STOCK &nbsp;·&nbsp; PREMIUM</div>
         </div>
 
         <div class="neon-ticker-bar">
@@ -1012,11 +1029,13 @@
         </div>
 
         <div class="sidebar">
-            <!-- ★ Logo C: 사이드바 (서브 텍스트, 스탯 모두 제거) -->
+            <!-- ★ Logo C: 사이드바 -->
             <div class="sidebar-logo">
                 <div class="sl-name">
-                    <span class="sl-strike">Strike</span><span class="sl-zone">Zone</span>
+                    <span class="sl-strike">STRIKE</span><span class="sl-zone">ZONE</span>
                 </div>
+                <div class="sl-line"></div>
+                <div class="sl-sub">STOCK &nbsp;·&nbsp; PREMIUM</div>
             </div>
 
             <div class="sidebar-menu">[메뉴] 알림 · 설정 · 포트폴리오</div>
