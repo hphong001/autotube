@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdn.jsdelivr.net/npm/protobufjs@7.2.5/dist/protobuf.min.js"></script>
-    <!-- ⭐️ 트레이딩뷰 무료 오픈소스 실시간 라이트웨이트 차트 라이브러리 CDN -->
+    <!-- 트레이딩뷰 무료 오픈소스 실시간 라이트웨이트 차트 라이브러리 CDN -->
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -528,10 +528,9 @@ var prevCloseCache  = {};
 var yahooPriceCache = {};
 var panelDataStore  = {};
 var headerPrevClose = {};
-var panelIntervals  = { 0: '3', 1: '3', 2: '3' }; // 패널별 분봉 주기 저장
+var panelIntervals  = { 0: '3', 1: '3', 2: '3' };
 
-// ⭐️ 라이트웨이트 실시간 차트 관리 객체
-var lwCharts       = {}; // { 0: { chart, series, lastTime, lastClose } }
+var lwCharts       = {}; // 라이트웨이트 차트 관리 객체
 
 var globQqq = null, globSpy = null, globVix = null, globVixState = '안정';
 
@@ -641,8 +640,6 @@ function onYahooMsg(msg) {
     }
 
     updatePanelPrice(idx, price, chgPct, chgAmt);
-
-    // ⭐️ 실시간 가격 틱(Tick)을 라이트웨이트 차트에 실시간 반영 (마지막 캔들 종가·고가·저가 갱신)
     updateRealtimeChartTick(idx, price);
 
     var d = panelDataStore[idx];
@@ -747,11 +744,14 @@ window.onWsMessage = function(d) {
 
 function renderPanel(panel, d) {
     var p = 'p' + panel + '-';
+    var ticker = d.ticker || DASH_TICKERS[panel];
 
     var tkEl = document.getElementById(p + 'ticker');
-    if (tkEl) tkEl.textContent = d.ticker || '─';
+    if (tkEl) tkEl.textContent = ticker;
 
     var price  = d.price    || 0;
+    if (price <= 0 && yahooPriceCache[ticker]) price = yahooPriceCache[ticker].price;
+
     var chgPct = d.changePct !== undefined ? d.changePct : (d.change || 0);
     var chgAmt = d.changeAmt !== undefined ? d.changeAmt : (d.priceDiff || 0);
     var cls    = chgPct > 0 ? 'up' : chgPct < 0 ? 'dn' : 'neu';
@@ -804,27 +804,27 @@ function renderPanel(panel, d) {
 
     if (d.optionRows && d.optionRows.length) renderOiGrid(p, d.optionRows, price || (d.maxPain || 100));
 
-    // ⭐️ 라이트웨이트 실시간 차트 초기화 (최초 1회 또는 종목/주기 변경 시)
-    initOrUpdateLightweightChart(panel, d.ticker, price);
+    // ⭐️ 가격이 없어도 종목별 기본 방어 가격을 잡아 차트가 무조건 뜨도록 개선
+    var defaultPrices = { 'TSLA': 350.0, 'NVDA': 200.0, 'PLTR': 180.0 };
+    var finalPrice = price > 0 ? price : (defaultPrices[ticker] || 100.0);
+    initOrUpdateLightweightChart(panel, ticker, finalPrice);
 }
 
-// ⭐️ 라이트웨이트 차트 생성 및 초기 데이터 설정 함수
 function initOrUpdateLightweightChart(panel, ticker, currentPrice) {
     if (!ticker) return;
     var containerId = 'chart-' + panel;
     var container = document.getElementById(containerId);
     if (!container) return;
 
-    // 이미 차트가 생성되어 있다면 중복 생성 방지 (데이터는 실시간 틱으로 업데이트됨)
     if (lwCharts[panel] && lwCharts[panel].ticker === ticker && lwCharts[panel].interval === panelIntervals[panel]) {
         return;
     }
 
-    container.innerHTML = ''; // 기존 DOM 정리
+    container.innerHTML = '';
 
     var chart = LightweightCharts.createChart(container, {
-        width: container.clientWidth,
-        height: container.clientHeight,
+        width: container.clientWidth || 350,
+        height: container.clientHeight || 240,
         layout: {
             background: { type: 'solid', color: '#07070c' },
             textColor: '#9999aa',
@@ -852,7 +852,6 @@ function initOrUpdateLightweightChart(panel, ticker, currentPrice) {
         wickUpColor: '#ff4444',
     });
 
-    // 가상의 초기 봉 데이터 생성 (현재가 기준 데모 샘플 데이터)
     var basePrice = currentPrice > 0 ? currentPrice : 100.0;
     var nowSec = Math.floor(Date.now() / 1000);
     var intervalMin = parseInt(panelIntervals[panel] || '3') * 60;
@@ -874,7 +873,6 @@ function initOrUpdateLightweightChart(panel, ticker, currentPrice) {
     candlestickSeries.setData(initialData);
     chart.timeScale().fitContent();
 
-    // 관리 객체에 저장
     lwCharts[panel] = {
         chart: chart,
         series: candlestickSeries,
@@ -886,7 +884,6 @@ function initOrUpdateLightweightChart(panel, ticker, currentPrice) {
         lastLow: basePrice - 1.0
     };
 
-    // 창크기 변경 시 차트 리사이징 대응
     window.addEventListener('resize', function() {
         if (container.clientWidth > 0 && container.clientHeight > 0) {
             chart.applyOptions({ width: container.clientWidth, height: container.clientHeight });
@@ -894,7 +891,6 @@ function initOrUpdateLightweightChart(panel, ticker, currentPrice) {
     });
 }
 
-// ⭐️ 실시간 틱 데이터가 들어올 때 마지막 캔들을 즉시 갱신하는 함수
 function updateRealtimeChartTick(panel, price) {
     var obj = lwCharts[panel];
     if (!obj || !obj.series) return;
@@ -903,17 +899,14 @@ function updateRealtimeChartTick(panel, price) {
     var intervalSec = parseInt(panelIntervals[panel] || '3') * 60;
     if (isNaN(intervalSec)) intervalSec = 180;
 
-    // 현재 봉의 타임스탬프 계산
     var currentBarTime = nowSec - (nowSec % intervalSec);
 
     if (currentBarTime > obj.lastTime) {
-        // 새로운 봉으로 넘어간 경우
         obj.lastTime = currentBarTime;
         obj.lastOpen = price;
         obj.lastHigh = price;
         obj.lastLow = price;
     } else {
-        // 기존 봉에서 고가/저가/종가 실시간 갱신
         if (price > obj.lastHigh) obj.lastHigh = price;
         if (price < obj.lastLow) obj.lastLow = price;
     }
@@ -927,22 +920,24 @@ function updateRealtimeChartTick(panel, price) {
     });
 }
 
-// ⭐️ 분봉 드롭다운 변경 시 실행되는 함수
 function changeInterval(panel, val) {
     panelIntervals[panel] = val;
-    // 기존 차트 객체 초기화 후 해당 주기로 재생성 유도
     if (lwCharts[panel]) {
         lwCharts[panel].chart.remove();
         delete lwCharts[panel];
     }
-    var ticker = panelDataStore[panel] ? panelDataStore[panel].ticker : null;
-    if (!ticker) {
-        if (panel === 0) ticker = 'TSLA';
-        else if (panel === 1) ticker = 'NVDA';
-        else if (panel === 2) ticker = 'PLTR';
-    }
-    var curPrice = yahooPriceCache[ticker] ? yahooPriceCache[ticker].price : 100.0;
+    var ticker = DASH_TICKERS[panel];
+    var curPrice = yahooPriceCache[ticker] ? yahooPriceCache[ticker].price : (panel === 0 ? 350.0 : panel === 1 ? 200.0 : 180.0);
     initOrUpdateLightweightChart(panel, ticker, curPrice);
+}
+
+// ⭐️ 최초 로딩 시 패널 3개(TSLA, NVDA, PLTR)의 차트를 강제로 미리 그려주어 빈 화면 방지
+function initAllDefaultCharts() {
+    DASH_TICKERS.forEach(function(ticker, panel) {
+        var defaultPrices = { 'TSLA': 350.0, 'NVDA': 200.0, 'PLTR': 180.0 };
+        var curPrice = yahooPriceCache[ticker] ? yahooPriceCache[ticker].price : defaultPrices[ticker];
+        initOrUpdateLightweightChart(panel, ticker, curPrice);
+    });
 }
 
 function updateEnvSummary(i) {
@@ -1005,11 +1000,12 @@ function renderOiGrid(p, rows, price) {
         var ia=r.strike===atm?'atm':'';
         var cc=r.callChg>0?'up':r.callChg<0?'dn':'neu',pc=r.putChg>0?'up':r.putChg<0?'dn':'neu';
         var ct=(r.callChg>0?'+':'')+r.callChg.toFixed(1)+'%',pt=(r.putChg>0?'+':'')+r.putChg.toFixed(1)+'%';
-        return '<div class="oi-row"><div class="oi-bar-wrap left"><div class="oi-bar call" style="width:'+cw+'%"></div></div><div class="oi-vol">'+fmt(r.callOI)+'/'+fmt(r.callVol)+'</div><div class="'+cc+'_'+ct+'"></div><div><span class="strike-box '+ia+'">'+r.strike.toFixed(1)+'</span></div><div class="'+pc+'">'+pt+'</div><div class="oi-vol">'+fmt(r.putOI)+'/'+fmt(r.putVol)+'</div><div class="oi-bar-wrap right"><div class="oi-bar put" style="width:'+pw+'%"></div></div></div>';
+        return '<div class="oi-row"><div class="oi-bar-wrap left"><div class="oi-bar call" style="width:'+cw+'%"></div></div><div class="oi-vol">'+fmt(r.callOI)+'/'+fmt(r.callVol)+'</div><div class="'+cc+'">'+ct+'</div><div><span class="strike-box '+ia+'">'+r.strike.toFixed(1)+'</span></div><div class="'+pc+'">'+pt+'</div><div class="oi-vol">'+fmt(r.putOI)+'/'+fmt(r.putVol)+'</div><div class="oi-bar-wrap right"><div class="oi-bar put" style="width:'+pw+'%"></div></div></div>';
     }).join('');
 }
 
 (async function start() {
+    initAllDefaultCharts(); // ⭐️ 페이지 뜨자마자 3개 종목 차트 강제 초기화
     await initFirebase();
     yahooWsConnect();
 })();
