@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -35,62 +35,6 @@
             }
         }
 
-        /* ── Logo C CSS ── */
-        .logo-s {
-            color: #ffd700;
-            text-shadow: 0 0 18px rgba(255,215,0,0.7), 0 0 35px rgba(255,200,0,0.4);
-            filter: drop-shadow(0 0 8px rgba(255,200,0,0.5));
-        }
-
-        .logo-z {
-            color: #ff8800;
-            text-shadow: 0 0 18px rgba(255,136,0,0.8), 0 0 35px rgba(255,100,0,0.4);
-            filter: drop-shadow(0 0 10px rgba(255,120,0,0.6));
-        }
-
-        .logo-stock {
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 4px;
-            color: #ffffff;
-            text-shadow: 0 0 8px rgba(255,255,255,0.4);
-            text-transform: uppercase;
-            margin-left: 8px;
-            align-self: flex-end;
-            padding-bottom: 3px;
-            border-left: 1px solid #443300;
-            padding-left: 8px;
-        }
-        /* 사이드바 로고C */
-        .sl-s {
-            background: linear-gradient(135deg, #ffd700, #ffcc00);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 10px rgba(255,215,0,0.6));
-        }
-
-        .sl-zone {
-            background: linear-gradient(135deg, #ff9900, #ff6600);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 10px rgba(255,136,0,0.6));
-        }
-
-        .sl-line-c {
-            height: 1px;
-            margin: 8px 0 4px;
-            background: linear-gradient(90deg, transparent, #ffd700, #ff8800, transparent);
-        }
-
-        .sl-sub-c {
-            font-size: 11px;
-            letter-spacing: 4px;
-            color: #ffffff;
-            font-weight: 700;
-            text-transform: uppercase;
-            text-shadow: 0 0 6px rgba(255,255,255,0.3);
-        }
-
         /* ── 상단 바 ── */
         .top-bar {
             background: #080812;
@@ -104,39 +48,55 @@
             gap: 10px;
         }
 
-        /* ★ StrikeZone 네온 로고 */
-        .logo-neon {
+        /* ★ 상단 로고C (좌측 상단) */
+        .logo-top {
             display: flex;
-            align-items: flex-end;
-            gap: 2px;
+            flex-direction: column;
+            align-items: center; /* 중앙 정렬 적용 */
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .logo-top-main {
+            display: flex;
+            align-items: baseline;
+        }
+
+        .lt-strike {
             font-size: 20px;
             font-weight: 900;
-            letter-spacing: -0.5px;
-            white-space: nowrap;
+            letter-spacing: 0.5px;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255,215,0,0.5);
+            filter: drop-shadow(0 0 8px rgba(255,200,0,0.4));
         }
 
-        .logo-s {
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(120,160,255,0.6);
+        .lt-zone {
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            color: #ff8800;
+            text-shadow: 0 0 20px rgba(255,136,0,0.6);
+            filter: drop-shadow(0 0 8px rgba(255,136,0,0.5));
         }
 
-        .logo-z {
-            background: linear-gradient(135deg, #4488ff, #aa44ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 8px rgba(100,150,255,0.7));
+        .logo-top-line {
+            height: 1px;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, #ffd700, transparent);
+            margin: 4px 0;
         }
 
-        .logo-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #4488ff;
-            box-shadow: 0 0 8px #4488ff;
-            margin: 0 1px;
-            align-self: center;
+        .logo-top-sub {
+            font-size: 9px;
+            letter-spacing: 6px;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+            text-transform: uppercase;
         }
 
+        /* 네온 티커 바 */
         .neon-ticker-bar {
             display: flex;
             align-items: center;
@@ -157,19 +117,19 @@
             white-space: nowrap;
         }
 
-            .neon-item.up {
-                color: #ff4444;
-                text-shadow: 0 0 6px rgba(255,68,68,0.5);
-            }
+        .neon-item.up {
+            color: #ff4444;
+            text-shadow: 0 0 6px rgba(255,68,68,0.5);
+        }
 
-            .neon-item.dn {
-                color: #4488ff;
-                text-shadow: 0 0 6px rgba(68,136,255,0.5);
-            }
+        .neon-item.dn {
+            color: #4488ff;
+            text-shadow: 0 0 6px rgba(68,136,255,0.5);
+        }
 
-            .neon-item.neu {
-                color: #ccc;
-            }
+        .neon-item.neu {
+            color: #ccc;
+        }
 
         .neon-vix-warn {
             color: #ffcc00;
@@ -187,50 +147,6 @@
             white-space: nowrap;
         }
 
-        /* ★ 상단 로고C */
-        .logo-top {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            line-height: 1;
-        }
-
-        .logo-top-main {
-            display: flex;
-            align-items: baseline;
-        }
-
-        .lt-strike {
-            font-size: 19px;
-            font-weight: 900;
-            letter-spacing: 0.5px;
-            color: #ffd700;
-            text-shadow: 0 0 14px rgba(255,215,0,0.6);
-        }
-
-        .lt-zone {
-            font-size: 19px;
-            font-weight: 900;
-            letter-spacing: 0.5px;
-            color: #ff8800;
-            text-shadow: 0 0 14px rgba(255,136,0,0.7);
-        }
-
-        .logo-top-line {
-            height: 1px;
-            width: 100%;
-            background: linear-gradient(90deg, #ffd700, #ff8800, transparent);
-            margin: 3px 0;
-        }
-
-        .logo-top-sub {
-            font-size: 9px;
-            letter-spacing: 3px;
-            font-weight: 700;
-            color: #886600;
-            text-transform: uppercase;
-        }
-
         /* 네온 점 */
         .ws-dot {
             width: 8px;
@@ -241,25 +157,20 @@
             flex-shrink: 0;
         }
 
-            .ws-dot.live {
-                background: #00aaff;
-                box-shadow: 0 0 8px #00aaff;
-                animation: np 1.5s infinite;
-            }
+        .ws-dot.live {
+            background: #00aaff;
+            box-shadow: 0 0 8px #00aaff;
+            animation: np 1.5s infinite;
+        }
 
-            .ws-dot.dead {
-                background: #1a1a2a;
-                animation: none;
-            }
+        .ws-dot.dead {
+            background: #1a1a2a;
+            animation: none;
+        }
 
         @keyframes np {
-            0%,100% {
-                opacity: 1
-            }
-
-            50% {
-                opacity: 0.3
-            }
+            0%,100% { opacity: 1 }
+            50% { opacity: 0.3 }
         }
 
         /* OI 갱신 점 */
@@ -273,20 +184,15 @@
             flex-shrink: 0;
         }
 
-            .oi-dot.flash {
-                background: #00aaff;
-                box-shadow: 0 0 8px #00aaff;
-                animation: oiF 0.4s ease-in-out 2;
-            }
+        .oi-dot.flash {
+            background: #00aaff;
+            box-shadow: 0 0 8px #00aaff;
+            animation: oiF 0.4s ease-in-out 2;
+        }
 
         @keyframes oiF {
-            0%,100% {
-                opacity: 1
-            }
-
-            50% {
-                opacity: 0.05
-            }
+            0%,100% { opacity: 1 }
+            50% { opacity: 0.05 }
         }
 
         /* ── 메인 레이아웃 ── */
@@ -321,9 +227,9 @@
             background: #07070c;
         }
 
-            .panel:last-child {
-                border-right: none;
-            }
+        .panel:last-child {
+            border-right: none;
+        }
 
         /* ── 패널 헤더 ── */
         .ph {
@@ -373,17 +279,9 @@
             white-space: nowrap;
         }
 
-        .up {
-            color: #ff4444 !important;
-        }
-
-        .dn {
-            color: #4488ff !important;
-        }
-
-        .neu {
-            color: #aaa !important;
-        }
+        .up { color: #ff4444 !important; }
+        .dn { color: #4488ff !important; }
+        .neu { color: #aaa !important; }
 
         /* ── 전략 박스 ── */
         .strategy-box {
@@ -449,13 +347,8 @@
             white-space: nowrap;
         }
 
-        .node-top {
-            bottom: 40px;
-        }
-
-        .node-bottom {
-            top: 40px;
-        }
+        .node-top { bottom: 40px; }
+        .node-bottom { top: 40px; }
 
         .dot-tl {
             position: absolute;
@@ -498,37 +391,14 @@
             font-weight: bold;
         }
 
-        .c-red {
-            color: #ff4444;
-        }
-
-        .bg-red {
-            background: #ff4444;
-        }
-
-        .c-green {
-            color: #44ff66;
-        }
-
-        .bg-green {
-            background: #44ff66;
-        }
-
-        .c-blue {
-            color: #4488ff;
-        }
-
-        .bg-blue {
-            background: #4488ff;
-        }
-
-        .c-gold {
-            color: #ffcc00;
-        }
-
-        .bg-gold {
-            background: #ffcc00;
-        }
+        .c-red { color: #ff4444; }
+        .bg-red { background: #ff4444; }
+        .c-green { color: #44ff66; }
+        .bg-green { background: #44ff66; }
+        .c-blue { color: #4488ff; }
+        .bg-blue { background: #4488ff; }
+        .c-gold { color: #ffcc00; }
+        .bg-gold { background: #ffcc00; }
 
         /* ── OI 박스 ── */
         .oi-box {
@@ -603,13 +473,8 @@
             align-items: center;
         }
 
-            .oi-bar-wrap.left {
-                justify-content: flex-end;
-            }
-
-            .oi-bar-wrap.right {
-                justify-content: flex-start;
-            }
+        .oi-bar-wrap.left { justify-content: flex-end; }
+        .oi-bar-wrap.right { justify-content: flex-start; }
 
         .oi-bar.call {
             height: 6px;
@@ -634,11 +499,11 @@
             font-size: 11px;
         }
 
-            .strike-box.atm {
-                background: #ffcc00;
-                color: #000;
-                box-shadow: 0 0 4px #ffcc00;
-            }
+        .strike-box.atm {
+            background: #ffcc00;
+            color: #000;
+            box-shadow: 0 0 4px #ffcc00;
+        }
 
         .oi-vol {
             font-size: 10px;
@@ -671,11 +536,11 @@
             flex-shrink: 0;
         }
 
-            .sidebar::-webkit-scrollbar {
-                display: none;
-            }
+        .sidebar::-webkit-scrollbar {
+            display: none;
+        }
 
-        /* ★ 사이드바 로고C */
+        /* ★ 사이드바 로고C (우측 상단) */
         .sidebar-logo {
             background: #0a0800;
             border: 1px solid #2a2000;
@@ -683,66 +548,77 @@
             padding: 14px 16px;
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-            .sidebar-logo::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                height: 2px;
-                background: linear-gradient(90deg, transparent, #ffd700, #ff8800, transparent);
-            }
+        .sidebar-logo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ffd700, transparent);
+        }
 
         .sl-eyebrow {
             font-size: 9px;
             letter-spacing: 3px;
-            color: #554400;
+            color: #775500;
             text-transform: uppercase;
             margin-bottom: 6px;
             font-weight: 700;
+            text-align: center;
+            width: 100%;
         }
 
-        .sl-main {
+        .sl-name-wrapper {
             display: flex;
             align-items: baseline;
-            gap: 0;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .sl-name {
+            display: flex;
+            align-items: baseline;
             line-height: 1;
         }
 
         .sl-strike {
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 900;
             letter-spacing: -0.5px;
             color: #ffd700;
-            text-shadow: 0 0 18px rgba(255,215,0,0.7), 0 0 36px rgba(255,180,0,0.3);
+            text-shadow: 0 0 20px rgba(255,215,0,0.5);
+            filter: drop-shadow(0 0 8px rgba(255,200,0,0.4));
         }
 
         .sl-zone {
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 900;
             letter-spacing: -0.5px;
             color: #ff8800;
-            text-shadow: 0 0 18px rgba(255,136,0,0.8), 0 0 36px rgba(255,100,0,0.4);
+            text-shadow: 0 0 20px rgba(255,136,0,0.6);
+            filter: drop-shadow(0 0 8px rgba(255,136,0,0.5));
         }
 
-        .sl-divider {
-            height: 1px;
-            margin: 8px 0;
-            background: linear-gradient(90deg, #ffd700, #ff8800, transparent);
-        }
-
-        .sl-sub {
-            font-size: 11px;
-            letter-spacing: 4px;
-            font-weight: 800;
+        .sl-sub-inline {
+            font-size: 9px;
+            letter-spacing: 3px;
+            font-weight: 700;
             color: #ffffff;
             text-transform: uppercase;
-            text-shadow: 0 0 8px rgba(255,255,255,0.2);
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+            border-left: 1px solid #443300;
+            padding-left: 6px;
+            margin-bottom: 2px;
         }
 
         .sl-stats {
+            width: 100%;
             display: flex;
             gap: 0;
             margin-top: 10px;
@@ -807,14 +683,14 @@
             flex: 1;
         }
 
-            .ticker-list::-webkit-scrollbar {
-                width: 3px;
-            }
+        .ticker-list::-webkit-scrollbar {
+            width: 3px;
+        }
 
-            .ticker-list::-webkit-scrollbar-thumb {
-                background: #333;
-                border-radius: 2px;
-            }
+        .ticker-list::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 2px;
+        }
 
         .ticker-item {
             display: flex;
@@ -827,9 +703,9 @@
             color: #aaa;
         }
 
-            .ticker-item input {
-                accent-color: #4488ff;
-            }
+        .ticker-item input {
+            accent-color: #4488ff;
+        }
 
         .sidebar-ad {
             background: #0d0d1a;
@@ -873,9 +749,9 @@
                 overflow-y: visible;
             }
 
-                .panel:last-child {
-                    border-bottom: none;
-                }
+            .panel:last-child {
+                border-bottom: none;
+            }
 
             .sidebar {
                 width: 100%;
@@ -1014,8 +890,8 @@
                 padding: 10px 12px;
             }
 
-            .sl-name {
-                font-size: 22px;
+            .sl-strike, .sl-zone {
+                font-size: 18px;
             }
 
             .sidebar-watchlist {
@@ -1089,9 +965,9 @@
                 border-bottom: 1px solid #1a1a2e;
             }
 
-                .panel:nth-child(even) {
-                    border-right: none;
-                }
+            .panel:nth-child(even) {
+                border-right: none;
+            }
 
             .chart-section {
                 min-height: 300px;
@@ -1201,13 +1077,13 @@
         <div class="sidebar">
             <!-- ★ Logo C: 사이드바 -->
             <div class="sidebar-logo">
-                <div class="sl-eye">Options Terminal</div>
-                <div class="sl-name">
-                    <span class="sl-s">Strike</span><span class="sl-zone">Zone</span>
+                <div class="sl-eyebrow">Options Terminal</div>
+                <div class="sl-name-wrapper">
+                    <div class="sl-name">
+                        <span class="sl-strike">Strike</span><span class="sl-zone">Zone</span>
+                    </div>
+                    <div class="sl-sub-inline">Stock · Premium</div>
                 </div>
-                <div class="sl-line-c"></div>
-                <div class="sl-sub-c">Stock &nbsp;·&nbsp; Premium</div>
-                <div class="sl-line"></div>
                 <div class="sl-stats">
                     <div class="sl-stat">
                         <div class="sl-stat-v" id="sl-live">●&nbsp;LIVE</div>
