@@ -48,11 +48,11 @@
             gap: 10px;
         }
 
-        /* ★ 상단 로고C (좌측 상단) */
+        /* ── 상단 바 로고 (좌측 상단) ── */
         .logo-top {
             display: flex;
             flex-direction: column;
-            align-items: center; /* 중앙 정렬 적용 */
+            align-items: center;
             justify-content: center;
             line-height: 1;
         }
@@ -63,37 +63,37 @@
         }
 
         .lt-strike {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 900;
-            letter-spacing: 0.5px;
-            color: #ffd700;
-            text-shadow: 0 0 20px rgba(255,215,0,0.5);
-            filter: drop-shadow(0 0 8px rgba(255,200,0,0.4));
+            color: #ffdf00;
+            text-shadow: 0 0 12px rgba(255,223,0,0.6), 0 0 24px rgba(255,200,0,0.4);
+            text-transform: uppercase;
         }
 
         .lt-zone {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 900;
-            letter-spacing: 0.5px;
             color: #ff8800;
-            text-shadow: 0 0 20px rgba(255,136,0,0.6);
-            filter: drop-shadow(0 0 8px rgba(255,136,0,0.5));
+            text-shadow: 0 0 12px rgba(255,136,0,0.8), 0 0 24px rgba(255,100,0,0.5);
+            text-transform: uppercase;
         }
 
         .logo-top-line {
             height: 1px;
-            width: 100%;
-            background: linear-gradient(90deg, transparent, #ffd700, transparent);
-            margin: 4px 0;
+            width: 90%;
+            background: linear-gradient(90deg, transparent, #ffcc00, transparent);
+            margin: 6px 0;
+            box-shadow: 0 0 5px rgba(255,204,0,0.5);
         }
 
         .logo-top-sub {
             font-size: 9px;
             letter-spacing: 6px;
-            font-weight: 700;
+            font-weight: 800;
             color: #ffffff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+            text-shadow: 0 0 8px rgba(255,255,255,0.6);
             text-transform: uppercase;
+            margin-right: -6px; /* 마지막 글자 자간 오프셋 보정 */
         }
 
         /* 네온 티커 바 */
@@ -540,107 +540,44 @@
             display: none;
         }
 
-        /* ★ 사이드바 로고C (우측 상단) */
+        /* ── 사이드바 로고 (서브텍스트, 스탯 제거 후 단일 로고 극대화) ── */
         .sidebar-logo {
-            background: #0a0800;
-            border: 1px solid #2a2000;
-            border-radius: 10px;
-            padding: 14px 16px;
-            position: relative;
-            overflow: hidden;
+            background: #0b0c15; /* 샘플과 유사한 짙은 네이비/블랙 배경 */
+            border: 1px solid #1a2a40; /* 둥근 블루 계열 테두리 */
+            border-radius: 12px;
+            padding: 38px 10px; /* 상하 여백을 크게 늘려 빈 공간을 가득 채움 */
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-
-        .sidebar-logo::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #ffd700, transparent);
-        }
-
-        .sl-eyebrow {
-            font-size: 9px;
-            letter-spacing: 3px;
-            color: #775500;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-            font-weight: 700;
-            text-align: center;
-            width: 100%;
-        }
-
-        .sl-name-wrapper {
-            display: flex;
-            align-items: baseline;
             justify-content: center;
-            gap: 6px;
+            min-height: 110px; 
         }
 
         .sl-name {
             display: flex;
             align-items: baseline;
+            justify-content: center;
+            white-space: nowrap; /* 글자가 밑으로 떨어지지 않게 고정 */
             line-height: 1;
+            width: 100%;
         }
 
         .sl-strike {
-            font-size: 22px;
+            font-size: 34px; /* 사이드바 가로폭에 맞춰 꽉 차게 폰트 최대화 */
             font-weight: 900;
-            letter-spacing: -0.5px;
-            color: #ffd700;
-            text-shadow: 0 0 20px rgba(255,215,0,0.5);
-            filter: drop-shadow(0 0 8px rgba(255,200,0,0.4));
+            letter-spacing: -1px; /* 글자가 튀어나가지 않도록 자간 살짝 축소 */
+            color: #ffdf00;
+            text-shadow: 0 0 15px rgba(255,223,0,0.7), 0 0 30px rgba(255,200,0,0.4);
+            text-transform: uppercase;
         }
 
         .sl-zone {
-            font-size: 22px;
+            font-size: 34px;
             font-weight: 900;
-            letter-spacing: -0.5px;
+            letter-spacing: -1px;
             color: #ff8800;
-            text-shadow: 0 0 20px rgba(255,136,0,0.6);
-            filter: drop-shadow(0 0 8px rgba(255,136,0,0.5));
-        }
-
-        .sl-sub-inline {
-            font-size: 9px;
-            letter-spacing: 3px;
-            font-weight: 700;
-            color: #ffffff;
+            text-shadow: 0 0 15px rgba(255,136,0,0.9), 0 0 30px rgba(255,100,0,0.5);
             text-transform: uppercase;
-            text-shadow: 0 0 10px rgba(255,255,255,0.3);
-            border-left: 1px solid #443300;
-            padding-left: 6px;
-            margin-bottom: 2px;
-        }
-
-        .sl-stats {
-            width: 100%;
-            display: flex;
-            gap: 0;
-            margin-top: 10px;
-            border-top: 1px solid #221800;
-            padding-top: 8px;
-        }
-
-        .sl-stat {
-            flex: 1;
-            text-align: center;
-        }
-
-        .sl-stat-v {
-            font-size: 12px;
-            font-weight: 700;
-            color: #ffaa00;
-        }
-
-        .sl-stat-l {
-            font-size: 9px;
-            color: #554400;
-            margin-top: 1px;
         }
 
         .sidebar-menu {
@@ -887,11 +824,11 @@
             }
 
             .sidebar-logo {
-                padding: 10px 12px;
+                padding: 24px 12px;
             }
 
             .sl-strike, .sl-zone {
-                font-size: 18px;
+                font-size: 26px; /* 모바일 환경 비율 조정 */
             }
 
             .sidebar-watchlist {
@@ -1075,28 +1012,10 @@
         </div>
 
         <div class="sidebar">
-            <!-- ★ Logo C: 사이드바 -->
+            <!-- ★ Logo C: 사이드바 (서브 텍스트, 스탯 모두 제거) -->
             <div class="sidebar-logo">
-                <div class="sl-eyebrow">Options Terminal</div>
-                <div class="sl-name-wrapper">
-                    <div class="sl-name">
-                        <span class="sl-strike">Strike</span><span class="sl-zone">Zone</span>
-                    </div>
-                    <div class="sl-sub-inline">Stock · Premium</div>
-                </div>
-                <div class="sl-stats">
-                    <div class="sl-stat">
-                        <div class="sl-stat-v" id="sl-live">●&nbsp;LIVE</div>
-                        <div class="sl-stat-l">STATUS</div>
-                    </div>
-                    <div class="sl-stat">
-                        <div class="sl-stat-v">3</div>
-                        <div class="sl-stat-l">TICKERS</div>
-                    </div>
-                    <div class="sl-stat">
-                        <div class="sl-stat-v">1M</div>
-                        <div class="sl-stat-l">REFRESH</div>
-                    </div>
+                <div class="sl-name">
+                    <span class="sl-strike">Strike</span><span class="sl-zone">Zone</span>
                 </div>
             </div>
 
@@ -1483,9 +1402,6 @@ function setWsDot(state) {
     var cls = state==='live' ? 'ws-dot live' : 'ws-dot dead';
     DASH_TICKERS.forEach(function(_,i){var el=document.getElementById('p'+i+'-dot');if(el)el.className=cls;});
     var hd=document.getElementById('ws-dot-header'); if(hd) hd.className=cls;
-    // 사이드바 STATUS 업데이트
-    var slEl = document.getElementById('sl-live');
-    if (slEl) slEl.style.color = state==='live' ? '#4488ff' : '#333';
 }
 
 function updateTimeDisplay() {
