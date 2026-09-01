@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdn.jsdelivr.net/npm/protobufjs@7.2.5/dist/protobuf.min.js"></script>
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <!-- ⭐️ 트레이딩뷰 무료 오픈소스 실시간 라이트웨이트 차트 라이브러리 CDN -->
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
@@ -294,7 +295,7 @@
         .strike-box.atm { background: #ffcc00; color: #000; box-shadow: 0 0 4px #ffcc00; }
         .oi-vol { font-size: 10px; color: #eee; white-space: nowrap; font-weight: bold; }
 
-        /* ── 차트 영역 높이 고정 및 우측 상단 분봉 선택 드롭다운 ── */
+        /* ── 실시간 라이트웨이트 차트 영역 ── */
         .chart-wrapper {
             flex: 0 0 240px;
             position: relative;
@@ -528,7 +529,9 @@ var yahooPriceCache = {};
 var panelDataStore  = {};
 var headerPrevClose = {};
 var panelIntervals  = { 0: '3', 1: '3', 2: '3' }; // 패널별 분봉 주기 저장
-var initializedCharts = {}; // 차트 중복 생성 방지용 객체
+
+// ⭐️ 라이트웨이트 실시간 차트 관리 객체
+var lwCharts       = {}; // { 0: { chart, series, lastTime, lastClose } }
 
 var globQqq = null, globSpy = null, globVix = null, globVixState = '안정';
 
@@ -638,6 +641,9 @@ function onYahooMsg(msg) {
     }
 
     updatePanelPrice(idx, price, chgPct, chgAmt);
+
+    // ⭐️ 실시간 가격 틱(Tick)을 라이트웨이트 차트에 실시간 반영 (마지막 캔들 종가·고가·저가 갱신)
+    updateRealtimeChartTick(idx, price);
 
     var d = panelDataStore[idx];
     if (d && d.maxPain > 0) {
@@ -798,47 +804,145 @@ function renderPanel(panel, d) {
 
     if (d.optionRows && d.optionRows.length) renderOiGrid(p, d.optionRows, price || (d.maxPain || 100));
 
-    // ⭐️ 데이터가 갱신될 때 차트가 통째로 재로딩되지 않고, 최초 1번만 생성되도록 분기 처리
-    if (d.ticker && !initializedCharts[panel]) {
-        initializedCharts[panel] = d.ticker;
-        updateChartWidget(panel, d.ticker);
-    }
+    // ⭐️ 라이트웨이트 실시간 차트 초기화 (최초 1회 또는 종목/주기 변경 시)
+    initOrUpdateLightweightChart(panel, d.ticker, price);
 }
 
-// ⭐️ 차트 위젯 생성 함수 (최초 생성 또는 분봉 변경 시에만 호출됨)
-function updateChartWidget(panel, ticker) {
+// ⭐️ 라이트웨이트 차트 생성 및 초기 데이터 설정 함수
+function initOrUpdateLightweightChart(panel, ticker, currentPrice) {
     if (!ticker) return;
     var containerId = 'chart-' + panel;
-    var currentInterval = panelIntervals[panel] || '3';
-    
-    document.getElementById(containerId).innerHTML = '';
-    new TradingView.widget({
-        autosize:            true,
-        symbol:              ticker,
-        interval:            currentInterval,
-        theme:               'dark',
-        style:               '1',
-        hide_top_toolbar:    true,
-        hide_side_toolbar:   true,
-        hide_legend:         true,
-        allow_symbol_change: false,
-        save_image:          false,
-        details:             false,
-        withdateranges:      false,
-        container_id:        containerId
+    var container = document.getElementById(containerId);
+    if (!container) return;
+
+    // 이미 차트가 생성되어 있다면 중복 생성 방지 (데이터는 실시간 틱으로 업데이트됨)
+    if (lwCharts[panel] && lwCharts[panel].ticker === ticker && lwCharts[panel].interval === panelIntervals[panel]) {
+        return;
+    }
+
+    container.innerHTML = ''; // 기존 DOM 정리
+
+    var chart = LightweightCharts.createChart(container, {
+        width: container.clientWidth,
+        height: container.clientHeight,
+        layout: {
+            background: { type: 'solid', color: '#07070c' },
+            textColor: '#9999aa',
+        },
+        grid: {
+            vertLines: { color: '#1a1a2e' },
+            horzLines: { color: '#1a1a2e' },
+        },
+        timeScale: {
+            timeVisible: true,
+            secondsVisible: false,
+            borderColor: '#2a2a3e',
+        },
+        rightPriceScale: {
+            borderColor: '#2a2a3e',
+        }
+    });
+
+    var candlestickSeries = chart.addCandlestickSeries({
+        upColor: '#ff4444',
+        downColor: '#4488ff',
+        borderDownColor: '#4488ff',
+        borderUpColor: '#ff4444',
+        wickDownColor: '#4488ff',
+        wickUpColor: '#ff4444',
+    });
+
+    // 가상의 초기 봉 데이터 생성 (현재가 기준 데모 샘플 데이터)
+    var basePrice = currentPrice > 0 ? currentPrice : 100.0;
+    var nowSec = Math.floor(Date.now() / 1000);
+    var intervalMin = parseInt(panelIntervals[panel] || '3') * 60;
+    if (isNaN(intervalMin)) intervalMin = 180;
+
+    var initialData = [];
+    for (var i = 30; i >= 0; i--) {
+        var t = nowSec - (i * intervalMin);
+        var pVar = basePrice + (Math.sin(i) * 1.5);
+        initialData.push({
+            time: t,
+            open: pVar - 0.5,
+            high: pVar + 1.0,
+            low: pVar - 1.0,
+            close: pVar
+        });
+    }
+
+    candlestickSeries.setData(initialData);
+    chart.timeScale().fitContent();
+
+    // 관리 객체에 저장
+    lwCharts[panel] = {
+        chart: chart,
+        series: candlestickSeries,
+        ticker: ticker,
+        interval: panelIntervals[panel],
+        lastTime: nowSec,
+        lastOpen: basePrice,
+        lastHigh: basePrice + 1.0,
+        lastLow: basePrice - 1.0
+    };
+
+    // 창크기 변경 시 차트 리사이징 대응
+    window.addEventListener('resize', function() {
+        if (container.clientWidth > 0 && container.clientHeight > 0) {
+            chart.applyOptions({ width: container.clientWidth, height: container.clientHeight });
+        }
     });
 }
 
-// ⭐️ 드롭다운에서 분봉 변경 시 실행되는 함수
+// ⭐️ 실시간 틱 데이터가 들어올 때 마지막 캔들을 즉시 갱신하는 함수
+function updateRealtimeChartTick(panel, price) {
+    var obj = lwCharts[panel];
+    if (!obj || !obj.series) return;
+
+    var nowSec = Math.floor(Date.now() / 1000);
+    var intervalSec = parseInt(panelIntervals[panel] || '3') * 60;
+    if (isNaN(intervalSec)) intervalSec = 180;
+
+    // 현재 봉의 타임스탬프 계산
+    var currentBarTime = nowSec - (nowSec % intervalSec);
+
+    if (currentBarTime > obj.lastTime) {
+        // 새로운 봉으로 넘어간 경우
+        obj.lastTime = currentBarTime;
+        obj.lastOpen = price;
+        obj.lastHigh = price;
+        obj.lastLow = price;
+    } else {
+        // 기존 봉에서 고가/저가/종가 실시간 갱신
+        if (price > obj.lastHigh) obj.lastHigh = price;
+        if (price < obj.lastLow) obj.lastLow = price;
+    }
+
+    obj.series.update({
+        time: obj.lastTime,
+        open: obj.lastOpen,
+        high: obj.lastHigh,
+        low: obj.lastLow,
+        close: price
+    });
+}
+
+// ⭐️ 분봉 드롭다운 변경 시 실행되는 함수
 function changeInterval(panel, val) {
     panelIntervals[panel] = val;
-    var ticker = initializedCharts[panel] || (panelDataStore[panel] ? panelDataStore[panel].ticker : null);
+    // 기존 차트 객체 초기화 후 해당 주기로 재생성 유도
+    if (lwCharts[panel]) {
+        lwCharts[panel].chart.remove();
+        delete lwCharts[panel];
+    }
+    var ticker = panelDataStore[panel] ? panelDataStore[panel].ticker : null;
     if (!ticker) {
         if (panel === 0) ticker = 'TSLA';
         else if (panel === 1) ticker = 'NVDA';
         else if (panel === 2) ticker = 'PLTR';
     }
-    updateChartWidget(panel, ticker);
+    var curPrice = yahooPriceCache[ticker] ? yahooPriceCache[ticker].price : 100.0;
+    initOrUpdateLightweightChart(panel, ticker, curPrice);
 }
 
 function updateEnvSummary(i) {
@@ -901,7 +1005,7 @@ function renderOiGrid(p, rows, price) {
         var ia=r.strike===atm?'atm':'';
         var cc=r.callChg>0?'up':r.callChg<0?'dn':'neu',pc=r.putChg>0?'up':r.putChg<0?'dn':'neu';
         var ct=(r.callChg>0?'+':'')+r.callChg.toFixed(1)+'%',pt=(r.putChg>0?'+':'')+r.putChg.toFixed(1)+'%';
-        return '<div class="oi-row"><div class="oi-bar-wrap left"><div class="oi-bar call" style="width:'+cw+'%"></div></div><div class="oi-vol">'+fmt(r.callOI)+'/'+fmt(r.callVol)+'</div><div class="'+cc+'">'+ct+'</div><div><span class="strike-box '+ia+'">'+r.strike.toFixed(1)+'</span></div><div class="'+pc+'">'+pt+'</div><div class="oi-vol">'+fmt(r.putOI)+'/'+fmt(r.putVol)+'</div><div class="oi-bar-wrap right"><div class="oi-bar put" style="width:'+pw+'%"></div></div></div>';
+        return '<div class="oi-row"><div class="oi-bar-wrap left"><div class="oi-bar call" style="width:'+cw+'%"></div></div><div class="oi-vol">'+fmt(r.callOI)+'/'+fmt(r.callVol)+'</div><div class="'+cc+'_'+ct+'"></div><div><span class="strike-box '+ia+'">'+r.strike.toFixed(1)+'</span></div><div class="'+pc+'">'+pt+'</div><div class="oi-vol">'+fmt(r.putOI)+'/'+fmt(r.putVol)+'</div><div class="oi-bar-wrap right"><div class="oi-bar put" style="width:'+pw+'%"></div></div></div>';
     }).join('');
 }
 
