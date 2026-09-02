@@ -1471,6 +1471,18 @@
             if (sp) sp.innerHTML = '수급: <span style="color:#444;">데이터 준비중</span>';
         }
 
+        function showOiNoData(panelIdx, reason) {
+            var tl = document.getElementById('p' + panelIdx + '-timeline');
+            if (tl) tl.innerHTML = '<div class="tl-track"></div>'
+                + '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);'
+                + 'white-space:nowrap;text-align:center;">'
+                + '<div style="color:#555;font-size:11px;font-weight:bold;">MaxPain · 지지저항 데이터 없음</div>'
+                + '<div style="color:#3a3a5a;font-size:10px;margin-top:3px;">' + reason + '</div>'
+                + '</div>';
+            var sp = document.getElementById('p' + panelIdx + '-sum-power');
+            if (sp) sp.innerHTML = '수급: <span style="color:#444;">OI 집계 대기중</span>';
+        }
+
         function showPanelOverlay(panelIdx, msg) {
             var ov = document.getElementById('overlay-' + panelIdx); if (ov) ov.classList.add('active');
             var om = document.getElementById('overlay-msg-' + panelIdx); if (om) om.textContent = msg || '종목 전환 중...';
@@ -1664,7 +1676,7 @@
                 var d = panelDataStore[idx];
                 if (d && d.maxPain > 0) {
                     renderTimeline('p' + idx + '-', Object.assign({}, d, { price: msg.price }));
-                    if (d.optionRows && d.optionRows.length) renderOiGrid('p' + idx + '-', d.optionRows, msg.price);
+                    if (d.optionRows && d.optionRows.length) renderOiSafe(idx, d.optionRows, msg.price);
                 }
             });
         }
@@ -1776,8 +1788,9 @@
             }
             updateEnvSummary(panel);
 
-            if (d.optionRows && d.optionRows.length) renderOiGrid(p, d.optionRows, price || (d.maxPain || 100));
-            else setOiPending(panel, panelTickers[panel]);
+            if (d.optionRows && d.optionRows.length) {
+                renderOiSafe(panel, d.optionRows, price || (d.maxPain || 100));
+            } else setOiPending(panel, panelTickers[panel]);
 
             /* 차트는 종목이 바뀔 때만 재생성 (2분마다 Firebase 갱신 시 불필요한 재생성 방지) */
             var chartTicker = d.ticker || panelTickers[panel];
@@ -1890,6 +1903,19 @@
         }
 
         /* ═══════════ 옵션 체인 ═══════════ */
+        /* OI=0 체크 후 renderOiGrid 또는 showOiNoData 호출 */
+        function renderOiSafe(panelIdx, rows, price) {
+            var p = 'p' + panelIdx + '-';
+            renderOiGrid(p, rows, price);
+            if (isAllOiZero(rows) && !isEtMonday()) {
+                var etNow3 = getEtNow();
+                var etDayNames = ['일', '월', '화', '수', '목', '금', '토'];
+                var etDayStr = etDayNames[etNow3.getDay()];
+                var etTimeStr = etNow3.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+                showOiNoData(panelIdx, '미국 ET ' + etDayStr + '요일 ' + etTimeStr);
+            }
+        }
+
         function renderOiGrid(p, rows, price) {
             var el = document.getElementById(p + 'oi-rows'); if (!el) return;
             var isMobile = el.closest('.panel') ? el.closest('.panel').offsetWidth <= 400 : window.innerWidth <= 1200;
@@ -1950,6 +1976,18 @@
             updateChartWidget(panel, panelTickers[panel]);
         }
 
+        /* ═══════════ 미국 ET 기준 시간 유틸 ═══════════ */
+        function getEtNow() {
+            return new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
+        }
+        function isEtMonday() {
+            return getEtNow().getDay() === 1;
+        }
+        function isAllOiZero(rows) {
+            if (!rows || !rows.length) return true;
+            return rows.every(function (r) { return (!r.callOI || r.callOI === 0) && (!r.putOI || r.putOI === 0); });
+        }
+
         /* ═══════════ Yahoo REST 즉시 현재가 조회 ═══════════ */
 
         /* 단일 종목 현재가 즉시 조회 후 패널에 반영
@@ -2002,7 +2040,7 @@
                         if (d && d.maxPain > 0) {
                             renderTimeline('p' + idx + '-', Object.assign({}, d, { price: finalPrice }));
                             if (d.optionRows && d.optionRows.length)
-                                renderOiGrid('p' + idx + '-', d.optionRows, finalPrice);
+                                renderOiSafe(idx, d.optionRows, finalPrice);
                         }
                     });
                 })
