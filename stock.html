@@ -92,18 +92,18 @@
         .neon-ticker-bar {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             background: rgba(0,0,0,0.4);
-            padding: 4px 14px;
+            padding: 4px 10px;
             border-radius: 20px;
             border: 1px solid rgba(112,144,255,0.2);
             flex: 1;
             justify-content: center;
-            max-width: 420px;
+            max-width: 450px;
         }
 
         .neon-item {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
             color: #444;
             white-space: nowrap;
@@ -160,13 +160,8 @@
             }
 
         @keyframes np {
-            0%,100% {
-                opacity: 1
-            }
-
-            50% {
-                opacity: 0.3
-            }
+            0%,100% { opacity: 1 }
+            50% { opacity: 0.3 }
         }
 
         .oi-dot {
@@ -186,13 +181,8 @@
             }
 
         @keyframes oiF {
-            0%,100% {
-                opacity: 1
-            }
-
-            50% {
-                opacity: 0.05
-            }
+            0%,100% { opacity: 1 }
+            50% { opacity: 0.05 }
         }
 
         .content-wrapper {
@@ -226,9 +216,7 @@
             background: #07070c;
         }
 
-            .panel:last-child {
-                border-right: none;
-            }
+            .panel:last-child { border-right: none; }
 
         .ph {
             display: flex;
@@ -248,7 +236,6 @@
             flex-shrink: 0;
         }
 
-        /* ── 야후 스타일 듀얼 가격 컨테이너 ── */
         .price-container {
             display: flex;
             flex-direction: row;
@@ -270,9 +257,7 @@
             gap: 8px;
         }
 
-        .ext-label {
-            display: none;
-        }
+        .ext-label { display: none; }
 
         .ext-price { font-size: 20px; font-weight: bold; white-space: nowrap; }
         .ext-diff { font-size: 16px; font-weight: bold; white-space: nowrap; }
@@ -286,26 +271,9 @@
             min-width: 0;
         }
 
-        .price-now {
-            font-size: 20px;
-            font-weight: bold;
-            color: #555;
-            white-space: nowrap;
-        }
-
-        .price-diff {
-            font-size: 16px;
-            font-weight: bold;
-            color: #555;
-            white-space: nowrap;
-        }
-
-        .price-chg {
-            font-size: 16px;
-            font-weight: bold;
-            color: #555;
-            white-space: nowrap;
-        }
+        .price-now { font-size: 20px; font-weight: bold; color: #555; white-space: nowrap; }
+        .price-diff { font-size: 16px; font-weight: bold; color: #555; white-space: nowrap; }
+        .price-chg { font-size: 16px; font-weight: bold; color: #555; white-space: nowrap; }
 
         .up { color: #ff4444 !important; }
         .dn { color: #4488ff !important; }
@@ -329,35 +297,21 @@
             gap: 6px;
         }
 
-        .sb-title {
-            color: #ddbb00;
-            font-size: 13px;
-            font-weight: bold;
-            flex: 1;
-            min-width: 0;
-        }
+        .sb-title { color: #ddbb00; font-size: 13px; font-weight: bold; flex: 1; min-width: 0; }
+        .sb-trend { font-size: 10px; color: #aaa; background: #1a1a2e; padding: 2px 5px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
 
-        .sb-trend {
-            font-size: 10px;
-            color: #aaa;
-            background: #1a1a2e;
-            padding: 2px 5px;
-            border-radius: 4px;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-
+        /* 타임라인 스타일 개편 */
         .timeline {
             position: relative;
-            height: 65px;
+            height: 70px;
             margin: 0 6px;
         }
 
         .tl-track {
             position: absolute;
-            top: 33px;
-            left: 8%;
-            right: 8%;
+            top: 38px;
+            left: 6%;
+            right: 6%;
             height: 3px;
             background: #2a2a3e;
             border-radius: 2px;
@@ -374,18 +328,30 @@
             white-space: nowrap;
         }
 
-        .node-top { bottom: 40px; }
-        .node-bottom { top: 40px; }
+        .node-top { bottom: 42px; }
+        .node-bottom { top: 42px; }
+
+        /* ▼ 역삼각형 현재가 인디케이터 스타일 (가로바 바로 위 여백 적용) */
+        .dot-triangle {
+            position: absolute;
+            top: 31px;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid #4488ff;
+            z-index: 20;
+        }
 
         .dot-tl {
             position: absolute;
-            top: 34.5px;
+            top: 39.5px;
             transform: translate(-50%,-50%);
             border-radius: 50%;
         }
 
         .dot-small { width: 9px; height: 9px; z-index: 2; }
-        .dot-large { width: 13px; height: 13px; z-index: 10; border: 2px solid #fff; }
 
         .lbl-box {
             display: flex;
@@ -419,23 +385,8 @@
             margin-bottom: 6px;
         }
 
-        .oi-title {
-            font-size: 13px;
-            font-weight: bold;
-            color: #7799dd;
-            display: flex;
-            align-items: center;
-        }
-
-        .oi-dte {
-            background: #7722cc;
-            color: #fff;
-            padding: 2px 6px;
-            border-radius: 8px;
-            font-size: 10px;
-            font-weight: bold;
-            white-space: nowrap;
-        }
+        .oi-title { font-size: 13px; font-weight: bold; color: #7799dd; display: flex; align-items: center; }
+        .oi-dte { background: #7722cc; color: #fff; padding: 2px 6px; border-radius: 8px; font-size: 10px; font-weight: bold; white-space: nowrap; }
 
         .oi-summary {
             display: flex;
@@ -451,9 +402,10 @@
             flex-wrap: wrap;
         }
 
+        /* 옵션 체인 밀착 및 막대바 공간 극대화 그리드 설정 */
         .oi-grid-header {
             display: grid;
-            grid-template-columns: 1fr 46px 38px 50px 38px 46px 1fr;
+            grid-template-columns: 1fr 32px 32px 42px 32px 32px 1fr;
             font-size: 10px;
             color: #888;
             margin-bottom: 4px;
@@ -462,9 +414,9 @@
 
         .oi-row {
             display: grid;
-            grid-template-columns: 1fr 46px 38px 50px 38px 46px 1fr;
+            grid-template-columns: 1fr 32px 32px 42px 32px 32px 1fr;
             align-items: center;
-            gap: 2px;
+            gap: 1px;
             font-size: 11px;
             text-align: center;
             margin-bottom: 2px;
@@ -489,7 +441,7 @@
         }
         .strike-box.atm { background: #ffcc00; color: #000; box-shadow: 0 0 4px #ffcc00; }
 
-        .oi-vol { font-size: 10px; color: #eee; white-space: nowrap; font-weight: bold; }
+        .oi-vol { font-size: 9.5px; color: #eee; white-space: nowrap; font-weight: bold; }
 
         /* ── 차트 영역 ── */
         .chart-wrapper {
@@ -522,10 +474,7 @@
             backdrop-filter: blur(4px);
         }
 
-            .chart-interval-select option {
-                background: #0b0b14;
-                color: #fff;
-            }
+        .chart-interval-select option { background: #0b0b14; color: #fff; }
 
         /* ── 사이드바 ── */
         .sidebar {
@@ -540,7 +489,7 @@
             overflow-y: auto;
             flex-shrink: 0;
         }
-            .sidebar::-webkit-scrollbar { display: none; }
+        .sidebar::-webkit-scrollbar { display: none; }
 
         .sidebar-logo {
             background: #0b0c15;
@@ -553,46 +502,11 @@
             justify-content: center;
         }
 
-        .sl-name {
-            display: flex;
-            align-items: baseline;
-            justify-content: center;
-            white-space: nowrap;
-            line-height: 1;
-            width: 100%;
-        }
-
-        .sl-strike {
-            font-size: 30px;
-            font-weight: 900;
-            color: #ffdf00;
-            text-shadow: 0 0 15px rgba(255,223,0,0.7);
-            text-transform: uppercase;
-        }
-
-        .sl-zone {
-            font-size: 30px;
-            font-weight: 900;
-            color: #ff8800;
-            text-shadow: 0 0 15px rgba(255,136,0,0.9);
-            text-transform: uppercase;
-        }
-
-        .sl-line {
-            height: 1px;
-            width: 90%;
-            background: linear-gradient(90deg, transparent, #ffcc00, transparent);
-            margin: 12px 0 10px;
-        }
-
-        .sl-sub {
-            font-size: 11.5px;
-            letter-spacing: 8px;
-            font-weight: 800;
-            color: #ffffff;
-            text-transform: uppercase;
-            margin-right: -8px;
-        }
+        .sl-name { display: flex; align-items: baseline; justify-content: center; white-space: nowrap; line-height: 1; width: 100%; }
+        .sl-strike { font-size: 30px; font-weight: 900; color: #ffdf00; text-shadow: 0 0 15px rgba(255,223,0,0.7); text-transform: uppercase; }
+        .sl-zone { font-size: 30px; font-weight: 900; color: #ff8800; text-shadow: 0 0 15px rgba(255,136,0,0.9); text-transform: uppercase; }
+        .sl-line { height: 1px; width: 90%; background: linear-gradient(90deg, transparent, #ffcc00, transparent); margin: 12px 0 10px; }
+        .sl-sub { font-size: 11.5px; letter-spacing: 8px; font-weight: 800; color: #ffffff; text-transform: uppercase; margin-right: -8px; }
 
         .sidebar-menu {
             background: #0d0d1a;
@@ -643,7 +557,7 @@
             cursor: pointer;
             color: #aaa;
         }
-            .ticker-item input { accent-color: #4488ff; }
+        .ticker-item input { accent-color: #4488ff; }
 
         .sidebar-ad {
             background: #0d0d1a;
@@ -657,7 +571,7 @@
             font-size: 12px;
         }
 
-        /* ── 모바일 환경 미디어 쿼리 (스마트폰용 최적화) ── */
+        /* ── 모바일 환경 미디어 쿼리 ── */
         @media screen and (max-width: 1200px) {
             body { min-width: unset; }
             .top-bar {
@@ -666,7 +580,6 @@
                 padding: 6px 10px;
                 gap: 6px;
             }
-            /* 상단 로고 중앙 배치 및 폭 100% 할당 */
             .logo-top { 
                 width: 100%;
                 order: 1; 
@@ -674,13 +587,12 @@
                 margin-top: 2px;
             }
             .top-right { order: 2; }
-            /* QQQ 줄 바꿈 및 세로 여백 축소 */
             .neon-ticker-bar {
                 width: 100%;
                 max-width: none;
                 order: 3;
                 margin-top: 2px;
-                padding: 2px 8px;
+                padding: 2px 6px;
                 justify-content: space-around;
             }
             .content-wrapper {
@@ -707,17 +619,12 @@
             }
             .ph { flex-wrap: wrap; }
             
-            /* 현재가 2줄 처리 및 파이프 숨김, Post: 라벨 제거됨 */
             .price-container {
                 flex-direction: column;
                 gap: 2px;
             }
-            .price-divider {
-                display: none !important;
-            }
-            .ext-label {
-                display: none !important;
-            }
+            .price-divider { display: none !important; }
+            .ext-label { display: none !important; }
 
             .sidebar {
                 width: 100%;
@@ -796,9 +703,9 @@
                   <span class="oi-sum-item" id="p'+ i + '-sum-env">지수 대기중</span>\
                 </div>\
                 <div class="oi-grid-header">\
-                  <div style="text-align:right;padding-right:4px;">콜</div>\
-                  <div>OI/Vol</div><div>등락</div><div>행사가</div><div>등락</div><div>OI/Vol</div>\
-                  <div style="text-align:left;padding-left:4px;">풋</div>\
+                  <div style="text-align:right;padding-right:2px;">콜</div>\
+                  <div>OI/V</div><div>등락</div><div>행사가</div><div>등락</div><div>OI/V</div>\
+                  <div style="text-align:left;padding-left:2px;">풋</div>\
                 </div>\
                 <div id="p'+ i + '-oi-rows"></div>\
               </div>\
@@ -869,36 +776,6 @@
             } catch (e) { console.error('Proto 실패:', e); }
         })();
 
-        function initFirebase() {
-            return new Promise(function (resolve) {
-                var isWF = window.chrome && window.chrome.webview;
-                if (isWF) { resolve(); return; }
-                try {
-                    if (!firebase.apps.length) firebase.initializeApp({ databaseURL: FIREBASE_URL });
-                    var done = false;
-                    firebase.database().ref('tickers').on('value', function (snap) {
-                        var data = snap.val();
-                        if (data) applyFirebaseData(data);
-                        if (!done) { done = true; resolve(); }
-                    });
-                    setTimeout(function () { if (!done) { done = true; resolve(); } }, 5000);
-                } catch (e) { resolve(); }
-            });
-        }
-
-        function applyFirebaseData(data) {
-            var keys = Object.keys(data);
-            if (keys.length && data[keys[0]] && data[keys[0]].header)
-                window.onWsMessage(data[keys[0]].header);
-            DASH_TICKERS.forEach(function (t, i) {
-                if (data[t] && data[t].panel) {
-                    var p = JSON.parse(JSON.stringify(data[t].panel));
-                    p.panel = i;
-                    window.onWsMessage(p);
-                }
-            });
-        }
-
         function yahooWsConnect() {
             if (yahooWs && (yahooWs.readyState === WebSocket.CONNECTING || yahooWs.readyState === WebSocket.OPEN)) return;
             yahooRunning = true;
@@ -934,6 +811,32 @@
                 setWsDot('dead');
                 if (yahooRunning) yahooReconTimer = setTimeout(yahooWsConnect, 5000);
             }
+        }
+
+        // 지연 없는 로딩을 위해 Firebase를 배경(비동기)으로 분리 실행
+        function initFirebaseBackground() {
+            var isWF = window.chrome && window.chrome.webview;
+            if (isWF) return;
+            try {
+                if (!firebase.apps.length) firebase.initializeApp({ databaseURL: FIREBASE_URL });
+                firebase.database().ref('tickers').on('value', function (snap) {
+                    var data = snap.val();
+                    if (data) applyFirebaseData(data);
+                });
+            } catch (e) { }
+        }
+
+        function applyFirebaseData(data) {
+            var keys = Object.keys(data);
+            if (keys.length && data[keys[0]] && data[keys[0]].header)
+                window.onWsMessage(data[keys[0]].header);
+            DASH_TICKERS.forEach(function (t, i) {
+                if (data[t] && data[t].panel) {
+                    var p = JSON.parse(JSON.stringify(data[t].panel));
+                    p.panel = i;
+                    window.onWsMessage(p);
+                }
+            });
         }
 
         function onYahooMsg(msg) {
@@ -1052,7 +955,6 @@
                 if (extBlock) extBlock.style.display = 'flex';
                 if (divider) divider.style.display = 'inline-block';
 
-                /* 종가 색상을 회색이 아닌 등락에 따른 색상(regCls)으로 적용 */
                 if (pxEl) { pxEl.textContent = regPxText; pxEl.className = 'price-now ' + regCls; }
                 if (dfEl) { dfEl.textContent = regDfText; dfEl.className = 'price-diff ' + regCls; }
                 if (cgEl) { cgEl.textContent = regCgText; cgEl.className = 'price-chg ' + regCls; }
@@ -1233,49 +1135,68 @@
 
         setInterval(function () { if (lastMsgTime > 0 && Date.now() - lastMsgTime > 20000) setWsDot('dead'); }, 3000);
 
-        // 🌟 타임라인 렌더링 함수: 모바일(7인치 미만)에서는 겹침 방지를 위해 균등 비율 배치 적용
+        // 🌟 타임라인 렌더링 개편 (MaxPain 하단, ▼ 역삼각형 현재가 한 줄 출력, 모바일 균등 배치)
         function renderTimeline(p, d) {
             var tl = document.getElementById(p + 'timeline'); if (!tl) return;
             var vals = [d.support2, d.support1, d.maxPain, d.price, d.resistance1, d.resistance2].filter(function (v) { return v > 0; });
             if (!vals.length) return;
 
-            var isMobile = window.innerWidth <= 1200; // 모바일/태블릿 분기
+            var isMobile = window.innerWidth <= 1200;
 
-            var bots = [{ val: d.support2, lbl: '2차 지지', c: 'c-red', bg: 'bg-red' }, { val: d.support1, lbl: '1차 지지', c: 'c-red', bg: 'bg-red' }, { val: d.resistance1, lbl: '1차 저항', c: 'c-blue', bg: 'bg-blue' }, { val: d.resistance2, lbl: '2차 저항', c: 'c-blue', bg: 'bg-blue' }].filter(function (n) { return n.val > 0; });
-            var tops = [{ val: d.maxPain, lbl: 'MaxPain', c: 'c-gold', bg: 'bg-gold', lg: false }, { val: d.price, lbl: '현재가', c: 'c-blue', bg: 'bg-blue', lg: true }].filter(function (n) { return n.val > 0; });
+            // 하단 배치 노드: 2차/1차 지지, 2차/1차 저항 + MaxPain 추가!
+            var bots = [
+                { val: d.support2, lbl: '2차 지지', c: 'c-red', bg: 'bg-red' },
+                { val: d.support1, lbl: '1차 지지', c: 'c-red', bg: 'bg-red' },
+                { val: d.maxPain, lbl: 'MaxPain', c: 'c-gold', bg: 'bg-gold' }, // 상단에서 하단으로 이동
+                { val: d.resistance1, lbl: '1차 저항', c: 'c-blue', bg: 'bg-blue' },
+                { val: d.resistance2, lbl: '2차 저항', c: 'c-blue', bg: 'bg-blue' }
+            ].filter(function (n) { return n.val > 0; });
+
+            // 상단 배치 노드: 오직 '현재가'만 남김 (▼ 삼각형 인디케이터 포함)
+            var tops = [
+                { val: d.price, lbl: '현재가', c: 'c-blue', bg: 'bg-blue', lg: true }
+            ].filter(function (n) { return n.val > 0; });
 
             var allNodes = bots.concat(tops);
             allNodes.sort(function (a, b) { return a.val - b.val; });
 
             if (isMobile && allNodes.length > 1) {
-                // 모바일 환경: 가격 간격 겹침을 원천 차단하기 위해 트랙 위에서 균등 간격(퍼센트)으로 배치
-                var step = 84 / (allNodes.length - 1);
-                allNodes.forEach(function (n, idx) {
-                    n.pos = 8 + (idx * step);
+                var step = 88 / (allNodes.length - 1);
+                allNodes.forEach(function (n, idx) { n.pos = 6 + (idx * step); });
+                // 하단 지지/저항/MaxPain 노드들의 pos 동기화
+                bots.forEach(function(bNode) {
+                    var found = allNodes.filter(function(an){ return an.val === bNode.val; })[0];
+                    if(found) bNode.pos = found.pos;
+                });
+                tops.forEach(function(tNode) {
+                    var found = allNodes.filter(function(an){ return an.val === tNode.val; })[0];
+                    if(found) tNode.pos = found.pos;
                 });
             } else {
-                // PC 및 7인치 이상 태블릿: 기존 가격 비율 기반 정밀 배치 유지
                 var mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals), sp = mx - mn || 1;
                 mn -= sp * 0.1; mx += sp * 0.1; sp = mx - mn;
-                var gp = function (v) { return 8 + Math.max(0, Math.min(1, (v - mn) / sp)) * 84; };
+                var gp = function (v) { return 6 + Math.max(0, Math.min(1, (v - mn) / sp)) * 88; };
                 
                 bots.forEach(function (n) { n.pos = gp(n.val); }); 
                 bots.sort(function (a, b) { return a.pos - b.pos; });
                 for (var i = 1; i < bots.length; i++) if (bots[i].pos - bots[i - 1].pos < 12) bots[i].pos = bots[i - 1].pos + 12;
                 
                 tops.forEach(function (n) { n.pos = gp(n.val); }); 
-                tops.sort(function (a, b) { return a.pos - b.pos; });
             }
 
-            if (tops.length === 2 && Math.abs(tops[1].pos - tops[0].pos) < 10) { tops[0].tx = '-100%'; tops[1].tx = '0%'; }
-
             var html = '<div class="tl-track"></div>';
-            bots.forEach(function (n) { html += '<div class="node node-bottom" style="left:' + n.pos + '%"><div class="lbl-box"><span class="val ' + n.c + '">' + n.val.toFixed(1) + '</span><span class="lbl">' + n.lbl + '</span></div></div><div class="dot-tl dot-small ' + n.bg + '" style="left:' + n.pos + '%"></div>'; });
-            tops.forEach(function (n) { var sh = n.tx ? 'transform:translateX(' + n.tx + ');' : ''; html += '<div class="node node-top" style="left:' + n.pos + '%;' + sh + 'z-index:' + (n.lg ? 20 : 10) + '"><div class="lbl-box"><span class="lbl ' + n.c + '">' + n.lbl + '</span><span class="val ' + n.c + '">' + n.val.toFixed(1) + '</span></div></div><div class="dot-tl ' + (n.lg ? 'dot-large' : 'dot-small') + ' ' + n.bg + '" style="left:' + n.pos + '%;z-index:' + (n.lg ? 20 : 10) + '"></div>'; });
+            // 하단 노드 출력 (지지, 저항, MaxPain)
+            bots.forEach(function (n) { 
+                html += '<div class="node node-bottom" style="left:' + n.pos + '%"><div class="lbl-box"><span class="val ' + n.c + '">' + n.val.toFixed(1) + '</span><span class="lbl">' + n.lbl + '</span></div></div><div class="dot-tl dot-small ' + n.bg + '" style="left:' + n.pos + '%"></div>'; 
+            });
+            // 상단 현재가 출력 ("현재가 356.0" 한 줄 및 ▼ 역삼각형 인디케이터 적용)
+            tops.forEach(function (n) { 
+                html += '<div class="node node-top" style="left:' + n.pos + '%;z-index:20;"><div class="lbl-box"><span class="val ' + n.c + '">' + n.lbl + ' ' + n.val.toFixed(1) + '</span></div></div><div class="dot-triangle" style="left:' + n.pos + '%;"></div>'; 
+            });
             tl.innerHTML = html;
         }
 
-        // 🌟 옵션 체인 렌더링 함수: 모바일에서는 OI/Vol 합산 출력 및 등락률 소수점 제외(정수) 처리
+        // 🌟 옵션 체인 렌더링 (밀착 그리드 및 막대바 공간 극대화)
         function renderOiGrid(p, rows, price) {
             var el = document.getElementById(p + 'oi-rows'); if (!el) return;
             var isMobile = window.innerWidth <= 1200;
@@ -1292,7 +1213,6 @@
                 var callSum = r.callOI + r.callVol;
                 var putSum = r.putOI + r.putVol;
 
-                // 모바일과 PC 조건별 출력 값 분기
                 var callVolText = isMobile ? fmt(callSum) : (fmt(r.callOI) + '/' + fmt(r.callVol));
                 var putVolText = isMobile ? fmt(putSum) : (fmt(r.putOI) + '/' + fmt(r.putVol));
 
@@ -1303,9 +1223,10 @@
             }).join('');
         }
 
-        (async function start() {
-            await initFirebase();
+        // 🚀 즉시 실행 시작점: 야후 웹소켓부터 최우선 연결하여 속도 극대화 + Firebase는 배경 백그라운드 처리
+        (function start() {
             yahooWsConnect();
+            initFirebaseBackground();
         })();
     </script>
 </body>
