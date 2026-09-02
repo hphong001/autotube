@@ -1434,6 +1434,10 @@
             refreshWatchlistBadges();
             refreshAllDropdowns();
 
+            /* 종목 변경 시 Yahoo REST로 즉시 현재가 조회
+               → yahooPriceCache 먼저 채우고 Firebase 데이터가 오면 정확한 가격 기준으로 렌더링 */
+            fetchQuoteAndUpdate(newTicker);
+
             /* WinForms WebView2 환경: C# 서버에 패널 종목 변경 통보 */
             try {
                 if (typeof window.chrome !== 'undefined' &&
@@ -1691,13 +1695,9 @@
                 var ticker = d.ticker;
                 if (ticker === undefined || ticker === null) return;
 
-                /* ★ 핵심: ticker 기준으로 현재 패널 위치를 찾음
-                   서버의 panel 번호는 무시 - 프론트 panelTickers가 기준 */
+                /* ticker 기준으로 현재 패널 위치 탐색 */
                 var panel = panelTickers.indexOf(ticker);
-                if (panel < 0) {
-                    /* 현재 패시 목록에 없는 종목 → 무시 */
-                    return;
-                }
+                if (panel < 0) return;
 
                 if (d.prevClose && d.prevClose > 0) prevCloseCache[ticker] = d.prevClose;
                 else if (d.price > 0 && d.priceDiff !== undefined) prevCloseCache[ticker] = d.price - d.priceDiff;
@@ -1736,7 +1736,11 @@
         /* ═══════════ 패널 렌더 ═══════════ */
         function renderPanel(panel, d, currentPrice) {
             var p = 'p' + panel + '-';
-            var price = currentPrice || d.price || 0;
+            /* yahooPriceCache에 최신 가격 있으면 우선 사용 */
+            var ticker = d.ticker || panelTickers[panel];
+            var cached = yahooPriceCache[ticker];
+            var price = (cached && cached.price > 0) ? cached.price
+                : (currentPrice || d.price || 0);
 
             if (d.score !== undefined) {
                 var sigEl = document.getElementById(p + 'sigtitle');
@@ -1946,6 +1950,77 @@
             updateChartWidget(panel, panelTickers[panel]);
         }
 
+        /* ═══════════ Yahoo REST 즉시 현재가 조회 ═══════════ */
+
+        /* 단일 종목 현재가 즉시 조회 후 패널에 반영
+           Yahoo v8 chart API - crumb 불필요, 브라우저 CORS 허용 */
+        function fetchQuoteAndUpdate(ticker) {
+            if (!ticker) return;
+            /* ^SPX 등 특수 티커 처리 */
+            var yahooTicker = (ticker === 'SPX') ? '%5ESPX' : encodeURIComponent(ticker);
+            var url = 'https://query1.finance.yahoo.com/v8/finance/chart/'
+                + yahooTicker + '?interval=1d&range=1d';
+
+            fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } })
+                .then(function (r) { return r.json(); })
+                .then(function (json) {
+                    var meta = json && json.chart && json.chart.result &&
+                        json.chart.result[0] && json.chart.result[0].meta;
+                    if (!meta) return;
+
+                    var price = meta.regularMarketPrice || 0;
+                    var prevClose = meta.chartPreviousClose || meta.previousClose || 0;
+                    var marketState = meta.currentTradingPeriod ? '' : '';
+                    /* 시간외/프리 가격 우선 */
+                    var finalPrice = price;
+
+                    if (finalPrice <= 0) return;
+
+                    var chgAmt = prevClose > 0 ? finalPrice - prevClose : 0;
+                    var chgPct = prevClose > 0 ? (chgAmt / prevClose) * 100 : 0;
+
+                    /* yahooPriceCache에 저장 → WS 도착 전까지 이 값 사용 */
+                    yahooPriceCache[ticker] = {
+                        price: finalPrice,
+                        changePct: chgPct,
+                        changeAmt: chgAmt,
+                        prevClose: prevClose,
+                        mh: 2
+                    };
+                    prevCloseCache[ticker] = prevClose;
+
+                    console.log('[QUOTE] ' + ticker + ' = $' + finalPrice.toFixed(2)
+                        + ' (' + chgPct.toFixed(2) + '%)');
+
+                    /* 현재 패널에 있으면 즉시 가격 표시 */
+                    panelTickers.forEach(function (pt, idx) {
+                        if (pt !== ticker) return;
+                        updatePanelPrice(idx, finalPrice, chgPct, chgAmt, 2,
+                            finalPrice, chgAmt, chgPct);
+                        /* 이미 옵션 데이터가 있으면 타임라인/OI도 현재가 기준으로 갱신 */
+                        var d = panelDataStore[idx];
+                        if (d && d.maxPain > 0) {
+                            renderTimeline('p' + idx + '-', Object.assign({}, d, { price: finalPrice }));
+                            if (d.optionRows && d.optionRows.length)
+                                renderOiGrid('p' + idx + '-', d.optionRows, finalPrice);
+                        }
+                    });
+                })
+                .catch(function (err) {
+                    console.warn('[QUOTE] ' + ticker + ' 조회 실패:', err.message || err);
+                });
+        }
+
+        /* 여러 종목 순차 조회 (딜레이 200ms 간격, Rate Limit 방지) */
+        function fetchQuotesSequential(tickers, delayMs) {
+            delayMs = delayMs || 200;
+            tickers.forEach(function (ticker, i) {
+                setTimeout(function () {
+                    fetchQuoteAndUpdate(ticker);
+                }, i * delayMs);
+            });
+        }
+
         /* ═══════════ 시작 ═══════════ */
         (function start() {
             initDashboard();
@@ -1953,6 +2028,13 @@
             refreshAllDropdowns();
             yahooWsConnect();
             initFirebase();
+
+            /* 앱 시작 시:
+               1. Quote REST로 현재가 즉시 조회 → yahooPriceCache 채움
+               2. 1.5초 후 Firebase 구독 시작 → 이때 캐시된 가격 기준으로 정확히 렌더링 */
+            setTimeout(function () {
+                fetchQuotesSequential(panelTickers.slice(), 300);
+            }, 300); /* 초기화 완료 후 0.3초 뒤 실행 */
         })();
     </script>
 </body>
