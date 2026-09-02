@@ -300,7 +300,6 @@
         .sb-title { color: #ddbb00; font-size: 13px; font-weight: bold; flex: 1; min-width: 0; }
         .sb-trend { font-size: 10px; color: #aaa; background: #1a1a2e; padding: 2px 5px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
 
-        /* 타임라인 스타일 개편 */
         .timeline {
             position: relative;
             height: 70px;
@@ -331,7 +330,6 @@
         .node-top { bottom: 42px; }
         .node-bottom { top: 42px; }
 
-        /* ▼ 역삼각형 현재가 인디케이터 스타일 (가로바 바로 위 여백 적용) */
         .dot-triangle {
             position: absolute;
             top: 31px;
@@ -388,12 +386,13 @@
         .oi-title { font-size: 13px; font-weight: bold; color: #7799dd; display: flex; align-items: center; }
         .oi-dte { background: #7722cc; color: #fff; padding: 2px 6px; border-radius: 8px; font-size: 10px; font-weight: bold; white-space: nowrap; }
 
+        /* 옵션 체인 상단 제목 색상 흰색으로 변경 */
         .oi-summary {
             display: flex;
             justify-content: center;
             gap: 10px;
             font-size: 11px;
-            color: #bbb;
+            color: #fff;
             border-bottom: 1px solid #2a2a3e;
             padding: 5px 0 6px;
             margin-bottom: 8px;
@@ -402,7 +401,6 @@
             flex-wrap: wrap;
         }
 
-        /* 옵션 체인 밀착 및 막대바 공간 극대화 그리드 설정 */
         .oi-grid-header {
             display: grid;
             grid-template-columns: 1fr 32px 32px 42px 32px 32px 1fr;
@@ -421,6 +419,12 @@
             text-align: center;
             margin-bottom: 2px;
         }
+
+        /* 🌟 좌우 막대를 제외한 중앙 구역에만 적용되는 실선 클래스 */
+        .border-t-white { border-top: 1.5px solid #ffffff !important; }
+        .border-b-white { border-bottom: 1.5px solid #ffffff !important; }
+        .border-t-gray  { border-top: 1.5px solid #777777 !important; }
+        .border-b-gray  { border-bottom: 1.5px solid #777777 !important; }
 
         .oi-bar-wrap { display: flex; width: 100%; align-items: center; }
         .oi-bar-wrap.left { justify-content: flex-end; }
@@ -768,7 +772,7 @@
         var globQqq = null, globSpy = null, globVix = null, globVixState = '안정';
 
         (function initProto() {
-            var P = 'syntax="proto3";message PricingData{string id=1;float price=2;sint64 time=3;string currency=4;string exchange=5;int32 quoteType=6;int32 marketHours=7;float changePercent=8;sint64 dayVolume=9;float dayHigh=10;float dayLow=11;float change=12;string shortName=13;sint64 expireDate=14;float openPrice=15;float previousClose=16;float strikePrice=17;string underlyingSymbol=18;sint64 openInterest=19;sint64 optionsType=20;sint64 miniOption=21;sint64 lastSize=22;float bid=23;sint64 bidSize=24;float ask=25;sint64 askSize=26;sint64 priceHint=27;sint64 vol_24hr=28;sint64 volAllCurrencies=29;string fromcurrency=30;string lastMarket=31;double circulatingSupply=32;double marketcap=33;}';
+            var P = 'syntax="proto3";message PricingData{string id=1;float price=2;sint64 time=3;string currency=4;string exchange=5;int32 quoteType=6;int32 marketHours=7;float changePercent=8;sint64 dayVolume=9;float dayHigh=10;float dayLow=11;float change=12;string shortName=13;sint64 expireDate=14;float openPrice=15;float previousClose=16;float strikePrice=17;string underlyingSymbol=18;sint64 openInterest=19;sint64 optionsType=20;sint64 miniOption=21;sint64 lastSize=22;float bid=23;sint64 bidSize=24;float ask=25;sint64 askSize=26;sint64 priceHint=27;sint64 vol_24hr=28;sint64 volAllCurrencies=29;string fromcurrency=30;string lastMarket=31;double circulatingSupply=32;double marketcap=33;}'
             try {
                 var root = protobuf.parse(P).root;
                 root.resolveAll();
@@ -813,7 +817,6 @@
             }
         }
 
-        // 지연 없는 로딩을 위해 Firebase를 배경(비동기)으로 분리 실행
         function initFirebaseBackground() {
             var isWF = window.chrome && window.chrome.webview;
             if (isWF) return;
@@ -890,7 +893,7 @@
             var d = panelDataStore[idx];
             if (d && d.maxPain > 0) {
                 renderTimeline('p' + idx + '-', Object.assign({}, d, { price: price }));
-                if (d.optionRows && d.optionRows.length) renderOiGrid('p' + idx + '-', d.optionRows, price);
+                if (d.optionRows && d.optionRows.length) renderOiGrid('p' + idx + '-', d.optionRows, price, d);
             }
         }
 
@@ -1065,7 +1068,7 @@
             }
             updateEnvSummary(panel);
 
-            if (d.optionRows && d.optionRows.length) renderOiGrid(p, d.optionRows, price || (d.maxPain || 100));
+            if (d.optionRows && d.optionRows.length) renderOiGrid(p, d.optionRows, price || (d.maxPain || 100), d);
 
             updateChartWidget(panel, d.ticker);
         }
@@ -1135,7 +1138,7 @@
 
         setInterval(function () { if (lastMsgTime > 0 && Date.now() - lastMsgTime > 20000) setWsDot('dead'); }, 3000);
 
-        // 🌟 타임라인 렌더링 개편 (MaxPain 하단, ▼ 역삼각형 현재가 한 줄 출력, 모바일 균등 배치)
+        // 🌟 PC 겹침 해결: PC에서는 무조건 정밀 가격 비율 기반 배치만 엄격 적용
         function renderTimeline(p, d) {
             var tl = document.getElementById(p + 'timeline'); if (!tl) return;
             var vals = [d.support2, d.support1, d.maxPain, d.price, d.resistance1, d.resistance2].filter(function (v) { return v > 0; });
@@ -1143,16 +1146,14 @@
 
             var isMobile = window.innerWidth <= 1200;
 
-            // 하단 배치 노드: 2차/1차 지지, 2차/1차 저항 + MaxPain 추가!
             var bots = [
                 { val: d.support2, lbl: '2차 지지', c: 'c-red', bg: 'bg-red' },
                 { val: d.support1, lbl: '1차 지지', c: 'c-red', bg: 'bg-red' },
-                { val: d.maxPain, lbl: 'MaxPain', c: 'c-gold', bg: 'bg-gold' }, // 상단에서 하단으로 이동
+                { val: d.maxPain, lbl: 'MaxPain', c: 'c-gold', bg: 'bg-gold' },
                 { val: d.resistance1, lbl: '1차 저항', c: 'c-blue', bg: 'bg-blue' },
                 { val: d.resistance2, lbl: '2차 저항', c: 'c-blue', bg: 'bg-blue' }
             ].filter(function (n) { return n.val > 0; });
 
-            // 상단 배치 노드: 오직 '현재가'만 남김 (▼ 삼각형 인디케이터 포함)
             var tops = [
                 { val: d.price, lbl: '현재가', c: 'c-blue', bg: 'bg-blue', lg: true }
             ].filter(function (n) { return n.val > 0; });
@@ -1163,7 +1164,6 @@
             if (isMobile && allNodes.length > 1) {
                 var step = 88 / (allNodes.length - 1);
                 allNodes.forEach(function (n, idx) { n.pos = 6 + (idx * step); });
-                // 하단 지지/저항/MaxPain 노드들의 pos 동기화
                 bots.forEach(function(bNode) {
                     var found = allNodes.filter(function(an){ return an.val === bNode.val; })[0];
                     if(found) bNode.pos = found.pos;
@@ -1173,8 +1173,9 @@
                     if(found) tNode.pos = found.pos;
                 });
             } else {
+                // PC 화면: 겹침 방지를 위해 철저히 순수 가격 비율 계산 적용
                 var mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals), sp = mx - mn || 1;
-                mn -= sp * 0.1; mx += sp * 0.1; sp = mx - mn;
+                mn -= sp * 0.15; mx += sp * 0.15; sp = mx - mn;
                 var gp = function (v) { return 6 + Math.max(0, Math.min(1, (v - mn) / sp)) * 88; };
                 
                 bots.forEach(function (n) { n.pos = gp(n.val); }); 
@@ -1185,25 +1186,29 @@
             }
 
             var html = '<div class="tl-track"></div>';
-            // 하단 노드 출력 (지지, 저항, MaxPain)
             bots.forEach(function (n) { 
                 html += '<div class="node node-bottom" style="left:' + n.pos + '%"><div class="lbl-box"><span class="val ' + n.c + '">' + n.val.toFixed(1) + '</span><span class="lbl">' + n.lbl + '</span></div></div><div class="dot-tl dot-small ' + n.bg + '" style="left:' + n.pos + '%"></div>'; 
             });
-            // 상단 현재가 출력 ("현재가 356.0" 한 줄 및 ▼ 역삼각형 인디케이터 적용)
             tops.forEach(function (n) { 
                 html += '<div class="node node-top" style="left:' + n.pos + '%;z-index:20;"><div class="lbl-box"><span class="val ' + n.c + '">' + n.lbl + ' ' + n.val.toFixed(1) + '</span></div></div><div class="dot-triangle" style="left:' + n.pos + '%;"></div>'; 
             });
             tl.innerHTML = html;
         }
 
-        // 🌟 옵션 체인 렌더링 (밀착 그리드 및 막대바 공간 극대화)
-        function renderOiGrid(p, rows, price) {
+        // 🌟 옵션 체인 렌더링 (좌우 막대 제외한 중앙 구역에만 흰색/회색 실선 적용)
+        function renderOiGrid(p, rows, price, d) {
             var el = document.getElementById(p + 'oi-rows'); if (!el) return;
             var isMobile = window.innerWidth <= 1200;
 
             var mx = Math.max.apply(null, rows.map(function (r) { return Math.max(r.callOI + r.callVol, r.putOI + r.putVol, 1); }));
             var atm = rows.reduce(function (pv, cv) { return Math.abs(cv.strike - price) < Math.abs(pv.strike - price) ? cv : pv; }).strike;
             var fmt = function (v) { return v >= 1000 ? (v / 1000).toFixed(1) + 'K' : (v === 0 ? '-' : v); };
+
+            // 타임라인 지지/저항 가격 추출
+            var s2 = d.support2 || 0;
+            var s1 = d.support1 || 0;
+            var r1 = d.resistance1 || 0;
+            var r2 = d.resistance2 || 0;
 
             el.innerHTML = rows.map(function (r) {
                 var cw = Math.max(1, ((r.callOI + r.callVol) / mx) * 100), pw = Math.max(1, ((r.putOI + r.putVol) / mx) * 100);
@@ -1219,12 +1224,26 @@
                 var ct = (r.callChg > 0 ? '+' : '') + (isMobile ? Math.round(r.callChg) : r.callChg.toFixed(1)) + '%';
                 var pt = (r.putChg > 0 ? '+' : '') + (isMobile ? Math.round(r.putChg) : r.putChg.toFixed(1)) + '%';
 
-                return '<div class="oi-row"><div class="oi-bar-wrap left"><div class="oi-bar call" style="width:' + cw + '%"></div></div><div class="oi-vol">' + callVolText + '</div><div class="' + cc + '">' + ct + '</div><div><span class="strike-box ' + ia + '">' + r.strike.toFixed(1) + '</span></div><div class="' + pc + '">' + pt + '</div><div class="oi-vol">' + putVolText + '</div><div class="oi-bar-wrap right"><div class="oi-bar put" style="width:' + pw + '%"></div></div></div>';
+                // 행사가 매칭에 따른 구역 실선 클래스 동적 부여 (좌우 막대열 제외, 중앙 셀 5개에만 적용)
+                var cellClass = '';
+                if (r2 > 0 && Math.abs(r.strike - r2) < 0.25) cellClass = ' border-t-white'; // 2차 저항 위쪽 흰색 실선
+                else if (r1 > 0 && Math.abs(r.strike - r1) < 0.25) cellClass = ' border-t-gray';  // 1차 저항 위쪽 회색 실선
+                else if (s1 > 0 && Math.abs(r.strike - s1) < 0.25) cellClass = ' border-b-gray';  // 1차 지지 아래쪽 회색 실선
+                else if (s2 > 0 && Math.abs(r.strike - s2) < 0.25) cellClass = ' border-b-white'; // 2차 지지 아래쪽 흰색 실선
+
+                return '<div class="oi-row">' +
+                    '<div class="oi-bar-wrap left"><div class="oi-bar call" style="width:' + cw + '%"></div></div>' +
+                    '<div class="oi-vol' + cellClass + '">' + callVolText + '</div>' +
+                    '<div class="' + cc + cellClass + '">' + ct + '</div>' +
+                    '<div class="' + cellClass.trim() + '"><span class="strike-box ' + ia + '">' + r.strike.toFixed(1) + '</span></div>' +
+                    '<div class="' + pc + cellClass + '">' + pt + '</div>' +
+                    '<div class="oi-vol' + cellClass + '">' + putVolText + '</div>' +
+                    '<div class="oi-bar-wrap right"><div class="oi-bar put" style="width:' + pw + '%"></div></div>' +
+                    '</div>';
             }).join('');
         }
 
-        // 🚀 즉시 실행 시작점: 야후 웹소켓부터 최우선 연결하여 속도 극대화 + Firebase는 배경 백그라운드 처리
-        (function start() {
+        (async function start() {
             yahooWsConnect();
             initFirebaseBackground();
         })();
