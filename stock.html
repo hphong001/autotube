@@ -190,7 +190,7 @@
             border: 1px solid rgba(112,144,255,0.2);
             flex: 1;
             justify-content: center;
-            max-width: 450px;
+            max-width: 1400px;
         }
 
         .neon-item {
@@ -322,7 +322,6 @@
                 border-right: none;
             }
 
-        /* ── 패널 헤더 (드롭다운 포함) ── */
         .ph {
             display: flex;
             flex-direction: column;
@@ -383,36 +382,6 @@
             width: 100%;
         }
 
-        .price-divider {
-            display: none !important;
-        }
-
-        .ext-block {
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-            padding-left: 0;
-            border-left: none;
-        }
-
-        .ext-price {
-            font-size: 20px;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-        .ext-diff {
-            font-size: 16px;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-        .ext-chg {
-            font-size: 16px;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
         .price-block {
             display: flex;
             align-items: baseline;
@@ -443,7 +412,6 @@
             white-space: nowrap;
         }
 
-        /* ★ 거래량 배지 스타일 */
         .vol-badge {
             font-size: 11px;
             font-weight: bold;
@@ -618,7 +586,6 @@
             background: #ffcc00;
         }
 
-        /* ── 옵션 체인 ── */
         .oi-box {
             border: 1px solid #2a2a3e;
             border-radius: 8px;
@@ -755,7 +722,6 @@
             animation: spin 1s linear infinite;
         }
 
-        /* ── 차트 영역 ── */
         .chart-wrapper {
             flex: 0 0 240px;
             position: relative;
@@ -794,7 +760,6 @@
                 color: #fff;
             }
 
-        /* ── 사이드바 ── */
         .sidebar {
             width: 240px;
             display: flex;
@@ -973,7 +938,6 @@
             font-size: 12px;
         }
 
-        /* ── 모바일 (1200px 이하) ── */
         @media screen and (max-width:1200px) {
             body {
                 min-width: unset;
@@ -1059,24 +1023,6 @@
                 align-items: center;
             }
 
-            .price-block {
-                justify-content: center;
-            }
-
-            .ext-block {
-                padding-left: 0;
-                border-left: none;
-                justify-content: center;
-            }
-
-            .price-divider {
-                display: none !important;
-            }
-
-            .ws-dot {
-                flex-shrink: 0;
-            }
-
             .sidebar {
                 width: 100%;
                 height: auto;
@@ -1121,18 +1067,23 @@
         <div class="il-msg" id="il-msg">실시간 시세 연결 중...</div>
     </div>
 
-    <!-- ② 상단 바 -->
+    <!-- ② 상단 바 (아이디 충돌 및 덮어쓰기 문제 완벽 해결) -->
     <div class="top-bar">
         <div class="logo-top">
             <div class="logo-top-main"><span class="lt-strike">STRIKE</span><span class="lt-zone">ZONE</span></div>
             <div class="logo-top-line"></div>
             <div class="logo-top-sub">STOCK PREMIUM</div>
         </div>
-        <div class="neon-ticker-bar">
+        <div class="neon-ticker-bar" style="max-width: 1400px;">
             <span class="ws-dot dead" id="ws-dot-header"></span>
-            <span class="neon-item" id="neon-qqq">QQQ &nbsp;─</span><span style="color:#1a1a30;">|</span>
-            <span class="neon-item" id="neon-spy">SPY &nbsp;─</span><span style="color:#1a1a30;">|</span>
-            <span class="neon-item" id="neon-vix">VIX &nbsp;─</span>
+            <span class="neon-item" id="neon-qqq">나스닥(QQQ) ─</span><span style="color:#1a1a30;">|</span>
+            <span class="neon-item" id="neon-spy">S&P500(SPY) ─</span><span style="color:#1a1a30;">|</span>
+            <span class="neon-item" id="neon-vix">VIX [공포: ─]</span><span style="color:#1a1a30;">|</span>
+            <span class="neon-item" id="neon-nq">나스닥선물 ─</span><span style="color:#1a1a30;">|</span>
+            <span class="neon-item" id="neon-cl">WTI원유 ─</span><span style="color:#1a1a30;">|</span>
+            <span class="neon-item" id="neon-tnx">미국채10년 ─</span><span style="color:#1a1a30;">|</span>
+            <span class="neon-item" id="neon-dxy">달러인덱스 ─</span><span style="color:#1a1a30;">|</span>
+            <span class="neon-item" id="neon-usdkrw">원달러환율 ─</span>
         </div>
         <div class="top-right"><div class="top-time" id="h-time">연결 대기중</div></div>
     </div>
@@ -1157,7 +1108,6 @@
     </div>
 
     <script>
-        /* ── 관심종목 마스터 리스트 (14개) ── */
         var WATCH_LIST = [
             { ticker: 'TSLA', name: '테슬라' },
             { ticker: 'NVDA', name: '엔비디아' },
@@ -1176,7 +1126,6 @@
         ];
 
         var DEFAULT_PANELS = ['TSLA', 'NVDA', 'PLTR'];
-
         var LS_PANELS = 'sz_panels';
         var LS_INTERVAL = 'sz_interval';
 
@@ -1185,6 +1134,8 @@
 
         var panelDataStore = {};
         var fbRefs = {};
+        var headerPrevClose = {};
+        var PricingData = null;
 
         var globQqq = null, globSpy = null, globVix = null, globVixState = '안정';
         var currentChartTicker = { 0: null, 1: null, 2: null };
@@ -1410,30 +1361,14 @@
         var fbGen = { 0: 0, 1: 0, 2: 0 };
 
         function initFirebase() {
-            // ❌ 아래 두 줄(isWF 체크 및 리턴)을 삭제하거나 주석 처리하세요!
-            // var isWF = (typeof window.chrome !== 'undefined') && (typeof window.chrome.webview !== 'undefined');
-            // if (isWF) return;
-
             try {
                 if (!firebase.apps.length) firebase.initializeApp({ databaseURL: FIREBASE_URL });
-
-                firebase.database().ref('tickers').limitToFirst(1).on('value', function (snap) {
-                    var data = snap.val(); if (!data) return;
-                    var keys = Object.keys(data);
-                    if (keys.length && data[keys[0]] && data[keys[0]].header) {
-                        window.onWsMessage(data[keys[0]].header);
-                    }
-                });
-
                 [0, 1, 2].forEach(function (i) { subscribeFirebase(i, panelTickers[i]); });
-            } catch (e) {
-                console.error('Firebase 초기화 실패:', e);
-            }
+            } catch (e) { }
         }
 
         function subscribeFirebase(panelIdx, ticker) {
             if (!ticker) return;
-
             unsubscribeFirebase(panelIdx);
             fbGen[panelIdx]++;
             var myGen = fbGen[panelIdx];
@@ -1444,7 +1379,6 @@
                     return;
                 }
 
-                // 1. 실시간 시세 전용 리스너 (오직 realtime 노드만 구독 -> 깜빡임 원인 차단)
                 var rtRef = firebase.database().ref('tickers/' + ticker + '/realtime');
                 rtRef.on('value', function (snap) {
                     if (fbGen[panelIdx] !== myGen) return;
@@ -1461,7 +1395,6 @@
                     );
                 });
 
-                // 2. 옵션 분석 패널 전용 리스너 (오직 panel 노드만 구독)
                 var panelRef = firebase.database().ref('tickers/' + ticker + '/panel');
                 panelRef.on('value', function (snap) {
                     if (fbGen[panelIdx] !== myGen) return;
@@ -1489,23 +1422,8 @@
             fbGen[panelIdx]++;
         }
 
-        function unsubscribeFirebase(panelIdx) {
-            try {
-                if (fbRefs[panelIdx] && fbRefs[panelIdx].ref) {
-                    fbRefs[panelIdx].ref.off();
-                }
-            } catch (e) { }
-            fbRefs[panelIdx] = null;
-            fbGen[panelIdx]++;
-        }
-
         window.onWsMessage = function (d) {
             if (!d || !d.type) return;
-
-            if (d.type === 'headerUpdate') {
-                globQqq = d.qqq || 0; globSpy = d.spy || 0; globVix = d.vix || 0; globVixState = d.vixState || '안정';
-                updateNeonFromGlobal(); return;
-            }
 
             if (d.type === 'optionUpdate') {
                 var ticker = d.ticker;
@@ -1537,7 +1455,6 @@
         function updatePanelPrice(idx, price, changeRate, changeAmt, volume) {
             var p = 'p' + idx + '-';
 
-            // 문자열 숫자 데이터를 안전하게 변환
             var numPrice = Number(String(price).replace(/[^0-9.-]+/g, "")) || 0;
             var numAmt = Number(String(changeAmt).replace(/[^0-9.-]+/g, "")) || 0;
 
@@ -1558,14 +1475,9 @@
             if (pxEl) { pxEl.textContent = pxText; pxEl.className = 'price-now ' + cls; }
             if (dfEl) { dfEl.textContent = dfText; dfEl.className = 'price-diff ' + cls; }
             if (cgEl) { cgEl.textContent = cgText; cgEl.className = 'price-chg ' + cls; }
+            if (volEl) { volEl.textContent = '거래량: ' + numberWithCommas(volume); }
 
-            /* ★ 거래량 1000단위 콤마 적용 및 출력 */
-            if (volEl) {
-                volEl.textContent = '거래량: ' + numberWithCommas(volume);
-            }
-
-            var dot = document.getElementById(p + 'dot');
-            if (dot) dot.className = 'ws-dot live';
+            var dot = document.getElementById(p + 'dot'); if (dot) dot.className = 'ws-dot live';
         }
 
         function renderPanel(panel, d) {
@@ -1626,13 +1538,6 @@
             var vCol = globVixState.indexOf('공포') >= 0 ? 'c-red' : globVixState.indexOf('주의') >= 0 ? 'c-gold' : 'c-green';
             var vStr = globVix === null ? '─' : '<b class="' + vCol + '">' + globVixState + '</b>';
             el.innerHTML = '지수: QQQ ' + qStr + ' / SPY ' + sStr + ' / VIX ' + vStr;
-        }
-
-        function updateNeonFromGlobal() {
-            var qEl = document.getElementById('neon-qqq'), sEl = document.getElementById('neon-spy'), vEl = document.getElementById('neon-vix');
-            if (globQqq !== null && qEl) { qEl.textContent = 'QQQ ' + (globQqq > 0 ? '+' : '') + globQqq.toFixed(2) + '%'; qEl.className = 'neon-item ' + (globQqq > 0 ? 'up' : globQqq < 0 ? 'dn' : 'neu'); }
-            if (globSpy !== null && sEl) { sEl.textContent = 'SPY ' + (globSpy > 0 ? '+' : '') + globSpy.toFixed(2) + '%'; sEl.className = 'neon-item ' + (globSpy > 0 ? 'up' : globSpy < 0 ? 'dn' : 'neu'); }
-            if (globVix !== null && vEl) { vEl.textContent = 'VIX ' + globVix.toFixed(2) + ' (' + globVixState + ')'; vEl.className = 'neon-item ' + (globVixState.indexOf('공포') >= 0 ? 'up' : globVixState.indexOf('주의') >= 0 ? 'neon-vix-warn' : 'neu'); }
         }
 
         function updateTimeDisplay() {
@@ -1732,12 +1637,140 @@
             updateChartWidget(panel, panelTickers[panel]);
         }
 
+        /* ═══════════ [가장 중요한 수정] 상단 바 실시간 업데이트 ═══════════ */
+
+        // 1. QQQ, SPY는 야후 웹소켓 스트리머에서 전담
+        var HEADER_TICKERS = ['QQQ', 'SPY'];
+
+        function getAllSubs() {
+            var all = WATCH_LIST.map(function (w) { return w.ticker; }).concat(HEADER_TICKERS);
+            all = all.map(function (t) { return t === 'SPX' ? '^SPX' : t; });
+            var seen = {}, result = [];
+            all.forEach(function (t) { if (!seen[t]) { seen[t] = true; result.push(t); } });
+            return result;
+        }
+
+        (function initProto() {
+            var P = 'syntax="proto3";message PricingData{string id=1;float price=2;sint64 time=3;string currency=4;string exchange=5;int32 quoteType=6;int32 marketHours=7;float changePercent=8;sint64 dayVolume=9;float dayHigh=10;float dayLow=11;float change=12;string shortName=13;sint64 expireDate=14;float openPrice=15;float previousClose=16;float strikePrice=17;string underlyingSymbol=18;sint64 openInterest=19;sint64 optionsType=20;sint64 miniOption=21;sint64 lastSize=22;float bid=23;sint64 bidSize=24;float ask=25;sint64 askSize=26;sint64 priceHint=27;sint64 vol_24hr=28;sint64 volAllCurrencies=29;string fromcurrency=30;string lastMarket=31;double circulatingSupply=32;double marketcap=33;}';
+            try { var root = protobuf.parse(P).root; root.resolveAll(); PricingData = root.lookupType('PricingData'); } catch (e) { }
+        })();
+
+        var yahooWs = null;
+        function yahooWsConnect() {
+            try {
+                yahooWs = new WebSocket('wss://streamer.finance.yahoo.com');
+                yahooWs.binaryType = 'arraybuffer';
+                yahooWs.onopen = function () {
+                    yahooWs.send(JSON.stringify({ subscribe: getAllSubs() }));
+                };
+                yahooWs.onmessage = function (ev) {
+                    if (!PricingData) return;
+                    try {
+                        var bytes;
+                        if (ev.data instanceof ArrayBuffer) { bytes = new Uint8Array(ev.data); }
+                        else { var bin = atob(ev.data); bytes = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i); }
+                        var msg = PricingData.decode(bytes);
+
+                        if (msg && msg.id && msg.price > 0) {
+                            var ticker = msg.id;
+                            var price = msg.price;
+                            var prev = headerPrevClose[ticker] || msg.previousClose || 0;
+                            headerPrevClose[ticker] = prev;
+                            var chg = prev > 0 ? ((price - prev) / prev * 100) : msg.changePercent;
+
+                            if (ticker === 'QQQ') {
+                                globQqq = chg;
+                                updateNeonItem('neon-qqq', '나스닥(QQQ)', price, chg);
+                            } else if (ticker === 'SPY') {
+                                globSpy = chg;
+                                updateNeonItem('neon-spy', 'S&P500(SPY)', price, chg);
+                            }
+
+                            var hd = document.getElementById('ws-dot-header'); if (hd) hd.className = 'ws-dot live';
+                            [0, 1, 2].forEach(function (i) { updateEnvSummary(i); });
+                        }
+                    } catch (e) { }
+                };
+            } catch (e) { }
+        }
+
+        // 2. 파이어베이스에 저장된 거시경제 지표(VIX, 원유, 달러 등) 읽어오기
+        function initMacroListener() {
+            try {
+                var macroRef = firebase.database().ref('system/macro');
+                macroRef.on('value', function (snap) {
+                    var data = snap.val();
+                    if (!data) return;
+
+                    // HTML ID와 정확히 매칭되도록 수정 완료
+                    if (data.nq_f) updateNeonItem('neon-nq', '나스닥선물', data.nq_f.price, data.nq_f.changeRate);
+                    if (data.cl_f) updateNeonItem('neon-cl', 'WTI원유', data.cl_f.price, data.cl_f.changeRate);
+                    if (data.tnx) updateNeonItem('neon-tnx', '미국채10년', data.tnx.price, data.tnx.changeRate);
+                    if (data.dxy) updateNeonItem('neon-dxy', '달러인덱스', data.dxy.price, data.dxy.changeRate);
+
+                    if (data.vix) {
+                        var vPrice = data.vix.price || 0;
+                        var vState = data.vix.vixState || '안정';
+                        var fgText = data.fearGreed ? ' [F&G: ' + Math.round(data.fearGreed.score) + ']' : '';
+                        var vCol = vState === '공포패닉' ? 'up' : vState === '불안' || vState === '주의' ? 'neon-vix-warn' : 'neu';
+
+                        var vixEl = document.getElementById('neon-vix');
+                        if (vixEl) {
+                            vixEl.textContent = 'VIX ' + vPrice.toFixed(2) + ' [공포: ' + vState + ']' + fgText;
+                            vixEl.className = 'neon-item ' + vCol;
+                        }
+                        globVix = vPrice;
+                        globVixState = vState;
+                    }
+                    [0, 1, 2].forEach(function (i) { updateEnvSummary(i); });
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        // 3. 파이어베이스에 저장된 환율 데이터 읽어오기
+        function initUsdKrwListener() {
+            try {
+                var krwRef = firebase.database().ref('system/exchangeRate');
+                krwRef.on('value', function (snap) {
+                    var data = snap.val();
+                    var el = document.getElementById('neon-usdkrw');
+                    if (el && data) {
+                        var price = typeof data === 'object' ? (Number(data.price) || 0) : (Number(data) || 0);
+                        var rateStr = typeof data === 'object' ? (data.changeRate || '0') : '0';
+                        var rate = Number(String(rateStr).replace('%', '')) || 0;
+                        var cls = rate > 0 ? 'up' : rate < 0 ? 'dn' : 'neu';
+
+                        el.textContent = '원달러환율 ' + price.toFixed(2) + '원';
+                        el.className = 'neon-item ' + cls;
+                    }
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        // 공통 업데이트 함수
+        function updateNeonItem(elementId, labelName, price, changeRate) {
+            var el = document.getElementById(elementId);
+            if (!el) return;
+            var p = Number(price) || 0;
+            var chg = Number(changeRate) || 0;
+            var sign = chg > 0 ? '+' : '';
+            var cls = chg > 0 ? 'up' : chg < 0 ? 'dn' : 'neu';
+
+            el.textContent = labelName + ' ' + p.toFixed(2) + ' (' + sign + chg.toFixed(2) + '%)';
+            el.className = 'neon-item ' + cls;
+        }
+
         /* ── 시작 ── */
         (function start() {
             initDashboard();
             buildWatchlist();
             refreshAllDropdowns();
             initFirebase();
+
+            // 상단 바 관련 통신 3가지 동시 실행
+            yahooWsConnect();       // QQQ, SPY
+            initMacroListener();    // 선물, 원유, 국채, 달러, VIX, F&G
+            initUsdKrwListener();   // 환율
         })();
     </script>
 </body>
