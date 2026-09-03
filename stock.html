@@ -1425,6 +1425,18 @@
         window.onWsMessage = function (d) {
             if (!d || !d.type) return;
 
+            // ★ 1. 가벼운 실시간 가격 업데이트 (화면 버벅거림/지연 방지)
+            // C# 서버에서 1초마다 날아오는 실시간 시세는 무거운 표를 다시 그리지 않고 숫자만 0.01초 만에 갱신합니다.
+            if (d.type === 'fastPrice') {
+                var panelIdx = panelTickers.indexOf(d.ticker);
+                if (panelIdx >= 0) {
+                    updatePanelPrice(panelIdx, d.price, d.change, d.priceDiff, d.volume);
+                }
+                return; // 텍스트만 업데이트하고 여기서 함수를 종료 (렌더링 과부하 방지)
+            }
+
+            // ★ 2. 무거운 전체 패널 업데이트 (옵션 체인, 타임라인 등)
+            // 파이어베이스나 4460 화면에서 들어온 전체 데이터 갱신 시에만 화면을 통째로 다시 그립니다.
             if (d.type === 'optionUpdate') {
                 var ticker = d.ticker;
                 if (ticker === undefined || ticker === null) return;
@@ -1432,19 +1444,31 @@
                 var panel = panelTickers.indexOf(ticker);
                 if (panel < 0) return;
 
-                if (d.maxPain !== undefined && d.maxPain !== null) panelDataStore[panel] = JSON.parse(JSON.stringify(d));
-                else { if (!panelDataStore[panel]) panelDataStore[panel] = {}; Object.assign(panelDataStore[panel], d); }
+                if (d.maxPain !== undefined && d.maxPain !== null) {
+                    panelDataStore[panel] = JSON.parse(JSON.stringify(d));
+                } else {
+                    if (!panelDataStore[panel]) panelDataStore[panel] = {};
+                    Object.assign(panelDataStore[panel], d);
+                }
 
-                if (panelDataStore['_timeout_' + panel]) { clearTimeout(panelDataStore['_timeout_' + panel]); panelDataStore['_timeout_' + panel] = null; }
+                if (panelDataStore['_timeout_' + panel]) {
+                    clearTimeout(panelDataStore['_timeout_' + panel]);
+                    panelDataStore['_timeout_' + panel] = null;
+                }
 
                 var dotEl = document.getElementById('p' + panel + '-oi-dot');
-                if (dotEl && d.maxPain !== undefined && d.maxPain !== null) { dotEl.className = 'oi-dot flash'; setTimeout(function () { dotEl.className = 'oi-dot'; }, 900); }
+                if (dotEl && d.maxPain !== undefined && d.maxPain !== null) {
+                    dotEl.className = 'oi-dot flash';
+                    setTimeout(function () { dotEl.className = 'oi-dot'; }, 900);
+                }
 
+                // 전체 화면(옵션체인, 지지/저항 타임라인 등)을 다시 그리는 무거운 렌더링 함수
                 renderPanel(panel, panelDataStore[panel]);
 
                 hidePanelOverlay(panel);
                 setSelectDisabled(panel, false);
                 switchLocked[panel] = false;
+
                 if (panelDataStore['_timeout_' + panel]) {
                     clearTimeout(panelDataStore['_timeout_' + panel]);
                     panelDataStore['_timeout_' + panel] = null;
