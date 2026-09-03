@@ -193,6 +193,11 @@
             max-width: 1400px;
         }
 
+        .sep {
+            color: #1a1a30;
+            padding: 0 2px;
+        }
+
         .neon-item {
             font-size: 12px;
             font-weight: bold;
@@ -224,9 +229,11 @@
             gap: 8px;
         }
 
+        /* 시계 텍스트 흰색 변경 */
         .top-time {
-            font-size: 11px;
-            color: #333;
+            font-size: 12px;
+            font-weight: bold;
+            color: #ffffff;
             white-space: nowrap;
         }
 
@@ -938,6 +945,7 @@
             font-size: 12px;
         }
 
+        /* ── 모바일 환경 미디어 쿼리 (상단 배지 스타일 정돈) ── */
         @media screen and (max-width:1200px) {
             body {
                 min-width: unset;
@@ -946,8 +954,8 @@
             .top-bar {
                 height: auto;
                 flex-wrap: wrap;
-                padding: 6px 10px;
-                gap: 6px;
+                padding: 10px;
+                gap: 8px;
             }
 
             .logo-top {
@@ -959,16 +967,35 @@
 
             .top-right {
                 order: 2;
+                width: 100%;
+                justify-content: center;
             }
 
+            /* 모바일에서는 | 선을 숨기고 배지 형태로 둥글게 출력 */
             .neon-ticker-bar {
                 width: 100%;
                 max-width: none;
                 order: 3;
-                margin-top: 2px;
-                padding: 2px 6px;
-                justify-content: space-around;
+                margin-top: 6px;
+                padding: 8px 6px;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 8px 10px;
+                background: transparent;
+                border: none;
             }
+
+                .neon-ticker-bar .sep {
+                    display: none;
+                }
+
+                .neon-ticker-bar .neon-item {
+                    background: rgba(255,255,255,0.05);
+                    padding: 6px 10px;
+                    border-radius: 6px;
+                    border: 1px solid rgba(255,255,255,0.1);
+                    font-size: 11.5px;
+                }
 
             .content-wrapper {
                 flex-direction: column;
@@ -1067,22 +1094,24 @@
         <div class="il-msg" id="il-msg">실시간 시세 연결 중...</div>
     </div>
 
-    <!-- ② 상단 바 (아이디 충돌 및 덮어쓰기 문제 완벽 해결) -->
+    <!-- ② 상단 바 (| 구분자 클래스 분리 및 피어앤그리드 추가) -->
     <div class="top-bar">
         <div class="logo-top">
             <div class="logo-top-main"><span class="lt-strike">STRIKE</span><span class="lt-zone">ZONE</span></div>
             <div class="logo-top-line"></div>
             <div class="logo-top-sub">STOCK PREMIUM</div>
         </div>
-        <div class="neon-ticker-bar" style="max-width: 1400px;">
+        <div class="neon-ticker-bar" style="max-width: 1500px;">
             <span class="ws-dot dead" id="ws-dot-header"></span>
-            <span class="neon-item" id="neon-qqq">나스닥(QQQ) ─</span><span style="color:#1a1a30;">|</span>
-            <span class="neon-item" id="neon-spy">S&P500(SPY) ─</span><span style="color:#1a1a30;">|</span>
-            <span class="neon-item" id="neon-vix">VIX [공포: ─]</span><span style="color:#1a1a30;">|</span>
-            <span class="neon-item" id="neon-nq">나스닥선물 ─</span><span style="color:#1a1a30;">|</span>
-            <span class="neon-item" id="neon-cl">WTI원유 ─</span><span style="color:#1a1a30;">|</span>
-            <span class="neon-item" id="neon-tnx">미국채10년 ─</span><span style="color:#1a1a30;">|</span>
-            <span class="neon-item" id="neon-dxy">달러인덱스 ─</span><span style="color:#1a1a30;">|</span>
+            <span class="neon-item" id="neon-qqq">나스닥(QQQ) ─</span><span class="sep">|</span>
+            <span class="neon-item" id="neon-spy">S&P500(SPY) ─</span><span class="sep">|</span>
+            <span class="neon-item" id="neon-vix">VIX ─</span><span class="sep">|</span>
+            <!-- 분리된 피어앤그리드 인덱스 -->
+            <span class="neon-item" id="neon-fg">F&G ─</span><span class="sep">|</span>
+            <span class="neon-item" id="neon-nq">나스닥선물 ─</span><span class="sep">|</span>
+            <span class="neon-item" id="neon-cl">WTI원유 ─</span><span class="sep">|</span>
+            <span class="neon-item" id="neon-tnx">미국채10년 ─</span><span class="sep">|</span>
+            <span class="neon-item" id="neon-dxy">달러인덱스 ─</span><span class="sep">|</span>
             <span class="neon-item" id="neon-usdkrw">원달러환율 ─</span>
         </div>
         <div class="top-right"><div class="top-time" id="h-time">연결 대기중</div></div>
@@ -1425,18 +1454,16 @@
         window.onWsMessage = function (d) {
             if (!d || !d.type) return;
 
-            // ★ 1. 가벼운 실시간 가격 업데이트 (화면 버벅거림/지연 방지)
-            // C# 서버에서 1초마다 날아오는 실시간 시세는 무거운 표를 다시 그리지 않고 숫자만 0.01초 만에 갱신합니다.
+            // 1. 가벼운 텍스트 업데이트 (실시간 시세 버벅임 방지)
             if (d.type === 'fastPrice') {
                 var panelIdx = panelTickers.indexOf(d.ticker);
                 if (panelIdx >= 0) {
                     updatePanelPrice(panelIdx, d.price, d.change, d.priceDiff, d.volume);
                 }
-                return; // 텍스트만 업데이트하고 여기서 함수를 종료 (렌더링 과부하 방지)
+                return;
             }
 
-            // ★ 2. 무거운 전체 패널 업데이트 (옵션 체인, 타임라인 등)
-            // 파이어베이스나 4460 화면에서 들어온 전체 데이터 갱신 시에만 화면을 통째로 다시 그립니다.
+            // 2. 무거운 화면 통째로 렌더링 (옵션 데이터 갱신 시)
             if (d.type === 'optionUpdate') {
                 var ticker = d.ticker;
                 if (ticker === undefined || ticker === null) return;
@@ -1444,31 +1471,19 @@
                 var panel = panelTickers.indexOf(ticker);
                 if (panel < 0) return;
 
-                if (d.maxPain !== undefined && d.maxPain !== null) {
-                    panelDataStore[panel] = JSON.parse(JSON.stringify(d));
-                } else {
-                    if (!panelDataStore[panel]) panelDataStore[panel] = {};
-                    Object.assign(panelDataStore[panel], d);
-                }
+                if (d.maxPain !== undefined && d.maxPain !== null) panelDataStore[panel] = JSON.parse(JSON.stringify(d));
+                else { if (!panelDataStore[panel]) panelDataStore[panel] = {}; Object.assign(panelDataStore[panel], d); }
 
-                if (panelDataStore['_timeout_' + panel]) {
-                    clearTimeout(panelDataStore['_timeout_' + panel]);
-                    panelDataStore['_timeout_' + panel] = null;
-                }
+                if (panelDataStore['_timeout_' + panel]) { clearTimeout(panelDataStore['_timeout_' + panel]); panelDataStore['_timeout_' + panel] = null; }
 
                 var dotEl = document.getElementById('p' + panel + '-oi-dot');
-                if (dotEl && d.maxPain !== undefined && d.maxPain !== null) {
-                    dotEl.className = 'oi-dot flash';
-                    setTimeout(function () { dotEl.className = 'oi-dot'; }, 900);
-                }
+                if (dotEl && d.maxPain !== undefined && d.maxPain !== null) { dotEl.className = 'oi-dot flash'; setTimeout(function () { dotEl.className = 'oi-dot'; }, 900); }
 
-                // 전체 화면(옵션체인, 지지/저항 타임라인 등)을 다시 그리는 무거운 렌더링 함수
                 renderPanel(panel, panelDataStore[panel]);
 
                 hidePanelOverlay(panel);
                 setSelectDisabled(panel, false);
                 switchLocked[panel] = false;
-
                 if (panelDataStore['_timeout_' + panel]) {
                     clearTimeout(panelDataStore['_timeout_' + panel]);
                     panelDataStore['_timeout_' + panel] = null;
@@ -1567,7 +1582,11 @@
         function updateTimeDisplay() {
             var el = document.getElementById('h-time'); if (!el) return;
             var n = new Date();
-            el.textContent = n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0') + '-' + String(n.getDate()).padStart(2, '0') + ' ' + n.toLocaleTimeString('ko-KR');
+            var days = ['일', '월', '화', '수', '목', '금', '토'];
+            var ampm = n.getHours() >= 12 ? '오후' : '오전';
+            var h = n.getHours() % 12 || 12;
+
+            el.textContent = n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0') + '-' + String(n.getDate()).padStart(2, '0') + ' ' + ampm + ' ' + String(h).padStart(2, '0') + ':' + String(n.getMinutes()).padStart(2, '0') + ':' + String(n.getSeconds()).padStart(2, '0');
         }
         setInterval(updateTimeDisplay, 1000);
 
@@ -1661,11 +1680,10 @@
             updateChartWidget(panel, panelTickers[panel]);
         }
 
-        /* ═══════════ [가장 중요한 수정] 상단 바 실시간 업데이트 ═══════════ */
+        /* ═══════════ 파이어베이스 기반 상단 거시경제 지표 및 환율 리스너 ═══════════ */
 
-        // 1. QQQ, SPY는 야후 웹소켓 스트리머에서 전담
+        /* QQQ, SPY 스트리밍 (기존 야후 웹소켓 유지) */
         var HEADER_TICKERS = ['QQQ', 'SPY'];
-
         function getAllSubs() {
             var all = WATCH_LIST.map(function (w) { return w.ticker; }).concat(HEADER_TICKERS);
             all = all.map(function (t) { return t === 'SPX' ? '^SPX' : t; });
@@ -1718,7 +1736,7 @@
             } catch (e) { }
         }
 
-        // 2. 파이어베이스에 저장된 거시경제 지표(VIX, 원유, 달러 등) 읽어오기
+        /* 서버(파이어베이스 system/macro)에서 거시지표 읽어오기 */
         function initMacroListener() {
             try {
                 var macroRef = firebase.database().ref('system/macro');
@@ -1726,32 +1744,56 @@
                     var data = snap.val();
                     if (!data) return;
 
-                    // HTML ID와 정확히 매칭되도록 수정 완료
+                    // 일반 지표 업데이트
                     if (data.nq_f) updateNeonItem('neon-nq', '나스닥선물', data.nq_f.price, data.nq_f.changeRate);
                     if (data.cl_f) updateNeonItem('neon-cl', 'WTI원유', data.cl_f.price, data.cl_f.changeRate);
                     if (data.tnx) updateNeonItem('neon-tnx', '미국채10년', data.tnx.price, data.tnx.changeRate);
                     if (data.dxy) updateNeonItem('neon-dxy', '달러인덱스', data.dxy.price, data.dxy.changeRate);
 
+                    // VIX 업데이트
                     if (data.vix) {
                         var vPrice = data.vix.price || 0;
                         var vState = data.vix.vixState || '안정';
-                        var fgText = data.fearGreed ? ' [F&G: ' + Math.round(data.fearGreed.score) + ']' : '';
                         var vCol = vState === '공포패닉' ? 'up' : vState === '불안' || vState === '주의' ? 'neon-vix-warn' : 'neu';
 
                         var vixEl = document.getElementById('neon-vix');
                         if (vixEl) {
-                            vixEl.textContent = 'VIX ' + vPrice.toFixed(2) + ' [공포: ' + vState + ']' + fgText;
+                            vixEl.textContent = 'VIX ' + vPrice.toFixed(2) + ' [' + vState + ']';
                             vixEl.className = 'neon-item ' + vCol;
                         }
                         globVix = vPrice;
                         globVixState = vState;
                     }
+
+                    // ★ 피어앤그리드 분리 업데이트
+                    if (data.fearGreed) {
+                        var fgScore = Math.round(data.fearGreed.score) || 0;
+                        var fgRating = data.fearGreed.rating || 'Unknown';
+
+                        // 한국어 등급 변환 (디자인 가독성 목적)
+                        var ratingKr = fgRating.toLowerCase();
+                        if (ratingKr.includes('extreme fear')) ratingKr = '극단적 공포';
+                        else if (ratingKr.includes('fear')) ratingKr = '공포';
+                        else if (ratingKr.includes('extreme greed')) ratingKr = '극단적 탐욕';
+                        else if (ratingKr.includes('greed')) ratingKr = '탐욕';
+                        else ratingKr = '중립';
+
+                        // 점수에 따른 텍스트 색상 (공포일수록 붉은 계열, 탐욕일수록 푸른 계열)
+                        var fgCol = fgScore <= 25 ? 'up' : (fgScore >= 75 ? 'dn' : (fgScore <= 45 ? 'neon-vix-warn' : 'neu'));
+
+                        var fgEl = document.getElementById('neon-fg');
+                        if (fgEl) {
+                            fgEl.textContent = 'F&G ' + fgScore + ' [' + ratingKr + ']';
+                            fgEl.className = 'neon-item ' + fgCol;
+                        }
+                    }
+
                     [0, 1, 2].forEach(function (i) { updateEnvSummary(i); });
                 });
             } catch (e) { console.error(e); }
         }
 
-        // 3. 파이어베이스에 저장된 환율 데이터 읽어오기
+        /* 서버(파이어베이스 system/exchangeRate)에서 환율 읽어오기 */
         function initUsdKrwListener() {
             try {
                 var krwRef = firebase.database().ref('system/exchangeRate');
