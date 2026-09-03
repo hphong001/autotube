@@ -332,18 +332,17 @@
             border-radius: 6px;
             border: 1px solid #2a2a3e;
             gap: 8px;
-            align-items: center; /* PC: 전체 중앙정렬 */
+            align-items: center;
         }
-        /* 드롭다운 + ws-dot 한 줄 */
+
         .ph-top {
             display: flex;
             align-items: center;
             gap: 8px;
             width: 100%;
-            justify-content: center; /* PC: 중앙정렬 */
+            justify-content: center;
         }
 
-        /* 종목 드롭다운 */
         .ticker-select {
             font-size: 16px;
             font-weight: bold;
@@ -356,7 +355,7 @@
             outline: none;
             flex-shrink: 0;
             text-shadow: 0 0 8px rgba(255,204,0,0.4);
-            width: 210px; /* PC: 조금 더 넓게 */
+            width: 210px;
         }
 
             .ticker-select:disabled {
@@ -374,31 +373,26 @@
                     color: #444;
                 }
 
-        /* PC: 현재가 중앙 정렬, | 제거, 여백으로만 구분 */
         .price-container {
             display: flex;
             flex-direction: row;
             align-items: baseline;
-            gap: 24px;
+            gap: 16px;
             flex-wrap: wrap;
             justify-content: center;
-            width: 100%; /* 중앙정렬 */
+            width: 100%;
         }
 
         .price-divider {
             display: none !important;
         }
-        /* 시간외 블록: | 대신 여백만으로 구분 */
+
         .ext-block {
             display: flex;
             align-items: baseline;
             gap: 8px;
             padding-left: 0;
             border-left: none;
-        }
-
-        .ext-label {
-            display: none;
         }
 
         .ext-price {
@@ -447,6 +441,20 @@
             font-weight: bold;
             color: #555;
             white-space: nowrap;
+        }
+
+        /* ★ 거래량 배지 스타일 */
+        .vol-badge {
+            font-size: 11px;
+            font-weight: bold;
+            padding: 2px 7px;
+            border-radius: 4px;
+            background: #1a2238;
+            color: #77aaee;
+            border: 1px solid #2a3a5e;
+            white-space: nowrap;
+            margin-left: 10px;
+            letter-spacing: 0.5px;
         }
 
         .up {
@@ -728,7 +736,6 @@
             font-weight: bold;
         }
 
-        /* 데이터 준비중 */
         .oi-pending {
             display: flex;
             align-items: center;
@@ -890,7 +897,6 @@
             flex-shrink: 0;
         }
 
-        /* 관심종목 리스트 스크롤 */
         .ticker-list {
             overflow-y: auto;
             flex: 1;
@@ -928,7 +934,6 @@
                 color: #ffcc00;
             }
 
-        /* 패널 배지 */
         .panel-badge {
             font-size: 9px;
             font-weight: bold;
@@ -1027,10 +1032,6 @@
                 overflow-y: visible;
             }
 
-            /* 모바일 패널헤더: 3줄 구성 - 중앙정렬
-               1줄: ws-dot + 드롭다운 (중앙)
-               2줄: 정규장 가격 (중앙)
-               3줄: 시간외 가격 (있을 때만, 중앙) */
             .ph {
                 flex-direction: column;
                 align-items: center;
@@ -1046,8 +1047,8 @@
             }
 
             .ticker-select {
-                width: calc(100% - 32px) !important; /* dot 너비 제외 */
-                max-width: 280px; /* 외곽선 넘침 방지 */
+                width: calc(100% - 32px) !important;
+                max-width: 280px;
                 font-size: 15px;
             }
 
@@ -1055,7 +1056,7 @@
                 flex-direction: column;
                 gap: 4px;
                 width: 100%;
-                align-items: center; /* 현재가 중앙정렬 */
+                align-items: center;
             }
 
             .price-block {
@@ -1075,7 +1076,6 @@
             .ws-dot {
                 flex-shrink: 0;
             }
-            /* dot은 ph-top 내에서 자연스럽게 */
 
             .sidebar {
                 width: 100%;
@@ -1108,33 +1108,6 @@
 
             .chart-wrapper {
                 min-height: 280px;
-            }
-        }
-
-        /* ── 7인치 이하 (480px) 옵션체인 전용 그리드 ── */
-        @media screen and (max-width:480px) {
-            /* 행사가에 바짝 붙이고 막대바 공간 극대화 */
-            .oi-grid-header {
-                grid-template-columns: 1fr 36px 26px 40px 26px 36px 1fr;
-                font-size: 9px;
-            }
-
-            .oi-row {
-                grid-template-columns: 1fr 36px 26px 40px 26px 36px 1fr;
-                font-size: 10px;
-                gap: 0px;
-            }
-
-            .oi-vol {
-                font-size: 8.5px;
-            }
-
-            .oi-bar-wrap {
-                padding: 0 1px;
-            }
-
-            .strike-box {
-                font-size: 10px;
             }
         }
     </style>
@@ -1184,10 +1157,6 @@
     </div>
 
     <script>
-        /* ═══════════════════════════════════════════════
-           StrikeZone — 리팩터링 완전판
-        ═══════════════════════════════════════════════ */
-
         /* ── 관심종목 마스터 리스트 (14개) ── */
         var WATCH_LIST = [
             { ticker: 'TSLA', name: '테슬라' },
@@ -1206,49 +1175,31 @@
             { ticker: 'SPX', name: 'S&P 500 지수옵션' }
         ];
 
-        /* 헤더 고정 구독 */
-        var HEADER_TICKERS = ['QQQ', 'SPY', '^VIX'];
-
-        /* 패널 기본값 */
         var DEFAULT_PANELS = ['TSLA', 'NVDA', 'PLTR'];
 
-        /* localStorage 키 */
         var LS_PANELS = 'sz_panels';
         var LS_INTERVAL = 'sz_interval';
 
-        /* ── 상태 ── */
-        var panelTickers = loadLS(LS_PANELS, DEFAULT_PANELS);   // ['TSLA','NVDA','PLTR']
+        var panelTickers = loadLS(LS_PANELS, DEFAULT_PANELS);
         var panelIntervals = loadLS(LS_INTERVAL, { 0: '3', 1: '3', 2: '3' });
 
-        var PricingData = null;
-        var yahooWs = null;
-        var yahooRunning = false;
-        var yahooReconTimer = null;
-        var lastMsgTime = 0;
-
-        var prevCloseCache = {};
-        var yahooPriceCache = {};
-        var panelDataStore = {};          // panelDataStore[panelIdx] = 최신 Firebase 데이터
-        var headerPrevClose = {};
-        var fbRefs = {};          // Firebase 구독 ref 관리
+        var panelDataStore = {};
+        var fbRefs = {};
 
         var globQqq = null, globSpy = null, globVix = null, globVixState = '안정';
-
-        /* 각 패널의 현재 차트 종목 추적 (불필요한 차트 재생성 방지) */
         var currentChartTicker = { 0: null, 1: null, 2: null };
-
-        /* 초기 로딩 */
         var initialLoadDone = false;
-
-        /* 패널 전환 debounce */
         var switchTimers = { 0: null, 1: null, 2: null };
         var switchLocked = { 0: false, 1: false, 2: false };
 
-        /* ── 유틸 ── */
         function loadLS(key, def) { try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch (e) { return def; } }
         function saveLS(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) { } }
 
-        /* ═══════════ 초기 로딩 ═══════════ */
+        function numberWithCommas(x) {
+            if (!x && x !== 0) return '─';
+            return Number(x).toLocaleString('en-US');
+        }
+
         function hideInitialLoading() {
             if (initialLoadDone) return;
             initialLoadDone = true;
@@ -1257,14 +1208,8 @@
             el.classList.add('fade-out');
             setTimeout(function () { el.style.display = 'none'; }, 600);
         }
-        /* 안전장치: 8초 후 강제 해제 */
         setTimeout(hideInitialLoading, 8000);
 
-        function setIlMsg(txt) {
-            var el = document.getElementById('il-msg'); if (el) el.textContent = txt;
-        }
-
-        /* ═══════════ 패널 DOM 생성 ═══════════ */
         function buildPanelHTML(i) {
             var opts = WATCH_LIST.map(function (w) {
                 return '<option value="' + w.ticker + '">' + w.ticker + ' (' + w.name + ')</option>';
@@ -1282,6 +1227,7 @@
                 + '<span class="price-now" id="p' + i + '-price">─</span>'
                 + '<span class="price-diff" id="p' + i + '-diff">─</span>'
                 + '<span class="price-chg"  id="p' + i + '-chg">─</span>'
+                + '<span class="vol-badge"  id="p' + i + '-vol">거래량: ─</span>'
                 + '</div>'
                 + '<div class="ext-block" id="p' + i + '-ext-block" style="display:none;">'
                 + '<span class="ext-price" id="p' + i + '-ext-price">─</span>'
@@ -1316,21 +1262,18 @@
             var grid = document.getElementById('dashboard-grid');
             grid.innerHTML = [0, 1, 2].map(buildPanelHTML).join('');
 
-            /* 초기 드롭다운 값 설정 */
             [0, 1, 2].forEach(function (i) {
                 var sel = document.getElementById('ticker-select-' + i);
                 if (sel) sel.value = panelTickers[i];
-                /* 차트 인터벌 복원 */
                 var intSel = document.getElementById('interval-' + i);
                 if (intSel) intSel.value = panelIntervals[i] || '3';
             });
         }
 
-        /* ═══════════ 사이드바 관심종목 ═══════════ */
         function buildWatchlist() {
             var list = document.getElementById('ticker-list');
             list.innerHTML = WATCH_LIST.map(function (w) {
-                return '<div class="ticker-item" id="wl-' + w.ticker + '" onclick="onWatchlistClick(\'' + w.ticker + '\')">'
+                return '<div class="ticker-item" id="wl-' + w.ticker + '">'
                     + '<span style="font-weight:bold;min-width:44px;">' + w.ticker + '</span>'
                     + '<span style="font-size:10px;color:#666;">' + w.name + '</span>'
                     + '<span class="panel-badge" id="wl-badge-' + w.ticker + '" style="display:none;"></span>'
@@ -1357,27 +1300,15 @@
             });
         }
 
-        /* 사이드바 클릭 → 비어있는 패널 자동 배정 (참고용, 주기능은 드롭다운) */
-        function onWatchlistClick(ticker) {
-            /* 이미 패널에 있으면 무시 */
-            if (panelTickers.indexOf(ticker) >= 0) return;
-            /* 비어있는 패널 없음 → 안내 */
-            alert('드롭다운에서 패널 종목을 직접 변경해 주세요.');
-        }
-
-        /* ═══════════ 드롭다운 변경 ═══════════ */
         function onTickerSelectChange(panelIdx, newTicker) {
-            /* 중복 선택 체크 */
             var dupIdx = panelTickers.indexOf(newTicker);
             if (dupIdx >= 0 && dupIdx !== panelIdx) {
                 alert('이미 패널' + (dupIdx + 1) + '에서 표시 중인 종목입니다.\n다른 종목을 선택해 주세요.');
-                /* 드롭다운 원복 */
                 var sel = document.getElementById('ticker-select-' + panelIdx);
                 if (sel) sel.value = panelTickers[panelIdx];
                 return;
             }
 
-            /* debounce */
             clearTimeout(switchTimers[panelIdx]);
             showPanelOverlay(panelIdx, newTicker + ' 데이터 수신 중...');
 
@@ -1387,39 +1318,26 @@
         }
 
         function executePanelSwitch(panelIdx, newTicker) {
-            /* 이전 타임아웃 클리어 */
             if (panelDataStore['_timeout_' + panelIdx]) {
                 clearTimeout(panelDataStore['_timeout_' + panelIdx]);
                 panelDataStore['_timeout_' + panelIdx] = null;
             }
 
-            /* panelTickers 먼저 갱신 (구독 콜백의 ticker 체크가 이 값 기준) */
             panelTickers[panelIdx] = newTicker;
             saveLS(LS_PANELS, panelTickers);
 
-            /* UI 초기화 */
             setSelectDisabled(panelIdx, true);
             switchLocked[panelIdx] = true;
             panelDataStore[panelIdx] = null;
             resetPanelUI(panelIdx, newTicker);
 
-            /* Firebase 재구독 (세대 방식: off+재구독 원자적으로 처리) */
             subscribeFirebase(panelIdx, newTicker);
 
-            /* 종목 전환 시 차트 캐시 초기화 → 강제 재생성 */
             currentChartTicker[panelIdx] = null;
-            /* 차트 전환 (약간의 딜레이로 DOM 안정화 후 생성) */
             setTimeout(function () {
                 updateChartWidget(panelIdx, newTicker);
             }, 200);
 
-            /* Yahoo 캐시에 이미 데이터 있으면 즉시 가격 표시 */
-            var yc = yahooPriceCache[newTicker];
-            if (yc) {
-                updatePanelPrice(panelIdx, yc.price, yc.changePct, yc.changeAmt, yc.mh, yc.price, yc.changeAmt, yc.changePct);
-            }
-
-            /* 타임아웃: 12초 후에도 옵션 데이터 없으면 준비중 표시 */
             var timeoutId = setTimeout(function () {
                 if (!panelDataStore[panelIdx]) {
                     hidePanelOverlay(panelIdx);
@@ -1434,28 +1352,20 @@
             refreshWatchlistBadges();
             refreshAllDropdowns();
 
-            /* 종목 변경 시 Yahoo REST로 즉시 현재가 조회
-               → yahooPriceCache 먼저 채우고 Firebase 데이터가 오면 정확한 가격 기준으로 렌더링 */
-            fetchQuoteAndUpdate(newTicker);
-
-            /* WinForms WebView2 환경: C# 서버에 패널 종목 변경 통보 */
             try {
-                if (typeof window.chrome !== 'undefined' &&
-                    typeof window.chrome.webview !== 'undefined') {
+                if (typeof window.chrome !== 'undefined' && typeof window.chrome.webview !== 'undefined') {
                     window.chrome.webview.postMessage(JSON.stringify({
                         type: 'panelChange',
                         panels: panelTickers
                     }));
-                    console.log('[WF] C#에 패널 변경 통보:', panelTickers);
                 }
-            } catch (e) { console.warn('[WF] postMessage 실패:', e); }
+            } catch (e) { }
         }
 
         function resetPanelUI(panelIdx, ticker) {
             var p = 'p' + panelIdx + '-';
-            var fields = ['price', 'diff', 'chg', 'ext-price', 'ext-diff', 'ext-chg'];
+            var fields = ['price', 'diff', 'chg', 'vol'];
             fields.forEach(function (f) { var el = document.getElementById(p + f); if (el) el.textContent = '─'; });
-            var extB = document.getElementById(p + 'ext-block'); if (extB) extB.style.display = 'none';
             var sig = document.getElementById(p + 'sigtitle'); if (sig) sig.textContent = '🟡 방향성 탐색 (관망)';
             var tr = document.getElementById(p + 'trend'); if (tr) tr.textContent = '대기중';
             var dte = document.getElementById(p + 'dte'); if (dte) dte.textContent = '🗓️ 대기중';
@@ -1471,18 +1381,6 @@
             if (sp) sp.innerHTML = '수급: <span style="color:#444;">데이터 준비중</span>';
         }
 
-        function showOiNoData(panelIdx, reason) {
-            var tl = document.getElementById('p' + panelIdx + '-timeline');
-            if (tl) tl.innerHTML = '<div class="tl-track"></div>'
-                + '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);'
-                + 'white-space:nowrap;text-align:center;">'
-                + '<div style="color:#555;font-size:11px;font-weight:bold;">MaxPain · 지지저항 데이터 없음</div>'
-                + '<div style="color:#3a3a5a;font-size:10px;margin-top:3px;">' + reason + '</div>'
-                + '</div>';
-            var sp = document.getElementById('p' + panelIdx + '-sum-power');
-            if (sp) sp.innerHTML = '수급: <span style="color:#444;">OI 집계 대기중</span>';
-        }
-
         function showPanelOverlay(panelIdx, msg) {
             var ov = document.getElementById('overlay-' + panelIdx); if (ov) ov.classList.add('active');
             var om = document.getElementById('overlay-msg-' + panelIdx); if (om) om.textContent = msg || '종목 전환 중...';
@@ -1495,7 +1393,6 @@
             var isel = document.getElementById('interval-' + panelIdx); if (isel) isel.disabled = val;
         }
 
-        /* 드롭다운 옵션 중 다른 패널 사용중 종목 disabled */
         function refreshAllDropdowns() {
             [0, 1, 2].forEach(function (i) {
                 var sel = document.getElementById('ticker-select-' + i); if (!sel) return;
@@ -1508,22 +1405,18 @@
             });
         }
 
-        /* ═══════════ Firebase 구독 ─ 세대(generation) 방식 ═══════════ */
+        /* ═══════════ Firebase 구독 ═══════════ */
         var FIREBASE_URL = 'https://hphong-2cb03-default-rtdb.asia-southeast1.firebasedatabase.app/';
-
-        /* fbRefs[panelIdx] = { ref, ticker, gen } */
-        var fbGen = { 0: 0, 1: 0, 2: 0 };  /* 세대 카운터: 전환할 때마다 증가 */
+        var fbGen = { 0: 0, 1: 0, 2: 0 };
 
         function initFirebase() {
-            /* WebView2(WinForms) 환경에서만 Firebase 스킵
-               window.chrome.webview 는 WebView2 전용 API */
-            var isWF = (typeof window.chrome !== 'undefined') &&
-                (typeof window.chrome.webview !== 'undefined');
-            console.log('[FB] initFirebase 호출 isWF=' + isWF);
-            if (isWF) return;
+            // ❌ 아래 두 줄(isWF 체크 및 리턴)을 삭제하거나 주석 처리하세요!
+            // var isWF = (typeof window.chrome !== 'undefined') && (typeof window.chrome.webview !== 'undefined');
+            // if (isWF) return;
+
             try {
                 if (!firebase.apps.length) firebase.initializeApp({ databaseURL: FIREBASE_URL });
-                /* 헤더: tickers 첫 번째 항목의 header 필드 구독 */
+
                 firebase.database().ref('tickers').limitToFirst(1).on('value', function (snap) {
                     var data = snap.val(); if (!data) return;
                     var keys = Object.keys(data);
@@ -1531,62 +1424,69 @@
                         window.onWsMessage(data[keys[0]].header);
                     }
                 });
-                /* 패널별 구독 */
+
                 [0, 1, 2].forEach(function (i) { subscribeFirebase(i, panelTickers[i]); });
-            } catch (e) { console.error('Firebase 초기화 실패:', e); }
+            } catch (e) {
+                console.error('Firebase 초기화 실패:', e);
+            }
         }
 
         function subscribeFirebase(panelIdx, ticker) {
             if (!ticker) return;
-            /* WinForms WebView2: Firebase 직접 구독 불가, C#이 데이터 전달 */
-            var isWF = (typeof window.chrome !== 'undefined') &&
-                (typeof window.chrome.webview !== 'undefined');
-            if (isWF) {
-                console.log('[WF] WinForms 환경 - Firebase 구독 스킵[' + ticker + ']');
-                return;
-            }
-            /* 기존 구독 먼저 해제 */
+
             unsubscribeFirebase(panelIdx);
-            /* 세대 증가 */
             fbGen[panelIdx]++;
             var myGen = fbGen[panelIdx];
-            console.log('[FB] 구독 시작 panel=' + panelIdx + ' ticker=' + ticker + ' gen=' + myGen);
+
             try {
                 if (!firebase.apps || !firebase.apps.length) {
-                    console.warn('[FB] Firebase 미초기화 → initFirebase 재시도[' + ticker + ']');
                     initFirebase();
                     return;
                 }
-                var ref = firebase.database().ref('tickers/' + ticker + '/panel');
-                fbRefs[panelIdx] = { ref: ref, ticker: ticker, gen: myGen };
-                ref.on('value', function (snap) {
-                    console.log('[FB] 콜백 도착 panel=' + panelIdx + ' ticker=' + ticker + ' gen=' + myGen + '/현재gen=' + fbGen[panelIdx] + ' panelTicker=' + panelTickers[panelIdx]);
-                    /* stale 콜백 차단: 세대가 다르면 무시 */
-                    if (fbGen[panelIdx] !== myGen) {
-                        console.log('[FB] ❌ 세대 불일치 → 무시');
-                        return;
-                    }
-                    /* 현재 패널 종목과 불일치하면 무시 */
-                    if (panelTickers[panelIdx] !== ticker) {
-                        console.log('[FB] ❌ ticker 불일치 → 무시 (패널=' + panelTickers[panelIdx] + ' 구독=' + ticker + ')');
-                        return;
-                    }
-                    var data = snap.val();
-                    if (!data) {
-                        console.log('[FB] ❌ 데이터 없음 (null) - tickers/' + ticker + '/panel');
-                        return;
-                    }
-                    console.log('[FB] ✅ 데이터 수신 ticker=' + ticker + ' 키=' + Object.keys(data).join(','));
-                    var p = JSON.parse(JSON.stringify(data));
-                    /* panel은 onWsMessage에서 ticker 기준으로 재탐색하므로
-                       여기서는 ticker만 정확히 전달 */
+
+                // 1. 실시간 시세 전용 리스너 (오직 realtime 노드만 구독 -> 깜빡임 원인 차단)
+                var rtRef = firebase.database().ref('tickers/' + ticker + '/realtime');
+                rtRef.on('value', function (snap) {
+                    if (fbGen[panelIdx] !== myGen) return;
+                    if (panelTickers[panelIdx] !== ticker) return;
+                    var rtData = snap.val();
+                    if (!rtData) return;
+
+                    updatePanelPrice(
+                        panelIdx,
+                        rtData.price,
+                        rtData.changeRate,
+                        rtData.change,
+                        rtData.volume
+                    );
+                });
+
+                // 2. 옵션 분석 패널 전용 리스너 (오직 panel 노드만 구독)
+                var panelRef = firebase.database().ref('tickers/' + ticker + '/panel');
+                panelRef.on('value', function (snap) {
+                    if (fbGen[panelIdx] !== myGen) return;
+                    if (panelTickers[panelIdx] !== ticker) return;
+                    var panelData = snap.val();
+                    if (!panelData) return;
+
+                    var p = JSON.parse(JSON.stringify(panelData));
                     p.ticker = ticker;
                     p.type = 'optionUpdate';
                     window.onWsMessage(p);
-                }, function (err) {
-                    console.error('[FB] 구독 오류[' + ticker + ']:', err.code, err.message);
                 });
-            } catch (e) { console.error('subscribeFirebase 오류[' + ticker + ']:', e); }
+
+                fbRefs[panelIdx] = { refs: [rtRef, panelRef], ticker: ticker, gen: myGen };
+            } catch (e) { }
+        }
+
+        function unsubscribeFirebase(panelIdx) {
+            try {
+                if (fbRefs[panelIdx] && fbRefs[panelIdx].refs) {
+                    fbRefs[panelIdx].refs.forEach(function (r) { r.off(); });
+                }
+            } catch (e) { }
+            fbRefs[panelIdx] = null;
+            fbGen[panelIdx]++;
         }
 
         function unsubscribeFirebase(panelIdx) {
@@ -1596,109 +1496,13 @@
                 }
             } catch (e) { }
             fbRefs[panelIdx] = null;
-            /* 세대 증가로 기존 콜백 자동 차단 */
             fbGen[panelIdx]++;
         }
 
-        /* ═══════════ Yahoo WebSocket ═══════════ */
-        function getAllSubs() {
-            var all = WATCH_LIST.map(function (w) { return w.ticker; }).concat(HEADER_TICKERS);
-            /* SPX → ^SPX 변환 */
-            all = all.map(function (t) { return t === 'SPX' ? '^SPX' : t; });
-            /* 중복 제거 */
-            var seen = {}, result = [];
-            all.forEach(function (t) { if (!seen[t]) { seen[t] = true; result.push(t); } });
-            return result;
-        }
-
-        (function initProto() {
-            var P = 'syntax="proto3";message PricingData{string id=1;float price=2;sint64 time=3;string currency=4;string exchange=5;int32 quoteType=6;int32 marketHours=7;float changePercent=8;sint64 dayVolume=9;float dayHigh=10;float dayLow=11;float change=12;string shortName=13;sint64 expireDate=14;float openPrice=15;float previousClose=16;float strikePrice=17;string underlyingSymbol=18;sint64 openInterest=19;sint64 optionsType=20;sint64 miniOption=21;sint64 lastSize=22;float bid=23;sint64 bidSize=24;float ask=25;sint64 askSize=26;sint64 priceHint=27;sint64 vol_24hr=28;sint64 volAllCurrencies=29;string fromcurrency=30;string lastMarket=31;double circulatingSupply=32;double marketcap=33;}';
-            try { var root = protobuf.parse(P).root; root.resolveAll(); PricingData = root.lookupType('PricingData'); } catch (e) { console.error('Proto 실패:', e); }
-        })();
-
-        function yahooWsConnect() {
-            if (yahooWs && (yahooWs.readyState === WebSocket.CONNECTING || yahooWs.readyState === WebSocket.OPEN)) return;
-            yahooRunning = true;
-            try {
-                yahooWs = new WebSocket('wss://streamer.finance.yahoo.com');
-                yahooWs.binaryType = 'arraybuffer';
-                yahooWs.onopen = function () {
-                    clearTimeout(yahooReconTimer);
-                    setWsDot('live');
-                    setIlMsg('가격 데이터 수신 중...');
-                    yahooWs.send(JSON.stringify({ subscribe: getAllSubs() }));
-                };
-                yahooWs.onmessage = function (ev) {
-                    if (!PricingData) return;
-                    try {
-                        var bytes;
-                        if (ev.data instanceof ArrayBuffer) { bytes = new Uint8Array(ev.data); }
-                        else { var bin = atob(ev.data); bytes = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i); }
-                        var msg = PricingData.decode(bytes);
-                        if (msg && msg.id && msg.price > 0) onYahooMsg(msg);
-                    } catch (e) { }
-                };
-                yahooWs.onerror = function () { setWsDot('dead'); };
-                yahooWs.onclose = function () { setWsDot('dead'); if (yahooRunning) yahooReconTimer = setTimeout(yahooWsConnect, 5000); };
-            } catch (e) { setWsDot('dead'); if (yahooRunning) yahooReconTimer = setTimeout(yahooWsConnect, 5000); }
-        }
-
-        function onYahooMsg(msg) {
-            lastMsgTime = Date.now();
-            updateTimeDisplay();
-
-            /* ^SPX → SPX 정규화 */
-            var ticker = msg.id;
-            if (ticker === '^SPX') ticker = 'SPX';
-
-            /* 헤더 전용 종목(^VIX)은 헤더만 업데이트 */
-            if (ticker === '^VIX') { updateHeaderTicker(ticker, msg); return; }
-
-            /* QQQ/SPY: 헤더 업데이트 + 패널에 있으면 패널도 업데이트 (둘 다) */
-            if (ticker === 'QQQ' || ticker === 'SPY') { updateHeaderTicker(ticker, msg); }
-
-            /* 캐시 업데이트 */
-            var mh = msg.marketHours || 2;
-            var extChgAmt = msg.change || 0, extChgPct = msg.changePercent || 0;
-            var regPrice = (mh !== 2) ? msg.price - extChgAmt : msg.price;
-            var yesterdayClose = prevCloseCache[ticker] || 0;
-            if (msg.previousClose > 0) yesterdayClose = msg.previousClose;
-            prevCloseCache[ticker] = yesterdayClose;
-            var regChgAmt = 0, regChgPct = 0;
-            if (yesterdayClose > 0) { regChgAmt = regPrice - yesterdayClose; regChgPct = (regChgAmt / yesterdayClose) * 100; }
-
-            yahooPriceCache[ticker] = { price: msg.price, changePct: extChgPct, changeAmt: extChgAmt, prevClose: yesterdayClose, mh: mh };
-
-            /* 해당 종목이 어느 패널에 있는지 확인 → 패널 가격 업데이트 */
-            panelTickers.forEach(function (pt, idx) {
-                if (pt !== ticker) return;
-                updatePanelPrice(idx, msg.price, extChgPct, extChgAmt, mh, regPrice, regChgAmt, regChgPct);
-                var d = panelDataStore[idx];
-                if (d && d.maxPain > 0) {
-                    renderTimeline('p' + idx + '-', Object.assign({}, d, { price: msg.price }));
-                    if (d.optionRows && d.optionRows.length) renderOiSafe(idx, d.optionRows, msg.price);
-                }
-            });
-        }
-
-        function updateHeaderTicker(ticker, msg) {
-            var prev = headerPrevClose[ticker] || 0;
-            var chg = prev > 0 ? ((msg.price - prev) / prev * 100) : msg.changePercent;
-            var sign = chg > 0 ? '+' : '';
-            var cls = chg > 0 ? 'up' : chg < 0 ? 'dn' : 'neu';
-            if (ticker === 'QQQ') { globQqq = chg; var el = document.getElementById('neon-qqq'); if (el) { el.textContent = 'QQQ ' + sign + chg.toFixed(2) + '%'; el.className = 'neon-item ' + cls; } }
-            else if (ticker === 'SPY') { globSpy = chg; var el2 = document.getElementById('neon-spy'); if (el2) { el2.textContent = 'SPY ' + sign + chg.toFixed(2) + '%'; el2.className = 'neon-item ' + cls; } }
-            else if (ticker === '^VIX') { globVix = msg.price; globVixState = msg.price >= 30 ? '공포패닉' : msg.price >= 20 ? '불안' : msg.price >= 15 ? '주의' : '안정'; var vCol = globVixState.indexOf('공포') >= 0 ? 'up' : globVixState.indexOf('주의') >= 0 ? 'neon-vix-warn' : 'neu'; var el3 = document.getElementById('neon-vix'); if (el3) { el3.textContent = 'VIX ' + msg.price.toFixed(2) + ' (' + globVixState + ')'; el3.className = 'neon-item ' + vCol; } }
-            var hd = document.getElementById('ws-dot-header'); if (hd) hd.className = 'ws-dot live';
-            [0, 1, 2].forEach(function (i) { updateEnvSummary(i); });
-        }
-
-        /* ═══════════ Firebase 메시지 처리 ═══════════ */
         window.onWsMessage = function (d) {
             if (!d || !d.type) return;
 
             if (d.type === 'headerUpdate') {
-                if (Date.now() - lastMsgTime < 30000) return;
                 globQqq = d.qqq || 0; globSpy = d.spy || 0; globVix = d.vix || 0; globVixState = d.vixState || '안정';
                 updateNeonFromGlobal(); return;
             }
@@ -1707,37 +1511,22 @@
                 var ticker = d.ticker;
                 if (ticker === undefined || ticker === null) return;
 
-                /* ticker 기준으로 현재 패널 위치 탐색 */
                 var panel = panelTickers.indexOf(ticker);
                 if (panel < 0) return;
-
-                if (d.prevClose && d.prevClose > 0) prevCloseCache[ticker] = d.prevClose;
-                else if (d.price > 0 && d.priceDiff !== undefined) prevCloseCache[ticker] = d.price - d.priceDiff;
 
                 if (d.maxPain !== undefined && d.maxPain !== null) panelDataStore[panel] = JSON.parse(JSON.stringify(d));
                 else { if (!panelDataStore[panel]) panelDataStore[panel] = {}; Object.assign(panelDataStore[panel], d); }
 
-                /* 전환 타임아웃 클리어 */
                 if (panelDataStore['_timeout_' + panel]) { clearTimeout(panelDataStore['_timeout_' + panel]); panelDataStore['_timeout_' + panel] = null; }
 
-                var yc = yahooPriceCache[ticker];
-                var price = yc ? yc.price : (d.price || 0);
-                var mh = yc ? yc.mh : 2;
-                var extChgAmt = yc ? yc.changeAmt : (d.priceDiff || 0);
-                var extChgPct = yc ? yc.changePct : (d.change || 0);
-
-                var oiTEl = document.getElementById('p' + panel + '-oi-title'); if (oiTEl) oiTEl.textContent = ticker + ' 옵션 체인';
                 var dotEl = document.getElementById('p' + panel + '-oi-dot');
                 if (dotEl && d.maxPain !== undefined && d.maxPain !== null) { dotEl.className = 'oi-dot flash'; setTimeout(function () { dotEl.className = 'oi-dot'; }, 900); }
 
-                updatePanelPrice(panel, price, extChgPct, extChgAmt, mh, price, extChgAmt, extChgPct);
-                renderPanel(panel, panelDataStore[panel], price);
+                renderPanel(panel, panelDataStore[panel]);
 
-                /* 오버레이 해제 + 드롭다운/lock 복구 */
                 hidePanelOverlay(panel);
                 setSelectDisabled(panel, false);
                 switchLocked[panel] = false;
-                /* 타임아웃도 클리어 */
                 if (panelDataStore['_timeout_' + panel]) {
                     clearTimeout(panelDataStore['_timeout_' + panel]);
                     panelDataStore['_timeout_' + panel] = null;
@@ -1745,14 +1534,43 @@
             }
         };
 
-        /* ═══════════ 패널 렌더 ═══════════ */
-        function renderPanel(panel, d, currentPrice) {
+        function updatePanelPrice(idx, price, changeRate, changeAmt, volume) {
+            var p = 'p' + idx + '-';
+
+            // 문자열 숫자 데이터를 안전하게 변환
+            var numPrice = Number(String(price).replace(/[^0-9.-]+/g, "")) || 0;
+            var numAmt = Number(String(changeAmt).replace(/[^0-9.-]+/g, "")) || 0;
+
+            var cleanRateStr = String(changeRate || '0').replace('%', '').trim();
+            var numRate = Number(cleanRateStr) || 0;
+
+            var cls = numRate > 0 ? 'up' : numRate < 0 ? 'dn' : 'neu';
+
+            var pxText = numPrice > 0 ? numPrice.toFixed(2) : '─';
+            var dfText = numPrice > 0 ? (numAmt > 0 ? '+' : '') + numAmt.toFixed(2) : '─';
+            var cgText = numPrice > 0 ? '(' + (numRate > 0 ? '+' : '') + numRate.toFixed(2) + '%)' : '─';
+
+            var pxEl = document.getElementById(p + 'price');
+            var dfEl = document.getElementById(p + 'diff');
+            var cgEl = document.getElementById(p + 'chg');
+            var volEl = document.getElementById(p + 'vol');
+
+            if (pxEl) { pxEl.textContent = pxText; pxEl.className = 'price-now ' + cls; }
+            if (dfEl) { dfEl.textContent = dfText; dfEl.className = 'price-diff ' + cls; }
+            if (cgEl) { cgEl.textContent = cgText; cgEl.className = 'price-chg ' + cls; }
+
+            /* ★ 거래량 1000단위 콤마 적용 및 출력 */
+            if (volEl) {
+                volEl.textContent = '거래량: ' + numberWithCommas(volume);
+            }
+
+            var dot = document.getElementById(p + 'dot');
+            if (dot) dot.className = 'ws-dot live';
+        }
+
+        function renderPanel(panel, d) {
             var p = 'p' + panel + '-';
-            /* yahooPriceCache에 최신 가격 있으면 우선 사용 */
-            var ticker = d.ticker || panelTickers[panel];
-            var cached = yahooPriceCache[ticker];
-            var price = (cached && cached.price > 0) ? cached.price
-                : (currentPrice || d.price || 0);
+            var price = d.price || 0;
 
             if (d.score !== undefined) {
                 var sigEl = document.getElementById(p + 'sigtitle');
@@ -1792,50 +1610,13 @@
                 renderOiSafe(panel, d.optionRows, price || (d.maxPain || 100));
             } else setOiPending(panel, panelTickers[panel]);
 
-            /* 차트는 종목이 바뀔 때만 재생성 (2분마다 Firebase 갱신 시 불필요한 재생성 방지) */
             var chartTicker = d.ticker || panelTickers[panel];
             if (!currentChartTicker[panel] || currentChartTicker[panel] !== chartTicker) {
                 currentChartTicker[panel] = chartTicker;
                 updateChartWidget(panel, chartTicker);
             }
 
-            /* 초기 로딩 해제 (첫 번째 패널 옵션 데이터 수신 시) */
             hideInitialLoading();
-        }
-
-        function updatePanelPrice(idx, price, extChgPct, extChgAmt, marketHours, regPrice, regChgAmt, regChgPct) {
-            var p = 'p' + idx + '-';
-            regPrice = regPrice !== undefined ? regPrice : price;
-            regChgAmt = regChgAmt !== undefined ? regChgAmt : extChgAmt;
-            regChgPct = regChgPct !== undefined ? regChgPct : extChgPct;
-
-            var regCls = regChgPct > 0 ? 'up' : regChgPct < 0 ? 'dn' : 'neu';
-            var regPxText = regPrice > 0 ? regPrice.toFixed(2) : '─';
-            var regDfText = regPrice > 0 ? (regChgAmt > 0 ? '+' : '') + regChgAmt.toFixed(2) : '─';
-            var regCgText = regPrice > 0 ? '(' + (regChgPct > 0 ? '+' : '') + regChgPct.toFixed(2) + '%)' : '─';
-            var extCls = extChgPct > 0 ? 'up' : extChgPct < 0 ? 'dn' : 'neu';
-            var extPxText = price > 0 ? price.toFixed(2) : '─';
-            var extDfText = price > 0 ? (extChgAmt > 0 ? '+' : '') + extChgAmt.toFixed(2) : '─';
-            var extCgText = price > 0 ? '(' + (extChgPct > 0 ? '+' : '') + extChgPct.toFixed(2) + '%)' : '─';
-
-            var extBlock = document.getElementById(p + 'ext-block');
-            var pxEl = document.getElementById(p + 'price'), dfEl = document.getElementById(p + 'diff'), cgEl = document.getElementById(p + 'chg');
-
-            if (marketHours === 2 || !marketHours) {
-                if (extBlock) extBlock.style.display = 'none';
-                if (pxEl) { pxEl.textContent = regPxText; pxEl.className = 'price-now ' + regCls; }
-                if (dfEl) { dfEl.textContent = regDfText; dfEl.className = 'price-diff ' + regCls; }
-                if (cgEl) { cgEl.textContent = regCgText; cgEl.className = 'price-chg ' + regCls; }
-            } else {
-                if (extBlock) extBlock.style.display = 'flex';
-                if (pxEl) { pxEl.textContent = regPxText; pxEl.className = 'price-now ' + regCls; }
-                if (dfEl) { dfEl.textContent = regDfText; dfEl.className = 'price-diff ' + regCls; }
-                if (cgEl) { cgEl.textContent = regCgText; cgEl.className = 'price-chg ' + regCls; }
-                var epEl = document.getElementById(p + 'ext-price'); if (epEl) { epEl.textContent = extPxText; epEl.className = 'ext-price ' + extCls; }
-                var edEl = document.getElementById(p + 'ext-diff'); if (edEl) { edEl.textContent = extDfText; edEl.className = 'ext-diff ' + extCls; }
-                var ecEl = document.getElementById(p + 'ext-chg'); if (ecEl) { ecEl.textContent = extCgText; ecEl.className = 'ext-chg ' + extCls; }
-            }
-            var dot = document.getElementById(p + 'dot'); if (dot) dot.className = 'ws-dot live';
         }
 
         function updateEnvSummary(i) {
@@ -1854,21 +1635,13 @@
             if (globVix !== null && vEl) { vEl.textContent = 'VIX ' + globVix.toFixed(2) + ' (' + globVixState + ')'; vEl.className = 'neon-item ' + (globVixState.indexOf('공포') >= 0 ? 'up' : globVixState.indexOf('주의') >= 0 ? 'neon-vix-warn' : 'neu'); }
         }
 
-        function setWsDot(state) {
-            var cls = state === 'live' ? 'ws-dot live' : 'ws-dot dead';
-            [0, 1, 2].forEach(function (i) { var el = document.getElementById('p' + i + '-dot'); if (el) el.className = cls; });
-            var hd = document.getElementById('ws-dot-header'); if (hd) hd.className = cls;
-        }
-
         function updateTimeDisplay() {
             var el = document.getElementById('h-time'); if (!el) return;
             var n = new Date();
             el.textContent = n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0') + '-' + String(n.getDate()).padStart(2, '0') + ' ' + n.toLocaleTimeString('ko-KR');
         }
+        setInterval(updateTimeDisplay, 1000);
 
-        setInterval(function () { if (lastMsgTime > 0 && Date.now() - lastMsgTime > 20000) setWsDot('dead'); }, 3000);
-
-        /* ═══════════ 타임라인 ═══════════ */
         function renderTimeline(p, d) {
             var tl = document.getElementById(p + 'timeline'); if (!tl) return;
             var vals = [d.support2, d.support1, d.maxPain, d.price, d.resistance1, d.resistance2].filter(function (v) { return v > 0; });
@@ -1892,7 +1665,6 @@
                 var mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals), sp = mx - mn || 1;
                 mn -= sp * 0.1; mx += sp * 0.1; sp = mx - mn;
                 var gp = function (v) { return 6 + Math.max(0, Math.min(1, (v - mn) / sp)) * 88; };
-                /* 밀림방지 제거: 모든 노드를 실제 값 기반 위치로 정확히 표시 */
                 bots.forEach(function (n) { n.pos = gp(n.val); });
                 tops.forEach(function (n) { n.pos = gp(n.val); });
             }
@@ -1902,18 +1674,9 @@
             tl.innerHTML = html;
         }
 
-        /* ═══════════ 옵션 체인 ═══════════ */
-        /* OI=0 체크 후 renderOiGrid 또는 showOiNoData 호출 */
         function renderOiSafe(panelIdx, rows, price) {
             var p = 'p' + panelIdx + '-';
             renderOiGrid(p, rows, price);
-            if (isAllOiZero(rows) && !isEtMonday()) {
-                var etNow3 = getEtNow();
-                var etDayNames = ['일', '월', '화', '수', '목', '금', '토'];
-                var etDayStr = etDayNames[etNow3.getDay()];
-                var etTimeStr = etNow3.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
-                showOiNoData(panelIdx, '미국 ET ' + etDayStr + '요일 ' + etTimeStr);
-            }
         }
 
         function renderOiGrid(p, rows, price) {
@@ -1923,7 +1686,6 @@
             var atm = rows.reduce(function (pv, cv) { return Math.abs(cv.strike - price) < Math.abs(pv.strike - price) ? cv : pv; }).strike;
             var fmt = function (v) { return v >= 1000 ? (v / 1000).toFixed(1) + 'K' : (v === 0 ? '-' : v); };
 
-            /* 초기 로딩 해제 */
             hideInitialLoading();
 
             el.innerHTML = rows.map(function (r) {
@@ -1937,25 +1699,19 @@
             }).join('');
         }
 
-        /* ═══════════ 차트 ═══════════ */
         var chartTimers = { 0: null, 1: null, 2: null };
 
         function updateChartWidget(panel, ticker) {
             if (!ticker) return;
-            /* 동일 종목이 이미 렌더링 중이면 스킵 */
             var containerId = 'chart-' + panel;
             var container = document.getElementById(containerId);
             if (!container) return;
 
-            /* 이전 차트 생성 타이머 취소 */
             if (chartTimers[panel]) { clearTimeout(chartTimers[panel]); chartTimers[panel] = null; }
-
-            /* 컨테이너 초기화 */
             container.innerHTML = '';
 
             chartTimers[panel] = setTimeout(function () {
                 var currentInterval = panelIntervals[panel] || '3';
-                /* 패널 종목이 그새 바뀌었으면 스킵 */
                 if (panelTickers[panel] !== ticker) return;
                 try {
                     new TradingView.widget({
@@ -1966,7 +1722,7 @@
                         details: false, withdateranges: false,
                         container_id: containerId
                     });
-                } catch (e) { console.error('TradingView 오류[' + ticker + ']:', e); }
+                } catch (e) { }
             }, 300);
         }
 
@@ -1976,103 +1732,12 @@
             updateChartWidget(panel, panelTickers[panel]);
         }
 
-        /* ═══════════ 미국 ET 기준 시간 유틸 ═══════════ */
-        function getEtNow() {
-            return new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
-        }
-        function isEtMonday() {
-            return getEtNow().getDay() === 1;
-        }
-        function isAllOiZero(rows) {
-            if (!rows || !rows.length) return true;
-            return rows.every(function (r) { return (!r.callOI || r.callOI === 0) && (!r.putOI || r.putOI === 0); });
-        }
-
-        /* ═══════════ Yahoo REST 즉시 현재가 조회 ═══════════ */
-
-        /* 단일 종목 현재가 즉시 조회 후 패널에 반영
-           Yahoo v8 chart API - crumb 불필요, 브라우저 CORS 허용 */
-        function fetchQuoteAndUpdate(ticker) {
-            if (!ticker) return;
-            /* ^SPX 등 특수 티커 처리 */
-            var yahooTicker = (ticker === 'SPX') ? '%5ESPX' : encodeURIComponent(ticker);
-            var url = 'https://query1.finance.yahoo.com/v8/finance/chart/'
-                + yahooTicker + '?interval=1d&range=1d';
-
-            fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } })
-                .then(function (r) { return r.json(); })
-                .then(function (json) {
-                    var meta = json && json.chart && json.chart.result &&
-                        json.chart.result[0] && json.chart.result[0].meta;
-                    if (!meta) return;
-
-                    var price = meta.regularMarketPrice || 0;
-                    var prevClose = meta.chartPreviousClose || meta.previousClose || 0;
-                    var marketState = meta.currentTradingPeriod ? '' : '';
-                    /* 시간외/프리 가격 우선 */
-                    var finalPrice = price;
-
-                    if (finalPrice <= 0) return;
-
-                    var chgAmt = prevClose > 0 ? finalPrice - prevClose : 0;
-                    var chgPct = prevClose > 0 ? (chgAmt / prevClose) * 100 : 0;
-
-                    /* yahooPriceCache에 저장 → WS 도착 전까지 이 값 사용 */
-                    yahooPriceCache[ticker] = {
-                        price: finalPrice,
-                        changePct: chgPct,
-                        changeAmt: chgAmt,
-                        prevClose: prevClose,
-                        mh: 2
-                    };
-                    prevCloseCache[ticker] = prevClose;
-
-                    console.log('[QUOTE] ' + ticker + ' = $' + finalPrice.toFixed(2)
-                        + ' (' + chgPct.toFixed(2) + '%)');
-
-                    /* 현재 패널에 있으면 즉시 가격 표시 */
-                    panelTickers.forEach(function (pt, idx) {
-                        if (pt !== ticker) return;
-                        updatePanelPrice(idx, finalPrice, chgPct, chgAmt, 2,
-                            finalPrice, chgAmt, chgPct);
-                        /* 이미 옵션 데이터가 있으면 타임라인/OI도 현재가 기준으로 갱신 */
-                        var d = panelDataStore[idx];
-                        if (d && d.maxPain > 0) {
-                            renderTimeline('p' + idx + '-', Object.assign({}, d, { price: finalPrice }));
-                            if (d.optionRows && d.optionRows.length)
-                                renderOiSafe(idx, d.optionRows, finalPrice);
-                        }
-                    });
-                })
-                .catch(function (err) {
-                    console.warn('[QUOTE] ' + ticker + ' 조회 실패:', err.message || err);
-                });
-        }
-
-        /* 여러 종목 순차 조회 (딜레이 200ms 간격, Rate Limit 방지) */
-        function fetchQuotesSequential(tickers, delayMs) {
-            delayMs = delayMs || 200;
-            tickers.forEach(function (ticker, i) {
-                setTimeout(function () {
-                    fetchQuoteAndUpdate(ticker);
-                }, i * delayMs);
-            });
-        }
-
-        /* ═══════════ 시작 ═══════════ */
+        /* ── 시작 ── */
         (function start() {
             initDashboard();
             buildWatchlist();
             refreshAllDropdowns();
-            yahooWsConnect();
             initFirebase();
-
-            /* 앱 시작 시:
-               1. Quote REST로 현재가 즉시 조회 → yahooPriceCache 채움
-               2. 1.5초 후 Firebase 구독 시작 → 이때 캐시된 가격 기준으로 정확히 렌더링 */
-            setTimeout(function () {
-                fetchQuotesSequential(panelTickers.slice(), 300);
-            }, 300); /* 초기화 완료 후 0.3초 뒤 실행 */
         })();
     </script>
 </body>
