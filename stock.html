@@ -1129,6 +1129,17 @@
                 min-height: 280px;
             }
         }
+
+        /* ▼▼▼ 7인치 태블릿 이하(800px 이하) 전용 공간 극대화 ▼▼▼ */
+        @media screen and (max-width: 800px) {
+            .oi-grid-header {
+                /* OI/V 열 너비를 38px -> 28px로 대폭 줄여 막대바(1fr)를 더 길게 만듦 */
+                grid-template-columns: 1fr 28px 32px 38px 32px 28px 1fr !important;
+            }
+            .oi-row {
+                grid-template-columns: 1fr 28px 32px 38px 32px 28px 1fr !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1509,19 +1520,65 @@
         }
 
         function renderOiSafe(panelIdx, rows, price) {
-            var p = 'p' + panelIdx + '-'; var el = document.getElementById(p + 'oi-rows'); if (!el) return;
-            var isMobile = el.closest('.panel') ? el.closest('.panel').offsetWidth <= 400 : window.innerWidth <= 1200;
-            var mx = Math.max.apply(null, rows.map(function (r) { return Math.max(r.callOI + r.callVol, r.putOI + r.putVol, 1); }));
-            var atm = rows.reduce(function (pv, cv) { return Math.abs(cv.strike - price) < Math.abs(pv.strike - price) ? cv : pv; }).strike;
+            var p = 'p' + panelIdx + '-'; 
+            var el = document.getElementById(p + 'oi-rows'); 
+            if (!el) return;
+            
+            // 7인치 태블릿 해상도(800px) 이하에서는 무조건 OI와 Vol을 합쳐서 출력
+            var isMobile = window.innerWidth <= 800;
+            
+            // 1. 실시간 가격과 가장 가까운 행사가(ATM) 계산
+            var atmItem = rows.reduce(function (pv, cv) { 
+                return Math.abs(cv.strike - price) < Math.abs(pv.strike - price) ? cv : pv; 
+            });
+            var atm = atmItem.strike;
+
+            // 2. 행사가 기준 내림차순 정렬 (높은 가격이 위로 오도록)
+            var sortedRows = rows.slice().sort(function(a, b) { 
+                return b.strike - a.strike; 
+            });
+
+            // 3. ATM을 기준으로 총 14개(위 7개, 아래 6~7개) 추출하여 중앙 정렬
+            var atmIndex = sortedRows.findIndex(function(r) { return r.strike === atm; });
+            var displayRows = sortedRows;
+            
+            if (atmIndex !== -1) {
+                var startIdx = Math.max(0, atmIndex - 7);
+                var endIdx = Math.min(sortedRows.length, startIdx + 14);
+                
+                if (endIdx - startIdx < 14) {
+                    startIdx = Math.max(0, endIdx - 14);
+                }
+                displayRows = sortedRows.slice(startIdx, endIdx);
+            }
+
+            // 4. 최대치 계산 (막대그래프 비율용)
+            var mx = Math.max.apply(null, displayRows.map(function (r) { 
+                return Math.max(r.callOI + r.callVol, r.putOI + r.putVol, 1); 
+            }));
             var fmt = function (v) { return v >= 1000 ? (v / 1000).toFixed(1) + 'K' : (v === 0 ? '-' : v); };
+            
             hideInitialLoading();
-            el.innerHTML = rows.map(function (r) {
-                var cw = Math.max(1, ((r.callOI + r.callVol) / mx) * 100), pw = Math.max(1, ((r.putOI + r.putVol) / mx) * 100);
+            
+            // 5. 화면 렌더링
+            el.innerHTML = displayRows.map(function (r) {
+                var cw = Math.max(1, ((r.callOI + r.callVol) / mx) * 100);
+                var pw = Math.max(1, ((r.putOI + r.putVol) / mx) * 100);
                 var ia = r.strike === atm ? 'atm' : '';
-                var cc = r.callChg > 0 ? 'up' : r.callChg < 0 ? 'dn' : 'neu', pc = r.putChg > 0 ? 'up' : r.putChg < 0 ? 'dn' : 'neu';
+                var cc = r.callChg > 0 ? 'up' : r.callChg < 0 ? 'dn' : 'neu';
+                var pc = r.putChg > 0 ? 'up' : r.putChg < 0 ? 'dn' : 'neu';
                 var cvTxt = isMobile ? fmt(r.callOI + r.callVol) : (fmt(r.callOI) + '/' + fmt(r.callVol));
                 var pvTxt = isMobile ? fmt(r.putOI + r.putVol) : (fmt(r.putOI) + '/' + fmt(r.putVol));
-                return '<div class="oi-row"><div class="oi-bar-wrap left"><div class="oi-bar call" style="width:' + cw + '%"></div></div><div class="oi-vol">' + cvTxt + '</div><div class="' + cc + '">' + (r.callChg > 0 ? '+' : '') + Math.round(r.callChg) + '%</div><div><span class="strike-box ' + ia + '">' + r.strike.toFixed(1) + '</span></div><div class="' + pc + '">' + (r.putChg > 0 ? '+' : '') + Math.round(r.putChg) + '%</div><div class="oi-vol">' + pvTxt + '</div><div class="oi-bar-wrap right"><div class="oi-bar put" style="width:' + pw + '%"></div></div></div>';
+                
+                return '<div class="oi-row">' +
+                       '<div class="oi-bar-wrap left"><div class="oi-bar call" style="width:' + cw + '%"></div></div>' +
+                       '<div class="oi-vol">' + cvTxt + '</div>' +
+                       '<div class="' + cc + '">' + (r.callChg > 0 ? '+' : '') + Math.round(r.callChg) + '%</div>' +
+                       '<div><span class="strike-box ' + ia + '">' + r.strike.toFixed(1) + '</span></div>' +
+                       '<div class="' + pc + '">' + (r.putChg > 0 ? '+' : '') + Math.round(r.putChg) + '%</div>' +
+                       '<div class="oi-vol">' + pvTxt + '</div>' +
+                       '<div class="oi-bar-wrap right"><div class="oi-bar put" style="width:' + pw + '%"></div></div>' +
+                       '</div>';
             }).join('');
         }
 
@@ -1552,7 +1609,42 @@
                     try {
                         var bytes = ev.data instanceof ArrayBuffer ? new Uint8Array(ev.data) : (function () { var bin = atob(ev.data), b = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) b[i] = bin.charCodeAt(i); return b; })();
                         var msg = PricingData.decode(bytes);
-                    } catch (e) { }
+                        
+                        // --- [여기서부터 새로 추가된 실시간 렌더링 로직] ---
+                        var ticker = msg.id;
+                        var safePrice = Number(msg.price) || 0;
+                        var pIdx = panelTickers.indexOf(ticker);
+
+                        // 1. 패널에 표시중인 종목일 경우 (현재가, 가로바, 옵션체인 동시 갱신)
+                        if (pIdx >= 0 && safePrice > 0) {
+                            updatePanelPrice(pIdx, safePrice, msg.changePercent, msg.change, msg.dayVolume);
+                            
+                            if (panelDataStore[pIdx]) {
+                                panelDataStore[pIdx].price = safePrice;
+                                var p = 'p' + pIdx + '-';
+                                
+                                if (panelDataStore[pIdx].maxPain > 0) {
+                                    renderTimeline(p, panelDataStore[pIdx]);
+                                }
+                                if (panelDataStore[pIdx].optionRows && panelDataStore[pIdx].optionRows.length > 0) {
+                                    renderOiSafe(pIdx, panelDataStore[pIdx].optionRows, safePrice);
+                                }
+                            }
+                        }
+
+                        // 2. 상단 헤더 (QQQ, SPY) 실시간 갱신
+                        if (ticker === 'QQQ') {
+                            globQqq = msg.changePercent;
+                            updateNeonItem('neon-qqq', '나스닥(QQQ)', safePrice, msg.changePercent);
+                            [0, 1, 2].forEach(function (i) { updateEnvSummary(i); });
+                        } else if (ticker === 'SPY') {
+                            globSpy = msg.changePercent;
+                            updateNeonItem('neon-spy', 'S&P500(SPY)', safePrice, msg.changePercent);
+                            [0, 1, 2].forEach(function (i) { updateEnvSummary(i); });
+                        }
+                    } catch (e) { 
+                        console.error("WS Parse Error: ", e);
+                    }
                 };
             } catch (e) { }
         }
