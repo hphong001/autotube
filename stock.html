@@ -955,6 +955,17 @@
                 min-width: unset;
             }
 
+            /* ▼▼▼ 모바일 전용 옵션 체인 간격 축소 추가 ▼▼▼ */
+            .oi-grid-header {
+                grid-template-columns: 1fr 38px 32px 38px 32px 38px 1fr !important;
+            }
+
+            .oi-row {
+                grid-template-columns: 1fr 38px 32px 38px 32px 38px 1fr !important;
+                letter-spacing: -0.3px !important;
+            }
+
+
             .top-bar {
                 height: auto;
                 flex-wrap: wrap;
@@ -1329,7 +1340,33 @@
             if (!ticker) return; unsubscribeFirebase(panelIdx); fbGen[panelIdx]++; var myGen = fbGen[panelIdx];
             try {
                 var rtRef = firebase.database().ref('tickers/' + ticker + '/realtime');
-                rtRef.on('value', function (snap) { if (fbGen[panelIdx] !== myGen || panelTickers[panelIdx] !== ticker) return; var rtData = snap.val(); if (rtData) updatePanelPrice(panelIdx, rtData.price, rtData.changeRate, rtData.change, rtData.volume); });
+                // 수정된 코드
+                rtRef.on('value', function (snap) {
+                    if (fbGen[panelIdx] !== myGen || panelTickers[panelIdx] !== ticker) return;
+                    var rtData = snap.val();
+
+                    if (rtData) {
+                        updatePanelPrice(panelIdx, rtData.price, rtData.changeRate, rtData.change, rtData.volume);
+
+                        // ★ 핵심: 가격 데이터를 확실한 숫자로 변환 (에러 방지)
+                        var safePrice = Number(String(rtData.price).replace(/[^0-9.-]+/g, "")) || 0;
+
+                        if (panelDataStore[panelIdx] && safePrice > 0) {
+                            panelDataStore[panelIdx].price = safePrice;
+                            var p = 'p' + panelIdx + '-';
+
+                            // 타임라인 가로바 갱신
+                            if (panelDataStore[panelIdx].maxPain > 0) {
+                                renderTimeline(p, panelDataStore[panelIdx]);
+                            }
+
+                            // 옵션 체인 노란색 ATM 박스 갱신
+                            if (panelDataStore[panelIdx].optionRows && panelDataStore[panelIdx].optionRows.length > 0) {
+                                renderOiSafe(panelIdx, panelDataStore[panelIdx].optionRows, safePrice);
+                            }
+                        }
+                    }
+                });
                 var panelRef = firebase.database().ref('tickers/' + ticker + '/panel');
                 panelRef.on('value', function (snap) { if (fbGen[panelIdx] !== myGen || panelTickers[panelIdx] !== ticker) return; var panelData = snap.val(); if (panelData) { var p = JSON.parse(JSON.stringify(panelData)); p.ticker = ticker; p.type = 'optionUpdate'; window.onWsMessage(p); } });
                 fbRefs[panelIdx] = { refs: [rtRef, panelRef], ticker: ticker, gen: myGen };
