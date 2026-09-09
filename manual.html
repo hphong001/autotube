@@ -47,83 +47,16 @@
   "@context": "https://schema.org",
   "@type": "HowTo",
   "name": "오토튜브 AutoTube Pro로 유튜브 영상 자동 제작하는 방법",
-  "description": "유튜브 영상 제작 자동화 프로그램 오토튜브 AutoTube Pro 캡컷 자동화 사용 설명서. 대본 엑셀 한 장에서 완성 CapCut 타임라인까지. 무료TTS · 무제한TTS · 큐웬(Qwen) TTS 음성 생성 · Gemini 이미지 자동 생성 · Whisper 자막 추출 · CapCut 1초 자동 조립을 포함한 6단계 유튜브 영상 제작 자동화 가이드.",
-  "keywords": "캡컷자동화, 오토튜브, 유튜브영상제작, 영상제작자동화, AI영상제작, 무료TTS, 무제한TTS, 큐웬TTS, Qwen TTS",
+  "description": "유튜브 영상 제작 자동화 프로그램 오토튜브 AutoTube Pro 캡컷 자동화 사용 설명서.",
   "url": "https://aibaselab.com/manual.html",
-  "tool": [
-    { "@type": "HowToTool", "name": "오토튜브 AutoTube Pro" },
-    { "@type": "HowToTool", "name": "Google Gemini" },
-    { "@type": "HowToTool", "name": "Google Colab — 큐웬(Qwen) TTS" },
-    { "@type": "HowToTool", "name": "Whisper" },
-    { "@type": "HowToTool", "name": "CapCut" },
-    { "@type": "HowToTool", "name": "Microsoft Excel" }
-  ],
   "step": [
-    {
-      "@type": "HowToStep",
-      "position": 1,
-      "name": "폴더 구조 설정",
-      "text": "구매 시 제공되는 패키지를 C: 드라이브에 압축 해제합니다. 1_대본, 2_이미지, 3_오디오_자막 폴더가 자동 생성됩니다."
-    },
-    {
-      "@type": "HowToStep",
-      "position": 2,
-      "name": "대본 엑셀 파일 준비",
-      "text": "AI 프롬프트로 생성한 대본을 엑셀에 붙여넣습니다. '이미지 생성 프롬프트' 열과 '성우녹음' 시트가 반드시 포함되어야 합니다."
-    },
-    {
-      "@type": "HowToStep",
-      "position": 3,
-      "name": "이미지 자동 생성",
-      "text": "AutoTube Pro가 엑셀의 이미지 프롬프트를 읽어 Google Gemini로 이미지를 순차 생성합니다. 60컷이면 60장이 2_이미지 폴더에 자동 저장됩니다."
-    },
-    {
-      "@type": "HowToStep",
-      "position": 4,
-      "name": "무료TTS 오디오 자동 생성 — 큐웬(Qwen) TTS",
-      "text": "내 PC에서 구동되는 무료 TTS 엔진 큐웬(Qwen) TTS 서버로 대본을 전송하여 음성을 생성합니다. 무제한TTS로 60컷의 음성 파일을 순차 생성하고 3_오디오_자막 폴더에 저장됩니다."
-    },
-    {
-      "@type": "HowToStep",
-      "position": 5,
-      "name": "Whisper 자막 자동 생성",
-      "text": "합본 오디오를 Whisper AI로 분석하여 SRT 자막 파일과 타임코드를 자동 생성합니다. 타임스탬프는 엑셀에 자동 기록됩니다."
-    },
-    {
-      "@type": "HowToStep",
-      "position": 6,
-      "name": "검증 및 캡컷 자동화 조립",
-      "text": "이미지·오디오·자막을 한 화면에서 동기화 검수한 후 버튼 클릭 1초 만에 캡컷 자동화로 CapCut 타임라인이 자동 완성됩니다."
-    }
+    {"@type":"HowToStep","position":1,"name":"폴더 구조 설정","text":"구매 시 제공되는 패키지를 C: 드라이브에 압축 해제합니다."},
+    {"@type":"HowToStep","position":2,"name":"대본 엑셀 파일 준비","text":"AI 프롬프트로 생성한 대본을 엑셀에 붙여넣습니다."},
+    {"@type":"HowToStep","position":3,"name":"이미지 자동 생성","text":"AutoTube Pro가 엑셀의 이미지 프롬프트를 읽어 Google Gemini로 이미지를 순차 생성합니다."},
+    {"@type":"HowToStep","position":4,"name":"무료TTS 오디오 자동 생성","text":"큐웬(Qwen) TTS 서버로 대본을 전송하여 음성을 생성합니다."},
+    {"@type":"HowToStep","position":5,"name":"Whisper 자막 자동 생성","text":"합본 오디오를 Whisper AI로 분석하여 SRT 자막 파일과 타임코드를 자동 생성합니다."},
+    {"@type":"HowToStep","position":6,"name":"검증 및 캡컷 자동화 조립","text":"이미지·오디오·자막을 한 화면에서 동기화 검수한 후 버튼 클릭 1초 만에 CapCut 타임라인이 자동 완성됩니다."}
   ]
-}
-</script>
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "TechArticle",
-  "headline": "캡컷 자동화 사용 설명서 — 유튜브 영상 제작 자동화 6단계 완전 가이드 | 오토튜브 AutoTube Pro",
-  "description": "오토튜브 AutoTube Pro 캡컷 자동화 프로그램의 전체 사용 설명서. 폴더 설정부터 CapCut 자동 조립까지 단계별 안내.",
-  "url": "https://aibaselab.com/manual.html",
-  "inLanguage": "ko",
-  "isPartOf": {
-    "@type": "WebSite",
-    "name": "오토튜브 AutoTube Pro",
-    "url": "https://aibaselab.com/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "AIBaseLab",
-    "url": "https://aibaselab.com/"
-  },
-  "breadcrumb": {
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "홈", "item": "https://aibaselab.com/" },
-      { "@type": "ListItem", "position": 2, "name": "사용 설명서", "item": "https://aibaselab.com/manual.html" }
-    ]
-  }
 }
 </script>
 
@@ -667,7 +600,7 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
 #scrollTopBtn:hover { background: #6366f1; }
 
 /* =============================================
-   태블릿 769~1024px — 사이드바 + 콘텐츠 겹침 방지
+   태블릿 769~1024px
    ============================================= */
 @media (max-width: 1024px) and (min-width: 769px) {
   :root { --sw: 220px; }
@@ -683,90 +616,53 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
 @media (max-width: 768px) {
   body { font-size: 16px; word-break: break-word; overflow-wrap: break-word; }
   html, .main { max-width: 100vw; overflow-x: hidden; }
-
-  /* 사이드바 — 슬라이드 오버레이로 전환 */
   .sidebar { transform: translateX(-100%); width: 290px; z-index: 300; box-shadow: 4px 0 28px rgba(14,11,42,0.2); }
   .sidebar.open { transform: translateX(0); }
   .main { margin-left: 0; padding-top: 56px; }
   .hamburger { display: flex; }
-
-  /* top-bar */
   .top-bar { left: 0; padding: 0 16px; height: 56px; gap: 10px; }
   .top-bar-title { font-size: 14px; }
   .top-bar-divider, .breadcrumb { display: none; }
   .top-bar-home { font-size: 12px; padding: 6px 10px; }
-
-  /* 콘텐츠 */
   .content { padding: 24px 16px 80px; width: 100%; }
-
-  /* h1 */
   .content h1 { font-size: clamp(18px, 5vw, 22px) !important; margin-bottom: 20px !important; line-height: 1.4 !important; }
-
-  /* 헤딩/텍스트 */
   .sec-title { font-size: 20px; }
   .sec-desc { font-size: 15px; margin-left: 0; width: 100%; }
   .dt { font-size: 15px; line-height: 1.5; }
   .dd, .dd li { font-size: 14px; }
   .key-item { font-size: 14px; }
-
-  /* br 제어 */
   .sec-desc br, .dt br, .dd br, .key-item br, .concept-d br, .io-val br { display: none; }
   .mob-br { display: block !important; }
-
-  /* 배너 — 세로 정렬 */
   .step-banner { flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px; margin: 40px 0 32px; }
   .step-banner-divider { display: none; }
   .step-banner-title { font-size: 16px; }
   .step-banner-sub { font-size: 12px; line-height: 1.6; word-break: break-word; }
   .step-banner-badge { font-size: 11px; padding: 5px 10px; }
-
   .prep-banner { flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px; margin-bottom: 32px; }
   .prep-banner-divider { display: none; }
   .prep-banner-title { font-size: 16px; }
-
-  /* 섹션 */
   .section { margin-bottom: 48px; }
-
-  /* desc-row — badge 좌측 정렬 */
   .desc-row { padding: 14px 12px; gap: 10px; }
   .dbadge { width: 30px; height: 30px; font-size: 13px; flex-shrink: 0; }
-
-  /* key-box */
   .key-box { padding: 16px; }
-
-  /* IO box */
   .io-box { flex-direction: column; }
   .io-half { width: 100%; padding: 12px 14px; }
   .io-half + .io-half { border-left: none; border-top: 1px solid var(--line); }
-
-  /* concept box */
   .concept-box { padding: 16px; }
   .concept-row { flex-direction: column; gap: 10px; }
   .concept-flow { white-space: nowrap; overflow-x: auto; font-size: 13px; padding: 10px 12px; }
-
-  /* folder tree */
   .folder-tree { padding: 14px; overflow-x: auto; }
   .ft-row { font-size: 12px; }
-
-  /* folder table — 래퍼로 스크롤 */
   .folder-step-table-wrap { border-radius: 8px; }
   .folder-step-table { font-size: 13px; }
   .folder-step-table th, .folder-step-table td { padding: 10px 12px; }
-
-  /* pipeline */
   .pipe-row-2, .pipe-row-3 { flex-direction: column; align-items: center; width: 100%; }
   .pipe-arrow-h { transform: rotate(90deg); padding: 2px 0; height: 28px; }
   .pipe-card.pipe-parallel { max-width: 100%; width: 100%; }
   .pipe-card { max-width: 100%; }
-
-  /* footer */
   footer { margin-left: 0 !important; padding: 24px 16px !important; width: 100%; }
   footer > div { flex-direction: column !important; text-align: center; }
-
-  /* 긴급박스 모바일 패딩 */
   .tts-warning { padding: 14px 14px !important; font-size: 14px; }
-
-  /* 스크롤 탑 */
   #scrollTopBtn { width: 44px; height: 44px; bottom: 20px; right: 16px; font-size: 18px; }
 }
 
@@ -847,6 +743,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       캡컷 자동화 사용 설명서 — 유튜브 영상 제작 자동화 6단계 완전 가이드
     </h1>
 
+    <!-- ══════════════════════════════════════
+         전체 공정 개요
+    ══════════════════════════════════════ -->
     <section id="s-ov" class="section">
       <div class="sec-hd">
         <div class="step-chip" style="background:#312e81;"></div>
@@ -919,6 +818,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
     </section>
 
+    <!-- ══════════════════════════════════════
+         준비 배너
+    ══════════════════════════════════════ -->
     <div class="prep-banner">
       <span class="prep-banner-badge">준비</span>
       <div class="prep-banner-divider"></div>
@@ -928,6 +830,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
     </div>
 
+    <!-- ══════════════════════════════════════
+         폴더 구조 설정
+    ══════════════════════════════════════ -->
     <section id="s-prep" class="section">
       <div class="sec-hd">
         <div class="step-chip" style="background:#312e81;"></div>
@@ -984,7 +889,7 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
             </div>
           </div>
         </div>
-      </h3>
+      </div>
       <div class="folder-step-table-wrap">
         <table class="folder-step-table">
           <thead><tr><th>폴더</th><th>용도</th><th>자동 저장되는 파일</th></tr></thead>
@@ -994,7 +899,7 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
             <tr><td class="fd-name">📂 3_오디오_자막\</td><td>TTS 음성 파일 및 자막 파일 저장</td><td>001.wav … 합본.wav, 자막.srt</td></tr>
           </tbody>
         </table>
-      </h3>
+      </div>
       <div class="key-box">
         <div class="key-box-title">주의</div>
         <div class="key-list">
@@ -1003,6 +908,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
     </section>
 
+    <!-- ══════════════════════════════════════
+         STEP 1 배너
+    ══════════════════════════════════════ -->
     <div class="step-banner">
       <span class="step-banner-badge">STEP 1</span>
       <div class="step-banner-divider"></div>
@@ -1012,6 +920,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
     </div>
 
+    <!-- ══════════════════════════════════════
+         엑셀 파일 필수 구조 규칙 (s2)
+    ══════════════════════════════════════ -->
     <section id="s2" class="section">
       <div class="sec-hd">
         <div class="step-chip" style="background:#7c3aed;"></div>
@@ -1023,7 +934,7 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       <div class="io-box">
         <div class="io-half io-in"><div class="io-lbl">📥 이 단계를 시작하기 전에</div><div class="io-val">AI가 생성한 대본 내용</div></div>
         <div class="io-half io-out"><div class="io-lbl">📤 이 단계가 끝나면</div><div class="io-val">올바른 구조의 엑셀 파일 (.xlsx)</div></div>
-      </h3>
+      </div>
       <div class="img-box">
         <img src="그림3.png" alt="오토튜브 AutoTube Pro 엑셀 파일 필수 구조 — 이미지 생성 프롬프트 열과 성우녹음 시트 규칙">
         <div class="img-cap">▲ MS Excel — 필수 시트명 및 열 제목 확인 화면 (그림3)</div>
@@ -1033,7 +944,7 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
         <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">대본 시트 — 메인 대본 내용 구성</div><div class="dd"><ul><li>영상의 메인 대본 내용이 담긴 기본 시트입니다.</li><li>사용자가 관리하는 내용으로 자유롭게 구성하시면 됩니다.</li><li>단, 자동 이미지 생성을 위해 <strong>"이미지 생성 프롬프트"</strong> 열은 반드시 포함되어야 합니다.</li></ul></div></div></div>
         <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">"이미지 생성 프롬프트" 열 제목 <span class="tag tag-req">★ 필수</span></div><div class="dd"><ul><li>이미지 자동 생성 시 프로그램이 이 열에서 프롬프트를 읽습니다.</li><li>열의 위치는 어디든 상관없지만, <strong>열 제목은 정확히 "이미지 생성 프롬프트"</strong>여야 합니다.</li></ul></div></div></div>
         <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">성우녹음 시트 <span class="tag tag-req">★ 필수</span></div><div class="dd"><ul><li>TTS 오디오 생성 시 이 시트의 텍스트를 읽어 음성을 생성합니다.</li><li>시트 이름은 반드시 <strong>"성우녹음"</strong> 4글자여야 합니다.</li><li>TTS 오디오를 생성할 열 이름은 반드시 <strong>"성우녹음대본"</strong>으로 설정하세요.</li><li>제공되는 <code>AI성우_녹음대본_생성프롬프트.txt</code> 파일을 참고하세요.</li></ul></div></div></div>
-      </h3>
+      </div>
       <div class="key-box">
         <div class="key-box-title">핵심설명</div>
         <div class="key-list">
@@ -1044,6 +955,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
     </section>
 
+    <!-- ══════════════════════════════════════
+         STEP 2 배너
+    ══════════════════════════════════════ -->
     <div class="step-banner">
       <span class="step-banner-badge">STEP 2</span>
       <div class="step-banner-divider"></div>
@@ -1053,6 +967,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
     </div>
 
+    <!-- ══════════════════════════════════════
+         파일 탐색기 & 텍스트 에디터 (s1a)
+    ══════════════════════════════════════ -->
     <section id="s1a" class="section">
       <div class="sec-hd">
         <div class="step-chip" style="background:#1d4ed8;"></div>
@@ -1064,7 +981,7 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       <div class="io-box">
         <div class="io-half io-in"><div class="io-lbl">📥 이 단계를 시작하기 전에</div><div class="io-val">1_대본\ 폴더에 프롬프트 .txt 파일</div></div>
         <div class="io-half io-out"><div class="io-lbl">📤 이 단계가 끝나면</div><div class="io-val">AI로 생성된 대본 내용 (복사 완료)</div></div>
-      </h3>
+      </div>
       <div class="img-box">
         <img src="그림1.png" alt="오토튜브 AutoTube Pro 대본 기획 탭 — 텍스트 에디터 및 파일 탐색기 화면">
         <div class="img-cap">▲ 대본/기획 탭 — 텍스트 에디터 화면 (그림1)</div>
@@ -1075,7 +992,7 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
         <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">프롬프트 폴더 경로 입력</div><div class="dd"><ul><li><strong>찾기</strong> 버튼으로 <code>1_대본\</code> 폴더를 선택합니다.</li><li>경로 변경 시 하단 파일 목록이 자동으로 갱신됩니다.</li></ul></div></div></div>
         <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">파일 탐색기 목록</div><div class="dd"><ul><li><strong>.txt 파일 더블클릭</strong> → 오른쪽 텍스트 에디터에 내용 로드</li><li>📁 폴더 더블클릭 → 해당 폴더로 이동 / <strong>...</strong> 더블클릭 → 상위 폴더로 이동</li></ul></div></div></div>
         <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">텍스트 에디터 / 엑셀 그리드 이너 탭</div><div class="dd"><ul><li>📄 <strong>텍스트 에디터</strong>: 프롬프트 파일 편집 및 전체 복사</li><li>📊 <strong>엑셀 그리드</strong>: 대본 엑셀 파일 내용 확인 및 간편 편집</li></ul></div></div></div>
-      </h3>
+      </div>
       <div class="key-box">
         <div class="key-box-title">핵심설명</div>
         <div class="key-list">
@@ -1085,6 +1002,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
     </section>
 
+    <!-- ══════════════════════════════════════
+         엑셀 그리드 편집 (s1b)
+    ══════════════════════════════════════ -->
     <section id="s1b" class="section">
       <div class="sec-hd">
         <div class="step-chip" style="background:#1d4ed8;"></div>
@@ -1092,7 +1012,7 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
       <div class="sec-desc">
         탐색기에서 <strong>.xlsx 파일을 더블클릭</strong>하면 이 탭으로 자동 전환됩니다. AI가 생성한 대본 엑셀 파일을 내장 그리드에 로드하여 검토·보정하는 곳입니다.
-      </h3>
+      </div>
       <div class="img-box">
         <img src="그림2.png" alt="오토튜브 AutoTube Pro 엑셀 그리드 편집 화면 — 대본 시트 및 성우녹음 시트 확인">
         <div class="img-cap">▲ 대본/기획 탭 — 엑셀 그리드 화면 (그림2)</div>
@@ -1107,6 +1027,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
     </section>
 
+    <!-- ══════════════════════════════════════
+         STEP 3 배너
+    ══════════════════════════════════════ -->
     <div class="step-banner">
       <span class="step-banner-badge">STEP 3</span>
       <div class="step-banner-divider"></div>
@@ -1116,6 +1039,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
     </div>
 
+    <!-- ══════════════════════════════════════
+         이미지 자동 생성 (s3)
+    ══════════════════════════════════════ -->
     <section id="s3" class="section">
       <div class="sec-hd">
         <div class="step-chip" style="background:#b45309;"></div>
@@ -1127,7 +1053,7 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       <div class="io-box">
         <div class="io-half io-in"><div class="io-lbl">📥 이 단계를 시작하기 전에</div><div class="io-val">엑셀 대본 파일 + 캐릭터 시트 (.png)</div></div>
         <div class="io-half io-out"><div class="io-lbl">📤 이 단계가 끝나면</div><div class="io-val">2_이미지\ 폴더에 01.png, 02.png …</div></div>
-      </h3>
+      </div>
       <div class="img-box">
         <img src="그림4.png" alt="오토튜브 AutoTube Pro Gemini 이미지 자동 생성 패널 — 진행 상태 및 미리보기 화면">
         <div class="img-cap">▲ [1] 이미지 자동 생성 패널 — 16% 진행 중 (그림4)</div>
@@ -1140,7 +1066,7 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
         <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">유료 이미지 생성 - 구글 API 이용 방식 (체크박스로 선택)</div><div class="dd"><ul><li><strong>구글 API 키 저장 파일 지정</strong>: 구글에서 생성하신 개인별 API키 딱 한줄만 텍스트 파일으로 저장하신후, 파일을 선택해 주세요. (API Key 생성 방법은 AI를 통해 확인 하세요)</li><li><strong>이미지 자동 생성 시작</strong>: 버튼 클릭 후 자리를 비워도 자동으로 진행됩니다.</li><li>완성 이미지는 <code>2_이미지\</code> 폴더에 <code>01.png</code>, <code>02.png</code> 형식으로 자동 저장됩니다.</li></ul></div></div></div>
         <div class="desc-row"><div class="dbadge">5</div><div class="dc"><div class="dt">진행상태 패널</div><div class="dd"><ul><li>전체 / 현재 진행 / 남은 작업 / 진행률(%)을 실시간 표시합니다.</li></ul></div></div></div>
         <div class="desc-row"><div class="dbadge">6</div><div class="dc"><div class="dt">실시간 이미지 미리보기</div><div class="dd"><ul><li>생성 완료된 이미지가 하단에 즉시 표시됩니다. 품질을 실시간으로 확인하세요.</li></ul></div></div></div>
-      </h3>
+      </div>
       <div class="key-box">
         <div class="key-box-title">동영상 추가 기능</div>
         <div class="key-list">
@@ -1157,6 +1083,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
     </section>
 
+    <!-- ══════════════════════════════════════
+         STEP 4 배너
+    ══════════════════════════════════════ -->
     <div class="step-banner">
       <span class="step-banner-badge">STEP 4</span>
       <div class="step-banner-divider"></div>
@@ -1166,6 +1095,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
     </div>
 
+    <!-- ══════════════════════════════════════
+         STEP 4 개념 박스
+    ══════════════════════════════════════ -->
     <div class="concept-box">
       <div class="concept-box-title">STEP 4 시작 전 — 기본 개념 이해</div>
       <div style="display:flex;flex-direction:column;gap:20px;">
@@ -1205,6 +1137,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       <div style="margin-top:16px; font-size:14px; color:var(--muted);">💡 전체 자동화 흐름이 궁금하다면 → <a href="index.html#how" style="color:var(--accent); font-weight:700;">메인 페이지 작동방식 보기</a></div>
     </div>
 
+    <!-- ══════════════════════════════════════
+         STEP 4-① AutoTube Pro 준비 (s4a)
+    ══════════════════════════════════════ -->
     <section id="s4a" class="section">
       <div class="sec-hd">
         <div class="step-chip" style="background:#c2410c;"></div>
@@ -1212,7 +1147,7 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
       <div class="sec-desc">
         오디오 생성 전 AutoTube Pro에서 먼저 필요한 정보를 설정하는 단계입니다. 시작전에 10초 정도의 깨끗하게 녹음된 자신의 목소리를 WAV 파일로 준비 합니다.
-      </h3>
+      </div>
       <div class="img-box">
         <img src="그림5.png" alt="오토튜브 AutoTube Pro 오디오 자동 생성 패널 — 큐웬 TTS 목소리 샘플 및 대본 설정 화면">
         <div class="img-cap">▲ [2] 오디오 자동 생성 패널 — 상단 설정 영역 (그림5)</div>
@@ -1229,6 +1164,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
     </section>
 
+    <!-- ══════════════════════════════════════
+         STEP 4-② Google Colab TTS (s4c)
+    ══════════════════════════════════════ -->
     <section id="s4c" class="section">
       <div class="sec-hd">
         <div class="step-chip" style="background:#c2410c;"></div>
@@ -1236,7 +1174,7 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
       <div class="sec-desc">
         <strong>Google Colab</strong>은 구글이 제공하는 무료 클라우드 컴퓨팅 환경입니다. 내 PC 성능에 영향을 주지 않고 무료TTS 엔진 큐웬(Qwen) TTS 서버를 무료로 가동할 수 있습니다.
-      </h3>
+      </div>
       <div class="img-box">
         <img src="그림6.png" alt="Google Colab 큐웬 Qwen TTS 서버 가동 화면 — T4 GPU 설정 및 URL 복사 방법">
         <div class="img-cap">▲ Google Colab — 큐웬(Qwen) TTS 서버 가동 화면 (그림6)</div>
@@ -1252,6 +1190,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
     </section>
 
+    <!-- ══════════════════════════════════════
+         STEP 4-③ 오디오 녹음 실행 (s4b)
+    ══════════════════════════════════════ -->
     <section id="s4b" class="section">
       <div class="sec-hd">
         <div class="step-chip" style="background:#c2410c;"></div>
@@ -1259,7 +1200,7 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
       <div class="sec-desc">
         Colab 서버 가동 후 <strong>AutoTube Pro로 돌아와</strong> 오디오 녹음을 실행합니다.
-      </h3>
+      </div>
       <div class="img-box">
         <img src="그림5-1.png" alt="오토튜브 AutoTube Pro 오디오 녹음 실행 화면 — 큐웬 TTS 서버 URL 입력 및 녹음 시작">
         <div class="img-cap">▲ [2] 오디오 자동 생성 패널 — 녹음 실행 영역</div>
@@ -1270,7 +1211,7 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
         <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">모든 설정이 완료된후 녹음을 시작 합니다. (녹음 범위 설정후 자동생성 또는 개별생성 녹음)</div></div></div>
         <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">녹음중 중지하는 기능이며, 중지후 이어서 녹음이 안되니 참고 하세요.</div></div></div>
         <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">엑셀 대본의 모든 행은 개별 파일로 녹음됩니다. 자막 생성을 위해 1개의 파일로 합치는 기능 입니다.</div></div></div>
-      </h3>
+      </div>
       <div class="key-box">
         <div class="key-box-title">핵심설명</div>
         <div class="key-list">
@@ -1281,6 +1222,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
     </section>
 
+    <!-- ══════════════════════════════════════
+         TTS 서버 종료 안내
+    ══════════════════════════════════════ -->
     <div class="sec-desc tts-warning" style="background-color:#fff8e1; color:#d32f2f; padding:15px 20px; border-left:5px solid #d32f2f; border-radius:4px; font-family:sans-serif; line-height:1.6; margin-bottom: 48px;">
       <strong style="font-size:1.1em;">🚨 [중요] TTS 서버 수동 종료 필수 안내</strong><br>
       <strong>오토튜브는 사용자의 연속적인 작업을 고려하여 서버를 자동으로 종료하지 않습니다.</strong> 따라서 TTS 생성 완료 후 또는 더 이상 사용하지 않을 때는 <strong>반드시 직접 서버를 종료</strong>해 주시기 바랍니다.<br>
@@ -1288,6 +1232,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       👉 <strong>종료 방법:</strong> 상단 메뉴 <strong>[런타임] ➔ [런타임 연결 해제 및 삭제]</strong>
     </div>
 
+    <!-- ══════════════════════════════════════
+         STEP 5 배너
+    ══════════════════════════════════════ -->
     <div class="step-banner">
       <span class="step-banner-badge">STEP 5</span>
       <div class="step-banner-divider"></div>
@@ -1297,6 +1244,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
     </div>
 
+    <!-- ══════════════════════════════════════
+         Whisper 자막 (s5)
+    ══════════════════════════════════════ -->
     <section id="s5" class="section">
       <div class="sec-hd">
         <div class="step-chip" style="background:#0d9488;"></div>
@@ -1304,7 +1254,7 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
       <div class="sec-desc">
         <strong>리소스 제작</strong> 탭 → <strong>[3] 자막 자동 생성 및 보정</strong> 섹션입니다. 합본.wav 오디오를 Whisper AI가 분석하여 각 컷의 정확한 시작·끝 시간을 추출하고, SRT 자막 파일과 엑셀 타임스탬프를 자동으로 생성합니다.
-      </h3>
+      </div>
       <div class="img-box">
         <img src="그림7.png" alt="오토튜브 AutoTube Pro Whisper 자막 자동 생성 패널 — SRT 추출 및 타임코드 동기화 화면">
         <div class="img-cap">▲ [3] 자막 자동 생성 및 보정 패널 — 33% 진행 중 (그림7)</div>
@@ -1315,7 +1265,7 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
         <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">전체 자막 SRT 만들기 → 엑셀에 이미지 배치 타임 적용 <span class="tag tag-order">★ 두 버튼 모두 클릭</span></div><div class="dd"><ul><li><strong>1단계 — 전체 자막 SRT 만들기</strong>: Whisper AI가 오디오를 분석해 각 컷의 시작·끝 시간을 담은 SRT 파일을 생성합니다.</li><li><strong>2단계 — 엑셀에 이미지 배치 타임 적용</strong>: 추출된 시간 정보를 엑셀 파일의 타임 열(J열)에 자동으로 기록합니다. <em>이 정보가 있어야 CapCut에서 이미지가 정확한 타이밍에 배치됩니다.</em></li><li>두 번째 버튼을 <strong>반드시 클릭</strong>해야 합니다.</li></ul></div></div></div>
         <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">자막 작업 진행상태 패널</div><div class="dd"><ul><li>진행률(%)과 현재 처리 중인 자막 텍스트를 실시간으로 표시합니다.</li></ul></div></div></div>
         <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">자막수정필요 입력 필드</div><div class="dd"><ul><li>발음이 불명확하거나 자막이 잘못 인식된 컷 번호를 기록합니다. <em>(예: 1, 3, 5)</em></li><li>STEP 6 영상 검증 탭에서 해당 컷만 재작업할 때 참조됩니다.</li></ul></div></div></div>
-      </h3>
+      </div>
       <div class="key-box">
         <div class="key-box-title">핵심설명</div>
         <div class="key-list">
@@ -1326,6 +1276,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
     </section>
 
+    <!-- ══════════════════════════════════════
+         STEP 6 배너
+    ══════════════════════════════════════ -->
     <div class="step-banner">
       <span class="step-banner-badge">STEP 6</span>
       <div class="step-banner-divider"></div>
@@ -1335,6 +1288,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
     </div>
 
+    <!-- ══════════════════════════════════════
+         영상 리소스 검증 (s6a)
+    ══════════════════════════════════════ -->
     <section id="s6a" class="section">
       <div class="sec-hd">
         <div class="step-chip" style="background:#059669;"></div>
@@ -1346,7 +1302,7 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       <div class="io-box">
         <div class="io-half io-in"><div class="io-lbl">📥 이 단계를 시작하기 전에</div><div class="io-val">2_이미지\ + 합본.wav + 자막.srt + 엑셀 대본</div></div>
         <div class="io-half io-out"><div class="io-lbl">📤 이 단계가 끝나면</div><div class="io-val">캡컷 자동화 완성 프로젝트 파일</div></div>
-      </h3>
+      </div>
       <div class="img-box">
         <img src="그림8.png" alt="오토튜브 AutoTube Pro 영상 검증 탭 — 이미지 오디오 자막 통합 QC 및 캡컷 자동화 조립 화면">
         <div class="img-cap">▲ 영상 검증 탭 — 통합 QC &amp; 캡컷 자동화 조립 화면 (그림8)</div>
@@ -1375,7 +1331,7 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
         <div class="desc-row"><div class="dbadge">5</div><div class="dc"><div class="dt">체크박스 초기화</div><div class="dd"><ul><li>재작업 완료 후 마킹된 체크박스를 일괄 초기화합니다.</li></ul></div></div></div>
         <div class="desc-row"><div class="dbadge">6</div><div class="dc"><div class="dt">CapCut 프로젝트 생성 경로</div><div class="dd"><ul><li>CapCut 프로젝트 파일이 저장될 경로입니다. 기본값은 CapCut의 기본 프로젝트 폴더입니다.</li></ul></div></div></div>
         <div class="desc-row"><div class="dbadge">7</div><div class="dc"><div class="dt">캡컷 자동화 프로젝트 생성 실행 <span class="tag tag-req">★ 최종 단계</span></div><div class="dd"><ul><li>모든 검수 완료 후 이 버튼을 클릭합니다.</li><li><strong>단 1초</strong> 안에 이미지·오디오·SRT 자막 타임코드가 CapCut 프로젝트에 자동 주입됩니다.</li></ul></div></div></div>
-      </h3>
+      </div>
       <div class="key-box">
         <div class="key-box-title">핵심설명</div>
         <div class="key-list">
@@ -1386,6 +1342,9 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
     </section>
 
+    <!-- ══════════════════════════════════════
+         캡컷 자동화 조립 (s6b)
+    ══════════════════════════════════════ -->
     <section id="s6b" class="section">
       <div class="sec-hd">
         <div class="step-chip" style="background:#c8321e;"></div>
@@ -1393,21 +1352,21 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
       </div>
       <div class="sec-desc">
         캡컷 자동화 프로젝트 생성이 완료되면 CapCut을 실행합니다. 수십 개의 이미지 클립·오디오·SRT 자막이 정확한 타이밍에 배치된 완성형 타임라인을 바로 확인할 수 있습니다.
-      </h3>
+      </div>
       <div class="img-box">
         <img src="그림9-1.png" alt="오토튜브 AutoTube Pro 캡컷 자동화 프로젝트 생성 설정 화면 — 롱폼 쇼츠 선택">
         <div class="img-cap">▲ 캡컷 자동화 1초 생성</div>
-      </h3>
+      </div>
       <div class="desc-list">
         <div class="desc-row"><div class="dbadge">1</div><div class="dc"><div class="dt">대본 엑셀 파일을 선택 합니다.</div></div></div>
         <div class="desc-row"><div class="dbadge">2</div><div class="dc"><div class="dt">캡컷 생성 경로를 나타내며, 이미 설정된 상태임으로 변경하지 마시길 바랍니다.</div></div></div>
         <div class="desc-row"><div class="dbadge">3</div><div class="dc"><div class="dt">제작하실 16:9 롱폼영상 또는 9:16 쇼츠 영상을 선택 합니다.</div></div></div>
         <div class="desc-row"><div class="dbadge">4</div><div class="dc"><div class="dt">버튼을 누르면 1초만에 타임라인에 맞게 모든 리소스가 배치된 캡컷 자동화 프로젝트가 생성 됩니다.</div></div></div>
-      </h3>
+      </div>
       <div class="img-box">
         <img src="그림9.png" alt="오토튜브 AutoTube Pro 캡컷 자동화 완성 타임라인 — 이미지 오디오 자막 자동 배치 결과">
         <div class="img-cap">▲ CapCut — 캡컷 자동화 완성 타임라인 화면 (그림9)</div>
-      </h3>
+      </div>
       <div class="key-box">
         <div class="key-box-title">핵심설명</div>
         <div class="key-list">
@@ -1451,20 +1410,10 @@ h3.desc-sec-title::before, .desc-sec-title::before { content:''; width: 18px; he
 <script>
 const sections = document.querySelectorAll('.section[id]');
 const navLinks = document.querySelectorAll('.nav-a[data-sid]');
-const bcMap = {
-  's-ov':  '전체 공정 개요',
-  's-prep':'시작 전 준비 · 폴더 구조 설정',
-  's2':    'STEP 1 · 엑셀 파일 필수 구조 규칙',
-  's1a':   'STEP 2 · 파일 탐색기 & 텍스트 에디터',
-  's1b':   'STEP 2 · 엑셀 그리드 편집',
-  's3':    'STEP 3 · Gemini 이미지 자동 생성',
-  's4a':   'STEP 4-① · AutoTube Pro 준비',
-  's4c':   'STEP 4-② · Google Colab TTS 서버 가동',
-  's4b':   'STEP 4-③ · 오디오 녹음 실행',
-  's5':    'STEP 5 · Whisper 자막 자동 생성',
-  's6a':   'STEP 6 · 영상 리소스 검증 (QC)',
-  's6b':   'STEP 6 · 캡컷 자동화 조립',
-};
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sbOverlay');
+const hamburger = document.getElementById('hamburger');
+
 const io = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) {
@@ -1474,6 +1423,7 @@ const io = new IntersectionObserver(entries => {
   });
 }, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
 sections.forEach(s => io.observe(s));
+
 navLinks.forEach(a => {
   a.addEventListener('click', e => {
     e.preventDefault();
@@ -1482,9 +1432,7 @@ navLinks.forEach(a => {
     closeSidebar();
   });
 });
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('sbOverlay');
-const hamburger = document.getElementById('hamburger');
+
 function openSidebar() {
   sidebar.classList.add('open');
   overlay.classList.add('open');
@@ -1501,6 +1449,7 @@ hamburger.addEventListener('click', () => {
   sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
 });
 overlay.addEventListener('click', closeSidebar);
+
 (function() {
   var btn = document.getElementById('scrollTopBtn');
   window.addEventListener('scroll', function() {
