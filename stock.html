@@ -114,11 +114,10 @@
         }
 
         @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
         }
 
+        /* ★ 추가: 타임라인 펄스 애니메이션 */
         @keyframes tlPulse {
             0%,100% { opacity:.55; }
             50%      { opacity:1; }
@@ -271,13 +270,8 @@
             }
 
         @keyframes np {
-            0%, 100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.3;
-            }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
 
         .oi-dot {
@@ -297,13 +291,8 @@
             }
 
         @keyframes oiF {
-            0%, 100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.05;
-            }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.05; }
         }
 
         .content-wrapper {
@@ -448,17 +437,9 @@
             margin-left: 10px;
         }
 
-        .up {
-            color: #ff4444 !important;
-        }
-
-        .dn {
-            color: #4488ff !important;
-        }
-
-        .neu {
-            color: #aaa !important;
-        }
+        .up { color: #ff4444 !important; }
+        .dn { color: #4488ff !important; }
+        .neu { color: #aaa !important; }
 
         .strategy-box {
             border: 1px solid #2a2a1a;
@@ -495,11 +476,20 @@
             white-space: nowrap;
         }
 
-        /* ── 타임라인 컨테이너 ── */
+        /* ★ 수정: 타임라인 높이 조정 (H/L + 카운트 줄 공간 확보) */
         .timeline {
             position: relative;
             width: 100%;
         }
+
+        .c-red   { color: #ff4444; }
+        .bg-red  { background: #ff4444; }
+        .c-green { color: #44ff66; }
+        .bg-green{ background: #44ff66; }
+        .c-blue  { color: #4488ff; }
+        .bg-blue { background: #4488ff; }
+        .c-gold  { color: #ffcc00; }
+        .bg-gold { background: #ffcc00; }
 
         .oi-box {
             border: 1px solid #2a2a3e;
@@ -575,13 +565,8 @@
             padding: 0 3px;
         }
 
-            .oi-bar-wrap.left {
-                justify-content: flex-end;
-            }
-
-            .oi-bar-wrap.right {
-                justify-content: flex-start;
-            }
+            .oi-bar-wrap.left  { justify-content: flex-end; }
+            .oi-bar-wrap.right { justify-content: flex-start; }
 
         .oi-bar.call {
             height: 6px;
@@ -688,9 +673,7 @@
             flex-shrink: 0;
         }
 
-            .sidebar::-webkit-scrollbar {
-                display: none;
-            }
+            .sidebar::-webkit-scrollbar { display: none; }
 
         .sidebar-logo {
             background: #0b0c15;
@@ -783,14 +766,8 @@
             max-height: 340px;
         }
 
-            .ticker-list::-webkit-scrollbar {
-                width: 3px;
-            }
-
-            .ticker-list::-webkit-scrollbar-thumb {
-                background: #333;
-                border-radius: 2px;
-            }
+            .ticker-list::-webkit-scrollbar { width: 3px; }
+            .ticker-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
 
         .ticker-item {
             display: flex;
@@ -804,14 +781,8 @@
             border-radius: 3px;
         }
 
-            .ticker-item:hover {
-                background: #111120;
-                color: #ddd;
-            }
-
-            .ticker-item.active-panel {
-                color: #ffcc00;
-            }
+            .ticker-item:hover { background: #111120; color: #ddd; }
+            .ticker-item.active-panel { color: #ffcc00; }
 
         .panel-badge {
             font-size: 9px;
@@ -824,20 +795,9 @@
             white-space: nowrap;
         }
 
-            .panel-badge.p0 {
-                background: #2a1a1a;
-                color: #ff6666;
-            }
-
-            .panel-badge.p1 {
-                background: #1a2a1a;
-                color: #66cc66;
-            }
-
-            .panel-badge.p2 {
-                background: #1a1a2a;
-                color: #6688ff;
-            }
+            .panel-badge.p0 { background: #2a1a1a; color: #ff6666; }
+            .panel-badge.p1 { background: #1a2a1a; color: #66cc66; }
+            .panel-badge.p2 { background: #1a1a2a; color: #6688ff; }
 
         .sidebar-ad {
             background: #0d0d1a;
@@ -853,9 +813,7 @@
 
         /* ── 모바일 환경 미디어 쿼리 ── */
         @media screen and (max-width:1200px) {
-            body {
-                min-width: unset;
-            }
+            body { min-width: unset; }
 
             .oi-grid-header {
                 grid-template-columns: 1fr 38px 32px 38px 32px 38px 1fr !important;
@@ -866,29 +824,13 @@
                 letter-spacing: -0.3px !important;
             }
 
-            .top-bar {
-                height: auto;
-                flex-wrap: wrap;
-                padding: 10px;
-                gap: 8px;
-            }
+            .top-bar { height: auto; flex-wrap: wrap; padding: 10px; gap: 8px; }
 
-            .logo-top {
-                width: 100%;
-                order: 1;
-                align-items: center;
-                margin-top: 2px;
-            }
+            .logo-top { width: 100%; order: 1; align-items: center; margin-top: 2px; }
 
-            .top-right {
-                order: 2;
-                width: 100%;
-                justify-content: center;
-            }
+            .top-right { order: 2; width: 100%; justify-content: center; }
 
-            #ws-dot-header {
-                display: none !important;
-            }
+            #ws-dot-header { display: none !important; }
 
             .neon-ticker-bar {
                 width: 100% !important;
@@ -904,9 +846,7 @@
                 border-radius: 8px !important;
             }
 
-                .neon-ticker-bar .sep {
-                    display: none !important;
-                }
+                .neon-ticker-bar .sep { display: none !important; }
 
             .neon-item {
                 flex-direction: column !important;
@@ -918,116 +858,33 @@
                 height: 100%;
             }
 
-                .neon-item .tit {
-                    font-size: 10px !important;
-                    margin-bottom: 4px;
-                }
+                .neon-item .tit { font-size: 10px !important; margin-bottom: 4px; }
+                .neon-item .val { font-size: 12px !important; white-space: nowrap !important; }
 
-                .neon-item .val {
-                    font-size: 12px !important;
-                    white-space: nowrap !important;
-                }
+            #neon-qqq, #neon-spy, #neon-vix, #neon-fg { grid-column: span 3 !important; }
+            #neon-nq, #neon-cl, #neon-tnx { grid-column: span 2 !important; }
+            #neon-dxy, #neon-usdkrw { grid-column: span 3 !important; }
 
-            #neon-qqq, #neon-spy, #neon-vix, #neon-fg {
-                grid-column: span 3 !important;
-            }
+            .content-wrapper { flex-direction: column; overflow-y: auto; padding: 6px; gap: 8px; }
+            .dashboard-grid { flex-direction: column; overflow-y: visible; min-height: 0; }
+            html, body { overflow-y: auto; height: auto; }
 
-            #neon-nq, #neon-cl, #neon-tnx {
-                grid-column: span 2 !important;
-            }
+            .panel { height: auto; min-height: 0; border-right: none; border-bottom: 1px solid #1a1a2e; overflow-y: visible; }
 
-            #neon-dxy, #neon-usdkrw {
-                grid-column: span 3 !important;
-            }
+            .ph { flex-direction: column; align-items: center; gap: 6px; }
+            .ph-top { width: 100%; justify-content: center; }
 
-            .content-wrapper {
-                flex-direction: column;
-                overflow-y: auto;
-                padding: 6px;
-                gap: 8px;
-            }
+            .ticker-select-wrap { position: static; transform: none; width: 100%; justify-content: center; }
+            .ticker-select { width: 140px !important; font-size: 14px; }
 
-            .dashboard-grid {
-                flex-direction: column;
-                overflow-y: visible;
-                min-height: 0;
-            }
+            .price-container { flex-direction: column; gap: 4px; width: 100%; align-items: center; }
 
-            html, body {
-                overflow-y: auto;
-                height: auto;
-            }
-
-            .panel {
-                height: auto;
-                min-height: 0;
-                border-right: none;
-                border-bottom: 1px solid #1a1a2e;
-                overflow-y: visible;
-            }
-
-            .ph {
-                flex-direction: column;
-                align-items: center;
-                gap: 6px;
-            }
-
-            .ph-top {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .ticker-select-wrap {
-                position: static;
-                transform: none;
-                width: 100%;
-                justify-content: center;
-            }
-
-            .ticker-select {
-                width: 140px !important;
-                font-size: 14px;
-            }
-
-            .price-container {
-                flex-direction: column;
-                gap: 4px;
-                width: 100%;
-                align-items: center;
-            }
-
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: static;
-                padding-right: 0;
-                flex-direction: row;
-                flex-wrap: wrap;
-            }
-
-            .sidebar-logo {
-                flex: 1;
-                min-width: 180px;
-            }
-
-            .sidebar-menu {
-                flex: 1;
-                min-width: 120px;
-            }
-
-            .sidebar-watchlist {
-                flex: 2;
-                min-width: 200px;
-                max-height: 200px;
-            }
-
-            .sidebar-ad {
-                display: none;
-            }
-
-            .chart-wrapper {
-                min-height: 280px;
-            }
+            .sidebar { width: 100%; height: auto; position: static; padding-right: 0; flex-direction: row; flex-wrap: wrap; }
+            .sidebar-logo { flex: 1; min-width: 180px; }
+            .sidebar-menu { flex: 1; min-width: 120px; }
+            .sidebar-watchlist { flex: 2; min-width: 200px; max-height: 200px; }
+            .sidebar-ad { display: none; }
+            .chart-wrapper { min-height: 280px; }
         }
 
         @media screen and (max-width: 800px) {
@@ -1253,13 +1110,20 @@
                     if (fbGen[panelIdx] !== myGen || panelTickers[panelIdx] !== ticker) return;
                     var rtData = snap.val();
                     if (rtData) {
-                        // ★ 수정: Firebase에서는 거래량(volume) null 전달 — Yahoo WS가 단일 소스
+                        // ★ 수정①: Firebase에서는 거래량 null 전달 — Yahoo WS가 단일 소스
                         updatePanelPrice(panelIdx, rtData.price, rtData.changeRate, rtData.change, null);
 
                         var safePrice = Number(String(rtData.price).replace(/[^0-9.-]+/g, "")) || 0;
 
                         if (panelDataStore[panelIdx] && safePrice > 0) {
                             panelDataStore[panelIdx].price = safePrice;
+
+                            // ★ 수정②: Firebase realtime에서 dayHigh/dayLow 읽어서 panelDataStore에 저장
+                            if (rtData.dayHigh && Number(rtData.dayHigh) > 0)
+                                panelDataStore[panelIdx].dayHigh = Number(rtData.dayHigh);
+                            if (rtData.dayLow && Number(rtData.dayLow) > 0)
+                                panelDataStore[panelIdx].dayLow = Number(rtData.dayLow);
+
                             var p = 'p' + panelIdx + '-';
                             if (panelDataStore[panelIdx].maxPain > 0) {
                                 renderTimeline(p, panelDataStore[panelIdx]);
@@ -1271,7 +1135,16 @@
                     }
                 });
                 var panelRef = firebase.database().ref('tickers/' + ticker + '/panel');
-                panelRef.on('value', function (snap) { if (fbGen[panelIdx] !== myGen || panelTickers[panelIdx] !== ticker) return; var panelData = snap.val(); if (panelData) { var p = JSON.parse(JSON.stringify(panelData)); p.ticker = ticker; p.type = 'optionUpdate'; window.onWsMessage(p); } });
+                panelRef.on('value', function (snap) {
+                    if (fbGen[panelIdx] !== myGen || panelTickers[panelIdx] !== ticker) return;
+                    var panelData = snap.val();
+                    if (panelData) {
+                        var p = JSON.parse(JSON.stringify(panelData));
+                        p.ticker = ticker;
+                        p.type = 'optionUpdate';
+                        window.onWsMessage(p);
+                    }
+                });
                 fbRefs[panelIdx] = { refs: [rtRef, panelRef], ticker: ticker, gen: myGen };
             } catch (e) { }
         }
@@ -1288,7 +1161,7 @@
                     var cChgMult = (1 + Math.abs(r.callChg) / 100.0) * (r.callChg >= 0 ? 1 : -1);
                     var pChgMult = (1 + Math.abs(r.putChg) / 100.0) * (r.putChg >= 0 ? 1 : -1);
                     tCall += (r.callOI + r.callVol) * cChgMult;
-                    tPut += (r.putOI + r.putVol) * pChgMult;
+                    tPut  += (r.putOI  + r.putVol)  * pChgMult;
                 });
 
                 var totalEnergy = Math.abs(tCall) + Math.abs(tPut);
@@ -1302,18 +1175,19 @@
                         var matches = cgEl.textContent.match(/-?\d+(\.\d+)?/g);
                         if (matches) domRate = Number(matches[matches.length - 1]) || 0;
                     }
-                    if (domRate === 0 && d.change !== undefined) { domRate = Number(d.change) || 0; }
+                    if (domRate === 0 && d.change !== undefined) domRate = Number(d.change) || 0;
                     var intensity = Math.min(1.0, Math.abs(domRate) / targetVol);
                     var calcScore = 5.0 + (eRatio * 5.0 * intensity);
                     d.score = Math.max(0, Math.min(10, calcScore));
                 }
             }
 
-            panelDataStore[panel] = JSON.parse(JSON.stringify(d)); renderPanel(panel, panelDataStore[panel]);
+            panelDataStore[panel] = JSON.parse(JSON.stringify(d));
+            renderPanel(panel, panelDataStore[panel]);
             hidePanelOverlay(panel); setSelectDisabled(panel, false); switchLocked[panel] = false;
         };
 
-        // ★ 수정: volume이 null이면 거래량 표시 갱신하지 않음
+        // ★ 수정③: volume이 null이면 거래량 DOM 업데이트 안 함
         function updatePanelPrice(idx, price, changeRate, changeAmt, volume) {
             var p = 'p' + idx + '-';
             var numPrice = Number(String(price).replace(/[^0-9.-]+/g, "")) || 0;
@@ -1327,7 +1201,7 @@
             if (pxEl) { pxEl.textContent = numPrice > 0 ? numPrice.toFixed(2) : '─'; pxEl.className = 'price-now ' + cls; }
             if (dfEl) { dfEl.textContent = numPrice > 0 ? (numAmt > 0 ? '+' : '') + numAmt.toFixed(2) : '─'; dfEl.className = 'price-diff ' + cls; }
             if (cgEl) { cgEl.textContent = numPrice > 0 ? '(' + (numRate > 0 ? '+' : '') + numRate.toFixed(2) + '%)' : '─'; cgEl.className = 'price-chg ' + cls; }
-            // ★ 수정: volume이 null이 아닐 때만 거래량 업데이트
+            // ★ volume이 null이 아닐 때만 거래량 업데이트
             if (volEl && volume !== null && volume !== undefined) {
                 volEl.textContent = '거래량: ' + numberWithCommas(volume);
             }
@@ -1338,13 +1212,13 @@
             if (d.score !== undefined) {
                 var sigEl = document.getElementById(p + 'sigtitle');
                 if (sigEl) {
-                    if (d.score >= 9.0) { sigEl.textContent = '과매수 구간 (차익실현 고려)'; sigEl.style.color = '#ff3333'; }
+                    if      (d.score >= 9.0) { sigEl.textContent = '과매수 구간 (차익실현 고려)'; sigEl.style.color = '#ff3333'; }
                     else if (d.score >= 7.5) { sigEl.textContent = '상승 확장 (신규 진입 유의)'; sigEl.style.color = '#ff6666'; }
                     else if (d.score >= 5.6) { sigEl.textContent = '상승 추세 (콜 수급 유입)'; sigEl.style.color = '#ffaaaa'; }
                     else if (d.score >= 4.5) { sigEl.textContent = '보합권 (방향성 대기)'; sigEl.style.color = '#ddbb00'; }
                     else if (d.score >= 2.6) { sigEl.textContent = '하락 추세 (풋 수급 유입)'; sigEl.style.color = '#88bbff'; }
                     else if (d.score >= 1.1) { sigEl.textContent = '하락 확장 (추격 매도 유의)'; sigEl.style.color = '#4488ff'; }
-                    else { sigEl.textContent = '과매도 구간 (기술적 반등 유의)'; sigEl.style.color = '#aa44ff'; }
+                    else                     { sigEl.textContent = '과매도 구간 (기술적 반등 유의)'; sigEl.style.color = '#aa44ff'; }
                 }
                 var trEl = document.getElementById(p + 'trend'); if (trEl) trEl.innerHTML = d.trendText || '대기중';
             }
@@ -1352,18 +1226,18 @@
             var dteEl = document.getElementById(p + 'dte'); if (dteEl && d.dteLabel) { dteEl.textContent = '옵션만기 : ' + d.dteLabel; }
             var oit = document.getElementById(p + 'oi-title'); if (oit) { oit.textContent = (d.ticker || panelTickers[panel]) + ' 옵션 체인'; }
             var timeEl = document.getElementById(p + 'update-time');
-            if (timeEl && d.updatedAt) { var rawTime = d.updatedAt; if (rawTime.length >= 16) timeEl.textContent = `(최신 갱신 : ${rawTime.substring(5, 7)}월 ${rawTime.substring(8, 10)}일 ${rawTime.substring(11, 16)})`; }
+            if (timeEl && d.updatedAt) { var rawTime = d.updatedAt; if (rawTime.length >= 16) timeEl.textContent = '(최신 갱신 : ' + rawTime.substring(5,7) + '월 ' + rawTime.substring(8,10) + '일 ' + rawTime.substring(11,16) + ')'; }
             var badgeElem = document.getElementById(p + 'market-badge'); if (badgeElem) { badgeElem.style.display = d.isMarketOpen === false ? 'inline-block' : 'none'; }
             if (d.score !== undefined) {
                 var spEl = document.getElementById(p + 'sum-power');
                 if (spEl) {
                     var s = d.score >= 9.0 ? '<b style="color:#ff3333;">콜 쏠림 심화</b>' :
-                        d.score >= 7.5 ? '<b style="color:#ff6666;">콜 매수 우위</b>' :
+                            d.score >= 7.5 ? '<b style="color:#ff6666;">콜 매수 우위</b>' :
                             d.score >= 5.6 ? '<b style="color:#ffaaaa;">상승 전환</b>' :
-                                d.score >= 4.5 ? '<b class="c-gold">수급 중립</b>' :
-                                    d.score >= 2.6 ? '<b style="color:#88bbff;">하락 전환</b>' :
-                                        d.score >= 1.1 ? '<b style="color:#4488ff;">풋 매수 우위</b>' :
-                                            '<b style="color:#aa44ff;">풋 쏠림 심화</b>';
+                            d.score >= 4.5 ? '<b class="c-gold">수급 중립</b>' :
+                            d.score >= 2.6 ? '<b style="color:#88bbff;">하락 전환</b>' :
+                            d.score >= 1.1 ? '<b style="color:#4488ff;">풋 매수 우위</b>' :
+                                             '<b style="color:#aa44ff;">풋 쏠림 심화</b>';
                     spEl.innerHTML = '수급: ' + s + ' (' + d.score.toFixed(1) + '점)';
                 }
             }
@@ -1376,12 +1250,12 @@
 
         function getIndexStatusHtml(val) {
             if (val === null) return '─';
-            if (val >= 1.5) return '<b class="c-red">▲ 급등</b>';
-            if (val >= 0.5) return '<b class="c-red">▲ 상승</b>';
-            if (val > 0.0) return '<b class="c-red">▲ 강보합</b>';
+            if (val >= 1.5)  return '<b class="c-red">▲ 급등</b>';
+            if (val >= 0.5)  return '<b class="c-red">▲ 상승</b>';
+            if (val > 0.0)   return '<b class="c-red">▲ 강보합</b>';
             if (val === 0.0) return '<b class="c-gold">─ 보합</b>';
-            if (val > -0.5) return '<b class="c-blue">▼ 약보합</b>';
-            if (val > -1.5) return '<b class="c-blue">▼ 하락</b>';
+            if (val > -0.5)  return '<b class="c-blue">▼ 약보합</b>';
+            if (val > -1.5)  return '<b class="c-blue">▼ 하락</b>';
             return '<b class="c-blue">▼ 급락</b>';
         }
 
@@ -1398,13 +1272,14 @@
         } setInterval(updateTimeDisplay, 1000);
 
         /* ════════════════════════════════════════════════════════
-           ★ 수정: renderTimeline — v4 기반 전면 교체
-           데이터 필드:
-             d.price / d.resistance2 / d.resistance1 / d.maxPain
-             d.support1 / d.support2
-             d.dayHigh / d.dayLow
-             d.touchCounts = { r2, r1, mp, s1, s2 }  (없으면 0)
-             d.touchedKey  = 'r2'|'r1'|'mp'|'s1'|'s2'|null
+           ★ 수정④: renderTimeline 전면 교체
+           - 가로바 두께 7px + 그라데이션 직접 적용
+           - H/L 레이블 가로바 위쪽 배치
+           - H/L 인접 노드 간격 < 6%p → 가로바 끝 고정
+           - H/L 범위 이탈 시 숨김
+           - 현재가 ▼ 여백 확보
+           - 노드 레이블 충돌 감지 후 수직 오프셋
+           - TOUCHED 펄스 (d.touchedKey 필드 사용, 없으면 null)
         ════════════════════════════════════════════════════════ */
         function renderTimeline(prefix, d) {
             var host = document.getElementById(prefix + 'timeline');
@@ -1416,16 +1291,16 @@
             var s1 = d.support1 || 0, s2 = d.support2 || 0;
             if (!r2 || !s2 || !mp || price <= 0) { host.innerHTML = ''; return; }
 
-            /* ── 레이아웃 상수 ── */
+            // ── 레이아웃 상수 ──
             var PAD_L  = 0.05, PAD_R = 0.05;
             var TRK_W  = 1 - PAD_L - PAD_R;
             var CURR_LBL_Y = 0;
             var CURR_TRI_Y = 14;
-            var HL_Y       = 28;   // H/L 행 (가로바 위, 삼각형 아래)
+            var HL_Y       = 28;   // H/L 레이블 (가로바 위, 삼각형 아래)
             var TRACK_Y    = 40;   // 가로바 top
             var TRACK_H    = 7;    // 가로바 두께
             var NODE_CY    = TRACK_Y + TRACK_H / 2;
-            var PRICE_Y    = TRACK_Y + TRACK_H + 11;  // 가격 줄 (여백 11px)
+            var PRICE_Y    = TRACK_Y + TRACK_H + 11;
             var LABEL_Y0   = PRICE_Y + 13;
             var COUNT_Y0   = LABEL_Y0 + 13;
             var TOTAL_H    = COUNT_Y0 + 20;
@@ -1448,9 +1323,7 @@
                 { key:'r2', val:r2, label:'2차저항', color:'#ff3333', glow:'rgba(255,51,51,0.7)' },
             ];
 
-            var counts    = d.touchCounts || {};
-            var touchedKey = d.touchedKey  || null;
-
+            var touchedKey = d.touchedKey || null;
             var dayHigh = d.dayHigh || 0;
             var dayLow  = d.dayLow  || 0;
             var showH   = dayHigh > 0 && dayHigh <= r2;
@@ -1458,9 +1331,10 @@
             var pctH    = showH ? pct(dayHigh) : (1 - PAD_R) * 100;
             var pctL    = showL ? pct(dayLow)  : PAD_L * 100;
             var pctP    = pct(price);
+            var nodePcts = nodes.map(function(n){ return pct(n.val); });
 
-            /* 1. 가로바 배경 */
-            var trackBg = mkDiv({
+            // 1. 가로바 배경
+            var trackBg = mkEl({
                 position:'absolute', zIndex:'1',
                 top: TRACK_Y + 'px', height: TRACK_H + 'px',
                 left: (PAD_L*100)+'%', right: (PAD_R*100)+'%',
@@ -1468,12 +1342,12 @@
             });
             host.appendChild(trackBg);
 
-            /* 2. H/L 그라데이션 오버레이 (가로바 위) */
+            // 2. H/L 그라데이션 오버레이
             var gradL = Math.min(pctL, pctH);
             var gradR = Math.max(pctL, pctH);
             var gradW = Math.max(0, gradR - gradL);
             if (gradW > 0) {
-                host.appendChild(mkDiv({
+                host.appendChild(mkEl({
                     position:'absolute', zIndex:'2',
                     top: TRACK_Y + 'px', height: TRACK_H + 'px',
                     left: gradL + '%', width: gradW + '%',
@@ -1487,101 +1361,70 @@
                 }));
             }
 
-            /* 3. H/L 레이블 — 그라데이션 끝점 vs 가로바 끝 선택 */
-            // 노드 위치 배열
-            var nodePcts = nodes.map(function(n){ return pct(n.val); });
-
-            // H 레이블 위치 결정
+            // 3. H/L 레이블 (가로바 위)
             if (showH) {
-                // 가장 가까운 노드와의 간격 확인
                 var minDistH = Math.min.apply(null, nodePcts.map(function(np){ return Math.abs(np - pctH); }));
                 var hLeft = minDistH < 6 ? ((1 - PAD_R) * 100) : pctH;
-                var hEl = mkDiv({
-                    position:'absolute', zIndex:'6',
-                    top: HL_Y + 'px',
-                    left: hLeft + '%',
-                    transform: 'translateX(-50%)',
-                    fontSize:'9px', fontWeight:'bold',
-                    color:'#ff5555', whiteSpace:'nowrap',
-                });
+                var hEl = mkEl({ position:'absolute', zIndex:'6', top: HL_Y+'px',
+                    left: hLeft+'%', transform:'translateX(-50%)',
+                    fontSize:'9px', fontWeight:'bold', color:'#ff5555', whiteSpace:'nowrap' });
                 hEl.textContent = 'H ' + dayHigh.toFixed(1);
                 host.appendChild(hEl);
             }
-
-            // L 레이블 위치 결정
             if (showL) {
                 var minDistL = Math.min.apply(null, nodePcts.map(function(np){ return Math.abs(np - pctL); }));
                 var lLeft = minDistL < 6 ? (PAD_L * 100) : pctL;
-                var lEl = mkDiv({
-                    position:'absolute', zIndex:'6',
-                    top: HL_Y + 'px',
-                    left: lLeft + '%',
-                    transform: 'translateX(-50%)',
-                    fontSize:'9px', fontWeight:'bold',
-                    color:'#5599ff', whiteSpace:'nowrap',
-                });
+                var lEl = mkEl({ position:'absolute', zIndex:'6', top: HL_Y+'px',
+                    left: lLeft+'%', transform:'translateX(-50%)',
+                    fontSize:'9px', fontWeight:'bold', color:'#5599ff', whiteSpace:'nowrap' });
                 lEl.textContent = 'L ' + dayLow.toFixed(1);
                 host.appendChild(lEl);
             }
 
-            /* 4. 현재가 삼각형 + 레이블 */
+            // 4. 현재가 삼각형 + 레이블
             var isTouched = !!touchedKey;
             var triColor  = isTouched ? '#ffcc00' : '#00ddff';
             var triGlow   = isTouched ? 'rgba(255,204,0,0.9)' : 'rgba(0,221,255,0.8)';
 
-            var cLbl = mkDiv({
-                position:'absolute', zIndex:'12',
-                top: CURR_LBL_Y + 'px',
-                left: pctP + '%', transform:'translateX(-50%)',
-                fontSize:'10px', fontWeight:'bold',
-                color: triColor, whiteSpace:'nowrap',
-                textShadow:'0 0 8px ' + triGlow,
-            });
+            var cLbl = mkEl({ position:'absolute', zIndex:'12',
+                top: CURR_LBL_Y+'px', left: pctP+'%', transform:'translateX(-50%)',
+                fontSize:'10px', fontWeight:'bold', color: triColor, whiteSpace:'nowrap',
+                textShadow:'0 0 8px ' + triGlow });
             cLbl.textContent = '▼ ' + price.toFixed(2);
             if (isTouched) cLbl.style.animation = 'tlPulse 1.3s ease-in-out infinite';
             host.appendChild(cLbl);
 
-            var tri = mkDiv({
-                position:'absolute', zIndex:'11',
-                top: CURR_TRI_Y + 'px',
-                left: pctP + '%', transform:'translateX(-50%)',
+            var tri = mkEl({ position:'absolute', zIndex:'11',
+                top: CURR_TRI_Y+'px', left: pctP+'%', transform:'translateX(-50%)',
                 width:'0', height:'0',
-                borderLeft:'7px solid transparent',
-                borderRight:'7px solid transparent',
+                borderLeft:'7px solid transparent', borderRight:'7px solid transparent',
                 borderTop:'10px solid ' + triColor,
-                filter:'drop-shadow(0 0 5px ' + triGlow + ')',
-            });
+                filter:'drop-shadow(0 0 5px ' + triGlow + ')' });
             if (isTouched) tri.style.animation = 'tlPulse 1.3s ease-in-out infinite';
             host.appendChild(tri);
 
-            /* 5. 노드 점 + 진입존 */
+            // 5. 노드 점 + 진입존
             nodes.forEach(function(n) {
                 var lp   = pct(n.val);
                 var isTch = (touchedKey === n.key);
 
                 if (isTch) {
                     var zoneW = (n.val * 0.005 / span) * TRK_W * 100 * 2;
-                    host.appendChild(mkDiv({
+                    host.appendChild(mkEl({
                         position:'absolute', zIndex:'3',
-                        top: (TRACK_Y - 4) + 'px',
-                        left: (lp - zoneW/2) + '%', width: zoneW + '%',
+                        top: (TRACK_Y - 4) + 'px', left: (lp - zoneW/2) + '%', width: zoneW + '%',
                         height: (TRACK_H + 8) + 'px',
-                        background:'rgba(255,204,0,0.13)',
-                        border:'1px solid rgba(255,204,0,0.5)',
-                        borderRadius:'3px',
-                        animation:'tlPulse 1.3s ease-in-out infinite',
+                        background:'rgba(255,204,0,0.13)', border:'1px solid rgba(255,204,0,0.5)',
+                        borderRadius:'3px', animation:'tlPulse 1.3s ease-in-out infinite',
                     }));
                 }
 
                 var dotSz = isTch ? 14 : 10;
-                var dot = mkDiv({
+                var dot = mkEl({
                     position:'absolute', zIndex:'5',
-                    top: (NODE_CY - dotSz/2) + 'px',
-                    left: lp + '%', transform:'translateX(-50%)',
-                    width: dotSz+'px', height: dotSz+'px',
-                    borderRadius:'50%',
-                    background: n.color,
-                    boxShadow:'0 0 ' + (isTch?14:5) + 'px ' + n.glow,
+                    top: (NODE_CY - dotSz/2) + 'px', left: lp + '%', transform:'translateX(-50%)',
+                    width: dotSz+'px', height: dotSz+'px', borderRadius:'50%',
+                    background: n.color, boxShadow:'0 0 '+(isTch?14:5)+'px '+n.glow,
                 });
                 if (isTch) {
                     dot.style.border    = '2px solid #ffcc00';
@@ -1590,7 +1433,7 @@
                 host.appendChild(dot);
             });
 
-            /* 6. 하단 레이블 (충돌 감지 → 수직 오프셋) */
+            // 6. 하단 레이블 (충돌 감지 → 수직 오프셋)
             var offsets = nodePcts.map(function(){ return 0; });
             for (var i = 0; i < nodePcts.length - 1; i++) {
                 if (nodePcts[i+1] - nodePcts[i] < 9) {
@@ -1601,49 +1444,36 @@
             nodes.forEach(function(n, i) {
                 var lp     = nodePcts[i];
                 var off    = offsets[i];
-                var cnt    = counts[n.key] || 0;
                 var isTch  = (touchedKey === n.key);
-                var isR    = n.key.startsWith('r');
+                var isR    = n.key.charAt(0) === 'r';
                 var isMp   = n.key === 'mp';
                 var lblClr = isTch ? '#ffaa00' : n.color;
 
                 // 가격
-                var prEl = mkDiv({
-                    position:'absolute', zIndex:'7',
-                    top: (PRICE_Y + off) + 'px',
-                    left: lp + '%', transform:'translateX(-50%)',
-                    fontSize:'9px', fontWeight:'bold',
-                    color: lblClr, whiteSpace:'nowrap', textAlign:'center',
-                });
+                var prEl = mkEl({ position:'absolute', zIndex:'7',
+                    top: (PRICE_Y + off)+'px', left: lp+'%', transform:'translateX(-50%)',
+                    fontSize:'9px', fontWeight:'bold', color: lblClr, whiteSpace:'nowrap', textAlign:'center' });
                 prEl.textContent = n.val.toFixed(1);
                 host.appendChild(prEl);
 
                 // 이름
-                var nmEl = mkDiv({
-                    position:'absolute', zIndex:'7',
-                    top: (LABEL_Y0 + off) + 'px',
-                    left: lp + '%', transform:'translateX(-50%)',
-                    fontSize:'8.5px',
-                    color: isTch ? '#ffaa00' : '#555',
-                    whiteSpace:'nowrap', textAlign:'center',
-                });
+                var nmEl = mkEl({ position:'absolute', zIndex:'7',
+                    top: (LABEL_Y0 + off)+'px', left: lp+'%', transform:'translateX(-50%)',
+                    fontSize:'8.5px', color: isTch ? '#ffaa00' : '#555', whiteSpace:'nowrap', textAlign:'center' });
                 nmEl.textContent = n.label + (isTch ? ' ⚡' : '');
                 host.appendChild(nmEl);
 
-                // 카운트 — ★ 수정: 폰트 9px (가격과 동일)
+                // 카운트 (touchCounts 필드가 있을 때만)
+                var counts = d.touchCounts || {};
+                var cnt = counts[n.key] || 0;
                 if (cnt > 0) {
                     var bg  = isTch ? 'rgba(255,170,0,0.22)'  : isR ? 'rgba(255,60,60,0.18)'  : isMp ? 'rgba(255,204,0,0.15)' : 'rgba(68,136,255,0.18)';
                     var bdr = isTch ? 'rgba(255,170,0,0.6)'   : isR ? 'rgba(255,80,80,0.4)'   : isMp ? 'rgba(255,204,0,0.4)'  : 'rgba(68,136,255,0.4)';
                     var clr = isTch ? '#ffcc00' : isR ? '#ff7777' : isMp ? '#ffcc00' : '#7799ff';
-                    var cEl = mkDiv({
-                        position:'absolute', zIndex:'7',
-                        top: (COUNT_Y0 + off) + 'px',
-                        left: lp + '%', transform:'translateX(-50%)',
-                        fontSize:'9px', fontWeight:'bold',   // ★ 9px
-                        padding:'1px 6px', borderRadius:'8px',
-                        background: bg, border:'1px solid ' + bdr,
-                        color: clr, whiteSpace:'nowrap',
-                    });
+                    var cEl = mkEl({ position:'absolute', zIndex:'7',
+                        top: (COUNT_Y0 + off)+'px', left: lp+'%', transform:'translateX(-50%)',
+                        fontSize:'9px', fontWeight:'bold', padding:'1px 6px', borderRadius:'8px',
+                        background: bg, border:'1px solid '+bdr, color: clr, whiteSpace:'nowrap' });
                     cEl.textContent = '×' + cnt + (isTch ? ' +1?' : '');
                     if (isTch) cEl.style.animation = 'tlPulse 1.3s ease-in-out infinite';
                     host.appendChild(cEl);
@@ -1651,8 +1481,8 @@
             });
         }
 
-        /* div 생성 헬퍼 */
-        function mkDiv(styles) {
+        // div 생성 헬퍼
+        function mkEl(styles) {
             var d = document.createElement('div');
             Object.assign(d.style, styles);
             return d;
@@ -1670,9 +1500,9 @@
             });
             var atm = atmItem.strike;
 
-            var sortedRows = rows.slice().sort(function(a, b) { return b.strike - a.strike; });
+            var sortedRows = rows.slice().sort(function (a, b) { return b.strike - a.strike; });
 
-            var atmIndex = sortedRows.findIndex(function(r) { return r.strike === atm; });
+            var atmIndex = sortedRows.findIndex(function (r) { return r.strike === atm; });
             var displayRows = sortedRows;
 
             if (atmIndex !== -1) {
@@ -1691,22 +1521,22 @@
 
             el.innerHTML = displayRows.map(function (r) {
                 var cw = Math.max(1, ((r.callOI + r.callVol) / mx) * 100);
-                var pw = Math.max(1, ((r.putOI + r.putVol) / mx) * 100);
+                var pw = Math.max(1, ((r.putOI  + r.putVol)  / mx) * 100);
                 var ia = r.strike === atm ? 'atm' : '';
                 var cc = r.callChg > 0 ? 'up' : r.callChg < 0 ? 'dn' : 'neu';
-                var pc = r.putChg > 0 ? 'up' : r.putChg < 0 ? 'dn' : 'neu';
+                var pc = r.putChg  > 0 ? 'up' : r.putChg  < 0 ? 'dn' : 'neu';
                 var cvTxt = isMobile ? fmt(r.callOI + r.callVol) : (fmt(r.callOI) + '/' + fmt(r.callVol));
-                var pvTxt = isMobile ? fmt(r.putOI + r.putVol)  : (fmt(r.putOI)  + '/' + fmt(r.putVol));
+                var pvTxt = isMobile ? fmt(r.putOI  + r.putVol)  : (fmt(r.putOI)  + '/' + fmt(r.putVol));
 
                 return '<div class="oi-row">' +
-                       '<div class="oi-bar-wrap left"><div class="oi-bar call" style="width:' + cw + '%"></div></div>' +
-                       '<div class="oi-vol">' + cvTxt + '</div>' +
-                       '<div class="' + cc + '">' + (r.callChg > 0 ? '+' : '') + Math.round(r.callChg) + '%</div>' +
-                       '<div><span class="strike-box ' + ia + '">' + r.strike.toFixed(1) + '</span></div>' +
-                       '<div class="' + pc + '">' + (r.putChg > 0 ? '+' : '') + Math.round(r.putChg) + '%</div>' +
-                       '<div class="oi-vol">' + pvTxt + '</div>' +
-                       '<div class="oi-bar-wrap right"><div class="oi-bar put" style="width:' + pw + '%"></div></div>' +
-                       '</div>';
+                    '<div class="oi-bar-wrap left"><div class="oi-bar call" style="width:' + cw + '%"></div></div>' +
+                    '<div class="oi-vol">' + cvTxt + '</div>' +
+                    '<div class="' + cc + '">' + (r.callChg > 0 ? '+' : '') + Math.round(r.callChg) + '%</div>' +
+                    '<div><span class="strike-box ' + ia + '">' + r.strike.toFixed(1) + '</span></div>' +
+                    '<div class="' + pc + '">' + (r.putChg > 0 ? '+' : '') + Math.round(r.putChg) + '%</div>' +
+                    '<div class="oi-vol">' + pvTxt + '</div>' +
+                    '<div class="oi-bar-wrap right"><div class="oi-bar put" style="width:' + pw + '%"></div></div>' +
+                    '</div>';
             }).join('');
         }
 
@@ -1725,29 +1555,40 @@
         })();
 
         var HEADER_TICKERS = ['QQQ', 'SPY'];
-        function getAllSubs() { var all = WATCH_LIST.map(function (w) { return w.ticker; }).concat(HEADER_TICKERS).map(function (t) { return t === 'SPX' ? '^SPX' : t; }); var seen = {}, res = []; all.forEach(function (t) { if (!seen[t]) { seen[t] = true; res.push(t); } }); return res; }
+        function getAllSubs() {
+            var all = WATCH_LIST.map(function (w) { return w.ticker; }).concat(HEADER_TICKERS).map(function (t) { return t === 'SPX' ? '^SPX' : t; });
+            var seen = {}, res = [];
+            all.forEach(function (t) { if (!seen[t]) { seen[t] = true; res.push(t); } });
+            return res;
+        }
 
         var yahooWs = null;
         function yahooWsConnect() {
             try {
-                yahooWs = new WebSocket('wss://streamer.finance.yahoo.com'); yahooWs.binaryType = 'arraybuffer';
+                yahooWs = new WebSocket('wss://streamer.finance.yahoo.com');
+                yahooWs.binaryType = 'arraybuffer';
                 yahooWs.onopen = function () { yahooWs.send(JSON.stringify({ subscribe: getAllSubs() })); };
                 yahooWs.onmessage = function (ev) {
                     if (!PricingData) return;
                     try {
                         var bytes = ev.data instanceof ArrayBuffer ? new Uint8Array(ev.data) : (function () { var bin = atob(ev.data), b = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) b[i] = bin.charCodeAt(i); return b; })();
                         var msg = PricingData.decode(bytes);
+
                         var ticker = msg.id;
                         var safePrice = Number(msg.price) || 0;
                         var pIdx = panelTickers.indexOf(ticker);
 
-                        // 패널 종목 — 가격+거래량 모두 Yahoo WS에서 업데이트
+                        // 패널 종목 — ★ Yahoo WS가 거래량 단일 소스
                         if (pIdx >= 0 && safePrice > 0) {
-                            // ★ 수정: Yahoo WS가 거래량 단일 소스
                             updatePanelPrice(pIdx, safePrice, msg.changePercent, msg.change, msg.dayVolume);
 
                             if (panelDataStore[pIdx]) {
                                 panelDataStore[pIdx].price = safePrice;
+
+                                // ★ 수정⑤: Yahoo WS에서 dayHigh/dayLow를 panelDataStore에 저장
+                                if (msg.dayHigh > 0) panelDataStore[pIdx].dayHigh = Number(msg.dayHigh);
+                                if (msg.dayLow  > 0) panelDataStore[pIdx].dayLow  = Number(msg.dayLow);
+
                                 var p = 'p' + pIdx + '-';
                                 if (panelDataStore[pIdx].maxPain > 0) {
                                     renderTimeline(p, panelDataStore[pIdx]);
