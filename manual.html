@@ -83,6 +83,13 @@
   --num:     'Inter', monospace;
 
   --sw:      260px;   /* 사이드바 너비 */
+  --blue-bg:   #eff6ff;
+  --blue-bdr:  #bfdbfe;
+  --blue-bar:  #2563eb;
+  --blue-bdg:  #dbeafe;
+  --blue-txt:  #1d4ed8;
+  --blue-head: #1e3a5f;
+  --blue-sub:  #3b82f6;
   --sh-sm:   0 1px 3px rgba(0,0,0,.06);
   --sh-md:   0 4px 12px rgba(0,0,0,.07);
   --sh-lg:   0 8px 24px rgba(0,0,0,.08);
@@ -119,19 +126,19 @@ body {
 .sb-head {
   padding: 18px 18px 14px;
   border-bottom: 1px solid var(--line);
-  background: var(--ink);
+  background: var(--white);
   flex-shrink: 0;
 }
 .sb-logo {
   font-family: var(--sans);
   font-size: 17px; font-weight: 900;
-  color: #f9fafb; text-decoration: none;
+  color: var(--ink); text-decoration: none;
   letter-spacing: -0.025em;
   display: flex; align-items: center; gap: 6px;
 }
 .sb-logo span { color: var(--red); }
 .sb-sub {
-  font-size: 11px; color: rgba(255,255,255,.4);
+  font-size: 11px; color: var(--muted);
   margin-top: 4px; font-weight: 500;
   font-family: var(--num);
 }
@@ -196,7 +203,7 @@ body {
 }
 .hamburger span {
   display: block; width: 20px; height: 2px;
-  background: var(--ink); border-radius: 2px; transition: all 0.25s;
+  background: var(--gray); border-radius: 2px; transition: all 0.25s;
 }
 .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 .hamburger.open span:nth-child(2) { opacity: 0; }
@@ -253,58 +260,75 @@ body {
    STEP 배너
    ============================================= */
 .step-banner {
-  display: flex; align-items: center; gap: 18px;
-  margin: 64px 0 44px; padding: 18px 24px;
-  background: var(--ink);
+  display: flex; align-items: stretch; gap: 0;
+  margin: 64px 0 44px;
+  background: var(--blue-bg);
   border-radius: 12px;
-  border: 1px solid var(--ink2);
+  border: 1px solid var(--blue-bdr);
+  overflow: hidden;
 }
 .step-banner-badge {
-  background: var(--white); color: var(--ink);
-  font-size: 11px; font-weight: 900;
+  background: var(--blue-bdg); color: var(--blue-txt);
+  border: 0.5px solid var(--blue-bdr);
+  font-size: 10px; font-weight: 900;
   font-family: var(--num); letter-spacing: 0.07em;
-  padding: 5px 14px; border-radius: 6px;
+  padding: 3px 9px; border-radius: 4px;
+  display: inline-flex; align-items: center;
+  margin-bottom: 5px;
   flex-shrink: 0; white-space: nowrap;
 }
-.step-banner-divider {
-  width: 1px; height: 32px;
-  background: rgba(255,255,255,.15); flex-shrink: 0;
+.step-banner-bar {
+  width: 4px; background: var(--blue-bar);
+  flex-shrink: 0;
+}
+.step-banner-inner {
+  padding: 14px 18px; flex: 1; min-width: 0;
 }
 .step-banner-info { flex: 1; min-width: 0; }
 .step-banner-title {
   font-family: var(--sans);
-  font-size: 17px; font-weight: 800;
-  color: #f9fafb; letter-spacing: -0.02em; line-height: 1.25;
+  font-size: 15px; font-weight: 700;
+  color: var(--blue-head); letter-spacing: -0.02em; line-height: 1.25;
+  margin-bottom: 2px;
 }
 .step-banner-sub {
-  font-size: 12.5px; color: rgba(255,255,255,.45);
-  margin-top: 4px; font-weight: 500;
+  font-size: 12px; color: var(--blue-sub);
+  margin-top: 0; font-weight: 500;
   word-break: break-word;
+  line-height: 1.5;
 }
 
 /* PREP 배너 */
 .prep-banner {
-  display: flex; align-items: center; gap: 18px;
-  margin: 0 0 44px; padding: 18px 24px;
-  background: var(--tinted);
-  border-radius: 12px; border: 1px solid var(--line);
+  display: flex; align-items: stretch; gap: 0;
+  margin: 0 0 44px;
+  background: var(--blue-bg);
+  border-radius: 12px; border: 1px solid var(--blue-bdr);
+  overflow: hidden;
+}
+.prep-banner-bar {
+  width: 4px; background: var(--blue-bar); flex-shrink: 0;
+}
+.prep-banner-inner {
+  padding: 14px 18px; flex: 1; min-width: 0;
 }
 .prep-banner-badge {
-  background: var(--ink); color: var(--white);
-  font-size: 11px; font-weight: 900;
+  background: var(--blue-bdg); color: var(--blue-txt);
+  border: 0.5px solid var(--blue-bdr);
+  font-size: 10px; font-weight: 900;
   font-family: var(--num); letter-spacing: 0.07em;
-  padding: 5px 14px; border-radius: 6px;
+  padding: 3px 9px; border-radius: 4px;
+  display: inline-flex; align-items: center;
+  margin-bottom: 5px;
   flex-shrink: 0; white-space: nowrap;
 }
-.prep-banner-divider {
-  width: 1px; height: 32px;
-  background: var(--line2); flex-shrink: 0;
-}
+.prep-banner-divider { display: none; }
 .prep-banner-info { flex: 1; min-width: 0; }
 .prep-banner-title {
   font-family: var(--sans);
-  font-size: 17px; font-weight: 800;
-  color: var(--ink); letter-spacing: -0.02em; line-height: 1.25;
+  font-size: 15px; font-weight: 700;
+  color: var(--blue-head); letter-spacing: -0.02em; line-height: 1.25;
+  margin-bottom: 2px;
 }
 
 /* =============================================
@@ -370,9 +394,9 @@ body {
    폴더 트리
    ============================================= */
 .folder-tree {
-  background: var(--ink); border-radius: 12px;
+  background: #1f2937; border-radius: 12px;
   padding: 22px 24px; margin-bottom: 22px;
-  border: 1px solid var(--ink2);
+  border: 1px solid #374151;
   overflow-x: auto; -webkit-overflow-scrolling: touch;
 }
 .ft-row {
@@ -387,7 +411,7 @@ body {
 .ft-icon { font-size: 14px; flex-shrink: 0; }
 .ft-name { color: #e5e7eb; font-weight: 500; }
 .ft-path { color: #9ca3af; font-size: 12.5px; }
-.ft-note { color: rgba(255,255,255,.3); font-size: 12.5px; font-family: var(--body); margin-left: 4px; }
+.ft-note { color: #9ca3af; font-size: 12.5px; font-family: var(--body); margin-left: 4px; }
 .ft-req {
   color: #fca5a5; font-size: 11.5px; font-weight: 700;
   font-family: var(--body);
@@ -399,9 +423,9 @@ body {
   border-radius: 4px; font-family: var(--body);
   margin-left: 6px; white-space: nowrap; flex-shrink: 0;
 }
-.ft-s1  { background: rgba(255,255,255,.1); color: #d1d5db; }
-.ft-s3  { background: rgba(255,255,255,.1); color: #d1d5db; }
-.ft-s45 { background: rgba(255,255,255,.1); color: #d1d5db; }
+.ft-s1  { background: rgba(255,255,255,.12); color: #e5e7eb; }
+.ft-s3  { background: rgba(255,255,255,.12); color: #e5e7eb; }
+.ft-s45 { background: rgba(255,255,255,.12); color: #e5e7eb; }
 
 /* =============================================
    폴더 스텝 테이블
@@ -416,7 +440,7 @@ body {
   font-size: 14.5px; min-width: 460px;
 }
 .folder-step-table th {
-  background: var(--ink); color: #e5e7eb;
+  background: var(--tinted); color: var(--ink); border-bottom: 1px solid var(--line2);
   padding: 10px 16px; text-align: left;
   font-size: 12.5px; font-weight: 700; letter-spacing: 0.04em;
   white-space: nowrap;
@@ -458,9 +482,9 @@ h3.desc-sec-title::before, .desc-sec-title::before {
 
 .dbadge {
   width: 32px; height: 32px; border-radius: 50%;
-  background: var(--ink); display: flex;
-  align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 900; color: #fff;
+  background: var(--tinted); border: 1.5px solid var(--line2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 900; color: var(--ink);
   flex-shrink: 0; margin-top: 1px;
   font-family: var(--num);
 }
@@ -508,7 +532,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
 }
 .key-box-title::before {
   content: ''; width: 14px; height: 2px;
-  background: var(--ink); border-radius: 2px; flex-shrink: 0;
+  background: var(--line2); border-radius: 2px; flex-shrink: 0;
 }
 .key-list { display: flex; flex-direction: column; gap: 9px; }
 .key-item {
@@ -518,7 +542,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
   word-break: break-word;
 }
 .key-item::before {
-  content: '✓'; color: var(--ink);
+  content: '✓'; color: var(--gray);
   font-weight: 900; position: absolute;
   left: 0; top: 2px; font-size: 13px; line-height: 1;
 }
@@ -603,11 +627,11 @@ h3.desc-sec-title::before, .desc-sec-title::before {
 .pipe-card.pipe-prep { background: var(--tinted); border-color: var(--line2); max-width: 300px; }
 .pipe-card.pipe-parallel { flex: 1; max-width: none; border-radius: 10px; }
 .pipe-card.pipe-final {
-  background: var(--ink); border-color: var(--ink2);
+  background: var(--tinted); border: 2px solid var(--line2);
   max-width: 340px; padding: 22px 28px;
 }
-.pipe-card.pipe-final .pipe-name { color: #f9fafb; }
-.pipe-card.pipe-final .pipe-sub  { color: rgba(255,255,255,.45); }
+.pipe-card.pipe-final .pipe-name { color: var(--ink); }
+.pipe-card.pipe-final .pipe-sub  { color: var(--muted); }
 
 .pipe-badge {
   font-family: var(--num); font-size: 10.5px; font-weight: 900;
@@ -621,14 +645,14 @@ h3.desc-sec-title::before, .desc-sec-title::before {
   font-size: 13px; font-weight: 800; color: var(--ink); line-height: 1.35;
 }
 .pipe-sub { font-size: 11.5px; color: var(--muted); line-height: 1.5; }
-.pipe-arrow { font-size: 18px; color: var(--ink); font-weight: 900; padding: 7px 0; line-height: 1; }
+.pipe-arrow { font-size: 18px; color: var(--muted); font-weight: 900; padding: 7px 0; line-height: 1; }
 .pipe-arrow-h {
   display: flex; align-items: center; justify-content: center;
-  font-size: 18px; color: var(--ink); font-weight: 900;
+  font-size: 18px; color: var(--muted); font-weight: 900;
   padding: 0 4px; flex-shrink: 0;
 }
 .pipe-arrow-center {
-  font-size: 18px; color: var(--ink); font-weight: 900;
+  font-size: 18px; color: var(--muted); font-weight: 900;
   padding: 7px 0; text-align: center; line-height: 1; width: 100%;
 }
 
@@ -694,19 +718,13 @@ h3.desc-sec-title::before, .desc-sec-title::before {
   .mob-br { display: block !important; }
 
   /* 배너 */
-  .step-banner {
-    flex-direction: column; align-items: flex-start;
-    gap: 8px; padding: 14px; margin: 36px 0 28px;
-  }
-  .step-banner-divider { display: none; }
-  .step-banner-title { font-size: 15px; }
+  .step-banner { margin: 36px 0 28px; }
+  .step-banner-inner { padding: 12px 14px; }
+  .step-banner-title { font-size: 14px; }
   .step-banner-sub { font-size: 11.5px; line-height: 1.6; }
-  .prep-banner {
-    flex-direction: column; align-items: flex-start;
-    gap: 8px; padding: 14px; margin-bottom: 28px;
-  }
-  .prep-banner-divider { display: none; }
-  .prep-banner-title { font-size: 15px; }
+  .prep-banner { margin-bottom: 28px; }
+  .prep-banner-inner { padding: 12px 14px; }
+  .prep-banner-title { font-size: 14px; }
 
   /* 섹션 */
   .section { margin-bottom: 44px; }
@@ -848,7 +866,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ 전체 공정 개요 ══ -->
     <section id="s-ov" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:var(--ink);"></div>
+        <div class="step-chip" style="background:#2563eb;"></div>
         <h2 class="sec-title">전체 공정 개요</h2>
       </div>
       <div class="sec-desc">
@@ -862,7 +880,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
       <div class="pipeline-wrap">
         <div class="pipe-row">
           <div class="pipe-card pipe-prep">
-            <div class="pipe-badge" style="background:var(--ink); color:#fff;">준비</div>
+            <div class="pipe-badge" style="background:var(--tinted); color:var(--ink); border:1px solid var(--line2);">준비</div>
             <div class="pipe-icon">📁</div>
             <div class="pipe-name">폴더 구조 설정</div>
             <div class="pipe-sub">제공 패키지 설치 · C: 드라이브 배치</div>
@@ -871,14 +889,14 @@ h3.desc-sec-title::before, .desc-sec-title::before {
         </div>
         <div class="pipe-row pipe-row-2">
           <div class="pipe-card">
-            <div class="pipe-badge" style="background:var(--ink); color:#fff;">STEP 1</div>
+            <div class="pipe-badge" style="background:var(--tinted); color:var(--ink); border:1px solid var(--line2);">STEP 1</div>
             <div class="pipe-icon">📄</div>
             <div class="pipe-name">대본 / 기획</div>
             <div class="pipe-sub">프롬프트 편집 · 엑셀 파일 확인</div>
           </div>
           <div class="pipe-arrow-h">→</div>
           <div class="pipe-card">
-            <div class="pipe-badge" style="background:var(--ink); color:#fff;">STEP 2</div>
+            <div class="pipe-badge" style="background:var(--tinted); color:var(--ink); border:1px solid var(--line2);">STEP 2</div>
             <div class="pipe-icon">📋</div>
             <div class="pipe-name">대본 엑셀 준비</div>
             <div class="pipe-sub">필수 시트명 · 열 제목 규칙</div>
@@ -887,19 +905,19 @@ h3.desc-sec-title::before, .desc-sec-title::before {
         <div class="pipe-arrow-center">↓</div>
         <div class="pipe-row pipe-row-3">
           <div class="pipe-card pipe-parallel">
-            <div class="pipe-badge" style="background:var(--gray); color:#fff;">STEP 3</div>
+            <div class="pipe-badge" style="background:var(--tinted); color:var(--ink); border:1px solid var(--line2);">STEP 3</div>
             <div class="pipe-icon">🖼️</div>
             <div class="pipe-name">이미지 자동 생성</div>
             <div class="pipe-sub">Gemini 무인 자동화<br>2_이미지 폴더 저장</div>
           </div>
           <div class="pipe-card pipe-parallel">
-            <div class="pipe-badge" style="background:var(--gray); color:#fff;">STEP 4</div>
+            <div class="pipe-badge" style="background:var(--tinted); color:var(--ink); border:1px solid var(--line2);">STEP 4</div>
             <div class="pipe-icon">🎙️</div>
             <div class="pipe-name">오디오 자동 생성</div>
             <div class="pipe-sub">무료TTS 큐웬(Qwen) TTS<br>3_오디오_자막 저장</div>
           </div>
           <div class="pipe-card pipe-parallel">
-            <div class="pipe-badge" style="background:var(--gray); color:#fff;">STEP 5</div>
+            <div class="pipe-badge" style="background:var(--tinted); color:var(--ink); border:1px solid var(--line2);">STEP 5</div>
             <div class="pipe-icon">💬</div>
             <div class="pipe-name">자막 자동 생성</div>
             <div class="pipe-sub">SRT 추출<br>타임코드 동기화</div>
@@ -908,7 +926,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
         <div class="pipe-arrow-center">↓</div>
         <div class="pipe-row">
           <div class="pipe-card pipe-final">
-            <div class="pipe-badge" style="background:#fff; color:var(--ink);">STEP 6</div>
+            <div class="pipe-badge" style="background:var(--ink); color:#fff;">STEP 6</div>
             <div class="pipe-icon-lg">✓</div>
             <div class="pipe-name" style="font-size:15px;">검증 &amp; 완성</div>
             <div class="pipe-sub">통합 QC 검수 · 캡컷 자동화 1초 조립</div>
@@ -919,18 +937,18 @@ h3.desc-sec-title::before, .desc-sec-title::before {
 
     <!-- ══ 준비 배너 ══ -->
     <div class="prep-banner">
-      <span class="prep-banner-badge">준비</span>
-      <div class="prep-banner-divider"></div>
-      <div class="prep-banner-info">
+      <div class="prep-banner-bar"></div>
+      <div class="prep-banner-inner">
+        <span class="prep-banner-badge">준비</span>
         <div class="prep-banner-title">시작 전 준비 — 폴더 구조 설정</div>
-        <div class="step-banner-sub" style="color:var(--muted); font-size:12.5px; margin-top:3px;">제공된 패키지 설치 · C: 드라이브 배치 · 폴더 구조 확인</div>
+        <div class="step-banner-sub">제공된 패키지 설치 · C: 드라이브 배치 · 폴더 구조 확인</div>
       </div>
     </div>
 
     <!-- ══ 폴더 구조 설정 ══ -->
     <section id="s-prep" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:var(--ink);"></div>
+        <div class="step-chip" style="background:#2563eb;"></div>
         <h2 class="sec-title">폴더 구조 설정</h2>
       </div>
       <div class="sec-desc">새 영상 작업을 시작할 때는 버튼 하나로 프로젝트 폴더를 자동 생성할 수 있습니다.</div>
@@ -1007,9 +1025,9 @@ h3.desc-sec-title::before, .desc-sec-title::before {
 
     <!-- ══ STEP 1 배너 ══ -->
     <div class="step-banner">
-      <span class="step-banner-badge">STEP 1</span>
-      <div class="step-banner-divider"></div>
-      <div class="step-banner-info">
+      <div class="step-banner-bar"></div>
+      <div class="step-banner-inner">
+        <span class="step-banner-badge">STEP 1</span>
         <div class="step-banner-title">자동화를 위한 대본 엑셀 파일 만들기</div>
         <div class="step-banner-sub">필수 시트명 · 열 제목 규칙 · 작업 전 반드시 확인</div>
       </div>
@@ -1018,7 +1036,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ 엑셀 파일 필수 구조 규칙 ══ -->
     <section id="s2" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:var(--ink);"></div>
+        <div class="step-chip" style="background:#2563eb;"></div>
         <h2 class="sec-title">엑셀 파일 필수 구조 규칙 <span class="tag tag-req">필수</span></h2>
       </div>
       <div class="sec-desc">
@@ -1079,9 +1097,9 @@ h3.desc-sec-title::before, .desc-sec-title::before {
 
     <!-- ══ STEP 2 배너 ══ -->
     <div class="step-banner">
-      <span class="step-banner-badge">STEP 2</span>
-      <div class="step-banner-divider"></div>
-      <div class="step-banner-info">
+      <div class="step-banner-bar"></div>
+      <div class="step-banner-inner">
+        <span class="step-banner-badge">STEP 2</span>
         <div class="step-banner-title">대본/기획</div>
         <div class="step-banner-sub">프롬프트 편집 · 엑셀 그리드 검토 · 1_대본 폴더 사용</div>
       </div>
@@ -1090,7 +1108,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ 파일 탐색기 & 텍스트 에디터 ══ -->
     <section id="s1a" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:var(--gray);"></div>
+        <div class="step-chip" style="background:#2563eb;"></div>
         <h2 class="sec-title">파일 탐색기 &amp; 텍스트 에디터</h2>
       </div>
       <div class="sec-desc">
@@ -1123,7 +1141,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ 엑셀 그리드 편집 ══ -->
     <section id="s1b" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:var(--gray);"></div>
+        <div class="step-chip" style="background:#2563eb;"></div>
         <h2 class="sec-title">엑셀 그리드 편집</h2>
       </div>
       <div class="sec-desc">
@@ -1145,9 +1163,9 @@ h3.desc-sec-title::before, .desc-sec-title::before {
 
     <!-- ══ STEP 3 배너 ══ -->
     <div class="step-banner">
-      <span class="step-banner-badge">STEP 3</span>
-      <div class="step-banner-divider"></div>
-      <div class="step-banner-info">
+      <div class="step-banner-bar"></div>
+      <div class="step-banner-inner">
+        <span class="step-banner-badge">STEP 3</span>
         <div class="step-banner-title">Gemini 이미지 자동 생성</div>
         <div class="step-banner-sub">Gemini 무인 자동화 · 2_이미지 폴더에 자동 저장</div>
       </div>
@@ -1156,7 +1174,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ 이미지 자동 생성 ══ -->
     <section id="s3" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:var(--gray);"></div>
+        <div class="step-chip" style="background:#2563eb;"></div>
         <h2 class="sec-title">이미지 자동 생성 및 동영상 적용 방법</h2>
       </div>
       <div class="sec-desc">
@@ -1197,9 +1215,9 @@ h3.desc-sec-title::before, .desc-sec-title::before {
 
     <!-- ══ STEP 4 배너 ══ -->
     <div class="step-banner">
-      <span class="step-banner-badge">STEP 4</span>
-      <div class="step-banner-divider"></div>
-      <div class="step-banner-info">
+      <div class="step-banner-bar"></div>
+      <div class="step-banner-inner">
+        <span class="step-banner-badge">STEP 4</span>
         <div class="step-banner-title">오디오 자동 생성 — 무료TTS 큐웬(Qwen) TTS</div>
         <div class="step-banner-sub">AutoTube Pro 준비 → Colab TTS 서버 가동 → 녹음 실행</div>
       </div>
@@ -1248,7 +1266,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ STEP 4-① AutoTube Pro 준비 ══ -->
     <section id="s4a" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:var(--gray);"></div>
+        <div class="step-chip" style="background:#2563eb;"></div>
         <h2 class="sec-title">1) AutoTube Pro — 오디오 준비 설정</h2>
       </div>
       <div class="sec-desc">오디오 생성 전 AutoTube Pro에서 먼저 필요한 정보를 설정하는 단계입니다. 시작 전에 10초 정도의 깨끗하게 녹음된 자신의 목소리를 WAV 파일로 준비합니다.</div>
@@ -1271,7 +1289,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ STEP 4-② Google Colab TTS ══ -->
     <section id="s4c" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:var(--gray);"></div>
+        <div class="step-chip" style="background:#2563eb;"></div>
         <h2 class="sec-title">2) Google Colab — 큐웬(Qwen) TTS 서버 가동 방법</h2>
       </div>
       <div class="sec-desc">
@@ -1295,7 +1313,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ STEP 4-③ 오디오 녹음 실행 ══ -->
     <section id="s4b" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:var(--gray);"></div>
+        <div class="step-chip" style="background:#2563eb;"></div>
         <h2 class="sec-title">3) AutoTube Pro — 오디오 녹음 실행</h2>
       </div>
       <div class="sec-desc">Colab 서버 가동 후 <strong>AutoTube Pro로 돌아와</strong> 오디오 녹음을 실행합니다.</div>
@@ -1330,9 +1348,9 @@ h3.desc-sec-title::before, .desc-sec-title::before {
 
     <!-- ══ STEP 5 배너 ══ -->
     <div class="step-banner">
-      <span class="step-banner-badge">STEP 5</span>
-      <div class="step-banner-divider"></div>
-      <div class="step-banner-info">
+      <div class="step-banner-bar"></div>
+      <div class="step-banner-inner">
+        <span class="step-banner-badge">STEP 5</span>
         <div class="step-banner-title">Whisper 자막 자동 생성</div>
         <div class="step-banner-sub">SRT 추출 · 타임코드 동기화 · 3_오디오_자막 폴더 저장</div>
       </div>
@@ -1341,7 +1359,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ Whisper 자막 ══ -->
     <section id="s5" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:var(--gray);"></div>
+        <div class="step-chip" style="background:#2563eb;"></div>
         <h2 class="sec-title">Whisper 자막 자동 생성 &amp; 타임코드 동기화</h2>
       </div>
       <div class="sec-desc">
@@ -1389,9 +1407,9 @@ h3.desc-sec-title::before, .desc-sec-title::before {
 
     <!-- ══ STEP 6 배너 ══ -->
     <div class="step-banner">
-      <span class="step-banner-badge">STEP 6</span>
-      <div class="step-banner-divider"></div>
-      <div class="step-banner-info">
+      <div class="step-banner-bar"></div>
+      <div class="step-banner-inner">
+        <span class="step-banner-badge">STEP 6</span>
         <div class="step-banner-title">검증 &amp; 캡컷 자동화 조립</div>
         <div class="step-banner-sub">통합 QC 검수 · 문제 컷 재작업 · 캡컷 자동화 1초 조립</div>
       </div>
@@ -1400,7 +1418,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ 영상 리소스 검증 ══ -->
     <section id="s6a" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:var(--ink);"></div>
+        <div class="step-chip" style="background:#2563eb;"></div>
         <h2 class="sec-title">영상 리소스 검증 (QC)</h2>
       </div>
       <div class="sec-desc">
@@ -1454,7 +1472,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ 캡컷 자동화 조립 ══ -->
     <section id="s6b" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:var(--ink);"></div>
+        <div class="step-chip" style="background:#2563eb;"></div>
         <h2 class="sec-title">캡컷 자동화 — 1초 완성 타임라인</h2>
       </div>
       <div class="sec-desc">
@@ -1488,23 +1506,23 @@ h3.desc-sec-title::before, .desc-sec-title::before {
 </div><!-- /main -->
 
 <!-- ============ 푸터 ============ -->
-<footer style="margin-left:var(--sw); background:var(--ink); border-top:1px solid var(--ink2); padding:28px 36px;">
+<footer style="margin-left:var(--sw); background:var(--tinted); border-top:1px solid var(--line); padding:28px 36px;">
   <div style="display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center;">
-    <div style="font-family:var(--sans); font-size:18px; font-weight:900; color:#f9fafb;">
+    <div style="font-family:var(--sans); font-size:18px; font-weight:900; color:var(--ink);">
       AutoTube <span style="color:var(--red);">Pro</span>
     </div>
     <div style="display:flex; gap:16px; font-size:13px; flex-wrap:wrap; justify-content:center; row-gap:8px;">
-      <a href="index.html#how"     style="color:#9ca3af; text-decoration:none; white-space:nowrap;">작동방식</a>
-      <a href="index.html#pricing" style="color:#9ca3af; text-decoration:none; white-space:nowrap;">요금제</a>
-      <a href="manual.html"        style="color:#9ca3af; text-decoration:none; white-space:nowrap;">사용설명서</a>
-      <a href="privacy.html"       style="color:#9ca3af; text-decoration:none; white-space:nowrap;">개인정보처리방침</a>
-      <a href="terms.html"         style="color:#9ca3af; text-decoration:none; white-space:nowrap;">이용약관</a>
+      <a href="index.html#how"     style="color:var(--muted); text-decoration:none; white-space:nowrap;">작동방식</a>
+      <a href="index.html#pricing" style="color:var(--muted); text-decoration:none; white-space:nowrap;">요금제</a>
+      <a href="manual.html"        style="color:var(--muted); text-decoration:none; white-space:nowrap;">사용설명서</a>
+      <a href="privacy.html"       style="color:var(--muted); text-decoration:none; white-space:nowrap;">개인정보처리방침</a>
+      <a href="terms.html"         style="color:var(--muted); text-decoration:none; white-space:nowrap;">이용약관</a>
     </div>
-    <div style="font-size:12.5px; color:#6b7280;">
+    <div style="font-size:12.5px; color:var(--muted);">
       맞춤개발 및 문의 :
-      <a href="mailto:autotube@aibaselab.com" style="color:#9ca3af; text-decoration:none;">autotube@aibaselab.com</a>
+      <a href="mailto:autotube@aibaselab.com" style="color:var(--gray); text-decoration:none;">autotube@aibaselab.com</a>
     </div>
-    <div style="font-family:var(--num); font-size:12.5px; color:#6b7280;">
+    <div style="font-family:var(--num); font-size:12.5px; color:var(--muted);">
       © 2026 AutoTube Pro. All rights reserved.
     </div>
   </div>
