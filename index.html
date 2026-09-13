@@ -81,7 +81,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+
 
 <style>
 /* =============================================
@@ -344,17 +344,10 @@ nav {
   font-size: 14px;
   font-weight: 700;
   color: var(--ink);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
+  text-align: center;
   margin-bottom: 14px;
 }
-/* 화이트 아이콘 — kpi 내부 Material icon */
-.kpi .material-symbols-rounded {
-  font-size: 18px;
-  color: var(--gray);
-}
+
 .kpi-bullets {
   font-size: 13px;
   color: var(--muted);
@@ -429,15 +422,8 @@ nav {
   font-weight: 700;
   margin-bottom: 8px;
   color: var(--ink);
-  display: flex;
-  align-items: center;
-  gap: 9px;
 }
 /* 스텝 아이콘 — 흰 배경 위에서는 다크 */
-.step-t .material-symbols-rounded {
-  font-size: 22px;
-  color: var(--ink);
-}
 .step-d { font-size: 15.5px; color: var(--gray); line-height: 1.7; }
 
 /* 엑셀 창 */
@@ -898,7 +884,7 @@ footer {
 <div class="pay-overlay" id="payOverlay" onclick="closePayModal(event)">
   <div class="pay-modal">
     <button class="pay-modal-close" onclick="closePayModal()">✕</button>
-    <div style="font-size:28px; margin-bottom:10px;">🏦</div>
+    
     <div class="pay-modal-title">원화 결제 안내</div>
     <div class="pay-modal-sub">아래 계좌로 입금해 주시면 확인 후<br>라이선스 키를 이메일로 발송해 드립니다.</div>
     <div class="pay-account-box">
@@ -919,7 +905,7 @@ footer {
 
     <div style="border-top:1px dashed var(--line); margin-bottom:16px;"></div>
 
-    <div style="font-size:13px; color:var(--ink); font-weight:700; margin-bottom:5px;">📧 입금 후 아래 정보를 입력해 주세요</div>
+    <div style="font-size:13px; color:var(--ink); font-weight:700; margin-bottom:5px;">입금 후 아래 정보를 입력해 주세요</div>
     <div style="font-size:12.5px; color:var(--gray); line-height:1.6; margin-bottom:14px;">
       라이센스키 발송을 위해 <strong>이메일 주소</strong>와 <strong>송금자 성함</strong>을 정확히 입력 후 전송해 주세요.<br>
       <span style="color:var(--red);">이메일 오류 또는 송금자 성함이 확인되지 않으면 처리가 어렵습니다.</span>
@@ -933,7 +919,7 @@ footer {
         onfocus="this.style.borderColor='#111827'" onblur="this.style.borderColor='var(--line)'">
     </div>
     <div id="payMsg" style="font-size:12.5px; color:var(--red); margin-bottom:9px; min-height:16px;"></div>
-    <button class="pay-modal-btn" onclick="submitPayInfo()">✉️ 정보 전송하기</button>
+    <button class="pay-modal-btn" onclick="submitPayInfo()">정보 전송하기</button>
     <button style="display:block; width:100%; margin-top:9px; padding:10px; background:none; border:1px solid var(--line); border-radius:10px; font-size:13.5px; color:var(--gray); cursor:pointer;" onclick="closePayModal()">닫기</button>
   </div>
 </div>
@@ -941,7 +927,7 @@ footer {
 <!-- ============ TOPBAR ============ -->
 <div class="topbar">
   <span class="dot-live-top"></span>
-  <strong>🔖 얼리유저 특가 진행 중 — 영구 라이선스 ₩150,000 · 추후 가격 인상 예정</strong>
+  <strong>얼리유저 특가 진행 중 — 영구 라이선스 ₩150,000 · 추후 가격 인상 예정</strong>
 </div>
 
 <!-- ============ NAV ============ -->
@@ -1012,7 +998,7 @@ footer {
           <div class="kpi-top-label">최대 시간 절감</div>
           <div class="kpi-num hl-red">90%</div>
           <div class="kpi-label">
-            <span class="material-symbols-rounded">bolt</span>
+            
             영상 제작 시간 단축
           </div>
           <div class="kpi-bullets">
@@ -1025,7 +1011,7 @@ footer {
           <div class="kpi-top-label">생성 가능</div>
           <div class="kpi-num hl-red">무제한</div>
           <div class="kpi-label">
-            <span class="material-symbols-rounded">all_inclusive</span>
+            
             생성 횟수 제한 없음
           </div>
           <div class="kpi-bullets">
@@ -1038,7 +1024,7 @@ footer {
           <div class="kpi-top-label">월 구독료</div>
           <div class="kpi-num hl-red">0원</div>
           <div class="kpi-label">
-            <span class="material-symbols-rounded">payments</span>
+            
             추가 월 비용 없음
           </div>
           <div class="kpi-bullets">
@@ -1112,7 +1098,7 @@ footer {
         <div class="circle-badge" style="font-size:11px; width:44px;">준비</div>
         <div>
           <div class="step-t">
-            <span class="material-symbols-rounded">folder_open</span>
+            
             신규 영상마다 — 프로젝트 폴더 자동 생성
           </div>
           <p class="step-d">영상 제목을 입력하고 <strong>[신규 영상 작업 폴더 생성]</strong> 버튼을 클릭하면 <strong>1_대본 / 2_이미지 / 3_오디오_자막</strong> 폴더가 자동으로 생성됩니다.</p>
@@ -1122,7 +1108,7 @@ footer {
         <div class="circle-badge">1</div>
         <div>
           <div class="step-t">
-            <span class="material-symbols-rounded">table_chart</span>
+            
             STEP 1 — 대본 엑셀을 준비합니다.
           </div>
           <p class="step-d">이미 사용 중인 AI 프롬프트(ChatGPT·Claude 등)로 대본을 생성해 엑셀에 붙여넣습니다. 이 엑셀 파일이 <strong>이후 모든 자동화의 시작점</strong>입니다.</p>
@@ -1142,7 +1128,7 @@ footer {
         <div class="circle-badge">2</div>
         <div>
           <div class="step-t">
-            <span class="material-symbols-rounded">edit_document</span>
+            
             STEP 2 — 대본을 불러옵니다.
           </div>
           <p class="step-d">엑셀로 작성된 대본을 AutoTube Pro에서 불러와 확인하고 간단히 수정할 수 있습니다.</p>
@@ -1152,7 +1138,7 @@ footer {
         <div class="circle-badge">3</div>
         <div>
           <div class="step-t">
-            <span class="material-symbols-rounded">imagesmode</span>
+            
             STEP 3 — 이미지를 순차 생성합니다.
           </div>
           <p class="step-d">엑셀의 이미지 프롬프트를 한 줄씩 자동으로 Gemini에 전송합니다. <strong>60컷 영상이라면 60장의 이미지가 사람의 개입 없이 순차 생성</strong>되어 폴더에 자동 저장됩니다.</p>
@@ -1162,7 +1148,7 @@ footer {
         <div class="circle-badge">4</div>
         <div>
           <div class="step-t">
-            <span class="material-symbols-rounded">mic</span>
+            
             STEP 4 — 음성 파일을 자동 녹음합니다.
           </div>
           <p class="step-d">성우녹음 시트의 대본을 한 줄씩 내 PC에서 구동되는 무료 TTS 엔진 큐웬(Qwen) TTS 서버로 전송합니다. <strong>60컷이라면 60개의 음성 파일을 순차 생성</strong>하고 완료 후 자동으로 하나의 마스터 오디오로 합칩니다.</p>
@@ -1179,7 +1165,7 @@ footer {
         <div class="circle-badge">5</div>
         <div>
           <div class="step-t">
-            <span class="material-symbols-rounded">subtitles</span>
+            
             STEP 5 — Whisper 자막을 자동 추출합니다.
           </div>
           <p class="step-d">합본 오디오를 AI로 분석해 <strong>각 컷의 정확한 시작·끝 타임코드를 자동 계산</strong>합니다. 이 데이터가 CapCut 조립의 기준이 됩니다.</p>
@@ -1189,7 +1175,7 @@ footer {
         <div class="circle-badge">6</div>
         <div>
           <div class="step-t">
-            <span class="material-symbols-rounded">fact_check</span>
+            
             STEP 6 — 검수 후 CapCut을 자동 조립합니다.
           </div>
           <p class="step-d">이미지·오디오·자막을 한 화면에서 동기화 재생하며 검수합니다. <strong>검수가 끝나면 모든 타임코드를 CapCut 프로젝트 파일에 1초 만에 자동 주입합니다.</strong></p>
@@ -1213,7 +1199,7 @@ footer {
     <div class="urgency r">
       <span class="dot-live"></span>
       <span style="line-height:1.65;">
-        <strong>🔖 얼리유저 특가 진행 중</strong><br>
+        <strong>얼리유저 특가 진행 중</strong><br>
         초기 사용자 피드백을 반영하며 제품을 고도화하고 있습니다. 기능 업데이트와 함께 가격은 순차 인상될 예정입니다.<br>
         <strong>지금 구매하신 분은 영구 라이선스로, 이후 가격 인상과 무관하게 계속 사용 가능합니다.</strong>
       </span>
@@ -1222,10 +1208,10 @@ footer {
     <!-- 무료체험 카드 -->
     <div class="r" style="max-width:540px; margin:0 auto 14px;">
       <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:14px; padding:22px 24px; box-shadow:var(--sh-sm);">
-        <div style="font-size:16px; font-weight:800; color:#14532d; margin-bottom:7px;">🎁 7일 무료체험</div>
+        <div style="font-size:16px; font-weight:800; color:#14532d; margin-bottom:7px;">7일 무료체험</div>
         <div style="font-size:14.5px; color:#166534; line-height:1.7; margin-bottom:18px;">대본이 이미지·음성·자막을 거쳐 완성 캡컷 타임라인으로 조립되는 과정을 직접 경험한 후 구매를 결정하세요. <strong>체험 완료 후 구매 강요 없음.</strong></div>
         <a href="https://forms.gle/EViTc2rboeocEWhR8" target="_blank" style="display:block; text-align:center; background:#16a34a; color:#fff; font-weight:700; font-size:15px; padding:13px; border-radius:9px; text-decoration:none;">
-          🎁 무료 체험 신청하기
+          무료 체험 신청하기
         </a>
       </div>
     </div>
@@ -1256,13 +1242,13 @@ footer {
         <div style="position:absolute; top:-11px; left:16px; background:#16a34a; color:#fff; font-size:11px; font-weight:700; padding:3px 12px; border-radius:10px;">결제방법 1 · 추천</div>
         <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:12px; margin-top:10px;">
           <div>
-            <div style="font-size:15px; font-weight:700; color:#15803d; margin-bottom:2px;">🏦 원화 무통장 입금</div>
+            <div style="font-size:15px; font-weight:700; color:#15803d; margin-bottom:2px;">원화 무통장 입금</div>
             <div style="font-size:12.5px; color:#16a34a; font-weight:600;">부가세 없는 현금가</div>
           </div>
           <div style="font-size:28px; font-weight:900; color:var(--ink); font-family:var(--num);">₩150,000</div>
         </div>
         <button onclick="openPayModal()" style="display:block; width:100%; text-align:center; background:#16a34a; color:#fff; font-weight:700; font-size:14.5px; padding:13px; border-radius:9px; border:none; cursor:pointer;">
-          🏦 원화 무통장 결제 안내 보기
+          원화 무통장 결제 안내 보기
         </button>
       </div>
 
@@ -1271,7 +1257,7 @@ footer {
         <div style="position:absolute; top:-11px; left:16px; background:var(--gray); color:#fff; font-size:11px; font-weight:700; padding:3px 12px; border-radius:10px;">결제방법 2</div>
         <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:6px; margin-top:10px;">
           <div>
-            <div style="font-size:15px; font-weight:700; color:var(--ink); margin-bottom:2px;">💳 해외 카드결제 (Gumroad)</div>
+            <div style="font-size:15px; font-weight:700; color:var(--ink); margin-bottom:2px;">해외 카드결제 (Gumroad)</div>
             <div style="font-size:12.5px; color:var(--red); font-weight:600;">부가세(VAT) 10% 별도 · 실질 $121</div>
           </div>
           <div style="font-size:28px; font-weight:900; color:var(--ink); font-family:var(--num);">$110</div>
@@ -1284,7 +1270,7 @@ footer {
 
       <!-- 세금계산서 안내 -->
       <div style="background:var(--tinted); border:1px solid var(--line); border-radius:11px; padding:14px 18px; font-size:13px; color:var(--gray); line-height:1.7; margin-bottom:14px;">
-        💡 <strong style="color:var(--ink);">세금계산서 발행이 안 되나요?</strong><br>
+        <strong style="color:var(--ink);">세금계산서 발행이 안 되나요?</strong><br>
         본 제품은 개인 크리에이터를 위한 1인 개발 소프트웨어로, 세금계산서 발행 시스템을 운영하고 있지 않습니다. 사업자 구매가 필요하신 경우 Gumroad 해외결제 영수증을 비용 처리에 활용하실 수 있습니다.
       </div>
 
@@ -1400,17 +1386,17 @@ footer {
         </thead>
         <tbody>
           <tr style="border-bottom:1px solid var(--line);">
-            <td style="padding:15px 18px; font-weight:700; color:var(--ink);">🔒 데이터 보안</td>
+            <td style="padding:15px 18px; font-weight:700; color:var(--ink);">데이터 보안</td>
             <td style="padding:15px 18px; color:var(--gray);">대본·프롬프트가 외부 서버에 저장됨</td>
             <td style="padding:15px 18px; color:var(--ink);"><strong>100% 내 PC</strong> 안에서만 처리</td>
           </tr>
           <tr style="border-bottom:1px solid var(--line);">
-            <td style="padding:15px 18px; font-weight:700; color:var(--ink);">💳 비용 구조</td>
+            <td style="padding:15px 18px; font-weight:700; color:var(--ink);">비용 구조</td>
             <td style="padding:15px 18px; color:var(--gray);">월 구독료 + 영상마다 포인트 차감</td>
             <td style="padding:15px 18px; color:var(--ink);">내 계정 무료 할당 활용, <strong>추가 유지비 목표 0원</strong></td>
           </tr>
           <tr>
-            <td style="padding:15px 18px; font-weight:700; color:var(--ink);">🏢 서비스 종속성</td>
+            <td style="padding:15px 18px; font-weight:700; color:var(--ink);">서비스 종속성</td>
             <td style="padding:15px 18px; color:var(--gray);">서버 장애·폐업 시 즉시 사용 불가</td>
             <td style="padding:15px 18px; color:var(--ink);">내 PC가 켜져 있는 한 <strong>365일 멈추지 않는 설비</strong></td>
           </tr>
@@ -1493,7 +1479,7 @@ footer {
           </p>
           <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
             <a href="mailto:autotube@aibaselab.com" style="font-size:14px; color:#fff; background:var(--ink); text-decoration:none; display:inline-flex; align-items:center; gap:6px; border-radius:8px; padding:9px 18px; font-weight:600;">
-              ✉️ 맞춤 개발 문의하기
+              맞춤 개발 문의하기
             </a>
             <span style="font-size:13.5px; color:var(--muted);">autotube@aibaselab.com</span>
           </div>
@@ -1518,10 +1504,10 @@ footer {
     <div class="r" style="display:flex; flex-direction:column; align-items:center; gap:20px;">
       <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap; width:100%;">
         <a href="https://forms.gle/EViTc2rboeocEWhR8" target="_blank" style="display:inline-block; padding:16px 32px; font-size:15px; font-weight:800; text-decoration:none; border-radius:10px; background:#fff; color:var(--ink); box-shadow:var(--sh-md); flex:1; max-width:260px; text-align:center;">
-          🎁 무료 체험 신청
+          무료 체험 신청
         </a>
         <a href="https://pf.kakao.com/_pVunX/friend" target="_blank" style="display:inline-block; padding:16px 32px; font-size:15px; font-weight:800; text-decoration:none; border-radius:10px; background:#fee500; color:#3c1e1e; box-shadow:var(--sh-md); flex:1; max-width:260px; text-align:center;">
-          💬 카카오톡 1:1 문의
+          카카오톡 1:1 문의
         </a>
       </div>
       <div style="font-size:14px; color:#6b7280;">
@@ -1591,7 +1577,7 @@ function submitPayInfo() {
   var img = new Image(); img.src = url;
   setTimeout(function() {
     msg.style.color = '#16a34a';
-    msg.textContent = '✅ 전송 완료! 입금 확인 후 라이센스키를 발송해 드립니다.';
+    msg.textContent = '전송 완료. 입금 확인 후 라이센스키를 발송해 드립니다.';
     btn.textContent = '전송 완료';
     document.getElementById('payEmail').value = '';
     document.getElementById('paySender').value = '';
@@ -1602,7 +1588,7 @@ function openPayModal() {
   document.getElementById('paySender').value = '';
   document.getElementById('payMsg').textContent = '';
   var btn = document.querySelector('.pay-modal-btn');
-  btn.disabled = false; btn.textContent = '✉️ 정보 전송하기';
+  btn.disabled = false; btn.textContent = '정보 전송하기';
   document.getElementById('payOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
