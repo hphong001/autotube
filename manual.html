@@ -83,13 +83,6 @@
   --num:     'Inter', monospace;
 
   --sw:      260px;   /* 사이드바 너비 */
-  --blue-bg:   #eff6ff;
-  --blue-bdr:  #bfdbfe;
-  --blue-bar:  #2563eb;
-  --blue-bdg:  #dbeafe;
-  --blue-txt:  #1d4ed8;
-  --blue-head: #1e3a5f;
-  --blue-sub:  #3b82f6;
   --sh-sm:   0 1px 3px rgba(0,0,0,.06);
   --sh-md:   0 4px 12px rgba(0,0,0,.07);
   --sh-lg:   0 8px 24px rgba(0,0,0,.08);
@@ -262,23 +255,23 @@ body {
 .step-banner {
   display: flex; align-items: stretch; gap: 0;
   margin: 64px 0 44px;
-  background: var(--blue-bg);
+  background: #fff5f5;
   border-radius: 12px;
-  border: 1px solid var(--blue-bdr);
+  border: 1px solid #fca5a5;
   overflow: hidden;
 }
 .step-banner-badge {
-  background: var(--blue-bdg); color: var(--blue-txt);
-  border: 0.5px solid var(--blue-bdr);
+  background: var(--red); color: #fff;
+  border: none;
   font-size: 10px; font-weight: 900;
   font-family: var(--num); letter-spacing: 0.07em;
-  padding: 3px 9px; border-radius: 4px;
+  padding: 4px 10px; border-radius: 4px;
   display: inline-flex; align-items: center;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
   flex-shrink: 0; white-space: nowrap;
 }
 .step-banner-bar {
-  width: 4px; background: var(--blue-bar);
+  width: 4px; background: var(--red);
   flex-shrink: 0;
 }
 .step-banner-inner {
@@ -288,11 +281,11 @@ body {
 .step-banner-title {
   font-family: var(--sans);
   font-size: 15px; font-weight: 700;
-  color: var(--blue-head); letter-spacing: -0.02em; line-height: 1.25;
+  color: #991b1b; letter-spacing: -0.02em; line-height: 1.25;
   margin-bottom: 2px;
 }
 .step-banner-sub {
-  font-size: 12px; color: var(--blue-sub);
+  font-size: 12px; color: #dc2626;
   margin-top: 0; font-weight: 500;
   word-break: break-word;
   line-height: 1.5;
@@ -302,24 +295,24 @@ body {
 .prep-banner {
   display: flex; align-items: stretch; gap: 0;
   margin: 0 0 44px;
-  background: var(--blue-bg);
-  border-radius: 12px; border: 1px solid var(--blue-bdr);
+  background: #fff5f5;
+  border-radius: 12px; border: 1px solid #fca5a5;
   overflow: hidden;
 }
 .prep-banner-bar {
-  width: 4px; background: var(--blue-bar); flex-shrink: 0;
+  width: 4px; background: var(--red); flex-shrink: 0;
 }
 .prep-banner-inner {
   padding: 14px 18px; flex: 1; min-width: 0;
 }
 .prep-banner-badge {
-  background: var(--blue-bdg); color: var(--blue-txt);
-  border: 0.5px solid var(--blue-bdr);
+  background: var(--red); color: #fff;
+  border: none;
   font-size: 10px; font-weight: 900;
   font-family: var(--num); letter-spacing: 0.07em;
-  padding: 3px 9px; border-radius: 4px;
+  padding: 4px 10px; border-radius: 4px;
   display: inline-flex; align-items: center;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
   flex-shrink: 0; white-space: nowrap;
 }
 .prep-banner-divider { display: none; }
@@ -327,7 +320,7 @@ body {
 .prep-banner-title {
   font-family: var(--sans);
   font-size: 15px; font-weight: 700;
-  color: var(--blue-head); letter-spacing: -0.02em; line-height: 1.25;
+  color: #991b1b; letter-spacing: -0.02em; line-height: 1.25;
   margin-bottom: 2px;
 }
 
@@ -866,7 +859,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ 전체 공정 개요 ══ -->
     <section id="s-ov" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:#2563eb;"></div>
+        <div class="step-chip" style="background:var(--red);"></div>
         <h2 class="sec-title">전체 공정 개요</h2>
       </div>
       <div class="sec-desc">
@@ -948,7 +941,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ 폴더 구조 설정 ══ -->
     <section id="s-prep" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:#2563eb;"></div>
+        <div class="step-chip" style="background:var(--red);"></div>
         <h2 class="sec-title">폴더 구조 설정</h2>
       </div>
       <div class="sec-desc">새 영상 작업을 시작할 때는 버튼 하나로 프로젝트 폴더를 자동 생성할 수 있습니다.</div>
@@ -1036,7 +1029,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ 엑셀 파일 필수 구조 규칙 ══ -->
     <section id="s2" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:#2563eb;"></div>
+        <div class="step-chip" style="background:var(--red);"></div>
         <h2 class="sec-title">엑셀 파일 필수 구조 규칙 <span class="tag tag-req">필수</span></h2>
       </div>
       <div class="sec-desc">
@@ -1108,7 +1101,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ 파일 탐색기 & 텍스트 에디터 ══ -->
     <section id="s1a" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:#2563eb;"></div>
+        <div class="step-chip" style="background:var(--red);"></div>
         <h2 class="sec-title">파일 탐색기 &amp; 텍스트 에디터</h2>
       </div>
       <div class="sec-desc">
@@ -1141,7 +1134,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ 엑셀 그리드 편집 ══ -->
     <section id="s1b" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:#2563eb;"></div>
+        <div class="step-chip" style="background:var(--red);"></div>
         <h2 class="sec-title">엑셀 그리드 편집</h2>
       </div>
       <div class="sec-desc">
@@ -1174,7 +1167,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ 이미지 자동 생성 ══ -->
     <section id="s3" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:#2563eb;"></div>
+        <div class="step-chip" style="background:var(--red);"></div>
         <h2 class="sec-title">이미지 자동 생성 및 동영상 적용 방법</h2>
       </div>
       <div class="sec-desc">
@@ -1266,7 +1259,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ STEP 4-① AutoTube Pro 준비 ══ -->
     <section id="s4a" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:#2563eb;"></div>
+        <div class="step-chip" style="background:var(--red);"></div>
         <h2 class="sec-title">1) AutoTube Pro — 오디오 준비 설정</h2>
       </div>
       <div class="sec-desc">오디오 생성 전 AutoTube Pro에서 먼저 필요한 정보를 설정하는 단계입니다. 시작 전에 10초 정도의 깨끗하게 녹음된 자신의 목소리를 WAV 파일로 준비합니다.</div>
@@ -1289,7 +1282,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ STEP 4-② Google Colab TTS ══ -->
     <section id="s4c" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:#2563eb;"></div>
+        <div class="step-chip" style="background:var(--red);"></div>
         <h2 class="sec-title">2) Google Colab — 큐웬(Qwen) TTS 서버 가동 방법</h2>
       </div>
       <div class="sec-desc">
@@ -1313,7 +1306,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ STEP 4-③ 오디오 녹음 실행 ══ -->
     <section id="s4b" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:#2563eb;"></div>
+        <div class="step-chip" style="background:var(--red);"></div>
         <h2 class="sec-title">3) AutoTube Pro — 오디오 녹음 실행</h2>
       </div>
       <div class="sec-desc">Colab 서버 가동 후 <strong>AutoTube Pro로 돌아와</strong> 오디오 녹음을 실행합니다.</div>
@@ -1359,7 +1352,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ Whisper 자막 ══ -->
     <section id="s5" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:#2563eb;"></div>
+        <div class="step-chip" style="background:#dc2626;"></div>
         <h2 class="sec-title">Whisper 자막 자동 생성 &amp; 타임코드 동기화</h2>
       </div>
       <div class="sec-desc">
@@ -1418,7 +1411,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ 영상 리소스 검증 ══ -->
     <section id="s6a" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:#2563eb;"></div>
+        <div class="step-chip" style="background:var(--red);"></div>
         <h2 class="sec-title">영상 리소스 검증 (QC)</h2>
       </div>
       <div class="sec-desc">
@@ -1472,7 +1465,7 @@ h3.desc-sec-title::before, .desc-sec-title::before {
     <!-- ══ 캡컷 자동화 조립 ══ -->
     <section id="s6b" class="section">
       <div class="sec-hd">
-        <div class="step-chip" style="background:#2563eb;"></div>
+        <div class="step-chip" style="background:var(--red);"></div>
         <h2 class="sec-title">캡컷 자동화 — 1초 완성 타임라인</h2>
       </div>
       <div class="sec-desc">
