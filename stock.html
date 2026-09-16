@@ -480,7 +480,7 @@
 
         .sb-header {
             display: flex;
-            justify-content: space-between;
+            justify-content: center; /* 중앙 정렬 */
             align-items: center;
             border-bottom: 1px dashed #2a2a2a;
             padding-bottom: 5px;
@@ -492,8 +492,7 @@
             color: #ddbb00;
             font-size: 13px;
             font-weight: bold;
-            flex: 1;
-            min-width: 0;
+            text-align: center; /* 타이틀 글자 자체도 중앙 정렬 */
         }
 
         .sb-trend {
@@ -1306,6 +1305,7 @@
                                 panelDataStore[panelIdx].dayLow = Number(rtData.dayLow);
 
                             var p = 'p' + panelIdx + '-';
+                            // ★ 실시간 주가가 바뀔 때마다 타임라인을 즉시 다시 그려서 % 계산 및 위치를 실시간 갱신
                             if (panelDataStore[panelIdx].maxPain > 0) {
                                 renderTimeline(p, panelDataStore[panelIdx]);
                             }
@@ -1315,6 +1315,7 @@
                         }
                     }
                 });
+
                 var panelRef = firebase.database().ref('tickers/' + ticker + '/panel');
                 panelRef.on('value', function (snap) {
                     if (fbGen[panelIdx] !== myGen || panelTickers[panelIdx] !== ticker) return;
@@ -1465,6 +1466,13 @@
             var s1 = d.support1 || 0, s2 = d.support2 || 0;
             if (!r2 || !s2 || !mp || price <= 0) { host.innerHTML = ''; return; }
 
+            // 현재 종목의 오늘 등락률(%) 가져오기 (예: +1.96% 라면 chgRate = 1.96)
+            var currentChgRate = Number(d.change) || 0;
+
+            // 만약 d.change에 퍼센트 문자열이 들어오는 경우를 대비한 안전 파싱
+            var cgEl = document.getElementById(prefix.replace('p', 'p') + 'chg'); // 혹은 전달받은 d 데이터 활용
+            // 파이프라인 안에서 전달된 change 퍼센트 활용 (없으면 0)
+
             var PAD_L = 0.05, PAD_R = 0.05;
             var TRK_W = 1 - PAD_L - PAD_R;
             var CURR_LBL_Y = 0;
@@ -1475,8 +1483,8 @@
             var NODE_CY = TRACK_Y + TRACK_H / 2;
             var PRICE_Y = TRACK_Y + TRACK_H + 11;
             var LABEL_Y0 = PRICE_Y + 13;
-            var PCT_Y0 = LABEL_Y0 + 12; // ★ 퍼센트(%) 표시용 Y축 위치 추가
-            var COUNT_Y0 = PCT_Y0 + 13;   // 카운트 위치 한 칸 아래로 밀기
+            var PCT_Y0 = LABEL_Y0 + 12;
+            var COUNT_Y0 = PCT_Y0 + 13;
             var TOTAL_H = COUNT_Y0 + 20;
 
             host.style.position = 'relative';
@@ -1568,7 +1576,7 @@
                 host.appendChild(lEl);
             }
 
-            // 4. 현재가 삼각형 + 레이블 (역삼각형 제거 상태 유지)
+            // 4. 현재가 레이블 (역삼각형 제외)
             var isTouched = !!touchedKey;
             var triColor = isTouched ? '#ffcc00' : '#00ddff';
             var triGlow = isTouched ? 'rgba(255,204,0,0.9)' : 'rgba(0,221,255,0.8)';
@@ -1624,7 +1632,7 @@
                 host.appendChild(dot);
             });
 
-            // 6. 하단 레이블 (가격, 이름, 그리고 요청하신 증감율 % 추가)
+            // 6. 하단 레이블 (가격, 이름, 오늘 기준 총 변동률, 색상 일치)
             var offsets = nodePcts.map(function () { return 0; });
             for (var i = 0; i < nodePcts.length - 1; i++) {
                 if (nodePcts[i + 1] - nodePcts[i] < 9) {
@@ -1647,7 +1655,7 @@
                 prEl.textContent = n.val.toFixed(1);
                 host.appendChild(prEl);
 
-                // 이름 (2차지지, 1차지지, MaxPain 등)
+                // 이름
                 var nmEl = mkEl({
                     position: 'absolute', zIndex: '7',
                     top: (LABEL_Y0 + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
@@ -1657,15 +1665,18 @@
                 nmEl.textContent = n.label + (isTch ? ' ⚡' : '');
                 host.appendChild(nmEl);
 
-                // ★ 현재가 대비 등락률(%) 계산 및 출력 ((**.**%) 형태)
-                var diffPct = ((n.val - price) / price) * 100;
-                var pctSign = diffPct > 0 ? '+' : '';
+                // ★ 오늘 등락률 + 현재가 대비 거리 합산 (오늘 기준 총 변동률 계산)
+                var diffPctFromCurrent = ((n.val - price) / price) * 100;
+                var totalTargetRate = currentChgRate + diffPctFromCurrent;
+                var signStr = totalTargetRate > 0 ? '+' : '';
+
                 var pctEl = mkEl({
                     position: 'absolute', zIndex: '7',
                     top: (PCT_Y0 + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
-                    fontSize: '8.5px', color: '#bbbbbb', whiteSpace: 'nowrap', textAlign: 'center'
+                    fontSize: '8.5px', fontWeight: 'bold', color: nodeClr, whiteSpace: 'nowrap', textAlign: 'center',
+                    textShadow: '0 0 3px rgba(0,0,0,0.8)'
                 });
-                pctEl.textContent = '(' + pctSign + diffPct.toFixed(2) + '%)';
+                pctEl.textContent = '(' + signStr + totalTargetRate.toFixed(2) + '%)';
                 host.appendChild(pctEl);
 
                 // 터치 카운트
