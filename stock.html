@@ -1489,10 +1489,10 @@
             }
 
             var nodes = [
-                { key: 's2', val: s2, label: '2차지지', color: '#3355cc', glow: 'rgba(51,85,204,0.6)' },
-                { key: 's1', val: s1, label: '1차지지', color: '#6699ff', glow: 'rgba(102,153,255,0.5)' },
+                { key: 's2', val: s2, label: '2차지지', color: '#00aaff', glow: 'rgba(0,170,255,0.7)' },
+                { key: 's1', val: s1, label: '1차지지', color: '#3399ff', glow: 'rgba(51,153,255,0.7)' },
                 { key: 'mp', val: mp, label: 'MaxPain', color: '#ffcc00', glow: 'rgba(255,204,0,0.7)' },
-                { key: 'r1', val: r1, label: '1차저항', color: '#ff7777', glow: 'rgba(255,119,119,0.5)' },
+                { key: 'r1', val: r1, label: '1차저항', color: '#ff5555', glow: 'rgba(255,85,85,0.7)' },
                 { key: 'r2', val: r2, label: '2차저항', color: '#ff3333', glow: 'rgba(255,51,51,0.7)' },
             ];
 
@@ -1628,7 +1628,7 @@
                 host.appendChild(dot);
             });
 
-            // 6. 하단 레이블 (충돌 감지 → 수직 오프셋)
+            // 6. 하단 레이블 (가격과 이름을 동일한 노드 색상으로 일치)
             var offsets = nodePcts.map(function () { return 0; });
             for (var i = 0; i < nodePcts.length - 1; i++) {
                 if (nodePcts[i + 1] - nodePcts[i] < 9) {
@@ -1640,23 +1640,25 @@
                 var lp = nodePcts[i];
                 var off = offsets[i];
                 var isTch = (touchedKey === n.key);
-                var isR = n.key.charAt(0) === 'r';
-                var isMp = n.key === 'mp';
-                var lblClr = isTch ? '#ffaa00' : n.color;
 
+                // 터치되었을 때는 황금색 강조, 평소에는 각 노드 고유 색상(파랑/노랑/빨강) 적용
+                var nodeClr = isTch ? '#ffaa00' : n.color;
+
+                // 가격 숫자
                 var prEl = mkEl({
                     position: 'absolute', zIndex: '7',
                     top: (PRICE_Y + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
-                    fontSize: '9.5px', fontWeight: 'bold', color: lblClr, whiteSpace: 'nowrap', textAlign: 'center'
+                    fontSize: '9.5px', fontWeight: 'bold', color: nodeClr, whiteSpace: 'nowrap', textAlign: 'center'
                 });
                 prEl.textContent = n.val.toFixed(1);
                 host.appendChild(prEl);
 
+                // 이름 (지지/저항/MaxPain) -> 숫자와 동일한 색상(nodeClr) 부여
                 var nmEl = mkEl({
                     position: 'absolute', zIndex: '7',
                     top: (LABEL_Y0 + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
-                    fontSize: '9px', fontWeight: 'bold', color: isTch ? '#ffaa00' : '#ffffff', whiteSpace: 'nowrap', textAlign: 'center',
-                    textShadow: '0 0 3px rgba(0,0,0,0.8)'
+                    fontSize: '9px', fontWeight: 'bold', color: nodeClr, whiteSpace: 'nowrap', textAlign: 'center',
+                    textShadow: '0 0 3px rgba(0,0,0,0.8)' // 어두운 배경에서 가독성을 높이기 위한 그림자
                 });
                 nmEl.textContent = n.label + (isTch ? ' ⚡' : '');
                 host.appendChild(nmEl);
@@ -1664,14 +1666,11 @@
                 var counts = d.touchCounts || {};
                 var cnt = counts[n.key] || 0;
                 if (cnt > 0) {
-                    var bg = isTch ? 'rgba(255,170,0,0.22)' : isR ? 'rgba(255,60,60,0.18)' : isMp ? 'rgba(255,204,0,0.15)' : 'rgba(68,136,255,0.18)';
-                    var bdr = isTch ? 'rgba(255,170,0,0.6)' : isR ? 'rgba(255,80,80,0.4)' : isMp ? 'rgba(255,204,0,0.4)' : 'rgba(68,136,255,0.4)';
-                    var clr = isTch ? '#ffcc00' : isR ? '#ff7777' : isMp ? '#ffcc00' : '#7799ff';
                     var cEl = mkEl({
                         position: 'absolute', zIndex: '7',
                         top: (COUNT_Y0 + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
                         fontSize: '9px', fontWeight: 'bold', padding: '1px 6px', borderRadius: '8px',
-                        background: bg, border: '1px solid ' + bdr, color: clr, whiteSpace: 'nowrap'
+                        background: 'rgba(0,0,0,0.4)', border: '1px solid ' + nodeClr, color: nodeClr, whiteSpace: 'nowrap'
                     });
                     cEl.textContent = '×' + cnt + (isTch ? ' +1?' : '');
                     if (isTch) cEl.style.animation = 'tlPulse 1.3s ease-in-out infinite';
