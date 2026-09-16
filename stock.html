@@ -1469,7 +1469,7 @@
             var TRK_W = 1 - PAD_L - PAD_R;
             var CURR_LBL_Y = 0;
             var CURR_TRI_Y = 14;
-            var HL_Y = 30; // H와 L의 높이를 동일하게 맞춰 이질감 제거
+            var HL_Y = 22; // H와 L의 높이를 동일하게 맞춰 이질감 제거
             var TRACK_Y = 44;
             var TRACK_H = 7;
             var NODE_CY = TRACK_Y + TRACK_H / 2;
@@ -1583,7 +1583,7 @@
                 fontSize: '10px', fontWeight: 'bold', color: triColor, whiteSpace: 'nowrap',
                 textShadow: '0 0 8px ' + triGlow
             });
-            cLbl.textContent = '▼ ' + price.toFixed(2);
+            cLbl.textContent = price.toFixed(2);
             if (isTouched) cLbl.style.animation = 'tlPulse 1.3s ease-in-out infinite';
             host.appendChild(cLbl);
 
