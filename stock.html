@@ -1469,13 +1469,14 @@
             var TRK_W = 1 - PAD_L - PAD_R;
             var CURR_LBL_Y = 0;
             var CURR_TRI_Y = 14;
-            var HL_Y = 22; // H와 L의 높이를 동일하게 맞춰 이질감 제거
+            var HL_Y = 30;
             var TRACK_Y = 44;
             var TRACK_H = 7;
             var NODE_CY = TRACK_Y + TRACK_H / 2;
             var PRICE_Y = TRACK_Y + TRACK_H + 11;
             var LABEL_Y0 = PRICE_Y + 13;
-            var COUNT_Y0 = LABEL_Y0 + 13;
+            var PCT_Y0 = LABEL_Y0 + 12; // ★ 퍼센트(%) 표시용 Y축 위치 추가
+            var COUNT_Y0 = PCT_Y0 + 13;   // 카운트 위치 한 칸 아래로 밀기
             var TOTAL_H = COUNT_Y0 + 20;
 
             host.style.position = 'relative';
@@ -1497,30 +1498,25 @@
             ];
 
             var touchedKey = d.touchedKey || null;
-
-            // dayHigh나 dayLow가 0이거나 없을 경우(본장 전 등), 현재가(price) 혹은 1차 저항/지지 범위를 기본값으로 대체
             var dayHigh = (d.dayHigh && d.dayHigh > 0) ? d.dayHigh : Math.min(r2, price * 1.01);
             var dayLow = (d.dayLow && d.dayLow > 0) ? d.dayLow : Math.max(s2, price * 0.99);
-
             var showH = dayHigh > 0 && dayHigh <= r2;
             var showL = dayLow > 0 && dayLow >= s2;
 
-            // 본래의 고가/저가 퍼센트 계산 (그라데이션 전용)
             var origPctH = showH ? pct(dayHigh) : (1 - PAD_R) * 100;
             var origPctL = showL ? pct(dayLow) : PAD_L * 100;
 
-            // 렌더링용 퍼센트 복사 (텍스트 겹침 방지용 벌림 계산)
             var dispPctH = origPctH;
             var dispPctL = origPctL;
             if (showH && showL && Math.abs(dispPctH - dispPctL) < 8) {
-                dispPctH += 5; // H는 우측으로
-                dispPctL -= 5; // L은 좌측으로
+                dispPctH += 5;
+                dispPctL -= 5;
             }
 
             var pctP = pct(price);
             var nodePcts = nodes.map(function (n) { return pct(n.val); });
 
-            // 1. 가로바 배경 (밝은 회색)
+            // 1. 가로바 배경
             var trackBg = mkEl({
                 position: 'absolute', zIndex: '1',
                 top: TRACK_Y + 'px', height: TRACK_H + 'px',
@@ -1529,7 +1525,7 @@
             });
             host.appendChild(trackBg);
 
-            // 2. H/L 구간 그라데이션 오버레이 (실제 고가/저가 기준 origPctH, origPctL 사용으로 정상 표시)
+            // 2. H/L 그라데이션 오버레이
             var gradL = Math.min(origPctL, origPctH);
             var gradR = Math.max(origPctL, origPctH);
             var gradW = Math.max(0, gradR - gradL);
@@ -1548,7 +1544,7 @@
                 }));
             }
 
-            // 3. H/L 레이블 (동일한 높이선 HL_Y 유지, 좌우 위치만 분리)
+            // 3. H/L 레이블
             if (showH) {
                 var hEl = mkEl({
                     position: 'absolute', zIndex: '6', top: HL_Y + 'px',
@@ -1572,7 +1568,7 @@
                 host.appendChild(lEl);
             }
 
-            // 4. 현재가 삼각형 + 레이블
+            // 4. 현재가 삼각형 + 레이블 (역삼각형 제거 상태 유지)
             var isTouched = !!touchedKey;
             var triColor = isTouched ? '#ffcc00' : '#00ddff';
             var triGlow = isTouched ? 'rgba(255,204,0,0.9)' : 'rgba(0,221,255,0.8)';
@@ -1628,7 +1624,7 @@
                 host.appendChild(dot);
             });
 
-            // 6. 하단 레이블 (가격과 이름을 동일한 노드 색상으로 일치)
+            // 6. 하단 레이블 (가격, 이름, 그리고 요청하신 증감율 % 추가)
             var offsets = nodePcts.map(function () { return 0; });
             for (var i = 0; i < nodePcts.length - 1; i++) {
                 if (nodePcts[i + 1] - nodePcts[i] < 9) {
@@ -1640,8 +1636,6 @@
                 var lp = nodePcts[i];
                 var off = offsets[i];
                 var isTch = (touchedKey === n.key);
-
-                // 터치되었을 때는 황금색 강조, 평소에는 각 노드 고유 색상(파랑/노랑/빨강) 적용
                 var nodeClr = isTch ? '#ffaa00' : n.color;
 
                 // 가격 숫자
@@ -1653,16 +1647,28 @@
                 prEl.textContent = n.val.toFixed(1);
                 host.appendChild(prEl);
 
-                // 이름 (지지/저항/MaxPain) -> 숫자와 동일한 색상(nodeClr) 부여
+                // 이름 (2차지지, 1차지지, MaxPain 등)
                 var nmEl = mkEl({
                     position: 'absolute', zIndex: '7',
                     top: (LABEL_Y0 + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
                     fontSize: '9px', fontWeight: 'bold', color: nodeClr, whiteSpace: 'nowrap', textAlign: 'center',
-                    textShadow: '0 0 3px rgba(0,0,0,0.8)' // 어두운 배경에서 가독성을 높이기 위한 그림자
+                    textShadow: '0 0 3px rgba(0,0,0,0.8)'
                 });
                 nmEl.textContent = n.label + (isTch ? ' ⚡' : '');
                 host.appendChild(nmEl);
 
+                // ★ 현재가 대비 등락률(%) 계산 및 출력 ((**.**%) 형태)
+                var diffPct = ((n.val - price) / price) * 100;
+                var pctSign = diffPct > 0 ? '+' : '';
+                var pctEl = mkEl({
+                    position: 'absolute', zIndex: '7',
+                    top: (PCT_Y0 + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
+                    fontSize: '8.5px', color: '#bbbbbb', whiteSpace: 'nowrap', textAlign: 'center'
+                });
+                pctEl.textContent = '(' + pctSign + diffPct.toFixed(2) + '%)';
+                host.appendChild(pctEl);
+
+                // 터치 카운트
                 var counts = d.touchCounts || {};
                 var cnt = counts[n.key] || 0;
                 if (cnt > 0) {
