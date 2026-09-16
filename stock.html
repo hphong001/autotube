@@ -1576,18 +1576,32 @@
                 host.appendChild(lEl);
             }
 
-            // 4. 현재가 레이블 (역삼각형 제외)
+            // 4. 현재가 레이블 좌우에 (최저가 대비 상승률) 현재가 (고가 대비 하락률) 출력
             var isTouched = !!touchedKey;
             var triColor = isTouched ? '#ffcc00' : '#00ddff';
             var triGlow = isTouched ? 'rgba(255,204,0,0.9)' : 'rgba(0,221,255,0.8)';
 
+            // 최저가 대비 상승률 계산 ((현재가 - 저가) / 저가 * 100)
+            var riseFromLow = (dayLow > 0 && price >= dayLow) ? ((price - dayLow) / dayLow) * 100 : 0;
+            var riseStr = '(+' + riseFromLow.toFixed(2) + '%)';
+
+            // 최고가 대비 하락율 계산 ((현재가 - 고가) / 고가 * 100)
+            var dropFromHigh = (dayHigh > 0 && price <= dayHigh) ? ((price - dayHigh) / dayHigh) * 100 : 0;
+            var dropStr = '(' + dropFromHigh.toFixed(2) + '%)'; // 마이너스는 자동 포함됨
+
             var cLbl = mkEl({
                 position: 'absolute', zIndex: '12',
                 top: CURR_LBL_Y + 'px', left: pctP + '%', transform: 'translateX(-50%)',
-                fontSize: '10px', fontWeight: 'bold', color: triColor, whiteSpace: 'nowrap',
-                textShadow: '0 0 8px ' + triGlow
+                fontSize: '9.5px', fontWeight: 'bold', color: triColor, whiteSpace: 'nowrap',
+                textShadow: '0 0 8px ' + triGlow,
+                display: 'flex', alignItems: 'center', gap: '6px'
             });
-            cLbl.textContent = price.toFixed(2);
+
+            // 좌측 상승율, 중앙 현재가, 우측 하락율 HTML 구조 주입
+            cLbl.innerHTML = '<span style="font-size:8.5px; color:#66bbff; font-weight:normal;">' + riseStr + '</span>' +
+                '<span style="font-size:11px; font-weight:900; color:' + triColor + ';">' + price.toFixed(2) + '</span>' +
+                '<span style="font-size:8.5px; color:#ff6666; font-weight:normal;">' + dropStr + '</span>';
+
             if (isTouched) cLbl.style.animation = 'tlPulse 1.3s ease-in-out infinite';
             host.appendChild(cLbl);
 
