@@ -1970,9 +1970,12 @@
         var yahooWs = null;
         function yahooWsConnect() {
             try {
+                // ★ 개별 종목은 빼고, 상단 지수(QQQ, SPY) 전용으로만 야후 웹소켓 연결
+                var macroSubs = ['QQQ', 'SPY'];
+
                 yahooWs = new WebSocket('wss://streamer.finance.yahoo.com');
                 yahooWs.binaryType = 'arraybuffer';
-                yahooWs.onopen = function () { yahooWs.send(JSON.stringify({ subscribe: getAllSubs() })); };
+                yahooWs.onopen = function () { yahooWs.send(JSON.stringify({ subscribe: macroSubs })); };
                 yahooWs.onmessage = function (ev) {
                     if (!PricingData) return;
                     try {
@@ -1981,38 +1984,8 @@
 
                         var ticker = msg.id;
                         var safePrice = Number(msg.price) || 0;
-                        var pIdx = panelTickers.indexOf(ticker);
 
-                        if (pIdx >= 0 && safePrice > 0) {
-
-                            // ★ 핵심 수정: 야후 웹소켓 거래량 누락 방지(캐싱) 로직 적용 ★
-                            if (!window._lastVolMap) window._lastVolMap = {};
-
-                            var incomingVol = Number(msg.dayVolume) || 0;
-                            if (incomingVol > 0) {
-                                window._lastVolMap[ticker] = incomingVol; // 정상 거래량 캐시 업데이트
-                            }
-
-                            var volToUpdate = window._lastVolMap[ticker] || null; // 수신값 없으면 캐시값 사용
-
-                            // 기존 msg.dayVolume 대신 방어 처리된 volToUpdate 사용
-                            updatePanelPrice(pIdx, safePrice, msg.changePercent, msg.change, volToUpdate);
-
-                            if (panelDataStore[pIdx]) {
-                                panelDataStore[pIdx].price = safePrice;
-                                if (msg.dayHigh > 0) panelDataStore[pIdx].dayHigh = Number(msg.dayHigh);
-                                if (msg.dayLow > 0) panelDataStore[pIdx].dayLow = Number(msg.dayLow);
-
-                                var p = 'p' + pIdx + '-';
-                                if (panelDataStore[pIdx].maxPain > 0) {
-                                    renderTimeline(p, panelDataStore[pIdx]);
-                                }
-                                if (panelDataStore[pIdx].optionRows && panelDataStore[pIdx].optionRows.length > 0) {
-                                    renderOiSafe(pIdx, panelDataStore[pIdx].optionRows, safePrice);
-                                }
-                            }
-                        }
-
+                        // 상단 네온바에 들어가는 QQQ, SPY 전용 처리만 남김
                         if (ticker === 'QQQ') {
                             globQqq = msg.changePercent;
                             updateNeonItem('neon-qqq', '나스닥(QQQ)', safePrice, msg.changePercent);
@@ -2028,6 +2001,7 @@
                 };
             } catch (e) { }
         }
+
 
         function initGlobalTickersListener() {
             ['QQQ', 'SPY'].forEach(function (ticker) {
