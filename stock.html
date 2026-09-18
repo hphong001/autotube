@@ -1514,6 +1514,10 @@
                 var rtRef = firebase.database().ref('tickers/' + ticker + '/realtime');
                 rtRef.on('value', function (snap) {
                     if (fbGen[panelIdx] !== myGen || panelTickers[panelIdx] !== ticker) return;
+
+                    // ★ [핵심 추가] 실시간 틱이 들어올 때마다 키움 수신 시간을 최신으로 갱신!
+                    lastKiwoomUpdate[panelIdx] = Date.now();
+
                     var rtData = snap.val();
                     if (rtData) {
                         if (!window._lastVolMap) window._lastVolMap = {};
@@ -1566,19 +1570,36 @@
         var isUsingYahooFallback = { 0: false, 1: false, 2: false };
 
         // 키움 데이터가 끊겼는지 1초마다 체크하는 감시 타이머 (신규)
+        // 키움 단절 여부 체크 및 야후 백업 전환 타이머 (1초 주기)
         setInterval(function () {
             var now = Date.now();
             [0, 1, 2].forEach(function (panelIdx) {
                 var ticker = panelTickers[panelIdx];
                 if (!ticker) return;
 
-                // 4초 이상 키움 데이터가 안 들어오면 야후 백업 모드 진입
-                if (now - lastKiwoomUpdate[panelIdx] > 2000) {
+                var dotEl = document.getElementById('p' + panelIdx + '-status-dot');
+
+                // 2.5초 이상 키움 데이터가 안 들어오는지 체크
+                if (now - lastKiwoomUpdate[panelIdx] > 2500) {
                     if (!isUsingYahooFallback[panelIdx]) {
-                        console.warn(ticker + " 키움 응답 지연 -> 야후 실시간 백업으로 임시 전환합니다.");
+                        console.warn(ticker + " 키움 응답 지연 -> 야후 실시간 백업으로 전환합니다.");
                         isUsingYahooFallback[panelIdx] = true;
                     }
                     fetchYahooFallbackData(panelIdx, ticker);
+
+                    // 야후 백업 중일 때는 점을 '파란색'으로 깜빡임
+                    if (dotEl) {
+                        dotEl.style.backgroundColor = '#00aaff';
+                        dotEl.style.boxShadow = '0 0 6px #00aaff';
+                        dotEl.style.animation = 'blinkDot 1s infinite alternate';
+                    }
+                } else {
+                    // 키움이 정상 작동 중일 때는 확실하게 '빨간색' 유지
+                    if (!isUsingYahooFallback[panelIdx] && dotEl) {
+                        dotEl.style.backgroundColor = '#ff4444';
+                        dotEl.style.boxShadow = '0 0 6px #ff4444';
+                        dotEl.style.animation = 'blinkDot 0.8s infinite alternate';
+                    }
                 }
             });
         }, 1000);
