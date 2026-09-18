@@ -1644,36 +1644,114 @@
             var s1 = d.support1 || 0, s2 = d.support2 || 0;
             if (!r2 || !s2 || !mp || price <= 0) { host.innerHTML = ''; return; }
 
-            // 현재 종목의 오늘 등락률(%) 가져오기 (예: +1.96% 라면 chgRate = 1.96)
             var currentChgRate = Number(d.change) || 0;
-
-            // 만약 d.change에 퍼센트 문자열이 들어오는 경우를 대비한 안전 파싱
-            var cgEl = document.getElementById(prefix.replace('p', 'p') + 'chg'); // 혹은 전달받은 d 데이터 활용
-            // 파이프라인 안에서 전달된 change 퍼센트 활용 (없으면 0)
 
             var PAD_L = 0.05, PAD_R = 0.05;
             var TRK_W = 1 - PAD_L - PAD_R;
-            var CURR_LBL_Y = 0;
-            var CURR_TRI_Y = 14;
-            var HL_Y = 30;
-            var TRACK_Y = 44;
-            var TRACK_H = 7;
-            var NODE_CY = TRACK_Y + TRACK_H / 2;
-            var PRICE_Y = TRACK_Y + TRACK_H + 11;
-            var LABEL_Y0 = PRICE_Y + 13;
-            var PCT_Y0 = LABEL_Y0 + 12;
-            var COUNT_Y0 = PCT_Y0 + 13;
-            var TOTAL_H = COUNT_Y0 + 20;
-
-            host.style.position = 'relative';
-            host.style.height = TOTAL_H + 'px';
-            host.innerHTML = '';
 
             var minV = s2, maxV = r2, span = maxV - minV || 1;
             function pct(v) {
                 var r = Math.max(0, Math.min(1, (v - minV) / span));
                 return (PAD_L + r * TRK_W) * 100;
             }
+
+            var dayHigh = (d.dayHigh && d.dayHigh > 0) ? d.dayHigh : Math.min(r2, price * 1.01);
+            var dayLow = (d.dayLow && d.dayLow > 0) ? d.dayLow : Math.max(s2, price * 0.99);
+
+            var pctL = pct(dayLow);
+            var pctH = pct(dayHigh);
+            if (pctH - pctL < 5) { pctH += 3; pctL -= 3; }
+
+            var pctP = pct(price);
+
+            // Y축 좌표 설정
+            var BOT_TRACK_Y = 50;
+            var TOP_BASE_Y = BOT_TRACK_Y - 14;
+            var TOP_TRACK_H = 5;
+            var TOP_TRI_Y = TOP_BASE_Y - 10;
+            var TOP_LBL_Y = TOP_TRI_Y - 14;
+
+            var BOT_TRACK_H = 7;
+            var NODE_CY = BOT_TRACK_Y + BOT_TRACK_H / 2;
+            var PRICE_Y = BOT_TRACK_Y + BOT_TRACK_H + 5;
+            var LABEL_Y0 = PRICE_Y + 12;
+            var PCT_Y0 = LABEL_Y0 + 12;
+            var COUNT_Y0 = PCT_Y0 + 12;
+            var TOTAL_H = COUNT_Y0 + 8;
+
+            host.style.position = 'relative';
+            host.style.height = TOTAL_H + 'px';
+            host.innerHTML = '';
+
+            // ────────────────────────────────────────────
+            // 1. [상단] 당일변동 ("[당일변동] -> [L 360.8] -> [가로바] -> [H 370.9]")
+            // ────────────────────────────────────────────
+
+            // L 가격 표시 (기준점)
+            var lEl = mkEl({
+                position: 'absolute', zIndex: '6', top: (TOP_BASE_Y - 4) + 'px', left: (pctL + 0.8) + '%', transform: 'translateX(-100%)',
+                fontSize: '9.5px', fontWeight: 'bold', color: '#66bbff', whiteSpace: 'nowrap'
+            });
+            lEl.textContent = 'L ' + dayLow.toFixed(1);
+            host.appendChild(lEl);
+
+            // "당일변동" 타이틀 (L 360.8 바로 앞(왼쪽)에 간격을 두고 밀착 배치)
+            var titleEl = mkEl({
+                position: 'absolute', zIndex: '5', top: (TOP_BASE_Y - 4) + 'px', left: (pctL + 0.8) + '%', transform: 'translateX(calc(-100% - 48px))',
+                fontSize: '9.5px', fontWeight: 'bold', color: '#8899aa', whiteSpace: 'nowrap'
+            });
+            titleEl.textContent = '당일변동';
+            host.appendChild(titleEl);
+
+            // H-L 구간 가로바 (L 바로 오른쪽에 여백을 두고 시작)
+            var hlTrackBg = mkEl({
+                position: 'absolute', zIndex: '1', top: TOP_BASE_Y + 'px', height: TOP_TRACK_H + 'px',
+                left: (pctL + 1.2) + '%', width: (pctH - (pctL + 1.2)) + '%',
+                background: 'linear-gradient(90deg, rgba(68,136,255,0.8) 0%, rgba(120,120,160,0.4) 50%, rgba(255,68,68,0.8) 100%)',
+                borderRadius: '3px',
+            });
+            host.appendChild(hlTrackBg);
+
+            // H 가격 표시 (가로바 바로 오른쪽)
+            var hEl = mkEl({
+                position: 'absolute', zIndex: '6', top: (TOP_BASE_Y - 4) + 'px', left: (pctH + 1.6) + '%', transform: 'translateX(0%)',
+                fontSize: '9.5px', fontWeight: 'bold', color: '#ff6666', whiteSpace: 'nowrap'
+            });
+            hEl.textContent = 'H ' + dayHigh.toFixed(1);
+            host.appendChild(hEl);
+
+            // 실시간 현재가 및 변동률
+            var riseFromLow = (dayLow > 0 && price >= dayLow) ? ((price - dayLow) / dayLow) * 100 : 0;
+            var riseStr = '(+' + riseFromLow.toFixed(2) + '%)';
+            var dropFromHigh = (dayHigh > 0 && price <= dayHigh) ? ((price - dayHigh) / dayHigh) * 100 : 0;
+            var dropStr = '(' + dropFromHigh.toFixed(2) + '%)';
+
+            var cLbl = mkEl({
+                position: 'absolute', zIndex: '12', top: TOP_LBL_Y + 'px', left: pctP + '%', transform: 'translateX(-50%)',
+                fontSize: '9.5px', fontWeight: 'bold', color: '#00ddff', whiteSpace: 'nowrap',
+                display: 'flex', alignItems: 'center', gap: '5px'
+            });
+            cLbl.innerHTML = '<span style="font-size:8.5px; color:#66bbff; font-weight:normal;">' + riseStr + '</span>' +
+                '<span style="font-size:11px; font-weight:900; color:#00ddff;">' + price.toFixed(2) + '</span>' +
+                '<span style="font-size:8.5px; color:#ff6666; font-weight:normal;">' + dropStr + '</span>';
+            host.appendChild(cLbl);
+
+            var tri = mkEl({
+                position: 'absolute', zIndex: '11', top: TOP_TRI_Y + 'px', left: pctP + '%', transform: 'translateX(-50%)',
+                width: '0', height: '0', borderLeft: '5px solid transparent', borderRight: '5px solid transparent',
+                borderTop: '7px solid #00ddff'
+            });
+            host.appendChild(tri);
+
+            // ────────────────────────────────────────────
+            // 2. [하단] 옵션 기준 지지/저항 마스터 레벨 바 영역
+            // ────────────────────────────────────────────
+            var botTrackBg = mkEl({
+                position: 'absolute', zIndex: '1', top: BOT_TRACK_Y + 'px', height: BOT_TRACK_H + 'px',
+                left: (PAD_L * 100) + '%', right: (PAD_R * 100) + '%',
+                background: '#3a3a55', borderRadius: '4px',
+            });
+            host.appendChild(botTrackBg);
 
             var nodes = [
                 { key: 's2', val: s2, label: '2차지지', color: '#00aaff', glow: 'rgba(0,170,255,0.7)' },
@@ -1683,148 +1761,19 @@
                 { key: 'r2', val: r2, label: '2차저항', color: '#ff3333', glow: 'rgba(255,51,51,0.7)' },
             ];
 
-            var touchedKey = d.touchedKey || null;
-            var dayHigh = (d.dayHigh && d.dayHigh > 0) ? d.dayHigh : Math.min(r2, price * 1.01);
-            var dayLow = (d.dayLow && d.dayLow > 0) ? d.dayLow : Math.max(s2, price * 0.99);
-            var showH = dayHigh > 0 && dayHigh <= r2;
-            var showL = dayLow > 0 && dayLow >= s2;
-
-            var origPctH = showH ? pct(dayHigh) : (1 - PAD_R) * 100;
-            var origPctL = showL ? pct(dayLow) : PAD_L * 100;
-
-            var dispPctH = origPctH;
-            var dispPctL = origPctL;
-            if (showH && showL && Math.abs(dispPctH - dispPctL) < 8) {
-                dispPctH += 5;
-                dispPctL -= 5;
-            }
-
-            var pctP = pct(price);
             var nodePcts = nodes.map(function (n) { return pct(n.val); });
 
-            // 1. 가로바 배경
-            var trackBg = mkEl({
-                position: 'absolute', zIndex: '1',
-                top: TRACK_Y + 'px', height: TRACK_H + 'px',
-                left: (PAD_L * 100) + '%', right: (PAD_R * 100) + '%',
-                background: '#3a3a55', borderRadius: '4px',
-            });
-            host.appendChild(trackBg);
-
-            // 2. H/L 그라데이션 오버레이
-            var gradL = Math.min(origPctL, origPctH);
-            var gradR = Math.max(origPctL, origPctH);
-            var gradW = Math.max(0, gradR - gradL);
-            if (gradW > 0) {
-                host.appendChild(mkEl({
-                    position: 'absolute', zIndex: '2',
-                    top: TRACK_Y + 'px', height: TRACK_H + 'px',
-                    left: gradL + '%', width: gradW + '%',
-                    borderRadius: '3px',
-                    background: 'linear-gradient(90deg,' +
-                        'rgba(68,136,255,0.85) 0%,' +
-                        'rgba(68,100,200,0.40) 25%,' +
-                        'rgba(90,90,130,0.20) 50%,' +
-                        'rgba(200,80,80,0.40) 75%,' +
-                        'rgba(255,68,68,0.85) 100%)',
-                }));
-            }
-
-            // 3. H/L 레이블
-            if (showH) {
-                var hEl = mkEl({
-                    position: 'absolute', zIndex: '6', top: HL_Y + 'px',
-                    left: dispPctH + '%', transform: 'translateX(-50%)',
-                    fontSize: '9.5px', fontWeight: 'bold', color: '#ff6666', whiteSpace: 'nowrap',
-                    background: 'rgba(7,7,12,0.9)', padding: '0 4px', borderRadius: '3px',
-                    border: '1px solid rgba(255,102,102,0.3)'
-                });
-                hEl.textContent = 'H ' + dayHigh.toFixed(1);
-                host.appendChild(hEl);
-            }
-            if (showL) {
-                var lEl = mkEl({
-                    position: 'absolute', zIndex: '6', top: HL_Y + 'px',
-                    left: dispPctL + '%', transform: 'translateX(-50%)',
-                    fontSize: '9.5px', fontWeight: 'bold', color: '#66bbff', whiteSpace: 'nowrap',
-                    background: 'rgba(7,7,12,0.9)', padding: '0 4px', borderRadius: '3px',
-                    border: '1px solid rgba(102,187,255,0.3)'
-                });
-                lEl.textContent = 'L ' + dayLow.toFixed(1);
-                host.appendChild(lEl);
-            }
-
-            // 4. 현재가 레이블 좌우에 (최저가 대비 상승률) 현재가 (고가 대비 하락률) 출력
-            var isTouched = !!touchedKey;
-            var triColor = isTouched ? '#ffcc00' : '#00ddff';
-            var triGlow = isTouched ? 'rgba(255,204,0,0.9)' : 'rgba(0,221,255,0.8)';
-
-            // 최저가 대비 상승률 계산 ((현재가 - 저가) / 저가 * 100)
-            var riseFromLow = (dayLow > 0 && price >= dayLow) ? ((price - dayLow) / dayLow) * 100 : 0;
-            var riseStr = '(+' + riseFromLow.toFixed(2) + '%)';
-
-            // 최고가 대비 하락율 계산 ((현재가 - 고가) / 고가 * 100)
-            var dropFromHigh = (dayHigh > 0 && price <= dayHigh) ? ((price - dayHigh) / dayHigh) * 100 : 0;
-            var dropStr = '(' + dropFromHigh.toFixed(2) + '%)'; // 마이너스는 자동 포함됨
-
-            var cLbl = mkEl({
-                position: 'absolute', zIndex: '12',
-                top: CURR_LBL_Y + 'px', left: pctP + '%', transform: 'translateX(-50%)',
-                fontSize: '9.5px', fontWeight: 'bold', color: triColor, whiteSpace: 'nowrap',
-                textShadow: '0 0 8px ' + triGlow,
-                display: 'flex', alignItems: 'center', gap: '6px'
-            });
-
-            // 좌측 상승율, 중앙 현재가, 우측 하락율 HTML 구조 주입
-            cLbl.innerHTML = '<span style="font-size:8.5px; color:#66bbff; font-weight:normal;">' + riseStr + '</span>' +
-                '<span style="font-size:11px; font-weight:900; color:' + triColor + ';">' + price.toFixed(2) + '</span>' +
-                '<span style="font-size:8.5px; color:#ff6666; font-weight:normal;">' + dropStr + '</span>';
-
-            if (isTouched) cLbl.style.animation = 'tlPulse 1.3s ease-in-out infinite';
-            host.appendChild(cLbl);
-
-            var tri = mkEl({
-                position: 'absolute', zIndex: '11',
-                top: CURR_TRI_Y + 'px', left: pctP + '%', transform: 'translateX(-50%)',
-                width: '0', height: '0',
-                borderLeft: '7px solid transparent', borderRight: '7px solid transparent',
-                borderTop: '10px solid ' + triColor,
-                filter: 'drop-shadow(0 0 5px ' + triGlow + ')'
-            });
-            if (isTouched) tri.style.animation = 'tlPulse 1.3s ease-in-out infinite';
-            host.appendChild(tri);
-
-            // 5. 노드 점 + 진입존
             nodes.forEach(function (n) {
                 var lp = pct(n.val);
-                var isTch = (touchedKey === n.key);
-
-                if (isTch) {
-                    var zoneW = (n.val * 0.005 / span) * TRK_W * 100 * 2;
-                    host.appendChild(mkEl({
-                        position: 'absolute', zIndex: '3',
-                        top: (TRACK_Y - 4) + 'px', left: (lp - zoneW / 2) + '%', width: zoneW + '%',
-                        height: (TRACK_H + 8) + 'px',
-                        background: 'rgba(255,204,0,0.13)', border: '1px solid rgba(255,204,0,0.5)',
-                        borderRadius: '3px', animation: 'tlPulse 1.3s ease-in-out infinite',
-                    }));
-                }
-
-                var dotSz = isTch ? 14 : 10;
+                var dotSz = 10;
                 var dot = mkEl({
-                    position: 'absolute', zIndex: '5',
-                    top: (NODE_CY - dotSz / 2) + 'px', left: lp + '%', transform: 'translateX(-50%)',
+                    position: 'absolute', zIndex: '5', top: (NODE_CY - dotSz / 2) + 'px', left: lp + '%', transform: 'translateX(-50%)',
                     width: dotSz + 'px', height: dotSz + 'px', borderRadius: '50%',
-                    background: n.color, boxShadow: '0 0 ' + (isTch ? 14 : 5) + 'px ' + n.glow,
+                    background: n.color, boxShadow: '0 0 5px ' + n.glow,
                 });
-                if (isTch) {
-                    dot.style.border = '2px solid #ffcc00';
-                    dot.style.animation = 'tlPulseBorder 1.3s ease-in-out infinite';
-                }
                 host.appendChild(dot);
             });
 
-            // 6. 하단 레이블 (가격, 이름, 오늘 기준 총 변동률, 색상 일치)
             var offsets = nodePcts.map(function () { return 0; });
             for (var i = 0; i < nodePcts.length - 1; i++) {
                 if (nodePcts[i + 1] - nodePcts[i] < 9) {
@@ -1835,56 +1784,34 @@
             nodes.forEach(function (n, i) {
                 var lp = nodePcts[i];
                 var off = offsets[i];
-                var isTch = (touchedKey === n.key);
-                var nodeClr = isTch ? '#ffaa00' : n.color;
+                var nodeClr = n.color;
 
-                // 가격 숫자
                 var prEl = mkEl({
-                    position: 'absolute', zIndex: '7',
-                    top: (PRICE_Y + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
+                    position: 'absolute', zIndex: '7', top: (PRICE_Y + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
                     fontSize: '9.5px', fontWeight: 'bold', color: nodeClr, whiteSpace: 'nowrap', textAlign: 'center'
                 });
                 prEl.textContent = n.val.toFixed(1);
                 host.appendChild(prEl);
 
-                // 이름
                 var nmEl = mkEl({
-                    position: 'absolute', zIndex: '7',
-                    top: (LABEL_Y0 + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
+                    position: 'absolute', zIndex: '7', top: (LABEL_Y0 + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
                     fontSize: '9px', fontWeight: 'bold', color: nodeClr, whiteSpace: 'nowrap', textAlign: 'center',
                     textShadow: '0 0 3px rgba(0,0,0,0.8)'
                 });
-                nmEl.textContent = n.label + (isTch ? ' ⚡' : '');
+                nmEl.textContent = n.label;
                 host.appendChild(nmEl);
 
-                // ★ 오늘 등락률 + 현재가 대비 거리 합산 (오늘 기준 총 변동률 계산)
                 var diffPctFromCurrent = ((n.val - price) / price) * 100;
                 var totalTargetRate = currentChgRate + diffPctFromCurrent;
                 var signStr = totalTargetRate > 0 ? '+' : '';
 
                 var pctEl = mkEl({
-                    position: 'absolute', zIndex: '7',
-                    top: (PCT_Y0 + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
+                    position: 'absolute', zIndex: '7', top: (PCT_Y0 + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
                     fontSize: '8.5px', fontWeight: 'bold', color: nodeClr, whiteSpace: 'nowrap', textAlign: 'center',
                     textShadow: '0 0 3px rgba(0,0,0,0.8)'
                 });
                 pctEl.textContent = '(' + signStr + totalTargetRate.toFixed(2) + '%)';
                 host.appendChild(pctEl);
-
-                // 터치 카운트
-                var counts = d.touchCounts || {};
-                var cnt = counts[n.key] || 0;
-                if (cnt > 0) {
-                    var cEl = mkEl({
-                        position: 'absolute', zIndex: '7',
-                        top: (COUNT_Y0 + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
-                        fontSize: '9px', fontWeight: 'bold', padding: '1px 6px', borderRadius: '8px',
-                        background: 'rgba(0,0,0,0.4)', border: '1px solid ' + nodeClr, color: nodeClr, whiteSpace: 'nowrap'
-                    });
-                    cEl.textContent = '×' + cnt + (isTch ? ' +1?' : '');
-                    if (isTch) cEl.style.animation = 'tlPulse 1.3s ease-in-out infinite';
-                    host.appendChild(cEl);
-                }
             });
         }
 
