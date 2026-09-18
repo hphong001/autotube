@@ -1643,14 +1643,14 @@
             var panel = panelTickers.indexOf(d.ticker);
             if (panel < 0) return;
 
-            // 1. 키움 데이터 정상 수신 기록 및 야후 백업 해제
+            // 키움 데이터가 들어왔으므로 시간 갱신 및 야후 백업 모드 강제 해제
             lastKiwoomUpdate[panel] = Date.now();
             if (isUsingYahooFallback[panel]) {
                 console.log(d.ticker + " -> 키움 데이터 복구됨. 야후 백업 모드를 종료합니다.");
                 isUsingYahooFallback[panel] = false;
             }
 
-            // 2. [핵심] 키움 데이터가 들어온 순간 즉시 패널 점을 '빨간색'으로 변경 및 깜빡임 적용
+            // 즉시 빨간색 불 및 애니메이션 적용
             var dotEl = document.getElementById('p' + panel + '-status-dot');
             if (dotEl) {
                 dotEl.style.backgroundColor = '#ff4444';
@@ -1694,13 +1694,15 @@
 
         // 2. [감시 및 상태 표시 타이머 (1초 주기)] - 키움 단절 여부 체크 및 점(Dot) 색상/깜빡임 제어
         // 키움 단절 여부 체크 및 야후 백업 전환 타이머 (1초 주기)
+        // 감시 타이머 (2.5초 이상 키움 응답 없으면 야후 전환)
         setInterval(function () {
             var now = Date.now();
             [0, 1, 2].forEach(function (panelIdx) {
                 var ticker = panelTickers[panelIdx];
                 if (!ticker) return;
 
-                // 2.5초 이상 키움 데이터가 안 들어오면 야후 백업 모드 진입
+                var dotEl = document.getElementById('p' + panelIdx + '-status-dot');
+
                 if (now - lastKiwoomUpdate[panelIdx] > 2500) {
                     if (!isUsingYahooFallback[panelIdx]) {
                         console.warn(ticker + " 키움 응답 지연 -> 야후 실시간 백업으로 전환합니다.");
@@ -1708,24 +1710,31 @@
                     }
                     fetchYahooFallbackData(panelIdx, ticker);
 
-                    // 야후 백업 중일 때는 점을 '파란색'으로 깜빡임
-                    var dotEl = document.getElementById('p' + panelIdx + '-status-dot');
+                    // 야후 백업 중: 파란색 깜빡임
                     if (dotEl) {
                         dotEl.style.backgroundColor = '#00aaff';
                         dotEl.style.boxShadow = '0 0 6px #00aaff';
                         dotEl.style.animation = 'blinkDot 1s infinite alternate';
                     }
+                } else {
+                    // 키움 정상 작동 중: 빨간색 깜빡임 (야후 모드가 아닐 때만)
+                    if (!isUsingYahooFallback[panelIdx] && dotEl) {
+                        dotEl.style.backgroundColor = '#ff4444';
+                        dotEl.style.boxShadow = '0 0 6px #ff4444';
+                        dotEl.style.animation = 'blinkDot 0.8s infinite alternate';
+                    }
                 }
             });
         }, 1000);
 
-        // 3. 야후 백업 데이터 조회 함수
-        // 야후 백업 데이터 조회 함수 (CORS 우회 프록시 적용)
+        // 야후 백업 데이터 조회 함수 (심볼 예외처리 및 프록시 안정화)
         function fetchYahooFallbackData(panelIdx, ticker) {
             if (!isUsingYahooFallback[panelIdx]) return;
-            var yahooSymbol = ticker === "SPX" ? "^SPX" : ticker;
 
-            // 직접 찌르면 CORS에 걸리므로, 브라우저가 허용하는 공개 프록시를 경유합니다.
+            // 야후 API 규격에 맞는 심볼 변환
+            var yahooSymbol = ticker;
+            if (ticker === "SPX") yahooSymbol = "^SPX";
+
             var targetUrl = "https://query1.finance.yahoo.com/v8/finance/chart/" + encodeURIComponent(yahooSymbol) + "?interval=1d&range=1d";
             var proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(targetUrl);
 
@@ -1745,8 +1754,8 @@
                     var changePct = prevClose > 0 ? (changeAmt / prevClose) * 100 : 0;
                     var volume = meta.regularMarketVolume || 0;
 
-                    if (price > 0) {
-                        // 서버(파이어베이스)에 저장하지 않고, 오직 웹 화면(패널)에만 즉시 출력합니다.
+                    if (price > 0 && isUsingYahooFallback[panelIdx]) {
+                        // 야후 백업 시세 웹 화면에 즉시 출력
                         updatePanelPriceOnly(panelIdx, price, changePct, changeAmt, volume);
                         hidePanelOverlay(panelIdx);
                         setSelectDisabled(panelIdx, false);
