@@ -1698,16 +1698,23 @@
         }, 1000);
 
         // 3. 야후 백업 데이터 조회 함수
+        // 야후 백업 데이터 조회 함수 (CORS 우회 프록시 적용)
         function fetchYahooFallbackData(panelIdx, ticker) {
             if (!isUsingYahooFallback[panelIdx]) return;
             var yahooSymbol = ticker === "SPX" ? "^SPX" : ticker;
-            var url = "https://query1.finance.yahoo.com/v8/finance/chart/" + encodeURIComponent(yahooSymbol) + "?interval=1d&range=1d";
 
-            fetch(url)
+            // 직접 찌르면 CORS에 걸리므로, 브라우저가 허용하는 공개 프록시를 경유합니다.
+            var targetUrl = "https://query1.finance.yahoo.com/v8/finance/chart/" + encodeURIComponent(yahooSymbol) + "?interval=1d&range=1d";
+            var proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(targetUrl);
+
+            fetch(proxyUrl)
                 .then(function (res) { return res.json(); })
                 .then(function (data) {
                     if (!isUsingYahooFallback[panelIdx]) return;
-                    var meta = data.chart && data.chart.result && data.chart.result[0] && data.chart.result[0].meta;
+                    if (!data || !data.contents) return;
+
+                    var yahooJson = JSON.parse(data.contents);
+                    var meta = yahooJson.chart && yahooJson.chart.result && yahooJson.chart.result[0] && yahooJson.chart.result[0].meta;
                     if (!meta) return;
 
                     var price = meta.regularMarketPrice || 0;
@@ -1717,12 +1724,15 @@
                     var volume = meta.regularMarketVolume || 0;
 
                     if (price > 0) {
+                        // 서버(파이어베이스)에 저장하지 않고, 오직 웹 화면(패널)에만 즉시 출력합니다.
                         updatePanelPriceOnly(panelIdx, price, changePct, changeAmt, volume);
                         hidePanelOverlay(panelIdx);
                         setSelectDisabled(panelIdx, false);
                     }
                 })
-                .catch(function (err) { });
+                .catch(function (err) {
+                    console.error("야후 백업 데이터 수신 실패: ", err);
+                });
         }
 
         function updatePanelPrice(idx, price, changeRate, changeAmt, volume) {
