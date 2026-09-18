@@ -479,29 +479,35 @@
         }
 
         .sb-header {
-            display: flex;
-            justify-content: center; /* 중앙 정렬 */
-            align-items: center;
-            border-bottom: 1px dashed #2a2a2a;
-            padding-bottom: 5px;
-            margin-bottom: 8px;
-            gap: 6px;
+            padding: 8px 12px;
+            background: #0d0d1f;
+            border-radius: 6px;
+            border-left: 3px solid #ddbb00;
+            margin-bottom: 6px;
+            text-align: center; /* 가운데 정렬 */
+            border-left: none; /* 사방 테두리로 변경 */
+            border: 1px solid #2a2a4a;
+            box-shadow: inset 0 0 20px rgba(255,221,0,0.04);
         }
 
-        .sb-title {
-            color: #ddbb00;
+        .sb-line1 {
             font-size: 13px;
-            font-weight: bold;
-            text-align: center; /* 타이틀 글자 자체도 중앙 정렬 */
+            font-weight: 900;
+            color: #ffdd00;
+            margin-bottom: 4px;
         }
 
-        .sb-trend {
-            font-size: 10px;
-            color: #aaa;
-            background: #1a1a2e;
-            padding: 2px 5px;
-            border-radius: 4px;
-            white-space: nowrap;
+        .sb-line2 {
+            font-size: 13px; /* line1과 동일 크기 */
+            font-weight: 700;
+            color: #ffdd00; /* 동일 색상 */
+            margin-bottom: 4px;
+        }
+
+        .sb-line3 {
+            font-size: 13px; /* 동일 크기 */
+            font-weight: 700;
+            color: #ffdd00; /* 동일 색상 */
         }
 
         .timeline {
@@ -1158,7 +1164,168 @@
 
         function loadLS(key, def) { try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch (e) { return def; } }
         function saveLS(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) { } }
-        function numberWithCommas(x) { if (!x && x !== 0) return '─'; return Number(x).toLocaleString('en-US'); }
+        function numberWithCommas(x) {
+            if (x === null || x === undefined || x === '') return '─';
+            var n = Number(String(x).replace(/,/g, ''));
+            if (isNaN(n) || n <= 0) return '─';
+            return n.toLocaleString('en-US');
+        }
+
+
+        // ──────────────────────────────────────────────────────────
+        // ★ [PRO 버전] 아이콘 없음 + VWAP 중복 수정 + 매크로 종합 시황 추가
+        // ──────────────────────────────────────────────────────────
+        function applySmartStrategy(panelIdx) {
+            var d = panelDataStore[panelIdx];
+            if (!d || !d.price || !d.resistance1 || !d.support1) return;
+
+            var price = d.price;
+            var r1 = d.resistance1, r2 = d.resistance2;
+            var s1 = d.support1, s2 = d.support2;
+            var score = d.score || 5;
+            var vwap = d.vwap || ((d.dayHigh || price) + (d.dayLow || price) + price) / 3;
+
+            // 절대 거리 계산 (%)
+            var distToR1 = (Math.abs(r1 - price) / price) * 100;
+            var distToS1 = (Math.abs(price - s1) / price) * 100;
+            var distToVwap = (Math.abs(price - vwap) / price) * 100;
+
+            var line1 = "", line2 = "", line3 = "";
+            var titleColor = "#ffdd00";
+
+            // 1. [옵션 수급 상태 세분화]
+            var optState = "";
+            var isOverbought = score >= 8.5;
+            var isOversold = score <= 1.5;
+            var isCallHeavy = score >= 6.0 && score < 8.5;
+            var isPutHeavy = score <= 4.0 && score > 1.5;
+
+            if (isOverbought) optState = "콜 과매수(과열)";
+            else if (isOversold) optState = "풋 과매도(투매)";
+            else if (isCallHeavy) optState = "콜 매수 우위";
+            else if (isPutHeavy) optState = "풋 매수 우위";
+            else optState = "옵션 수급 중립";
+
+            // 2. [당일 추세 (VWAP) - 중복 단어 수정 완료]
+            var vwapTrend = "";
+            if (distToVwap <= 0.3) {
+                vwapTrend = "공방전 진행중";
+            } else {
+                vwapTrend = price > vwap ? "당일 매수세 우위" : "당일 매도세 우위";
+            }
+
+            // 3. [주가 위치 및 복합 시나리오 판별 (Line 1, Line 3)]
+            if (price > r1) {
+                if (isPutHeavy || isOversold) {
+                    line1 = '1차 저항($' + r1.toFixed(1) + ') 돌파 (가짜 돌파 의심)';
+                    line3 = '주가는 뚫었으나 옵션은 하락 베팅 중. 추격 매수 자제 및 휩소 주의';
+                    titleColor = "#ff8800";
+                } else if (isOverbought) {
+                    line1 = '$' + r1.toFixed(1) + ' 상향 돌파 (단기 과열 구간)';
+                    line3 = '콜옵션 과열 상태. 신규 진입보단 분할 익절하며 지지 여부($' + r1.toFixed(1) + ') 확인';
+                    titleColor = "#ff3333";
+                } else {
+                    line1 = '1차 저항($' + r1.toFixed(1) + ') 완벽 돌파 안착';
+                    line3 = '상승 추세 확정적. 눌림목 발생 시 $' + r1.toFixed(1) + ' 부근 매수 타점 (목표: $' + r2.toFixed(1) + ')';
+                    titleColor = "#ff4444";
+                }
+            }
+            else if (price < s1) {
+                if (isCallHeavy || isOverbought) {
+                    line1 = '1차 지지($' + s1.toFixed(1) + ') 이탈 (언더슈팅 의심)';
+                    line3 = '주가는 빠졌으나 세력은 콜 매집 중. $' + s1.toFixed(1) + ' 재돌파 시 강력한 반등 타점';
+                    titleColor = "#ddbb00";
+                } else if (isOversold) {
+                    line1 = '$' + s1.toFixed(1) + ' 하향 이탈 (투매 절정 구간)';
+                    line3 = '풋옵션 극단적 쏠림. 추격 매도는 위험하며 기술적 숏커버링 반등 대비';
+                    titleColor = "#cc33ff";
+                } else {
+                    line1 = '1차 지지($' + s1.toFixed(1) + ') 붕괴 (하락 추세 지속)';
+                    line3 = '하방 압력 강함. 2차 지지($' + s2.toFixed(1) + ') 도달 전까지 매수(Buy) 진입 보류';
+                    titleColor = "#4488ff";
+                }
+            }
+            else if (distToR1 <= 0.3) {
+                line1 = '1차 저항($' + r1.toFixed(1) + ') 초근접 테스트 중';
+                line3 = isCallHeavy ? '수급 뒷받침 됨. 돌파 시 숏스퀴즈 발생 가능성' : '돌파 수급 부족. 저항 맞고 밀리면 단기 매도(Sell) 대응';
+                titleColor = "#ff6666";
+            }
+            else if (distToS1 <= 0.3) {
+                line1 = '1차 지지($' + s1.toFixed(1) + ') 초근접 방어전';
+                line3 = isPutHeavy ? '하방 압력 강함. 붕괴 시 즉시 손절 대응' : '수급 양호. 지지 성공 시 매수 타점';
+                titleColor = "#66bbff";
+            }
+            else {
+                var targetLine = distToR1 < distToS1 ? '저항 $' + r1.toFixed(1) : '지지 $' + s1.toFixed(1);
+                line1 = targetLine + ' 향해 방향성 탐색 중';
+                if (distToVwap <= 0.3) {
+                    line3 = '현재 VWAP(' + vwap.toFixed(1) + ') 공방 중. 이기는 쪽으로 추세 터짐 (관망 유지)';
+                } else {
+                    line3 = '박스권 상/하단 도달 전까지 의미 없는 움직임. 비중 축소 및 단타 대응';
+                }
+                titleColor = "#ddbb00";
+            }
+
+            // 4. [Line 2: VWAP 및 옵션 상태 (중복 제거 완료)]
+            var extraFlag = "";
+            if (d.callWall > 0 && distToR1 < 1.0 && Math.abs(price - d.callWall) / price < 0.01) extraFlag = " [콜월 저항 직면]";
+            if (d.putWall > 0 && distToS1 < 1.0 && Math.abs(price - d.putWall) / price < 0.01) extraFlag = " [풋월 방어선 구축]";
+
+            line2 = '추세: ' + vwapTrend + ' | 옵션수급: ' + optState + extraFlag;
+
+            // ── UI 업데이트 ──
+            var p = 'p' + panelIdx + '-';
+            var sigEl = document.getElementById(p + 'sigtitle');
+            if (sigEl) { sigEl.innerHTML = line1; sigEl.style.color = titleColor; }
+            var subEl = document.getElementById(p + 'trend-sub');
+            if (subEl) subEl.innerHTML = line2;
+            var nextEl = document.getElementById(p + 'trend-next');
+            if (nextEl) nextEl.innerHTML = "- " + line3;
+        }
+
+        // ──────────────────────────────────────────────────────────
+        // ★ [추가] 글로벌 지수 및 거시경제 상황을 종합한 시황 요약 함수
+        // ──────────────────────────────────────────────────────────
+        function updateEnvSummary(i) {
+            var el = document.getElementById('p' + i + '-sum-env');
+            if (!el) return;
+
+            var qVal = globQqq !== null ? globQqq : 0;
+            var sVal = globSpy !== null ? globSpy : 0;
+            var vixVal = globVix !== null ? globVix : 15;
+
+            // 지수 방향성 판정
+            var marketEnv = (qVal > 0 && sVal > 0) ? "리스크온(상승우위)" :
+                (qVal < 0 && sVal < 0) ? "리스크오프(조정압력)" : "지수 혼조세";
+
+            var vixEnv = vixVal >= 25 ? "변동성 주의" : "변동성 안정";
+
+            el.innerHTML = '지수: QQQ ' + getIndexStatusHtml(globQqq) + ' / SPY ' + getIndexStatusHtml(globSpy) +
+                ' | 종합: <b style="color:#ffcc00;">' + marketEnv + ' [' + vixEnv + ' 타입]</b>';
+        }
+
+        // 5초마다 실시간 주가 및 전략 갱신 루프
+        setInterval(function () {
+            [0, 1, 2].forEach(function (i) {
+                if (panelDataStore[i] && panelDataStore[i].price > 0) {
+                    applySmartStrategy(i);
+                }
+            });
+        }, 5000);
+
+        // ──────────────────────────────────────────────────────────
+        // ★ 2. 5초마다 실시간 주가를 반영하여 브리핑 자동 갱신 루프
+        // ──────────────────────────────────────────────────────────
+        setInterval(function () {
+            [0, 1, 2].forEach(function (i) {
+                // 데이터가 로딩되어 있을 때만 스마트 전략 업데이트 실행
+                if (panelDataStore[i] && panelDataStore[i].price > 0) {
+                    applySmartStrategy(i);
+                }
+            });
+        }, 5000);
+
+
 
         function hideInitialLoading() {
             if (initialLoadDone) return;
@@ -1195,7 +1362,11 @@
                 + '</div>'
                 + '</div>'
                 + '<div class="strategy-box">'
-                + '<div class="sb-header"><span class="sb-title" id="p' + i + '-sigtitle">🟡 방향성 탐색 (관망)</span><span class="sb-trend" id="p' + i + '-trend">대기중</span></div>'
+                + '<div class="sb-header">'
+                + '<div class="sb-line1" id="p' + i + '-sigtitle">🟡 방향성 탐색 (관망)</div>'
+                + '<div class="sb-line2" id="p' + i + '-trend-sub">데이터 로딩 중...</div>'
+                + '<div class="sb-line3" id="p' + i + '-trend-next"></div>'
+                + '</div>'
                 + '<div class="timeline" id="p' + i + '-timeline"></div>'
                 + '</div>'
                 + '<div class="oi-box">'
@@ -1203,7 +1374,7 @@
                 + '<div style="display:flex; align-items:center; gap:4px;">'
                 + '<span class="oi-dot" id="p' + i + '-oi-dot"></span>'
                 + '<span class="oi-title" id="p' + i + '-oi-title" style="margin:0;">옵션 체인</span>'
-                + '<span id="p' + i + '-update-time" style="font-size:10px; color:#8b949e; font-weight:normal; margin-left:12px;"></span>'
+                + '<span id="p' + i + '-update-time" style="font-size:10px; color:#ffffff; font-weight:normal; margin-left:12px;"></span>'
                 + '</div>'
                 + '<span class="oi-dte" id="p' + i + '-dte">옵션만기 : 대기중</span>'
                 + '</div>'
@@ -1259,8 +1430,9 @@
         function resetPanelUI(panelIdx, ticker) {
             var p = 'p' + panelIdx + '-';
             ['price', 'diff', 'chg', 'vol'].forEach(function (f) { var el = document.getElementById(p + f); if (el) el.textContent = '─'; });
-            var sig = document.getElementById(p + 'sigtitle'); if (sig) sig.textContent = '🟡 방향성 탐색 (관망)';
-            var tr = document.getElementById(p + 'trend'); if (tr) tr.textContent = '대기중';
+            var sig = document.getElementById(p + 'sigtitle'); if (sig) { sig.textContent = '🟡 방향성 탐색 (관망)'; sig.style.color = '#ddbb00'; }
+            var sub = document.getElementById(p + 'trend-sub'); if (sub) sub.textContent = '데이터 로딩 중...';
+            var nxt = document.getElementById(p + 'trend-next'); if (nxt) nxt.textContent = '';
             var dte = document.getElementById(p + 'dte'); if (dte) dte.textContent = '옵션만기 : 대기중';
             var tl = document.getElementById(p + 'timeline'); if (tl) tl.innerHTML = '';
             var oit = document.getElementById(p + 'oi-title'); if (oit) oit.textContent = ticker + ' 옵션 체인';
@@ -1294,7 +1466,12 @@
                     if (fbGen[panelIdx] !== myGen || panelTickers[panelIdx] !== ticker) return;
                     var rtData = snap.val();
                     if (rtData) {
-                        updatePanelPrice(panelIdx, rtData.price, rtData.changeRate, rtData.change, null);
+                        if (!window._lastVolMap) window._lastVolMap = {};
+                        var rawVol = Number(String(rtData.volume || '').replace(/,/g, '')) || 0;
+                        if (rawVol > 0) window._lastVolMap[ticker] = rawVol;
+                        var rtVol = window._lastVolMap[ticker] || null;
+                        updatePanelPrice(panelIdx, rtData.price, rtData.changeRate, rtData.change, rtVol);
+
                         var safePrice = Number(String(rtData.price).replace(/[^0-9.-]+/g, "")) || 0;
 
                         if (panelDataStore[panelIdx] && safePrice > 0) {
@@ -1399,8 +1576,7 @@
                     else if (d.score >= 2.6) { sigEl.textContent = '하락 추세 (풋 수급 유입)'; sigEl.style.color = '#88bbff'; }
                     else if (d.score >= 1.1) { sigEl.textContent = '하락 확장 (추격 매도 유의)'; sigEl.style.color = '#4488ff'; }
                     else { sigEl.textContent = '과매도 구간 (기술적 반등 유의)'; sigEl.style.color = '#aa44ff'; }
-                }
-                var trEl = document.getElementById(p + 'trend'); if (trEl) trEl.innerHTML = d.trendText || '대기중';
+                }                
             }
             if (d.maxPain > 0 && price > 0) renderTimeline(p, Object.assign({}, d, { price: price }));
             var dteEl = document.getElementById(p + 'dte'); if (dteEl && d.dteLabel) { dteEl.textContent = '옵션만기 : ' + d.dteLabel; }
@@ -1426,6 +1602,8 @@
             var chartTicker = d.ticker || panelTickers[panel];
             if (!currentChartTicker[panel] || currentChartTicker[panel] !== chartTicker) { currentChartTicker[panel] = chartTicker; updateChartWidget(panel, chartTicker); }
             hideInitialLoading();
+
+            applyPanelSituation(p, d);
         }
 
         function getIndexStatusHtml(val) {
@@ -1806,7 +1984,19 @@
                         var pIdx = panelTickers.indexOf(ticker);
 
                         if (pIdx >= 0 && safePrice > 0) {
-                            updatePanelPrice(pIdx, safePrice, msg.changePercent, msg.change, msg.dayVolume);
+
+                            // ★ 핵심 수정: 야후 웹소켓 거래량 누락 방지(캐싱) 로직 적용 ★
+                            if (!window._lastVolMap) window._lastVolMap = {};
+
+                            var incomingVol = Number(msg.dayVolume) || 0;
+                            if (incomingVol > 0) {
+                                window._lastVolMap[ticker] = incomingVol; // 정상 거래량 캐시 업데이트
+                            }
+
+                            var volToUpdate = window._lastVolMap[ticker] || null; // 수신값 없으면 캐시값 사용
+
+                            // 기존 msg.dayVolume 대신 방어 처리된 volToUpdate 사용
+                            updatePanelPrice(pIdx, safePrice, msg.changePercent, msg.change, volToUpdate);
 
                             if (panelDataStore[pIdx]) {
                                 panelDataStore[pIdx].price = safePrice;
@@ -1908,11 +2098,15 @@
         function initUsdKrwListener() {
             try {
                 firebase.database().ref('system/exchangeRate').on('value', function (snap) {
-                    var data = snap.val(), el = document.getElementById('neon-usdkrw');
-                    if (el && data) {
-                        var p = typeof data === 'object' ? (Number(data.price) || 0) : (Number(data) || 0);
-                        var r = Number(String(typeof data === 'object' ? data.changeRate : '0').replace('%', '')) || 0;
-                        el.innerHTML = '<span class="tit">원달러환율</span><span class="val ' + (r > 0 ? 'up' : r < 0 ? 'dn' : 'neu') + '">' + p.toFixed(2) + '원</span>';
+                    var data = snap.val();
+                    var el = document.getElementById('neon-usdkrw');
+                    if (!el || !data) return;
+                    var p = typeof data === 'object' ? (Number(data.price) || 0) : (Number(data) || 0);
+                    var r = typeof data === 'object' ? (Number(data.changeRate) || 0) : 0;
+                    if (p > 100) {
+                        el.innerHTML = '<span class="tit">원달러환율</span>'
+                            + '<span class="val ' + (r > 0 ? 'up' : r < 0 ? 'dn' : 'neu') + '">'
+                            + p.toFixed(2) + '원</span>';  // ← toFixed(2)
                     }
                 });
             } catch (e) { }
