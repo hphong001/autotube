@@ -1560,9 +1560,69 @@
 
         function unsubscribeFirebase(panelIdx) { try { if (fbRefs[panelIdx] && fbRefs[panelIdx].refs) fbRefs[panelIdx].refs.forEach(function (r) { r.off(); }); } catch (e) { } fbRefs[panelIdx] = null; fbGen[panelIdx]++; }
 
+
+        // 패널별 마지막 키움 데이터 수신 시간 및 야후 백업 모드 상태 (신규)
+        var lastKiwoomUpdate = { 0: Date.now(), 1: Date.now(), 2: Date.now() };
+        var isUsingYahooFallback = { 0: false, 1: false, 2: false };
+
+        // 키움 데이터가 끊겼는지 1초마다 체크하는 감시 타이머 (신규)
+        setInterval(function () {
+            var now = Date.now();
+            [0, 1, 2].forEach(function (panelIdx) {
+                var ticker = panelTickers[panelIdx];
+                if (!ticker) return;
+
+                // 4초 이상 키움 데이터가 안 들어오면 야후 백업 모드 진입
+                if (now - lastKiwoomUpdate[panelIdx] > 2000) {
+                    if (!isUsingYahooFallback[panelIdx]) {
+                        console.warn(ticker + " 키움 응답 지연 -> 야후 실시간 백업으로 임시 전환합니다.");
+                        isUsingYahooFallback[panelIdx] = true;
+                    }
+                    fetchYahooFallbackData(panelIdx, ticker);
+                }
+            });
+        }, 1000);
+
+        // 야후 모드일 때만 시세를 직접 가져오는 함수 (신규)
+        function fetchYahooFallbackData(panelIdx, ticker) {
+            if (!isUsingYahooFallback[panelIdx]) return;
+            var yahooSymbol = ticker === "SPX" ? "^SPX" : ticker;
+            var url = "https://query1.finance.yahoo.com/v8/finance/chart/" + encodeURIComponent(yahooSymbol) + "?interval=1d&range=1d";
+
+            fetch(url)
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    if (!isUsingYahooFallback[panelIdx]) return;
+                    var meta = data.chart && data.chart.result && data.chart.result[0] && data.chart.result[0].meta;
+                    if (!meta) return;
+
+                    var price = meta.regularMarketPrice || 0;
+                    var prevClose = meta.chartPreviousClose || meta.previousClose || price;
+                    var changeAmt = price - prevClose;
+                    var changePct = prevClose > 0 ? (changeAmt / prevClose) * 100 : 0;
+                    var volume = meta.regularMarketVolume || 0;
+
+                    if (price > 0) {
+                        updatePanelPriceOnly(panelIdx, price, changePct, changeAmt, volume);
+                        hidePanelOverlay(panelIdx);
+                        setSelectDisabled(panelIdx, false);
+                    }
+                })
+                .catch(function (err) { });
+        }
+
+
         window.onWsMessage = function (d) {
             if (!d || !d.type || d.type !== 'optionUpdate' || !d.ticker) return;
-            var panel = panelTickers.indexOf(d.ticker); if (panel < 0) return;
+            var panel = panelTickers.indexOf(d.ticker);
+            if (panel < 0) return;
+
+            // ★ [핵심 추가] 키움 데이터가 들어왔으므로 시간 갱신 및 야후 백업 모드 즉시 해제
+            lastKiwoomUpdate[panel] = Date.now();
+            if (isUsingYahooFallback[panel]) {
+                console.log(d.ticker + " -> 키움 데이터 복구됨. 야후 백업 모드를 종료합니다.");
+                isUsingYahooFallback[panel] = false;
+            }
 
             if (d.optionRows && d.optionRows.length > 0) {
                 var tCall = 0, tPut = 0;
@@ -1593,7 +1653,9 @@
 
             panelDataStore[panel] = JSON.parse(JSON.stringify(d));
             renderPanel(panel, panelDataStore[panel]);
-            hidePanelOverlay(panel); setSelectDisabled(panel, false); switchLocked[panel] = false;
+            hidePanelOverlay(panel);
+            setSelectDisabled(panel, false);
+            switchLocked[panel] = false;
         };
 
         function updatePanelPrice(idx, price, changeRate, changeAmt, volume) {
