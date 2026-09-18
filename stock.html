@@ -1345,7 +1345,7 @@
                 + '<div class="ph">'
                 + '<div class="ph-top">'
                 + '<div class="ticker-select-wrap">'
-                + '<span class="ws-dot dead" id="p' + i + '-dot"></span>'
+                + '<span class="ws-dot dead" id="p' + i + '-status-dot"></span>'
                 + '<select class="ticker-select" id="ticker-select-' + i + '" onchange="onTickerSelectChange(' + i + ',this.value)">' + opts + '</select>'
                 + '</div>'
                 + '<div style="position:absolute; right:0; top:50%; transform:translateY(-50%); display:flex; align-items:center; z-index:5;">'
@@ -1735,6 +1735,23 @@
                     console.error("야후 백업 데이터 수신 실패: ", err);
                 });
         }
+
+        function updatePanelPriceOnly(idx, price, changeRate, changeAmt, volume) {
+            var p = 'p' + idx + '-';
+            var numPrice = Number(String(price).replace(/[^0-9.-]+/g, "")) || 0;
+            var numAmt = Number(String(changeAmt).replace(/[^0-9.-]+/g, "")) || 0;
+            var numRate = Number(String(changeRate || '0').replace('%', '').trim()) || 0;
+            var cls = numRate > 0 ? 'up' : numRate < 0 ? 'dn' : 'neu';
+
+            var pxEl = document.getElementById(p + 'price'),
+                dfEl = document.getElementById(p + 'diff'),
+                cgEl = document.getElementById(p + 'chg');
+
+            if (pxEl) { pxEl.textContent = numPrice > 0 ? numPrice.toFixed(2) : '─'; pxEl.className = 'price-now ' + cls; }
+            if (dfEl) { dfEl.textContent = numPrice > 0 ? (numAmt > 0 ? '+' : '') + numAmt.toFixed(2) : '─'; dfEl.className = 'price-diff ' + cls; }
+            if (cgEl) { cgEl.textContent = numPrice > 0 ? '(' + (numRate > 0 ? '+' : '') + numRate.toFixed(2) + '%)' : '─'; cgEl.className = 'price-chg ' + cls; }
+        }
+
 
         function updatePanelPrice(idx, price, changeRate, changeAmt, volume) {
             var p = 'p' + idx + '-';
