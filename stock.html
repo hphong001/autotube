@@ -1622,11 +1622,19 @@
             var panel = panelTickers.indexOf(d.ticker);
             if (panel < 0) return;
 
-            // 키움 정상 수신 기록
+            // 1. 키움 데이터 정상 수신 기록 및 야후 백업 해제
             lastKiwoomUpdate[panel] = Date.now();
             if (isUsingYahooFallback[panel]) {
                 console.log(d.ticker + " -> 키움 데이터 복구됨. 야후 백업 모드를 종료합니다.");
                 isUsingYahooFallback[panel] = false;
+            }
+
+            // 2. [핵심] 키움 데이터가 들어온 순간 즉시 패널 점을 '빨간색'으로 변경 및 깜빡임 적용
+            var dotEl = document.getElementById('p' + panel + '-status-dot');
+            if (dotEl) {
+                dotEl.style.backgroundColor = '#ff4444';
+                dotEl.style.boxShadow = '0 0 6px #ff4444';
+                dotEl.style.animation = 'blinkDot 0.8s infinite alternate';
             }
 
             if (d.optionRows && d.optionRows.length > 0) {
@@ -1664,6 +1672,7 @@
         };
 
         // 2. [감시 및 상태 표시 타이머 (1초 주기)] - 키움 단절 여부 체크 및 점(Dot) 색상/깜빡임 제어
+        // 키움 단절 여부 체크 및 야후 백업 전환 타이머 (1초 주기)
         setInterval(function () {
             var now = Date.now();
             [0, 1, 2].forEach(function (panelIdx) {
@@ -1677,21 +1686,13 @@
                         isUsingYahooFallback[panelIdx] = true;
                     }
                     fetchYahooFallbackData(panelIdx, ticker);
-                }
 
-                // UI 인디케이터 점(Dot) 색상 및 깜빡임(블랭킹) 실시간 반영
-                var dotEl = document.getElementById('p' + panelIdx + '-status-dot');
-                if (dotEl) {
-                    if (isUsingYahooFallback[panelIdx]) {
-                        // [야후 백업 중] 파란색으로 깜빡임
+                    // 야후 백업 중일 때는 점을 '파란색'으로 깜빡임
+                    var dotEl = document.getElementById('p' + panelIdx + '-status-dot');
+                    if (dotEl) {
                         dotEl.style.backgroundColor = '#00aaff';
                         dotEl.style.boxShadow = '0 0 6px #00aaff';
                         dotEl.style.animation = 'blinkDot 1s infinite alternate';
-                    } else {
-                        // [키움 정상 수신 중] 빨간색으로 깜빡임
-                        dotEl.style.backgroundColor = '#ff4444';
-                        dotEl.style.boxShadow = '0 0 6px #ff4444';
-                        dotEl.style.animation = 'blinkDot 0.8s infinite alternate';
                     }
                 }
             });
