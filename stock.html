@@ -290,6 +290,16 @@
             }
         }
 
+        /* ★ 추가: blinkDot 키프레임 (JS에서 animation 이름으로 참조됨) */
+        @keyframes blinkDot {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.15;
+            }
+        }
+
         .oi-dot {
             width: 8px;
             height: 8px;
@@ -484,8 +494,8 @@
             border-radius: 6px;
             border-left: 3px solid #ddbb00;
             margin-bottom: 6px;
-            text-align: center; /* 가운데 정렬 */
-            border-left: none; /* 사방 테두리로 변경 */
+            text-align: center;
+            border-left: none;
             border: 1px solid #2a2a4a;
             box-shadow: inset 0 0 20px rgba(255,221,0,0.04);
         }
@@ -498,16 +508,16 @@
         }
 
         .sb-line2 {
-            font-size: 13px; /* line1과 동일 크기 */
+            font-size: 13px;
             font-weight: 700;
-            color: #ffdd00; /* 동일 색상 */
+            color: #ffdd00;
             margin-bottom: 4px;
         }
 
         .sb-line3 {
-            font-size: 13px; /* 동일 크기 */
+            font-size: 13px;
             font-weight: 700;
-            color: #ffdd00; /* 동일 색상 */
+            color: #ffdd00;
         }
 
         .timeline {
@@ -1171,6 +1181,37 @@
             return n.toLocaleString('en-US');
         }
 
+        // ════════════════════════════════════════════════════════
+        // ★ 상태 dot 블링킹 함수
+        //   panelIdx : 패널 번호 (0,1,2)
+        //   color    : '#ff4444' (키움/빨강) 또는 '#00aaff' (야후/파랑)
+        //   0.7초 동안 켜졌다가 자동으로 꺼짐 (write 이벤트마다 한 번씩 점등)
+        // ════════════════════════════════════════════════════════
+        var _blinkTimers = { 0: null, 1: null, 2: null };
+        function blinkDot(panelIdx, color) {
+            var dotEl = document.getElementById('p' + panelIdx + '-status-dot');
+            if (!dotEl) return;
+
+            // 이전 타이머 취소
+            if (_blinkTimers[panelIdx]) {
+                clearTimeout(_blinkTimers[panelIdx]);
+                _blinkTimers[panelIdx] = null;
+            }
+
+            // 즉시 점등
+            dotEl.style.backgroundColor = color;
+            dotEl.style.boxShadow = '0 0 8px ' + color;
+            dotEl.style.animation = 'none';
+            dotEl.style.opacity = '1';
+
+            // 0.7초 후 소등
+            _blinkTimers[panelIdx] = setTimeout(function () {
+                dotEl.style.backgroundColor = '#1a1a2a';
+                dotEl.style.boxShadow = 'none';
+                dotEl.style.opacity = '0.3';
+                _blinkTimers[panelIdx] = null;
+            }, 700);
+        }
 
         // ──────────────────────────────────────────────────────────
         // ★ [PRO 버전] 아이콘 없음 + VWAP 중복 수정 + 매크로 종합 시황 추가
@@ -1185,7 +1226,6 @@
             var score = d.score || 5;
             var vwap = d.vwap || ((d.dayHigh || price) + (d.dayLow || price) + price) / 3;
 
-            // 절대 거리 계산 (%)
             var distToR1 = (Math.abs(r1 - price) / price) * 100;
             var distToS1 = (Math.abs(price - s1) / price) * 100;
             var distToVwap = (Math.abs(price - vwap) / price) * 100;
@@ -1193,7 +1233,6 @@
             var line1 = "", line2 = "", line3 = "";
             var titleColor = "#ffdd00";
 
-            // 1. [옵션 수급 상태 세분화]
             var optState = "";
             var isOverbought = score >= 8.5;
             var isOversold = score <= 1.5;
@@ -1206,7 +1245,6 @@
             else if (isPutHeavy) optState = "풋 매수 우위";
             else optState = "옵션 수급 중립";
 
-            // 2. [당일 추세 (VWAP) - 중복 단어 수정 완료]
             var vwapTrend = "";
             if (distToVwap <= 0.3) {
                 vwapTrend = "공방전 진행중";
@@ -1214,7 +1252,6 @@
                 vwapTrend = price > vwap ? "당일 매수세 우위" : "당일 매도세 우위";
             }
 
-            // 3. [주가 위치 및 복합 시나리오 판별 (Line 1, Line 3)]
             if (price > r1) {
                 if (isPutHeavy || isOversold) {
                     line1 = '1차 저항($' + r1.toFixed(1) + ') 돌파 (가짜 돌파 의심)';
@@ -1266,14 +1303,12 @@
                 titleColor = "#ddbb00";
             }
 
-            // 4. [Line 2: VWAP 및 옵션 상태 (중복 제거 완료)]
             var extraFlag = "";
             if (d.callWall > 0 && distToR1 < 1.0 && Math.abs(price - d.callWall) / price < 0.01) extraFlag = " [콜월 저항 직면]";
             if (d.putWall > 0 && distToS1 < 1.0 && Math.abs(price - d.putWall) / price < 0.01) extraFlag = " [풋월 방어선 구축]";
 
             line2 = '추세: ' + vwapTrend + ' | 옵션수급: ' + optState + extraFlag;
 
-            // ── UI 업데이트 ──
             var p = 'p' + panelIdx + '-';
             var sigEl = document.getElementById(p + 'sigtitle');
             if (sigEl) { sigEl.innerHTML = line1; sigEl.style.color = titleColor; }
@@ -1283,28 +1318,7 @@
             if (nextEl) nextEl.innerHTML = "- " + line3;
         }
 
-        // ──────────────────────────────────────────────────────────
-        // ★ [추가] 글로벌 지수 및 거시경제 상황을 종합한 시황 요약 함수
-        // ──────────────────────────────────────────────────────────
-        function updateEnvSummary(i) {
-            var el = document.getElementById('p' + i + '-sum-env');
-            if (!el) return;
-
-            var qVal = globQqq !== null ? globQqq : 0;
-            var sVal = globSpy !== null ? globSpy : 0;
-            var vixVal = globVix !== null ? globVix : 15;
-
-            // 지수 방향성 판정
-            var marketEnv = (qVal > 0 && sVal > 0) ? "리스크온(상승우위)" :
-                (qVal < 0 && sVal < 0) ? "리스크오프(조정압력)" : "지수 혼조세";
-
-            var vixEnv = vixVal >= 25 ? "변동성 주의" : "변동성 안정";
-
-            el.innerHTML = '지수: QQQ ' + getIndexStatusHtml(globQqq) + ' / SPY ' + getIndexStatusHtml(globSpy) +
-                ' | 종합: <b style="color:#ffcc00;">' + marketEnv + ' [' + vixEnv + ' 타입]</b>';
-        }
-
-        // 5초마다 실시간 주가 및 전략 갱신 루프
+        // 5초마다 실시간 주가를 반영하여 전략 갱신
         setInterval(function () {
             [0, 1, 2].forEach(function (i) {
                 if (panelDataStore[i] && panelDataStore[i].price > 0) {
@@ -1312,20 +1326,6 @@
                 }
             });
         }, 5000);
-
-        // ──────────────────────────────────────────────────────────
-        // ★ 2. 5초마다 실시간 주가를 반영하여 브리핑 자동 갱신 루프
-        // ──────────────────────────────────────────────────────────
-        setInterval(function () {
-            [0, 1, 2].forEach(function (i) {
-                // 데이터가 로딩되어 있을 때만 스마트 전략 업데이트 실행
-                if (panelDataStore[i] && panelDataStore[i].price > 0) {
-                    applySmartStrategy(i);
-                }
-            });
-        }, 5000);
-
-
 
         function hideInitialLoading() {
             if (initialLoadDone) return;
@@ -1428,7 +1428,6 @@
                 executePanelSwitch(panelIdx, newTicker);
             }, 800);
 
-            // ★ [안전장치 추가] 서버 데이터 수신 지연 시 3초 후 강제로 오버레이 해제
             if (window._safetyTimeouts && window._safetyTimeouts[panelIdx]) {
                 clearTimeout(window._safetyTimeouts[panelIdx]);
             }
@@ -1460,8 +1459,6 @@
             refreshWatchlistBadges();
             refreshAllDropdowns();
 
-            // ★ [추가 안전장치] 만약 파이어베이스에서 3초 동안 데이터를 못 받아오면 
-            // 무한 스핀에 갇히지 않고 오버레이를 강제로 끄고 에러를 방지함
             if (window._switchTimeouts && window._switchTimeouts[panelIdx]) {
                 clearTimeout(window._switchTimeouts[panelIdx]);
             }
@@ -1474,7 +1471,7 @@
                     setSelectDisabled(panelIdx, false);
                     switchLocked[panelIdx] = false;
                 }
-            }, 3000); // 3초 타임아웃
+            }, 3000);
         }
 
         function resetPanelUI(panelIdx, ticker) {
@@ -1501,6 +1498,12 @@
         var FIREBASE_URL = 'https://hphong-2cb03-default-rtdb.asia-southeast1.firebasedatabase.app/';
         var fbGen = { 0: 0, 1: 0, 2: 0 };
 
+        // ════════════════════════════════════════════════════════
+        // ★ 패널별 키움 마지막 수신 시간 및 야후 백업 모드 상태
+        // ════════════════════════════════════════════════════════
+        var lastKiwoomUpdate = { 0: Date.now(), 1: Date.now(), 2: Date.now() };
+        var isUsingYahooFallback = { 0: false, 1: false, 2: false };
+
         function initFirebase() {
             try {
                 if (!firebase.apps.length) firebase.initializeApp({ databaseURL: FIREBASE_URL });
@@ -1508,6 +1511,10 @@
             } catch (e) { }
         }
 
+        // ════════════════════════════════════════════════════════
+        // ★ Firebase realtime 구독: 키움이 쓸 때마다 호출됨
+        //   → lastKiwoomUpdate 갱신 + 야후 백업 해제 + 빨간 블링킹
+        // ════════════════════════════════════════════════════════
         function subscribeFirebase(panelIdx, ticker) {
             if (!ticker) return; unsubscribeFirebase(panelIdx); fbGen[panelIdx]++; var myGen = fbGen[panelIdx];
             try {
@@ -1515,8 +1522,15 @@
                 rtRef.on('value', function (snap) {
                     if (fbGen[panelIdx] !== myGen || panelTickers[panelIdx] !== ticker) return;
 
-                    // ★ [핵심 추가] 실시간 틱이 들어올 때마다 키움 수신 시간을 최신으로 갱신!
+                    // ★ 키움이 Firebase에 쓴 시간 갱신 + 야후 백업 즉시 해제
                     lastKiwoomUpdate[panelIdx] = Date.now();
+                    if (isUsingYahooFallback[panelIdx]) {
+                        console.log(ticker + ' -> 키움 데이터 복구됨. 야후 백업 모드 종료.');
+                        isUsingYahooFallback[panelIdx] = false;
+                    }
+
+                    // ★ 키움 데이터 수신 → 빨간색 블링킹 (0.7초)
+                    blinkDot(panelIdx, '#ff4444');
 
                     var rtData = snap.val();
                     if (rtData) {
@@ -1536,7 +1550,6 @@
                                 panelDataStore[panelIdx].dayLow = Number(rtData.dayLow);
 
                             var p = 'p' + panelIdx + '-';
-                            // ★ 실시간 주가가 바뀔 때마다 타임라인을 즉시 다시 그려서 % 계산 및 위치를 실시간 갱신
                             if (panelDataStore[panelIdx].maxPain > 0) {
                                 renderTimeline(p, panelDataStore[panelIdx]);
                             }
@@ -1564,57 +1577,50 @@
 
         function unsubscribeFirebase(panelIdx) { try { if (fbRefs[panelIdx] && fbRefs[panelIdx].refs) fbRefs[panelIdx].refs.forEach(function (r) { r.off(); }); } catch (e) { } fbRefs[panelIdx] = null; fbGen[panelIdx]++; }
 
-
-        // 패널별 마지막 키움 데이터 수신 시간 및 야후 백업 모드 상태 (신규)
-        var lastKiwoomUpdate = { 0: Date.now(), 1: Date.now(), 2: Date.now() };
-        var isUsingYahooFallback = { 0: false, 1: false, 2: false };
-
-        // 키움 데이터가 끊겼는지 1초마다 체크하는 감시 타이머 (신규)
-        // 키움 단절 여부 체크 및 야후 백업 전환 타이머 (1초 주기)
+        // ════════════════════════════════════════════════════════
+        // ★ 키움 단절 감지 타이머 (1초 주기)
+        //   - 5초 이상 키움 데이터가 없으면 야후 백업으로 전환
+        //   - 야후 백업 중: 파란색 블링킹 (fetchYahooFallbackData 내에서)
+        // ════════════════════════════════════════════════════════
         setInterval(function () {
             var now = Date.now();
             [0, 1, 2].forEach(function (panelIdx) {
                 var ticker = panelTickers[panelIdx];
                 if (!ticker) return;
 
-                var dotEl = document.getElementById('p' + panelIdx + '-status-dot');
-
-                // 2.5초 이상 키움 데이터가 안 들어오는지 체크
-                if (now - lastKiwoomUpdate[panelIdx] > 2500) {
+                if (now - lastKiwoomUpdate[panelIdx] > 5000) {
+                    // 5초 이상 키움 응답 없음 → 야후 백업 전환
                     if (!isUsingYahooFallback[panelIdx]) {
-                        console.warn(ticker + " 키움 응답 지연 -> 야후 실시간 백업으로 전환합니다.");
+                        console.warn(ticker + ' 키움 응답 지연 -> 야후 실시간 백업으로 전환합니다.');
                         isUsingYahooFallback[panelIdx] = true;
                     }
                     fetchYahooFallbackData(panelIdx, ticker);
-
-                    // 야후 백업 중일 때는 점을 '파란색'으로 깜빡임
-                    if (dotEl) {
-                        dotEl.style.backgroundColor = '#00aaff';
-                        dotEl.style.boxShadow = '0 0 6px #00aaff';
-                        dotEl.style.animation = 'blinkDot 1s infinite alternate';
-                    }
-                } else {
-                    // 키움이 정상 작동 중일 때는 확실하게 '빨간색' 유지
-                    if (!isUsingYahooFallback[panelIdx] && dotEl) {
-                        dotEl.style.backgroundColor = '#ff4444';
-                        dotEl.style.boxShadow = '0 0 6px #ff4444';
-                        dotEl.style.animation = 'blinkDot 0.8s infinite alternate';
-                    }
                 }
+                // else: 키움 정상 작동 중 → 블링킹은 subscribeFirebase의 rtRef.on('value') 이벤트에서 담당
             });
         }, 1000);
 
-        // 야후 모드일 때만 시세를 직접 가져오는 함수 (신규)
+        // ════════════════════════════════════════════════════════
+        // ★ 야후 백업 데이터 조회 함수
+        //   - allorigins.win 프록시로 CORS 우회
+        //   - 시세를 직접 DOM에 출력 (Firebase에는 절대 쓰지 않음)
+        //   - 성공 시 파란색 블링킹 (0.7초)
+        // ════════════════════════════════════════════════════════
         function fetchYahooFallbackData(panelIdx, ticker) {
             if (!isUsingYahooFallback[panelIdx]) return;
-            var yahooSymbol = ticker === "SPX" ? "^SPX" : ticker;
-            var url = "https://query1.finance.yahoo.com/v8/finance/chart/" + encodeURIComponent(yahooSymbol) + "?interval=1d&range=1d";
 
-            fetch(url)
+            var yahooSymbol = ticker === 'SPX' ? '^SPX' : ticker;
+            var targetUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(yahooSymbol) + '?interval=1d&range=1d';
+            var proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(targetUrl);
+
+            fetch(proxyUrl)
                 .then(function (res) { return res.json(); })
                 .then(function (data) {
                     if (!isUsingYahooFallback[panelIdx]) return;
-                    var meta = data.chart && data.chart.result && data.chart.result[0] && data.chart.result[0].meta;
+                    if (!data || !data.contents) return;
+
+                    var yahooJson = JSON.parse(data.contents);
+                    var meta = yahooJson.chart && yahooJson.chart.result && yahooJson.chart.result[0] && yahooJson.chart.result[0].meta;
                     if (!meta) return;
 
                     var price = meta.regularMarketPrice || 0;
@@ -1623,40 +1629,32 @@
                     var changePct = prevClose > 0 ? (changeAmt / prevClose) * 100 : 0;
                     var volume = meta.regularMarketVolume || 0;
 
-                    if (price > 0) {
+                    if (price > 0 && isUsingYahooFallback[panelIdx]) {
+                        // 야후 시세를 DOM에 직접 출력
                         updatePanelPriceOnly(panelIdx, price, changePct, changeAmt, volume);
                         hidePanelOverlay(panelIdx);
                         setSelectDisabled(panelIdx, false);
+
+                        // ★ 야후 데이터 성공 → 파란색 블링킹 (0.7초)
+                        blinkDot(panelIdx, '#00aaff');
                     }
                 })
-                .catch(function (err) { });
+                .catch(function (err) {
+                    console.error('야후 백업 데이터 수신 실패: ', err);
+                });
         }
 
-
-        // 패널별 마지막 키움 데이터 수신 시간 및 야후 백업 모드 상태
-        var lastKiwoomUpdate = { 0: Date.now(), 1: Date.now(), 2: Date.now() };
-        var isUsingYahooFallback = { 0: false, 1: false, 2: false };
-
-        // 1. [키움 데이터 수신부] - 키움 틱이 들어오면 시간 갱신 및 야후 백업 해제 (빨간불 대상)
+        // ════════════════════════════════════════════════════════
+        // ★ panel/optionUpdate 이벤트 처리 (Firebase panelRef → onWsMessage)
+        //   - 옵션 데이터 갱신은 키움 출처이므로 빨간 블링킹
+        // ════════════════════════════════════════════════════════
         window.onWsMessage = function (d) {
             if (!d || !d.type || d.type !== 'optionUpdate' || !d.ticker) return;
             var panel = panelTickers.indexOf(d.ticker);
             if (panel < 0) return;
 
-            // 키움 데이터가 들어왔으므로 시간 갱신 및 야후 백업 모드 강제 해제
-            lastKiwoomUpdate[panel] = Date.now();
-            if (isUsingYahooFallback[panel]) {
-                console.log(d.ticker + " -> 키움 데이터 복구됨. 야후 백업 모드를 종료합니다.");
-                isUsingYahooFallback[panel] = false;
-            }
-
-            // 즉시 빨간색 불 및 애니메이션 적용
-            var dotEl = document.getElementById('p' + panel + '-status-dot');
-            if (dotEl) {
-                dotEl.style.backgroundColor = '#ff4444';
-                dotEl.style.boxShadow = '0 0 6px #ff4444';
-                dotEl.style.animation = 'blinkDot 0.8s infinite alternate';
-            }
+            // 옵션 패널 데이터 = 키움 출처 → 빨간색 블링킹
+            blinkDot(panel, '#ff4444');
 
             if (d.optionRows && d.optionRows.length > 0) {
                 var tCall = 0, tPut = 0;
@@ -1692,80 +1690,6 @@
             switchLocked[panel] = false;
         };
 
-        // 2. [감시 및 상태 표시 타이머 (1초 주기)] - 키움 단절 여부 체크 및 점(Dot) 색상/깜빡임 제어
-        // 키움 단절 여부 체크 및 야후 백업 전환 타이머 (1초 주기)
-        // 감시 타이머 (2.5초 이상 키움 응답 없으면 야후 전환)
-        setInterval(function () {
-            var now = Date.now();
-            [0, 1, 2].forEach(function (panelIdx) {
-                var ticker = panelTickers[panelIdx];
-                if (!ticker) return;
-
-                var dotEl = document.getElementById('p' + panelIdx + '-status-dot');
-
-                if (now - lastKiwoomUpdate[panelIdx] > 2500) {
-                    if (!isUsingYahooFallback[panelIdx]) {
-                        console.warn(ticker + " 키움 응답 지연 -> 야후 실시간 백업으로 전환합니다.");
-                        isUsingYahooFallback[panelIdx] = true;
-                    }
-                    fetchYahooFallbackData(panelIdx, ticker);
-
-                    // 야후 백업 중: 파란색 깜빡임
-                    if (dotEl) {
-                        dotEl.style.backgroundColor = '#00aaff';
-                        dotEl.style.boxShadow = '0 0 6px #00aaff';
-                        dotEl.style.animation = 'blinkDot 1s infinite alternate';
-                    }
-                } else {
-                    // 키움 정상 작동 중: 빨간색 깜빡임 (야후 모드가 아닐 때만)
-                    if (!isUsingYahooFallback[panelIdx] && dotEl) {
-                        dotEl.style.backgroundColor = '#ff4444';
-                        dotEl.style.boxShadow = '0 0 6px #ff4444';
-                        dotEl.style.animation = 'blinkDot 0.8s infinite alternate';
-                    }
-                }
-            });
-        }, 1000);
-
-        // 야후 백업 데이터 조회 함수 (심볼 예외처리 및 프록시 안정화)
-        function fetchYahooFallbackData(panelIdx, ticker) {
-            if (!isUsingYahooFallback[panelIdx]) return;
-
-            // 야후 API 규격에 맞는 심볼 변환
-            var yahooSymbol = ticker;
-            if (ticker === "SPX") yahooSymbol = "^SPX";
-
-            var targetUrl = "https://query1.finance.yahoo.com/v8/finance/chart/" + encodeURIComponent(yahooSymbol) + "?interval=1d&range=1d";
-            var proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(targetUrl);
-
-            fetch(proxyUrl)
-                .then(function (res) { return res.json(); })
-                .then(function (data) {
-                    if (!isUsingYahooFallback[panelIdx]) return;
-                    if (!data || !data.contents) return;
-
-                    var yahooJson = JSON.parse(data.contents);
-                    var meta = yahooJson.chart && yahooJson.chart.result && yahooJson.chart.result[0] && yahooJson.chart.result[0].meta;
-                    if (!meta) return;
-
-                    var price = meta.regularMarketPrice || 0;
-                    var prevClose = meta.chartPreviousClose || meta.previousClose || price;
-                    var changeAmt = price - prevClose;
-                    var changePct = prevClose > 0 ? (changeAmt / prevClose) * 100 : 0;
-                    var volume = meta.regularMarketVolume || 0;
-
-                    if (price > 0 && isUsingYahooFallback[panelIdx]) {
-                        // 야후 백업 시세 웹 화면에 즉시 출력
-                        updatePanelPriceOnly(panelIdx, price, changePct, changeAmt, volume);
-                        hidePanelOverlay(panelIdx);
-                        setSelectDisabled(panelIdx, false);
-                    }
-                })
-                .catch(function (err) {
-                    console.error("야후 백업 데이터 수신 실패: ", err);
-                });
-        }
-
         function updatePanelPriceOnly(idx, price, changeRate, changeAmt, volume) {
             var p = 'p' + idx + '-';
             var numPrice = Number(String(price).replace(/[^0-9.-]+/g, "")) || 0;
@@ -1781,7 +1705,6 @@
             if (dfEl) { dfEl.textContent = numPrice > 0 ? (numAmt > 0 ? '+' : '') + numAmt.toFixed(2) : '─'; dfEl.className = 'price-diff ' + cls; }
             if (cgEl) { cgEl.textContent = numPrice > 0 ? '(' + (numRate > 0 ? '+' : '') + numRate.toFixed(2) + '%)' : '─'; cgEl.className = 'price-chg ' + cls; }
         }
-
 
         function updatePanelPrice(idx, price, changeRate, changeAmt, volume) {
             var p = 'p' + idx + '-';
@@ -1813,7 +1736,7 @@
                     else if (d.score >= 2.6) { sigEl.textContent = '하락 추세 (풋 수급 유입)'; sigEl.style.color = '#88bbff'; }
                     else if (d.score >= 1.1) { sigEl.textContent = '하락 확장 (추격 매도 유의)'; sigEl.style.color = '#4488ff'; }
                     else { sigEl.textContent = '과매도 구간 (기술적 반등 유의)'; sigEl.style.color = '#aa44ff'; }
-                }                
+                }
             }
             if (d.maxPain > 0 && price > 0) renderTimeline(p, Object.assign({}, d, { price: price }));
             var dteEl = document.getElementById(p + 'dte'); if (dteEl && d.dteLabel) { dteEl.textContent = '옵션만기 : ' + d.dteLabel; }
@@ -1843,6 +1766,13 @@
             applyPanelSituation(p, d);
         }
 
+        function applyPanelSituation(p, d) {
+            // 기존 applySmartStrategy가 panelIdx를 사용하므로 별도 로직은 생략
+            // renderPanel 후 applySmartStrategy 호출
+            var idx = parseInt(p.replace('p', '').replace('-', ''));
+            if (!isNaN(idx)) applySmartStrategy(idx);
+        }
+
         function getIndexStatusHtml(val) {
             if (val === null) return '─';
             if (val >= 1.5) return '<b class="c-red">▲ 급등</b>';
@@ -1866,11 +1796,6 @@
             el.textContent = n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0') + '-' + String(n.getDate()).padStart(2, '0') + ' ' + (n.getHours() >= 12 ? '오후' : '오전') + ' ' + (n.getHours() % 12 || 12) + ':' + String(n.getMinutes()).padStart(2, '0') + ':' + String(n.getSeconds()).padStart(2, '0');
         } setInterval(updateTimeDisplay, 1000);
 
-        /* ════════════════════════════════════════════════════════
-            ★ 수정 사항 반영된 renderTimeline 함수
-            - H / L 영역 왼쪽에 미세 여백(marginLeft) 부여하여 겹침 해결
-            - 하단 2차지지, 1차지지, MaxPain 등의 텍스트 색상을 #ffffff (흰색)으로 가독성 개선
-        ════════════════════════════════════════════════════════ */
         function renderTimeline(prefix, d) {
             var host = document.getElementById(prefix + 'timeline');
             if (!host) return;
@@ -1901,7 +1826,6 @@
 
             var pctP = pct(price);
 
-            // Y축 좌표 설정
             var BOT_TRACK_Y = 50;
             var TOP_BASE_Y = BOT_TRACK_Y - 14;
             var TOP_TRACK_H = 5;
@@ -1920,11 +1844,6 @@
             host.style.height = TOTAL_H + 'px';
             host.innerHTML = '';
 
-            // ────────────────────────────────────────────
-            // 1. [상단] 당일변동 ("[당일변동] -> [L 360.8] -> [가로바] -> [H 370.9]")
-            // ────────────────────────────────────────────
-
-            // L 가격 표시 (기준점)
             var lEl = mkEl({
                 position: 'absolute', zIndex: '6', top: (TOP_BASE_Y - 4) + 'px', left: (pctL + 0.8) + '%', transform: 'translateX(-100%)',
                 fontSize: '9.5px', fontWeight: 'bold', color: '#66bbff', whiteSpace: 'nowrap'
@@ -1932,7 +1851,6 @@
             lEl.textContent = 'L ' + dayLow.toFixed(1);
             host.appendChild(lEl);
 
-            // "당일변동" 타이틀 (L 360.8 바로 앞(왼쪽)에 간격을 두고 밀착 배치)
             var titleEl = mkEl({
                 position: 'absolute', zIndex: '5', top: (TOP_BASE_Y - 4) + 'px', left: (pctL + 0.8) + '%', transform: 'translateX(calc(-100% - 48px))',
                 fontSize: '9.5px', fontWeight: 'bold', color: '#8899aa', whiteSpace: 'nowrap'
@@ -1940,7 +1858,6 @@
             titleEl.textContent = '당일변동';
             host.appendChild(titleEl);
 
-            // H-L 구간 가로바 (L 바로 오른쪽에 여백을 두고 시작)
             var hlTrackBg = mkEl({
                 position: 'absolute', zIndex: '1', top: TOP_BASE_Y + 'px', height: TOP_TRACK_H + 'px',
                 left: (pctL + 1.2) + '%', width: (pctH - (pctL + 1.2)) + '%',
@@ -1949,7 +1866,6 @@
             });
             host.appendChild(hlTrackBg);
 
-            // H 가격 표시 (가로바 바로 오른쪽)
             var hEl = mkEl({
                 position: 'absolute', zIndex: '6', top: (TOP_BASE_Y - 4) + 'px', left: (pctH + 1.6) + '%', transform: 'translateX(0%)',
                 fontSize: '9.5px', fontWeight: 'bold', color: '#ff6666', whiteSpace: 'nowrap'
@@ -1957,7 +1873,6 @@
             hEl.textContent = 'H ' + dayHigh.toFixed(1);
             host.appendChild(hEl);
 
-            // 실시간 현재가 및 변동률
             var riseFromLow = (dayLow > 0 && price >= dayLow) ? ((price - dayLow) / dayLow) * 100 : 0;
             var riseStr = '(+' + riseFromLow.toFixed(2) + '%)';
             var dropFromHigh = (dayHigh > 0 && price <= dayHigh) ? ((price - dayHigh) / dayHigh) * 100 : 0;
@@ -1980,9 +1895,6 @@
             });
             host.appendChild(tri);
 
-            // ────────────────────────────────────────────
-            // 2. [하단] 옵션 기준 지지/저항 마스터 레벨 바 영역
-            // ────────────────────────────────────────────
             var botTrackBg = mkEl({
                 position: 'absolute', zIndex: '1', top: BOT_TRACK_Y + 'px', height: BOT_TRACK_H + 'px',
                 left: (PAD_L * 100) + '%', right: (PAD_R * 100) + '%',
@@ -2134,7 +2046,6 @@
         var yahooWs = null;
         function yahooWsConnect() {
             try {
-                // ★ 개별 종목은 빼고, 상단 지수(QQQ, SPY) 전용으로만 야후 웹소켓 연결
                 var macroSubs = ['QQQ', 'SPY'];
 
                 yahooWs = new WebSocket('wss://streamer.finance.yahoo.com');
@@ -2149,7 +2060,6 @@
                         var ticker = msg.id;
                         var safePrice = Number(msg.price) || 0;
 
-                        // 상단 네온바에 들어가는 QQQ, SPY 전용 처리만 남김
                         if (ticker === 'QQQ') {
                             globQqq = msg.changePercent;
                             updateNeonItem('neon-qqq', '나스닥(QQQ)', safePrice, msg.changePercent);
@@ -2165,7 +2075,6 @@
                 };
             } catch (e) { }
         }
-
 
         function initGlobalTickersListener() {
             ['QQQ', 'SPY'].forEach(function (ticker) {
@@ -2244,7 +2153,7 @@
                     if (p > 100) {
                         el.innerHTML = '<span class="tit">원달러환율</span>'
                             + '<span class="val ' + (r > 0 ? 'up' : r < 0 ? 'dn' : 'neu') + '">'
-                            + p.toFixed(2) + '원</span>';  // ← toFixed(2)
+                            + p.toFixed(2) + '원</span>';
                     }
                 });
             } catch (e) { }
