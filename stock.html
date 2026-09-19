@@ -294,13 +294,13 @@
         .dot-red {
             background: #ff4444 !important;
             box-shadow: 0 0 8px #ff4444 !important;
-            animation: np 1.5s ease-in-out infinite !important;
+            animation: np 2s ease-in-out infinite !important;
         }
 
         .dot-blue {
             background: #00aaff !important;
             box-shadow: 0 0 8px #00aaff !important;
-            animation: np 1.5s ease-in-out infinite !important;
+            animation: np 2s ease-in-out infinite !important;
         }
 
 
@@ -1223,14 +1223,14 @@
             void dotEl.offsetWidth;
             dotEl.classList.add(cls);
 
-            // 1.5초(한 사이클) 후 소등 — QQQ dot과 같은 리듬으로 한 번 펄스 후 꺼짐
+            // 3초(두 사이클) 후 소등 — 충분히 부드럽게 펄스 후 꺼짐
             _blinkTimers[panelIdx] = setTimeout(function () {
                 dotEl.classList.remove('dot-red', 'dot-blue');
                 dotEl.style.backgroundColor = '#1a1a2a';
                 dotEl.style.boxShadow = 'none';
                 dotEl.style.opacity = '0.3';
                 _blinkTimers[panelIdx] = null;
-            }, 1500);
+            }, 3000);
         }
 
         // ──────────────────────────────────────────────────────────
@@ -1521,7 +1521,9 @@
         // ════════════════════════════════════════════════════════
         // ★ 패널별 키움 마지막 수신 시간 및 야후 백업 모드 상태
         // ════════════════════════════════════════════════════════
-        var lastKiwoomUpdate = { 0: Date.now(), 1: Date.now(), 2: Date.now() };
+        // 초기값을 6초 전으로 설정 → 앱 로드 즉시 야후 fallback 시작
+        // (키움이 write하면 즉시 lastKiwoomUpdate가 갱신되어 야후 fallback 해제)
+        var lastKiwoomUpdate = { 0: Date.now() - 6000, 1: Date.now() - 6000, 2: Date.now() - 6000 };
         var isUsingYahooFallback = { 0: false, 1: false, 2: false };
 
         function initFirebase() {
