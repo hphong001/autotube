@@ -272,11 +272,18 @@
             .ws-dot.live {
                 background: #00aaff;
                 box-shadow: 0 0 8px #00aaff;
-                animation: np 1.5s infinite;
+                animation: np 2s ease-in-out infinite;
+            }
+
+            .ws-dot.kiwoom {
+                background: #ff4444;
+                box-shadow: 0 0 8px #ff4444;
+                animation: np 2s ease-in-out infinite;
             }
 
             .ws-dot.dead {
                 background: #1a1a2a;
+                box-shadow: none;
                 animation: none;
             }
 
@@ -1201,36 +1208,28 @@
         //   color    : '#ff4444' (키움/빨강) 또는 '#00aaff' (야후/파랑)
         //   0.7초 동안 켜졌다가 자동으로 꺼짐 (write 이벤트마다 한 번씩 점등)
         // ════════════════════════════════════════════════════════
-        var _blinkTimers = { 0: null, 1: null, 2: null };
-        function blinkDot(panelIdx, color) {
+        // 현재 패널 dot 상태 추적 (QQQ 헤더와 동일: 상태가 유지되는 동안 계속 켜짐)
+        var _dotState = { 0: null, 1: null, 2: null }; // null | 'red' | 'blue'
+
+        function setDotState(panelIdx, state) {
+            // state: 'red' | 'blue' | null(소등)
             var dotEl = document.getElementById('p' + panelIdx + '-status-dot');
             if (!dotEl) return;
-
-            // 이전 타이머 취소
-            if (_blinkTimers[panelIdx]) {
-                clearTimeout(_blinkTimers[panelIdx]);
-                _blinkTimers[panelIdx] = null;
-            }
-
-            // 색상 클래스 결정 (QQQ 헤더와 동일한 CSS pulse 방식)
-            var cls = (color === '#ff4444' || color === 'red') ? 'dot-red' : 'dot-blue';
+            if (_dotState[panelIdx] === state) return; // 이미 같은 상태면 무시
+            _dotState[panelIdx] = state;
             dotEl.classList.remove('dot-red', 'dot-blue');
             dotEl.style.removeProperty('background-color');
             dotEl.style.removeProperty('box-shadow');
-            dotEl.style.removeProperty('animation');
             dotEl.style.removeProperty('opacity');
-            // 강제 reflow — 같은 클래스 재추가 시 애니메이션 재시작
-            void dotEl.offsetWidth;
-            dotEl.classList.add(cls);
+            void dotEl.offsetWidth; // reflow
+            if (state === 'red') dotEl.classList.add('dot-red');
+            else if (state === 'blue') dotEl.classList.add('dot-blue');
+        }
 
-            // 3초(두 사이클) 후 소등 — 충분히 부드럽게 펄스 후 꺼짐
-            _blinkTimers[panelIdx] = setTimeout(function () {
-                dotEl.classList.remove('dot-red', 'dot-blue');
-                dotEl.style.backgroundColor = '#1a1a2a';
-                dotEl.style.boxShadow = 'none';
-                dotEl.style.opacity = '0.3';
-                _blinkTimers[panelIdx] = null;
-            }, 3000);
+        // blinkDot은 하위 호환용으로 유지 — 색만 전달하면 됨
+        function blinkDot(panelIdx, color) {
+            var state = (color === '#ff4444' || color === 'red') ? 'red' : 'blue';
+            setDotState(panelIdx, state);
         }
 
         // ──────────────────────────────────────────────────────────
@@ -1615,10 +1614,13 @@
                     if (!isUsingYahooFallback[panelIdx]) {
                         console.warn(ticker + ' 키움 응답 지연 -> 야후 실시간 백업으로 전환합니다.');
                         isUsingYahooFallback[panelIdx] = true;
+                        setDotState(panelIdx, null); // 키움 dot 소등 후 야후 fetch 성공 시 파란색으로
                     }
                     fetchYahooFallbackData(panelIdx, ticker);
+                } else {
+                    // 키움 정상 작동 중 → dot은 subscribeFirebase rtRef 이벤트에서 red로 관리
+                    // 만약 야후 상태로 남아있으면 소등 (키움 데이터 왔을 때 이미 red로 바뀌므로 보통 불필요)
                 }
-                // else: 키움 정상 작동 중 → 블링킹은 subscribeFirebase의 rtRef.on('value') 이벤트에서 담당
             });
         }, 1000);
 
@@ -2106,7 +2108,7 @@
                     var chg = Number(chgStr) || 0;
                     if (ticker === 'QQQ') { globQqq = chg; updateNeonItem('neon-qqq', '나스닥(QQQ)', p, chg); }
                     else if (ticker === 'SPY') { globSpy = chg; updateNeonItem('neon-spy', 'S&P500(SPY)', p, chg); }
-                    var hd = document.getElementById('ws-dot-header'); if (hd) hd.className = 'ws-dot live';
+                    var hd = document.getElementById('ws-dot-header'); if (hd) hd.className = 'ws-dot live'; // 야후 WebSocket → 파랑
                     [0, 1, 2].forEach(function (i) { updateEnvSummary(i); });
                 }
 
@@ -2117,6 +2119,9 @@
                     var data = snap.val();
                     if (data) {
                         applyTop(data.price, data.changeRate);
+                        // 키움이 Firebase에 쓴 것 → 헤더 dot 빨강
+                        var hd = document.getElementById('ws-dot-header');
+                        if (hd) hd.className = 'ws-dot kiwoom';
                     } else {
                         pRef.once('value').then(function (ps) {
                             var pd = ps.val();
