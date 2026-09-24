@@ -310,6 +310,15 @@
             animation: np 2s ease-in-out infinite !important;
         }
 
+        /* 데이터 지연(10초 이상 미수신): 같은 색, 흐리게, 깜빡임 없음 */
+        .dot-red.dot-stale,
+        .dot-blue.dot-stale,
+        .ws-dot.stale {
+            opacity: 0.35 !important;
+            box-shadow: none !important;
+            animation: none !important;
+        }
+
 
         /* ★ 추가: blinkDot 키프레임 (JS에서 animation 이름으로 참조됨) */
         @keyframes blinkDot {
@@ -1213,18 +1222,19 @@
         var _dotState = { 0: null, 1: null, 2: null }; // null | 'red' | 'blue'
 
         function setDotState(panelIdx, state) {
-            // state: 'red' | 'blue' | null(소등)
+            // state: 'red' | 'blue' | 'red-stale' | 'blue-stale' | null(소등)
             var dotEl = document.getElementById('p' + panelIdx + '-status-dot');
             if (!dotEl) return;
             if (_dotState[panelIdx] === state) return; // 이미 같은 상태면 무시
             _dotState[panelIdx] = state;
-            dotEl.classList.remove('dot-red', 'dot-blue');
+            dotEl.classList.remove('dot-red', 'dot-blue', 'dot-stale');
             dotEl.style.removeProperty('background-color');
             dotEl.style.removeProperty('box-shadow');
             dotEl.style.removeProperty('opacity');
             void dotEl.offsetWidth; // reflow
-            if (state === 'red') dotEl.classList.add('dot-red');
-            else if (state === 'blue') dotEl.classList.add('dot-blue');
+            if (state && state.indexOf('red') === 0) dotEl.classList.add('dot-red');
+            else if (state && state.indexOf('blue') === 0) dotEl.classList.add('dot-blue');
+            if (state && state.indexOf('-stale') > 0) dotEl.classList.add('dot-stale');
         }
 
         // blinkDot은 하위 호환용으로 유지 — 색만 전달하면 됨
@@ -1624,8 +1634,36 @@
                 return;
             }
             applyPanelQuote(idx, pick.q);
-            setDotState(idx, pick.src === 'kiwoom' ? 'red' : 'blue');
+            updatePanelDot(idx);
         }
+
+        // ── 상태 점: 소스 색(빨강=키움/파랑=야후) + 신선도 ─────
+        //   최근 10초 안에 실제 수신 → 깜빡임 / 그 이상 → 흐리게 정지 / 값 없음 → 소등
+        var DOT_FRESH_MS = 10000;
+        function isFresh(q) { return !!(q && q.recvAt && Date.now() - q.recvAt <= DOT_FRESH_MS); }
+
+        function updatePanelDot(idx) {
+            var ticker = panelTickers[idx];
+            var pick = ticker ? pickQuote(ticker) : null;
+            if (!pick) { setDotState(idx, null); return; }
+            setDotState(idx, (pick.src === 'kiwoom' ? 'red' : 'blue') + (isFresh(pick.q) ? '' : '-stale'));
+        }
+
+        function updateHeaderDot() {
+            var hd = document.getElementById('ws-dot-header');
+            if (!hd) return;
+            var src = null, fresh = false;
+            HEADER_TICKERS.forEach(function (ticker) {
+                var pick = pickQuote(ticker);
+                if (!pick) return;
+                if (src !== 'kiwoom') src = pick.src;
+                if (pick.src === src && isFresh(pick.q)) fresh = true;
+            });
+            hd.className = 'ws-dot ' + (src === 'kiwoom' ? 'kiwoom' : src === 'yahoo' ? 'live' : 'dead') + (src && !fresh ? ' stale' : '');
+        }
+
+        // 1초마다 신선도 재평가 (수신이 끊기면 10초 후 자동으로 흐려짐)
+        setInterval(function () { [0, 1, 2].forEach(updatePanelDot); updateHeaderDot(); }, 1000);
 
         function applyPanelQuote(idx, q) {
             updatePanelPrice(idx, q.price, q.changeRate, q.change, q.volume > 0 ? q.volume : null);
@@ -1681,7 +1719,9 @@
                         change: rtData.change,
                         volume: window._lastVolMap[ticker] || 0,
                         dayHigh: toNum(rtData.dayHigh),
-                        dayLow: toNum(rtData.dayLow)
+                        dayLow: toNum(rtData.dayLow),
+                        // 최초 스냅샷은 과거 값일 수 있으므로 수신 시각을 갱신하지 않음
+                        recvAt: isFirst ? ((kiwoomCache[ticker] && kiwoomCache[ticker].recvAt) || 0) : Date.now()
                     };
 
                     // 최초 스냅샷이 아닌 "새 기록"은 키움이 살아있다는 증거 (하트비트 보조)
@@ -2205,17 +2245,14 @@
         // ★ 헤더 QQQ / SPY : 패널과 같은 규칙 (키움 우선, 꺼지면 야후)
         // ════════════════════════════════════════════════════════
         function renderHeaderQuotes() {
-            var anySrc = null;
             HEADER_TICKERS.forEach(function (ticker) {
                 var pick = pickQuote(ticker);
                 if (!pick) return;
                 var chg = Number(String(pick.q.changeRate || '0').replace('%', '').trim()) || 0;
                 if (ticker === 'QQQ') { globQqq = chg; updateNeonItem('neon-qqq', '나스닥(QQQ)', pick.q.price, chg); }
                 else if (ticker === 'SPY') { globSpy = chg; updateNeonItem('neon-spy', 'S&P500(SPY)', pick.q.price, chg); }
-                if (anySrc !== 'kiwoom') anySrc = pick.src;
             });
-            var hd = document.getElementById('ws-dot-header');
-            if (hd) hd.className = 'ws-dot ' + (anySrc === 'kiwoom' ? 'kiwoom' : anySrc === 'yahoo' ? 'live' : 'dead');
+            updateHeaderDot();
             [0, 1, 2].forEach(function (i) { updateEnvSummary(i); });
         }
 
@@ -2235,7 +2272,8 @@
                         change: data.change,
                         volume: toNum(data.volume),
                         dayHigh: toNum(data.dayHigh),
-                        dayLow: toNum(data.dayLow)
+                        dayLow: toNum(data.dayLow),
+                        recvAt: isFirst ? ((kiwoomCache[ticker] && kiwoomCache[ticker].recvAt) || 0) : Date.now()
                     };
                     if (!isFirst) noteKiwoomActivity();
                     renderHeaderQuotes();
@@ -2245,7 +2283,7 @@
                 pRef.on('value', function (snap) {
                     var pd = snap.val();
                     if (!pd || (kiwoomCache[ticker] && kiwoomCache[ticker].price > 0)) return;
-                    kiwoomCache[ticker] = { price: toNum(pd.price), changeRate: pd.change, change: 0, volume: 0, dayHigh: 0, dayLow: 0 };
+                    kiwoomCache[ticker] = { price: toNum(pd.price), changeRate: pd.change, change: 0, volume: 0, dayHigh: 0, dayLow: 0, recvAt: 0 };
                     renderHeaderQuotes();
                 });
             });
