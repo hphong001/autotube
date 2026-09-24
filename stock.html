@@ -316,6 +316,7 @@
             0% {
                 opacity: 1;
             }
+
             100% {
                 opacity: 0.15;
             }
@@ -1470,7 +1471,9 @@
             panelDataStore[panelIdx] = null;
 
             resetPanelUI(panelIdx, newTicker);
+            setDotState(panelIdx, null);
             subscribeFirebase(panelIdx, newTicker);
+            renderPanelQuote(panelIdx);   // 야후는 전 종목 사전 구독 중 → 캐시 값 즉시 표시
 
             currentChartTicker[panelIdx] = null;
             setTimeout(function () { updateChartWidget(panelIdx, newTicker); }, 200);
@@ -1518,67 +1521,173 @@
         var fbGen = { 0: 0, 1: 0, 2: 0 };
 
         // ════════════════════════════════════════════════════════
-        // ★ 패널별 키움 마지막 수신 시간 및 야후 백업 모드 상태
+        // ★ 데이터 소스 관리 (키움 우선 / 야후 백업)
+        //   - 키움 생존 여부는 종목별 체결이 아니라 "하트비트"로 판단
+        //     · C# 앱이 system/kiwoomAlive 에 2초마다 기록
+        //     · 6초 동안 변화가 없으면 키움 꺼짐으로 판정
+        //     · status:'off' 가 기록되면 즉시 꺼짐 (정상 종료/키움 연결 끊김)
+        //   - 야후는 시작 시 전 종목을 미리 구독하고 항상 캐시만 갱신
+        //   - 화면 출력: 키움 살아있음 → 키움 값(빨강) / 꺼짐 → 야후 캐시(파랑)
+        //   - 야후 데이터는 Firebase에 절대 쓰지 않음
         // ════════════════════════════════════════════════════════
-        // 초기값을 6초 전으로 설정 → 앱 로드 즉시 야후 fallback 시작
-        // (키움이 write하면 즉시 lastKiwoomUpdate가 갱신되어 야후 fallback 해제)
-        var lastKiwoomUpdate = { 0: Date.now() - 6000, 1: Date.now() - 6000, 2: Date.now() - 6000 };
-        var isUsingYahooFallback = { 0: false, 1: false, 2: false };
+        var KIWOOM_HB_PATH = 'system/kiwoomAlive';
+        var KIWOOM_DEAD_MS = 6000;          // 하트비트 2초 × 3회 누락
+        var kiwoomAlive = false;            // 시작 시에는 야후로 표시, 하트비트 확인 즉시 키움으로 전환
+        var kiwoomLastHbRecv = 0;           // 브라우저 시계 기준 마지막 하트비트 수신 시각
+        var fbServerOffset = 0;             // Firebase 서버 시각 - 브라우저 시각
+
+        var kiwoomCache = {};               // ticker → { price, changeRate, change, volume, dayHigh, dayLow }
+        var yahooCache = {};                // ticker → { price, changeRate, change, volume, dayHigh, dayLow, recvAt }
+
+        function toNum(v) { return Number(String(v === undefined || v === null ? '' : v).replace(/[^0-9.-]+/g, '')) || 0; }
 
         function initFirebase() {
             try {
                 if (!firebase.apps.length) firebase.initializeApp({ databaseURL: FIREBASE_URL });
+                initKiwoomHeartbeat();
                 [0, 1, 2].forEach(function (i) { subscribeFirebase(i, panelTickers[i]); });
             } catch (e) { }
         }
 
+        // ── 키움 하트비트 구독 ─────────────────────────────────
+        function initKiwoomHeartbeat() {
+            try {
+                firebase.database().ref('.info/serverTimeOffset').on('value', function (s) { fbServerOffset = Number(s.val()) || 0; });
+
+                var firstSnap = true;
+                firebase.database().ref(KIWOOM_HB_PATH).on('value', function (snap) {
+                    var v = snap.val();
+                    var isFirst = firstSnap; firstSnap = false;
+
+                    // 노드 없음 또는 명시적 꺼짐 신호 → 즉시 야후 전환
+                    if (!v || v.status === 'off') { setKiwoomAlive(false, v ? '키움 종료 신호 수신' : '하트비트 없음'); return; }
+
+                    if (isFirst) {
+                        // 구독 직후 최초 스냅샷은 "과거 값"일 수 있음
+                        // → 서버 타임스탬프(ts)가 6초 이내일 때만 살아있다고 판정
+                        var ts = Number(v.ts) || 0;
+                        if (ts > 0) {
+                            var age = (Date.now() + fbServerOffset) - ts;
+                            if (age >= 0 && age < KIWOOM_DEAD_MS) {
+                                kiwoomLastHbRecv = Date.now() - age;
+                                setKiwoomAlive(true, '하트비트 확인');
+                            }
+                        }
+                        return; // ts가 없거나 오래됐으면 다음 변경 이벤트(최대 2초)를 기다림
+                    }
+
+                    // 값이 바뀌었다 = 키움 앱이 지금 기록 중
+                    noteKiwoomActivity();
+                });
+            } catch (e) { }
+
+            // 감시 타이머: 하트비트가 6초 이상 끊기면 야후 전환
+            setInterval(function () {
+                if (kiwoomAlive && Date.now() - kiwoomLastHbRecv > KIWOOM_DEAD_MS) {
+                    setKiwoomAlive(false, '하트비트 ' + (KIWOOM_DEAD_MS / 1000) + '초 무응답');
+                }
+            }, 500);
+        }
+
+        // 하트비트 변경 또는 실시간 시세의 "새 기록"이 들어올 때 호출
+        function noteKiwoomActivity() {
+            kiwoomLastHbRecv = Date.now();
+            if (!kiwoomAlive) setKiwoomAlive(true, '키움 기록 수신');
+        }
+
+        function setKiwoomAlive(alive, reason) {
+            if (kiwoomAlive === alive) return;
+            kiwoomAlive = alive;
+            console.log(alive ? '[소스] 키움 연결 → 키움 시세 출력 (' + reason + ')'
+                              : '[소스] 키움 꺼짐 → 야후 시세 출력 (' + reason + ')');
+            [0, 1, 2].forEach(renderPanelQuote);
+            renderHeaderQuotes();
+        }
+
+        // ── 패널 시세 출력 (현재 소스 기준) ─────────────────────
+        // 키움이 살아있으면 키움 값, 꺼져 있으면 야후 값
+        // (키움이 켜져 있어도 해당 종목을 아직 한 번도 안 썼다면 야후 값으로 대신 표시)
+        function pickQuote(ticker) {
+            var k = kiwoomCache[ticker], y = yahooCache[ticker];
+            if (kiwoomAlive && k && k.price > 0) return { q: k, src: 'kiwoom' };
+            if (y && y.price > 0) return { q: y, src: 'yahoo' };
+            return null;
+        }
+
+        function renderPanelQuote(idx) {
+            var ticker = panelTickers[idx];
+            if (!ticker) return;
+            var pick = pickQuote(ticker);
+            if (!pick) {
+                // 아직 어느 소스에도 값이 없으면 점만 끄고 기존 표시는 유지
+                setDotState(idx, null);
+                return;
+            }
+            applyPanelQuote(idx, pick.q);
+            setDotState(idx, pick.src === 'kiwoom' ? 'red' : 'blue');
+        }
+
+        function applyPanelQuote(idx, q) {
+            updatePanelPrice(idx, q.price, q.changeRate, q.change, q.volume > 0 ? q.volume : null);
+            var d = panelDataStore[idx];
+            if (d) {
+                d.price = q.price;
+                if (q.dayHigh > 0) d.dayHigh = q.dayHigh;
+                if (q.dayLow > 0) d.dayLow = q.dayLow;
+                var p = 'p' + idx + '-';
+                if (d.maxPain > 0) renderTimeline(p, d);
+                if (d.optionRows && d.optionRows.length > 0) renderOiSafe(idx, d.optionRows, q.price);
+            }
+            hidePanelOverlay(idx);
+            setSelectDisabled(idx, false);
+            switchLocked[idx] = false;
+        }
+
+        // panel 데이터(옵션체인) 갱신 후, 그 안의 오래된 가격을 현재 소스 가격으로 덮어씀
+        function overlayLivePrice(idx) {
+            var ticker = panelTickers[idx], d = panelDataStore[idx];
+            if (!ticker || !d) return;
+            var pick = pickQuote(ticker), q = pick && pick.q;
+            if (q) {
+                d.price = q.price;
+                if (q.dayHigh > 0) d.dayHigh = q.dayHigh;
+                if (q.dayLow > 0) d.dayLow = q.dayLow;
+            }
+        }
+
         // ════════════════════════════════════════════════════════
-        // ★ Firebase realtime 구독: 키움이 쓸 때마다 호출됨
-        //   → lastKiwoomUpdate 갱신 + 야후 백업 해제 + 빨간 블링킹
+        // ★ Firebase 구독: 키움 시세(realtime) + 옵션(panel)
+        //   - 값은 항상 kiwoomCache에 저장, 출력은 키움이 살아있을 때만
         // ════════════════════════════════════════════════════════
         function subscribeFirebase(panelIdx, ticker) {
             if (!ticker) return; unsubscribeFirebase(panelIdx); fbGen[panelIdx]++; var myGen = fbGen[panelIdx];
             try {
                 var rtRef = firebase.database().ref('tickers/' + ticker + '/realtime');
+                var rtFirst = true;
                 rtRef.on('value', function (snap) {
                     if (fbGen[panelIdx] !== myGen || panelTickers[panelIdx] !== ticker) return;
-
-                    // ★ 키움이 Firebase에 쓴 시간 갱신 + 야후 백업 즉시 해제
-                    lastKiwoomUpdate[panelIdx] = Date.now();
-                    if (isUsingYahooFallback[panelIdx]) {
-                        console.log(ticker + ' -> 키움 데이터 복구됨. 야후 백업 모드 종료.');
-                        isUsingYahooFallback[panelIdx] = false;
-                    }
-
-                    // ★ 키움 데이터 수신 → 빨간색 블링킹 (0.7초)
-                    blinkDot(panelIdx, '#ff4444');
+                    var isFirst = rtFirst; rtFirst = false;
 
                     var rtData = snap.val();
-                    if (rtData) {
-                        if (!window._lastVolMap) window._lastVolMap = {};
-                        var rawVol = Number(String(rtData.volume || '').replace(/,/g, '')) || 0;
-                        if (rawVol > 0) window._lastVolMap[ticker] = rawVol;
-                        var rtVol = window._lastVolMap[ticker] || null;
-                        updatePanelPrice(panelIdx, rtData.price, rtData.changeRate, rtData.change, rtVol);
+                    if (!rtData) return; // ★ 빈 경로는 키움 수신으로 치지 않음
 
-                        var safePrice = Number(String(rtData.price).replace(/[^0-9.-]+/g, "")) || 0;
+                    if (!window._lastVolMap) window._lastVolMap = {};
+                    var rawVol = toNum(rtData.volume);
+                    if (rawVol > 0) window._lastVolMap[ticker] = rawVol;
 
-                        if (panelDataStore[panelIdx] && safePrice > 0) {
-                            panelDataStore[panelIdx].price = safePrice;
-                            if (rtData.dayHigh && Number(rtData.dayHigh) > 0)
-                                panelDataStore[panelIdx].dayHigh = Number(rtData.dayHigh);
-                            if (rtData.dayLow && Number(rtData.dayLow) > 0)
-                                panelDataStore[panelIdx].dayLow = Number(rtData.dayLow);
+                    kiwoomCache[ticker] = {
+                        price: toNum(rtData.price),
+                        changeRate: rtData.changeRate,
+                        change: rtData.change,
+                        volume: window._lastVolMap[ticker] || 0,
+                        dayHigh: toNum(rtData.dayHigh),
+                        dayLow: toNum(rtData.dayLow)
+                    };
 
-                            var p = 'p' + panelIdx + '-';
-                            if (panelDataStore[panelIdx].maxPain > 0) {
-                                renderTimeline(p, panelDataStore[panelIdx]);
-                            }
-                            if (panelDataStore[panelIdx].optionRows && panelDataStore[panelIdx].optionRows.length > 0) {
-                                renderOiSafe(panelIdx, panelDataStore[panelIdx].optionRows, safePrice);
-                            }
-                        }
-                    }
+                    // 최초 스냅샷이 아닌 "새 기록"은 키움이 살아있다는 증거 (하트비트 보조)
+                    if (!isFirst) noteKiwoomActivity();
+
+                    if (kiwoomAlive) renderPanelQuote(panelIdx);
                 });
 
                 var panelRef = firebase.database().ref('tickers/' + ticker + '/panel');
@@ -1599,86 +1708,14 @@
         function unsubscribeFirebase(panelIdx) { try { if (fbRefs[panelIdx] && fbRefs[panelIdx].refs) fbRefs[panelIdx].refs.forEach(function (r) { r.off(); }); } catch (e) { } fbRefs[panelIdx] = null; fbGen[panelIdx]++; }
 
         // ════════════════════════════════════════════════════════
-        // ★ 키움 단절 감지 타이머 (1초 주기)
-        //   - 5초 이상 키움 데이터가 없으면 야후 백업으로 전환
-        //   - 야후 백업 중: 파란색 블링킹 (fetchYahooFallbackData 내에서)
-        // ════════════════════════════════════════════════════════
-        setInterval(function () {
-            var now = Date.now();
-            [0, 1, 2].forEach(function (panelIdx) {
-                var ticker = panelTickers[panelIdx];
-                if (!ticker) return;
-
-                if (now - lastKiwoomUpdate[panelIdx] > 5000) {
-                    // 5초 이상 키움 응답 없음 → 야후 백업 전환
-                    if (!isUsingYahooFallback[panelIdx]) {
-                        console.warn(ticker + ' 키움 응답 지연 -> 야후 실시간 백업으로 전환합니다.');
-                        isUsingYahooFallback[panelIdx] = true;
-                        setDotState(panelIdx, null); // 키움 dot 소등 후 야후 fetch 성공 시 파란색으로
-                    }
-                    fetchYahooFallbackData(panelIdx, ticker);
-                } else {
-                    // 키움 정상 작동 중 → dot은 subscribeFirebase rtRef 이벤트에서 red로 관리
-                    // 만약 야후 상태로 남아있으면 소등 (키움 데이터 왔을 때 이미 red로 바뀌므로 보통 불필요)
-                }
-            });
-        }, 1000);
-
-        // ════════════════════════════════════════════════════════
-        // ★ 야후 백업 데이터 조회 함수
-        //   - allorigins.win 프록시로 CORS 우회
-        //   - 시세를 직접 DOM에 출력 (Firebase에는 절대 쓰지 않음)
-        //   - 성공 시 파란색 블링킹 (0.7초)
-        // ════════════════════════════════════════════════════════
-        function fetchYahooFallbackData(panelIdx, ticker) {
-            if (!isUsingYahooFallback[panelIdx]) return;
-
-            var yahooSymbol = ticker === 'SPX' ? '^SPX' : ticker;
-            var targetUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(yahooSymbol) + '?interval=1d&range=1d';
-            var proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(targetUrl);
-
-            fetch(proxyUrl)
-                .then(function (res) { return res.json(); })
-                .then(function (data) {
-                    if (!isUsingYahooFallback[panelIdx]) return;
-                    if (!data || !data.contents) return;
-
-                    var yahooJson = JSON.parse(data.contents);
-                    var meta = yahooJson.chart && yahooJson.chart.result && yahooJson.chart.result[0] && yahooJson.chart.result[0].meta;
-                    if (!meta) return;
-
-                    var price = meta.regularMarketPrice || 0;
-                    var prevClose = meta.chartPreviousClose || meta.previousClose || price;
-                    var changeAmt = price - prevClose;
-                    var changePct = prevClose > 0 ? (changeAmt / prevClose) * 100 : 0;
-                    var volume = meta.regularMarketVolume || 0;
-
-                    if (price > 0 && isUsingYahooFallback[panelIdx]) {
-                        // 야후 시세를 DOM에 직접 출력
-                        updatePanelPriceOnly(panelIdx, price, changePct, changeAmt, volume);
-                        hidePanelOverlay(panelIdx);
-                        setSelectDisabled(panelIdx, false);
-
-                        // ★ 야후 데이터 성공 → 파란색 블링킹 (0.7초)
-                        blinkDot(panelIdx, '#00aaff');
-                    }
-                })
-                .catch(function (err) {
-                    console.error('야후 백업 데이터 수신 실패: ', err);
-                });
-        }
-
-        // ════════════════════════════════════════════════════════
         // ★ panel/optionUpdate 이벤트 처리 (Firebase panelRef → onWsMessage)
-        //   - 옵션 데이터 갱신은 키움 출처이므로 빨간 블링킹
+        //   - 점 색상은 renderPanelQuote 에서 현재 가격 소스 기준으로 결정
         // ════════════════════════════════════════════════════════
         window.onWsMessage = function (d) {
             if (!d || !d.type || d.type !== 'optionUpdate' || !d.ticker) return;
             var panel = panelTickers.indexOf(d.ticker);
             if (panel < 0) return;
 
-            // 옵션 패널 데이터 = 키움 출처 → 빨간색 블링킹
-            blinkDot(panel, '#ff4444');
 
             if (d.optionRows && d.optionRows.length > 0) {
                 var tCall = 0, tPut = 0;
@@ -1708,7 +1745,9 @@
             }
 
             panelDataStore[panel] = JSON.parse(JSON.stringify(d));
+            overlayLivePrice(panel);   // panel 안의 오래된 가격 대신 현재 소스(키움/야후) 가격 사용
             renderPanel(panel, panelDataStore[panel]);
+            renderPanelQuote(panel);
             hidePanelOverlay(panel);
             setSelectDisabled(panel, false);
             switchLocked[panel] = false;
@@ -2059,83 +2098,155 @@
             try { PricingData = protobuf.parse(P).root.resolveAll().lookupType('PricingData'); } catch (e) { }
         })();
 
+        // ════════════════════════════════════════════════════════
+        // ★ 야후 심볼 매핑 (finance.yahoo.com 에서 확인)
+        //   - SPX 지수는 ^GSPC (실시간). ^SPX 는 CBOE 지연 시세, SPX(^ 없음)는 빈 종목
+        //   - 나머지 주식/ETF는 티커 그대로
+        // ════════════════════════════════════════════════════════
+        var YAHOO_SYMBOL_MAP = { 'SPX': '^GSPC' };
+        function toYahooSym(t) { return YAHOO_SYMBOL_MAP[t] || t; }
+        function fromYahooSym(s) {
+            for (var k in YAHOO_SYMBOL_MAP) { if (YAHOO_SYMBOL_MAP[k] === s) return k; }
+            return s;
+        }
+
         var HEADER_TICKERS = ['QQQ', 'SPY'];
+        // 관심종목 전체 + 헤더 종목 (중복 제거) → 시작 시 한 번에 구독
         function getAllSubs() {
-            var all = WATCH_LIST.map(function (w) { return w.ticker; }).concat(HEADER_TICKERS).map(function (t) { return t === 'SPX' ? '^SPX' : t; });
+            var all = WATCH_LIST.map(function (w) { return w.ticker; }).concat(HEADER_TICKERS).map(toYahooSym);
             var seen = {}, res = [];
             all.forEach(function (t) { if (!seen[t]) { seen[t] = true; res.push(t); } });
             return res;
         }
 
-        var yahooWs = null;
+        // ── 야후 WebSocket 메시지 디코딩 (3가지 형식 모두 대응) ──
+        //   1) 바이너리 protobuf  2) base64 문자열  3) {"type":"pricing","message":"<base64>"}
+        function decodeYahooMsg(data) {
+            if (data instanceof ArrayBuffer) return PricingData.decode(new Uint8Array(data));
+            var s = String(data);
+            if (s.charAt(0) === '{') {
+                var j = JSON.parse(s);
+                if (!j || !j.message) return null;
+                s = j.message;
+            }
+            var bin = atob(s), b = new Uint8Array(bin.length);
+            for (var i = 0; i < bin.length; i++) b[i] = bin.charCodeAt(i);
+            return PricingData.decode(b);
+        }
+
+        var yahooWs = null, yahooReconnectTimer = null, yahooLastMsgAt = 0;
         function yahooWsConnect() {
+            if (yahooReconnectTimer) { clearTimeout(yahooReconnectTimer); yahooReconnectTimer = null; }
             try {
-                var macroSubs = ['QQQ', 'SPY'];
-
-                yahooWs = new WebSocket('wss://streamer.finance.yahoo.com');
+                yahooWs = new WebSocket('wss://streamer.finance.yahoo.com/?version=2');
                 yahooWs.binaryType = 'arraybuffer';
-                yahooWs.onopen = function () { yahooWs.send(JSON.stringify({ subscribe: macroSubs })); };
-                yahooWs.onmessage = function (ev) {
-                    if (!PricingData) return;
-                    try {
-                        var bytes = ev.data instanceof ArrayBuffer ? new Uint8Array(ev.data) : (function () { var bin = atob(ev.data), b = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) b[i] = bin.charCodeAt(i); return b; })();
-                        var msg = PricingData.decode(bytes);
 
-                        var ticker = msg.id;
-                        var safePrice = Number(msg.price) || 0;
-
-                        if (ticker === 'QQQ') {
-                            globQqq = msg.changePercent;
-                            updateNeonItem('neon-qqq', '나스닥(QQQ)', safePrice, msg.changePercent);
-                            [0, 1, 2].forEach(function (i) { updateEnvSummary(i); });
-                        } else if (ticker === 'SPY') {
-                            globSpy = msg.changePercent;
-                            updateNeonItem('neon-spy', 'S&P500(SPY)', safePrice, msg.changePercent);
-                            [0, 1, 2].forEach(function (i) { updateEnvSummary(i); });
-                        }
-                    } catch (e) {
-                        console.error("WS Parse Error: ", e);
-                    }
+                yahooWs.onopen = function () {
+                    yahooLastMsgAt = Date.now();
+                    yahooWs.send(JSON.stringify({ subscribe: getAllSubs() }));
+                    console.log('[야후] 연결됨, 구독: ' + getAllSubs().join(', '));
                 };
-            } catch (e) { }
+
+                yahooWs.onmessage = function (ev) {
+                    yahooLastMsgAt = Date.now();
+                    if (!PricingData) return;
+                    var msg;
+                    try { msg = decodeYahooMsg(ev.data); } catch (e) { return; }
+                    if (!msg || !msg.id) return;
+
+                    var ticker = fromYahooSym(msg.id);
+                    var px = Number(msg.price) || 0;
+                    if (!(px > 0)) return;
+
+                    var prev = yahooCache[ticker] || {};
+                    yahooCache[ticker] = {
+                        price: px,
+                        changeRate: Number(msg.changePercent) || 0,
+                        change: Number(msg.change) || 0,
+                        volume: Number(msg.dayVolume) > 0 ? Number(msg.dayVolume) : (prev.volume || 0),
+                        dayHigh: Number(msg.dayHigh) > 0 ? Number(msg.dayHigh) : (prev.dayHigh || 0),
+                        dayLow: Number(msg.dayLow) > 0 ? Number(msg.dayLow) : (prev.dayLow || 0),
+                        recvAt: Date.now()
+                    };
+
+                    // 헤더(QQQ/SPY)
+                    if (HEADER_TICKERS.indexOf(ticker) >= 0) renderHeaderQuotes();
+
+                    // 패널: 해당 종목을 야후 소스로 보여주는 중일 때만 갱신
+                    panelTickers.forEach(function (t, idx) {
+                        if (t !== ticker) return;
+                        var pick = pickQuote(ticker);
+                        if (pick && pick.src === 'yahoo') renderPanelQuote(idx);
+                    });
+                };
+
+                yahooWs.onclose = function () {
+                    console.warn('[야후] 연결 끊김 → 3초 후 재연결');
+                    yahooReconnectTimer = setTimeout(yahooWsConnect, 3000);
+                };
+                yahooWs.onerror = function () { try { yahooWs.close(); } catch (e) { } };
+            } catch (e) {
+                yahooReconnectTimer = setTimeout(yahooWsConnect, 3000);
+            }
+        }
+
+        // 야후 연결이 살아있는데 60초 이상 아무 메시지도 없으면 강제 재연결 (정규장·프리·애프터 시간에만)
+        setInterval(function () {
+            if (!yahooWs || yahooWs.readyState !== 1) return;
+            if (Date.now() - yahooLastMsgAt < 60000) return;
+            var h = Number(new Date().toLocaleString('en-US', { timeZone: 'America/New_York', hour: 'numeric', hour12: false }));
+            var dow = new Date().toLocaleString('en-US', { timeZone: 'America/New_York', weekday: 'short' });
+            if (dow === 'Sat' || dow === 'Sun' || h < 4 || h >= 20) return;
+            console.warn('[야후] 60초간 수신 없음 → 재연결');
+            try { yahooWs.close(); } catch (e) { }
+        }, 15000);
+
+        // ════════════════════════════════════════════════════════
+        // ★ 헤더 QQQ / SPY : 패널과 같은 규칙 (키움 우선, 꺼지면 야후)
+        // ════════════════════════════════════════════════════════
+        function renderHeaderQuotes() {
+            var anySrc = null;
+            HEADER_TICKERS.forEach(function (ticker) {
+                var pick = pickQuote(ticker);
+                if (!pick) return;
+                var chg = Number(String(pick.q.changeRate || '0').replace('%', '').trim()) || 0;
+                if (ticker === 'QQQ') { globQqq = chg; updateNeonItem('neon-qqq', '나스닥(QQQ)', pick.q.price, chg); }
+                else if (ticker === 'SPY') { globSpy = chg; updateNeonItem('neon-spy', 'S&P500(SPY)', pick.q.price, chg); }
+                if (anySrc !== 'kiwoom') anySrc = pick.src;
+            });
+            var hd = document.getElementById('ws-dot-header');
+            if (hd) hd.className = 'ws-dot ' + (anySrc === 'kiwoom' ? 'kiwoom' : anySrc === 'yahoo' ? 'live' : 'dead');
+            [0, 1, 2].forEach(function (i) { updateEnvSummary(i); });
         }
 
         function initGlobalTickersListener() {
-            ['QQQ', 'SPY'].forEach(function (ticker) {
-                function applyTop(price, rateRaw) {
-                    var p = Number(price) || 0;
-                    var chgStr = String(rateRaw || '0').replace('%', '').trim();
-                    var chg = Number(chgStr) || 0;
-                    if (ticker === 'QQQ') { globQqq = chg; updateNeonItem('neon-qqq', '나스닥(QQQ)', p, chg); }
-                    else if (ticker === 'SPY') { globSpy = chg; updateNeonItem('neon-spy', 'S&P500(SPY)', p, chg); }
-                    var hd = document.getElementById('ws-dot-header'); if (hd) hd.className = 'ws-dot live'; // 야후 WebSocket → 파랑
-                    [0, 1, 2].forEach(function (i) { updateEnvSummary(i); });
-                }
-
+            HEADER_TICKERS.forEach(function (ticker) {
                 var rtRef = firebase.database().ref('tickers/' + ticker + '/realtime');
                 var pRef = firebase.database().ref('tickers/' + ticker + '/panel');
+                var rtFirst = true;
 
                 rtRef.on('value', function (snap) {
+                    var isFirst = rtFirst; rtFirst = false;
                     var data = snap.val();
-                    if (data) {
-                        applyTop(data.price, data.changeRate);
-                        // 키움이 Firebase에 쓴 것 → 헤더 dot 빨강
-                        var hd = document.getElementById('ws-dot-header');
-                        if (hd) hd.className = 'ws-dot kiwoom';
-                    } else {
-                        pRef.once('value').then(function (ps) {
-                            var pd = ps.val();
-                            if (pd) applyTop(pd.price, pd.change);
-                        });
-                    }
+                    if (!data) return;
+                    kiwoomCache[ticker] = {
+                        price: toNum(data.price),
+                        changeRate: data.changeRate,
+                        change: data.change,
+                        volume: toNum(data.volume),
+                        dayHigh: toNum(data.dayHigh),
+                        dayLow: toNum(data.dayLow)
+                    };
+                    if (!isFirst) noteKiwoomActivity();
+                    renderHeaderQuotes();
                 });
 
+                // realtime 이 한 번도 기록되지 않은 경우를 위한 보조 (panel 의 가격)
                 pRef.on('value', function (snap) {
                     var pd = snap.val();
-                    if (!pd) return;
-                    rtRef.once('value').then(function (rs) {
-                        if (!rs.exists()) { applyTop(pd.price, pd.change); }
-                    });
+                    if (!pd || (kiwoomCache[ticker] && kiwoomCache[ticker].price > 0)) return;
+                    kiwoomCache[ticker] = { price: toNum(pd.price), changeRate: pd.change, change: 0, volume: 0, dayHigh: 0, dayLow: 0 };
+                    renderHeaderQuotes();
                 });
             });
         }
