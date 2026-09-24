@@ -310,14 +310,14 @@
             animation: np 2s ease-in-out infinite !important;
         }
 
-            /* 데이터 지연(10초 이상 미수신): 같은 색, 흐리게, 깜빡임 없음 */
-            .dot-red.dot-stale,
-            .dot-blue.dot-stale,
-            .ws-dot.stale {
-                opacity: 0.35 !important;
-                box-shadow: none !important;
-                animation: none !important;
-            }
+        /* 데이터 지연(10초 이상 미수신): 같은 색, 흐리게, 깜빡임 없음 */
+        .dot-red.dot-stale,
+        .dot-blue.dot-stale,
+        .ws-dot.stale {
+            opacity: 0.35 !important;
+            box-shadow: none !important;
+            animation: none !important;
+        }
 
 
         /* ★ 추가: blinkDot 키프레임 (JS에서 animation 이름으로 참조됨) */
@@ -1242,12 +1242,16 @@
             'USO': 'WTI 원유 ETF',
             'IAU': '금 현물 ETF(IAU)'
         };
-        var serverTickerNames = {};   // system/symbolNames (선택 사항)
+        // ★ system/symbolList : 윈폼(C#)이 코드 순서대로 기록한 [{cd, nm}, ...]
+        //   → 콤보박스 순서와 한글 이름은 이 목록을 그대로 따름
+        var serverSymbolOrder = [];   // ['SQQQ','TQQQ', ...] (윈폼 코드 순서)
+        var serverTickerNames = {};   // { SQQQ:'나스닥 3배 인버스', ... }
 
         function tickerName(t) { return serverTickerNames[t] || TICKER_NAMES[t] || t; }
 
         function orderTickers(list) {
-            var order = Object.keys(TICKER_NAMES);
+            // 윈폼 순서가 있으면 그 순서, 없으면 기본 이름표 순서. 둘 다 없는 종목은 뒤에 알파벳순
+            var order = serverSymbolOrder.length ? serverSymbolOrder : Object.keys(TICKER_NAMES);
             return list.slice().sort(function (a, b) {
                 var ia = order.indexOf(a), ib = order.indexOf(b);
                 if (ia < 0 && ib < 0) return a < b ? -1 : a > b ? 1 : 0;
@@ -1280,9 +1284,18 @@
 
         function loadServerTickerNames() {
             try {
-                return firebase.database().ref('system/symbolNames').once('value').then(function (snap) {
+                return firebase.database().ref('system/symbolList').once('value').then(function (snap) {
                     var v = snap.val();
-                    if (v && typeof v === 'object') serverTickerNames = v;
+                    if (!v || typeof v !== 'object') return;
+                    // 배열로 오거나 {"0":{..},"1":{..}} 형태로 올 수 있음 → 번호 순으로 정리
+                    var items = Array.isArray(v) ? v : Object.keys(v).sort(function (a, b) { return a - b; }).map(function (k) { return v[k]; });
+                    var order = [], names = {};
+                    items.forEach(function (it) {
+                        if (!it || !it.cd || names.hasOwnProperty(it.cd)) return;
+                        order.push(it.cd);
+                        names[it.cd] = it.nm || it.cd;
+                    });
+                    if (order.length) { serverSymbolOrder = order; serverTickerNames = names; }
                 }).catch(function () { });
             } catch (e) { return Promise.resolve(); }
         }
@@ -1710,7 +1723,7 @@
             if (kiwoomAlive === alive) return;
             kiwoomAlive = alive;
             console.log(alive ? '[소스] 키움 연결 → 키움 시세 출력 (' + reason + ')'
-                : '[소스] 키움 꺼짐 → 야후 시세 출력 (' + reason + ')');
+                              : '[소스] 키움 꺼짐 → 야후 시세 출력 (' + reason + ')');
             [0, 1, 2].forEach(renderPanelQuote);
             renderHeaderQuotes();
         }
