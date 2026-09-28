@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdn.jsdelivr.net/npm/protobufjs@7.2.5/dist/protobuf.min.js"></script>
@@ -311,14 +310,14 @@
             animation: np 2s ease-in-out infinite !important;
         }
 
-        /* 데이터 지연(10초 이상 미수신): 같은 색, 흐리게, 깜빡임 없음 */
-        .dot-red.dot-stale,
-        .dot-blue.dot-stale,
-        .ws-dot.stale {
-            opacity: 0.35 !important;
-            box-shadow: none !important;
-            animation: none !important;
-        }
+            /* 데이터 지연(10초 이상 미수신): 같은 색, 흐리게, 깜빡임 없음 */
+            .dot-red.dot-stale,
+            .dot-blue.dot-stale,
+            .ws-dot.stale {
+                opacity: 0.35 !important;
+                box-shadow: none !important;
+                animation: none !important;
+            }
 
 
         /* ★ 추가: blinkDot 키프레임 (JS에서 animation 이름으로 참조됨) */
@@ -1361,116 +1360,552 @@
         // ──────────────────────────────────────────────────────────
         // ★ [PRO 버전] 아이콘 없음 + VWAP 중복 수정 + 매크로 종합 시황 추가
         // ──────────────────────────────────────────────────────────
+        // ════════════════════════════════════════════════════════
+        // ★ 실시간 단타 엔진 (틱 버퍼 → 모멘텀·거래량·VWAP·레벨 이벤트)
+        //   - VWAP: 키움 연결 시 C#이 체결 단위로 계산한 값(realtime.vwap) 사용
+        //           야후 시세일 때는 페이지를 연 뒤 수집한 값으로 자체 계산
+        //   - VWAP 세션 기준(ET): 20:00~ / 04:00~ / 09:30~ (C# VwapAnchorEt 와 동일)
+        // ════════════════════════════════════════════════════════
+        var RT = {};                       // 패널별 실시간 상태
+        var RT_KEEP_MS = 15 * 60 * 1000;   // 틱 15분 보관
+        var RT_ZONE = 0.15;                // 레벨 "터치" 판정 거리(%)
+        var RT_AWAY = 0.30;                // 레벨에서 "벗어남" 판정 거리(%)
+        var RT_CROSS = 0.10;               // 돌파/이탈 확정 거리(%)
+
+        function rtState(idx) {
+            var tk = panelTickers[idx], s = RT[idx];
+            if (!s || s.ticker !== tk) {
+                s = RT[idx] = {
+                    ticker: tk, ticks: [], pv: 0, vol: 0, lastCum: 0, levels: {}, events: [],
+                    src: '', extVwap: 0, sessKey: ''
+                };
+            }
+            return s;
+        }
+
+        // 시세가 들어올 때마다 호출 (applyPanelQuote 안에서)
+        // 현재 ET 시각 기준 VWAP 세션 키 (20:00~ / 04:00~ / 09:30~)
+        function rtSessKey() {
+            var et = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+            var m = et.getHours() * 60 + et.getMinutes();
+            var d = new Date(et.getFullYear(), et.getMonth(), et.getDate());
+            if (m < 240) { d.setDate(d.getDate() - 1); return d.toDateString() + ' 20'; }
+            return d.toDateString() + (m >= 1200 ? ' 20' : m >= 570 ? ' 0930' : ' 04');
+        }
+
+        function rtTick(idx, price, cumVol, src, extVwap) {
+            if (!(price > 0)) return;
+            var s = rtState(idx), now = Date.now();
+
+            // 소스(키움↔야후)가 바뀌면 누적거래량 기준이 달라지므로 거래량 기준점 초기화
+            if (src && s.src !== src) {
+                s.src = src; s.lastCum = 0; s.pv = 0; s.vol = 0;
+                s.ticks.forEach(function (tk) { tk.cv = 0; });
+            }
+            // C#이 계산한 정확한 VWAP (키움 소스일 때만)
+            s.extVwap = (src === 'kiwoom' && extVwap > 0) ? extVwap : 0;
+
+            // ── 자체 VWAP (야후 대체용): 세션이 바뀌면 초기화 ──
+            var key = rtSessKey();
+            if (s.sessKey !== key) { s.sessKey = key; s.pv = 0; s.vol = 0; s.lastCum = 0; }
+            if (cumVol > 0) {
+                if (s.lastCum > 0 && cumVol < s.lastCum) { s.pv = 0; s.vol = 0; }      // 누적거래량 리셋
+                if (s.lastCum > 0 && cumVol > s.lastCum) {
+                    var dv = cumVol - s.lastCum; s.pv += dv * price; s.vol += dv;
+                }
+                s.lastCum = cumVol;
+            }
+
+            s.ticks.push({ t: now, p: price, cv: cumVol || 0 });
+            while (s.ticks.length && now - s.ticks[0].t > RT_KEEP_MS) s.ticks.shift();
+
+            var d = panelDataStore[idx];
+            if (d) {
+                rtLevel(s, 'S1', '1차지지', d.support1, price, now, 'sup');
+                rtLevel(s, 'S2', '2차지지', d.support2, price, now, 'sup');
+                rtLevel(s, 'R1', '1차저항', d.resistance1, price, now, 'res');
+                rtLevel(s, 'R2', '2차저항', d.resistance2, price, now, 'res');
+                rtLevel(s, 'MP', 'MaxPain', d.maxPain, price, now, 'mag');
+                var vw = rtVwap(s);
+                if (vw) rtLevel(s, 'VW', 'VWAP', Math.round(vw * 100) / 100, price, now, 'vwap');
+            }
+            paperOnTick(s.ticker, price);   // ★ 가상매매 체결·청산 판정
+        }
+
+        // ── 레벨별 터치 횟수 / 돌파·이탈·재탈환 이벤트 ──
+        function rtLevel(s, key, name, lv, price, now, kind) {
+            if (!(lv > 0)) return;
+            var L = s.levels[key];
+            // VWAP은 계속 움직이므로 값이 바뀌어도 상태 유지
+            if (!L || (kind !== 'vwap' && L.lv !== lv)) {
+                L = s.levels[key] = { lv: lv, touches: 0, far: true, side: price >= lv ? 1 : -1, since: now, zoneSince: 0 };
+            }
+            // VWAP 값이 한 번에 0.2% 넘게 바뀌면(데이터 소스 전환·초기화) 가격 교차가 아니므로 이벤트 없이 기준만 갱신
+            if (kind === 'vwap' && L.lv > 0 && Math.abs(lv - L.lv) / L.lv * 100 > 0.2) {
+                L.side = price >= lv ? 1 : -1; L.far = true; L.zoneSince = 0;
+            }
+            L.lv = lv;
+            var dist = (price - lv) / lv * 100;
+
+            // 터치 카운트 (벗어났다가 다시 붙을 때 1회)
+            if (Math.abs(dist) > RT_AWAY) { L.far = true; L.zoneSince = 0; }
+            else if (Math.abs(dist) <= RT_ZONE) {
+                if (!L.zoneSince) L.zoneSince = now;
+                if (L.far) {
+                    L.far = false; L.touches++;
+                    if (L.touches >= 2 && kind !== 'vwap') rtEvent(s, name + ' $' + lv.toFixed(1) + ' ' + L.touches + '번째 터치', 'touch', key);
+                }
+            }
+
+            // 교차 (0.1% 이상 넘어가야 확정 → 노이즈 방지)
+            var side = dist > RT_CROSS ? 1 : dist < -RT_CROSS ? -1 : L.side;
+            if (side !== L.side) {
+                var txt;
+                if (kind === 'sup') txt = side < 0 ? ' 이탈' : ' 재탈환';
+                else if (kind === 'res') txt = side > 0 ? ' 돌파' : ' 돌파 실패(되밀림)';
+                else txt = side > 0 ? ' 상향 돌파' : ' 하향 이탈';
+                rtEvent(s, name + ' $' + lv.toFixed(1) + txt, side > 0 ? 'up' : 'down', key);
+                L.side = side; L.since = now;
+            }
+        }
+
+        function rtEvent(s, msg, dir, key) {
+            s.events.unshift({ t: Date.now(), msg: msg, dir: dir, key: key });
+            if (s.events.length > 6) s.events.pop();
+        }
+
+        // sec 초 전 대비 등락(%)
+        function rtChange(s, sec) {
+            var n = s.ticks.length; if (n < 2) return null;
+            var last = s.ticks[n - 1];
+            for (var i = n - 1; i >= 0; i--) {
+                if (last.t - s.ticks[i].t >= sec * 1000) return (last.p - s.ticks[i].p) / s.ticks[i].p * 100;
+            }
+            return null;
+        }
+
+        // 최근 1분 거래량 ÷ 직전 10분 분당 평균
+        function rtVolSurge(s) {
+            var n = s.ticks.length; if (n < 2) return null;
+            var last = s.ticks[n - 1];
+            function cvAt(sec) {
+                for (var i = n - 1; i >= 0; i--) if (last.t - s.ticks[i].t >= sec * 1000) return s.ticks[i].cv;
+                return null;
+            }
+            var c1 = cvAt(60), c11 = cvAt(660);
+            if (c1 == null || c11 == null || !last.cv || !c11) return null;
+            var avg = (c1 - c11) / 10;
+            return avg > 0 ? (last.cv - c1) / avg : null;
+        }
+
+        function rtVwap(s) {
+            if (s.extVwap > 0) return s.extVwap;
+            return s.vol > 0 ? s.pv / s.vol : null;
+        }
+
+        // 미국 동부시간 기준 장중 구간
+        function rtSessionNote() {
+            var et = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+            var m = et.getHours() * 60 + et.getMinutes(), dow = et.getDay();
+            var open = 9 * 60 + 30, close = 16 * 60;
+            if (m < open || m >= close) return '정규장 외 (호가 얇음 · 손절폭 주의)';
+            if (m < open + 30) return '개장 30분: 변동성 최대 · 첫 돌파는 속임수 잦음';
+            if (m >= 11 * 60 + 30 && m < 13 * 60 + 30) return '점심 구간: 거래 감소 · 박스권 가능성 ↑';
+            if (dow === 5 && m >= 14 * 60) return '만기일 오후: MaxPain 쪽 쏠림(핀) 효과 강함';
+            if (m >= 15 * 60) return '파워아워: 추세 가속·되돌림 모두 큼';
+            return '';
+        }
+
+        function fmtPct(v) { return (v >= 0 ? '+' : '') + v.toFixed(2) + '%'; }
+        function fmtAgo(t) {
+            var s = Math.round((Date.now() - t) / 1000);
+            return s < 60 ? s + '초 전' : Math.floor(s / 60) + '분 전';
+        }
+
+        // 손익비 계산: 진입·손절·목표
+        function rtPlan(dir, price, stop, target) {
+            if (!(stop > 0 && target > 0)) return null;
+            var risk = dir === 'long' ? price - stop : stop - price;
+            var reward = dir === 'long' ? target - price : price - target;
+            if (risk <= 0 || reward <= 0) return null;
+            return {
+                dir: dir, entry: price, stop: stop, target: target, rr: reward / risk,
+                riskPct: risk / price * 100, rewardPct: reward / price * 100
+            };
+        }
+        function planText(pl) {
+            if (!pl) return '';
+            return (pl.dir === 'long' ? '🔺롱' : '🔻숏') +
+                ' 진입 $' + pl.entry.toFixed(2) +
+                ' · 손절 $' + pl.stop.toFixed(2) + ' (' + pl.riskPct.toFixed(2) + '%)' +
+                ' · 목표 $' + pl.target.toFixed(2) + ' (' + pl.rewardPct.toFixed(2) + '%)' +
+                ' · 손익비 1:' + pl.rr.toFixed(1);
+        }
+
+        // ════════════════════════════════════════════════════════
+        // ★ 전략 문구 (1초마다 갱신)
+        // ════════════════════════════════════════════════════════
         function applySmartStrategy(panelIdx) {
             var d = panelDataStore[panelIdx];
             if (!d || !d.price || !d.resistance1 || !d.support1) return;
+            var s = rtState(panelIdx);
 
-            var price = d.price;
-            var r1 = d.resistance1, r2 = d.resistance2;
-            var s1 = d.support1, s2 = d.support2;
-            var score = d.score || 5;
-            var vwap = d.vwap || ((d.dayHigh || price) + (d.dayLow || price) + price) / 3;
+            var price = d.price, r1 = d.resistance1, r2 = d.resistance2, s1 = d.support1, s2 = d.support2;
+            var score = d.score || 5, mp = d.maxPain || 0;
 
-            var distToR1 = (Math.abs(r1 - price) / price) * 100;
-            var distToS1 = (Math.abs(price - s1) / price) * 100;
-            var distToVwap = (Math.abs(price - vwap) / price) * 100;
+            // ── 실시간 지표 ──
+            var vwReal = rtVwap(s), vwap = vwReal || d.vwap || ((d.dayHigh || price) + (d.dayLow || price) + price) / 3;
+            var vwLabel = s.extVwap > 0 ? 'VWAP' : vwReal ? 'VWAP(수집)' : 'VWAP(추정)';
+            var vwDist = (price - vwap) / vwap * 100;
+            var m1 = rtChange(s, 60), m3 = rtChange(s, 180), m10 = rtChange(s, 600);
+            var surge = rtVolSurge(s);
 
-            var line1 = "", line2 = "", line3 = "";
-            var titleColor = "#ffdd00";
+            var optState = score >= 8.5 ? '콜 과열' : score <= 1.5 ? '풋 과열' :
+                score >= 6 ? '콜 우위' : score <= 4 ? '풋 우위' : '중립';
 
-            var optState = "";
-            var isOverbought = score >= 8.5;
-            var isOversold = score <= 1.5;
-            var isCallHeavy = score >= 6.0 && score < 8.5;
-            var isPutHeavy = score <= 4.0 && score > 1.5;
+            // ── 방향 점수 (-4 ~ +4): VWAP 위치 + 3분 모멘텀 + 10분 추세 + 옵션수급 ──
+            var bias = 0;
+            bias += vwDist > 0.1 ? 1 : vwDist < -0.1 ? -1 : 0;
+            if (m3 != null) bias += m3 > 0.15 ? 1 : m3 < -0.15 ? -1 : 0;
+            if (m10 != null) bias += m10 > 0.3 ? 1 : m10 < -0.3 ? -1 : 0;
+            bias += score >= 6 ? 1 : score <= 4 ? -1 : 0;
 
-            if (isOverbought) optState = "콜 과매수(과열)";
-            else if (isOversold) optState = "풋 과매도(투매)";
-            else if (isCallHeavy) optState = "콜 매수 우위";
-            else if (isPutHeavy) optState = "풋 매수 우위";
-            else optState = "옵션 수급 중립";
-
-            var vwapTrend = "";
-            if (distToVwap <= 0.3) {
-                vwapTrend = "공방전 진행중";
-            } else {
-                vwapTrend = price > vwap ? "당일 매수세 우위" : "당일 매도세 우위";
+            // 속도 표현
+            var speed = '';
+            if (m1 != null) {
+                var am1 = Math.round(Math.abs(m1) * 100) / 100;   // 표시값(소수 2자리)과 판정 일치
+                speed = am1 >= 0.3 ? (m1 > 0 ? '급등' : '급락') :
+                    am1 >= 0.1 ? (m1 > 0 ? '상승' : '하락') : '횡보';
             }
+            var volTxt = surge == null ? '' : surge >= 2 ? '거래량 폭증 ' + surge.toFixed(1) + '배' :
+                surge >= 1.3 ? '거래량 증가 ' + surge.toFixed(1) + '배' :
+                    surge < 0.6 ? '거래량 한산' : '거래량 보통';
+            var volStrong = surge != null && surge >= 1.5;
 
-            if (price > r1) {
-                if (isPutHeavy || isOversold) {
-                    line1 = '1차 저항($' + r1.toFixed(1) + ') 돌파 (가짜 돌파 의심)';
-                    line3 = '주가는 뚫었으나 옵션은 하락 베팅 중. 추격 매수 자제 및 휩소 주의';
-                    titleColor = "#ff8800";
-                } else if (isOverbought) {
-                    line1 = '$' + r1.toFixed(1) + ' 상향 돌파 (단기 과열 구간)';
-                    line3 = '콜옵션 과열 상태. 신규 진입보단 분할 익절하며 지지 여부($' + r1.toFixed(1) + ') 확인';
-                    titleColor = "#ff3333";
+            // ── 가장 최근 이벤트 (90초 이내면 헤드라인) ──
+            var ev = s.events[0], fresh = ev && Date.now() - ev.t < 90 * 1000;
+
+            // 가장 가까운 레벨
+            var lvList = [
+                { k: 'R2', n: '2차저항', v: r2 }, { k: 'R1', n: '1차저항', v: r1 },
+                { k: 'S1', n: '1차지지', v: s1 }, { k: 'S2', n: '2차지지', v: s2 },
+                { k: 'MP', n: 'MaxPain', v: mp }
+            ].filter(function (x) { return x.v > 0; });
+            lvList.forEach(function (x) { x.dist = (price - x.v) / x.v * 100; });
+            var near = lvList.slice().sort(function (a, b) { return Math.abs(a.dist) - Math.abs(b.dist); })[0];
+            var nearL = near ? s.levels[near.k] : null;
+
+            // ── 위/아래 다음 레벨 (손절·목표 계산용) ──
+            var above = lvList.concat(vwReal ? [{ n: 'VWAP', v: vwap }] : [])
+                .filter(function (x) { return x.v > price * 1.001; }).sort(function (a, b) { return a.v - b.v; });
+            var below = lvList.concat(vwReal ? [{ n: 'VWAP', v: vwap }] : [])
+                .filter(function (x) { return x.v < price * 0.999; }).sort(function (a, b) { return b.v - a.v; });
+
+            var line1 = '', line3 = '', color = '#ddbb00', plan = null;
+
+            if (fresh && (ev.dir === 'up' || ev.dir === 'down')) {
+                // ⚡ 방금 돌파/이탈 발생
+                var confirmed = volStrong && ((ev.dir === 'up' && m1 > 0) || (ev.dir === 'down' && m1 < 0));
+                // 이미 레벨에서 0.3% 넘게 멀어졌으면 추격 진입 금지 (손절이 멀어져 손익비가 나빠짐)
+                var evLv = s.levels[ev.key] ? s.levels[ev.key].lv : 0;
+                var chasing = evLv > 0 && Math.abs(price - evLv) / evLv * 100 > RT_AWAY;
+                line1 = '⚡ ' + ev.msg + ' (' + fmtAgo(ev.t) + ')' + (confirmed ? ' · 거래량 동반 ✅' : ' · 거래량 미확인 ⚠️');
+                color = ev.dir === 'up' ? '#ff4444' : '#4488ff';
+                // 거래량이 확인되지 않은 돌파/이탈은 휩소가 잦으므로 매매 계획을 만들지 않음 (문구만 안내)
+                if (ev.dir === 'up') {
+                    if (confirmed && !chasing) plan = rtPlan('long', price, s.levels[ev.key] ? s.levels[ev.key].lv * 0.998 : (below[0] && below[0].v), above[0] && above[0].v);
+                    line3 = confirmed && chasing ? '이미 레벨에서 멀어짐. 추격 금지, 눌림 대기'
+                        : confirmed ? '돌파 추종 가능. 레벨 아래로 다시 밀리면 즉시 청산'
+                            : '거래량 없는 돌파는 되밀림 잦음. 리테스트(되돌림 후 지지) 확인 후 진입';
                 } else {
-                    line1 = '1차 저항($' + r1.toFixed(1) + ') 완벽 돌파 안착';
-                    line3 = '상승 추세 확정적. 눌림목 발생 시 $' + r1.toFixed(1) + ' 부근 매수 타점 (목표: $' + r2.toFixed(1) + ')';
-                    titleColor = "#ff4444";
+                    if (confirmed && !chasing) plan = rtPlan('short', price, s.levels[ev.key] ? s.levels[ev.key].lv * 1.002 : (above[0] && above[0].v), below[0] && below[0].v);
+                    line3 = confirmed && chasing ? '이미 레벨에서 멀어짐. 추격 금지, 반등 대기'
+                        : confirmed ? '이탈 추종 가능. 레벨 위로 재탈환하면 즉시 청산'
+                            : '거래량 없는 이탈은 재탈환(휩소) 잦음. 저가 매도 추격 금지';
                 }
             }
-            else if (price < s1) {
-                if (isCallHeavy || isOverbought) {
-                    line1 = '1차 지지($' + s1.toFixed(1) + ') 이탈 (언더슈팅 의심)';
-                    line3 = '주가는 빠졌으나 세력은 콜 매집 중. $' + s1.toFixed(1) + ' 재돌파 시 강력한 반등 타점';
-                    titleColor = "#ddbb00";
-                } else if (isOversold) {
-                    line1 = '$' + s1.toFixed(1) + ' 하향 이탈 (투매 절정 구간)';
-                    line3 = '풋옵션 극단적 쏠림. 추격 매도는 위험하며 기술적 숏커버링 반등 대비';
-                    titleColor = "#cc33ff";
+            else if (near && Math.abs(near.dist) <= RT_AWAY) {
+                // 🎯 레벨 근접 공방
+                var touches = nearL ? nearL.touches : 0;
+                var stay = nearL && nearL.zoneSince ? Math.round((Date.now() - nearL.zoneSince) / 60000) : 0;
+                // 레벨의 역할은 현재가 위치로 판단 (돌파한 저항은 지지, 이탈한 지지는 저항으로 전환)
+                //   0.1% 이상 넘어가야 역할이 바뀜 (돌파/이탈 판정과 동일한 기준 → 레벨 근처 잔떨림 무시)
+                var isSup = nearL ? nearL.side > 0 : price >= near.v;
+                var flipped = (isSup && (near.k === 'R1' || near.k === 'R2')) || (!isSup && (near.k === 'S1' || near.k === 'S2'));
+                var roleTxt = isSup ? (flipped ? ' 돌파 후 지지 확인' : ' 방어전') : (flipped ? ' 이탈 후 저항 확인' : ' 테스트');
+                line1 = '🎯 ' + near.n + ' $' + near.v.toFixed(1) + roleTxt +
+                    (touches > 0 ? ' · ' + touches + '번째 터치' : '') + (stay > 0 ? ' · ' + stay + '분째 공방' : '');
+                color = isSup ? '#66bbff' : '#ff6666';
+
+                if (isSup) {
+                    var weakening = touches >= 3;                         // 여러 번 두드리면 약해짐
+                    var bouncing = m1 != null && m1 > 0.05;               // 막 반등 중
+                    if (bouncing && bias >= -1 && !weakening) {
+                        plan = rtPlan('long', price, near.v * 0.998, above[0] && above[0].v);
+                        line3 = '지지 반등 시작. 저가 이탈 없으면 롱 타점';
+                    } else if (bias <= -2 || weakening) {
+                        // 진입가 = 문구의 이탈 확인가와 동일 (이미 그 아래면 현재가)
+                        plan = rtPlan('short', Math.min(price, near.v * 0.999), near.v * 1.002, below.length > 1 ? below[1].v : (below[0] && below[0].v));
+                        line3 = (weakening ? touches + '회 터치로 지지 약화. ' : '하방 우위. ') + '$' + (near.v * 0.999).toFixed(2) + ' 이탈 확인 시 숏';
+                    } else {
+                        line3 = '방향 미정. 반등(1분 +) 또는 이탈($' + (near.v * 0.999).toFixed(2) + '↓) 확인 후 대응';
+                    }
                 } else {
-                    line1 = '1차 지지($' + s1.toFixed(1) + ') 붕괴 (하락 추세 지속)';
-                    line3 = '하방 압력 강함. 2차 지지($' + s2.toFixed(1) + ') 도달 전까지 매수(Buy) 진입 보류';
-                    titleColor = "#4488ff";
+                    var pushing = m1 != null && m1 > 0.05 && volStrong;
+                    if (pushing && bias >= 1) {
+                        plan = rtPlan('long', near.v * 1.001, near.v * 0.997, above.length > 1 ? above[1].v : null);
+                        line3 = '거래량 실린 돌파 시도. $' + (near.v * 1.001).toFixed(2) + ' 돌파 시 롱';
+                    } else {
+                        // 저항에서 밀리는 것을 확인한 뒤 진입 (레벨 -0.2% 아래, 이미 그 아래면 현재가)
+                        plan = rtPlan('short', Math.min(price, near.v * 0.998), near.v * 1.003, below[0] && below[0].v);
+                        line3 = (touches >= 3 ? '저항 반복 터치 → 돌파 가능성도 커지는 중. ' : '') +
+                            '돌파 힘 부족. $' + (near.v * 0.998).toFixed(2) + ' 아래로 밀리면 숏';
+                    }
                 }
-            }
-            else if (distToR1 <= 0.3) {
-                line1 = '1차 저항($' + r1.toFixed(1) + ') 초근접 테스트 중';
-                line3 = isCallHeavy ? '수급 뒷받침 됨. 돌파 시 숏스퀴즈 발생 가능성' : '돌파 수급 부족. 저항 맞고 밀리면 단기 매도(Sell) 대응';
-                titleColor = "#ff6666";
-            }
-            else if (distToS1 <= 0.3) {
-                line1 = '1차 지지($' + s1.toFixed(1) + ') 초근접 방어전';
-                line3 = isPutHeavy ? '하방 압력 강함. 붕괴 시 즉시 손절 대응' : '수급 양호. 지지 성공 시 매수 타점';
-                titleColor = "#66bbff";
             }
             else {
-                var targetLine = distToR1 < distToS1 ? '저항 $' + r1.toFixed(1) : '지지 $' + s1.toFixed(1);
-                line1 = targetLine + ' 향해 방향성 탐색 중';
-                if (distToVwap <= 0.3) {
-                    line3 = '현재 VWAP(' + vwap.toFixed(1) + ') 공방 중. 이기는 쪽으로 추세 터짐 (관망 유지)';
+                // 🧭 레벨 사이 이동 중
+                var dirTxt = bias >= 2 ? '상승 우위' : bias <= -2 ? '하락 우위' : '방향성 탐색';
+                var tgt = bias >= 0 ? above[0] : below[0];
+                line1 = '🧭 ' + dirTxt + (tgt ? ' → 다음 ' + tgt.n + ' $' + tgt.v.toFixed(1) + ' (' + fmtPct((tgt.v - price) / price * 100) + ')' : '');
+                color = bias >= 2 ? '#ff6666' : bias <= -2 ? '#66bbff' : '#ddbb00';
+                if (Math.abs(bias) >= 2 && tgt) {
+                    var opp = bias > 0 ? below[0] : above[0];
+                    plan = rtPlan(bias > 0 ? 'long' : 'short', price, opp && opp.v, tgt.v);
+                    line3 = '추세 방향 눌림/반등에서만 진입. 레벨 사이 추격은 손익비 불리';
                 } else {
-                    line3 = '박스권 상/하단 도달 전까지 의미 없는 움직임. 비중 축소 및 단타 대응';
+                    line3 = '레벨 사이 중간 구간. 다음 레벨 도달 전까지 관망';
                 }
-                titleColor = "#ddbb00";
             }
 
-            var extraFlag = "";
-            if (d.callWall > 0 && distToR1 < 1.0 && Math.abs(price - d.callWall) / price < 0.01) extraFlag = " [콜월 저항 직면]";
-            if (d.putWall > 0 && distToS1 < 1.0 && Math.abs(price - d.putWall) / price < 0.01) extraFlag = " [풋월 방어선 구축]";
+            // ★ 가상매매: 현재 계획을 대기주문으로 반영 (손익비 기준 미만은 제외)
+            paperSetPlan(s.ticker, plan, {
+                price: price, vwap: vwap, score: score, src: s.src,
+                signal: paperPlain(line1) + ' / ' + paperPlain(line3)
+            });
 
-            line2 = '추세: ' + vwapTrend + ' | 옵션수급: ' + optState + extraFlag;
+            // 손익비 나쁘면 경고
+            if (plan && plan.rr < 1.2) line3 += ' ⚠️ 손익비 낮음(1:' + plan.rr.toFixed(1) + ') — 진입 비추천';
+            else if (plan) line3 += '<br><span style="color:#ccc">' + planText(plan) + '</span>';
+
+            // ── 2번째 줄: 수치 대시보드 ──
+            var parts = [];
+            parts.push(vwLabel + ' $' + vwap.toFixed(2) + ' ' + (vwDist >= 0 ? '위' : '아래') + '(' + fmtPct(vwDist) + ')');
+            if (m1 != null) parts.push('1분 ' + fmtPct(m1) + (speed ? ' ' + speed : ''));
+            if (m3 != null) parts.push('3분 ' + fmtPct(m3));
+            if (volTxt) parts.push(volTxt);
+            parts.push('옵션 ' + optState + '(' + score.toFixed(1) + ')');
+            var line2 = parts.join(' | ');
+
+            // ── 세션 메모 + 최근 이벤트 로그 ──
+            var note = rtSessionNote();
+            var log = s.events.slice(0, 3).map(function (e) {
+                var c = e.dir === 'up' ? '#ff6666' : e.dir === 'down' ? '#66bbff' : '#aaa';
+                return '<span style="color:' + c + '">' + fmtAgo(e.t) + ' ' + e.msg + '</span>';
+            }).join(' · ');
+            var extra = paperStatusHtml(s.ticker, price) + (note ? '<div style="color:#e0a040;font-size:0.9em">⏱ ' + note + '</div>' : '') +
+                (log ? '<div style="font-size:0.85em">📜 ' + log + '</div>' : '') +
+                (s.ticks.length < 20 ? '<div style="color:#888;font-size:0.8em">※ 실시간 데이터 수집 중 (모멘텀·거래량은 페이지를 연 뒤부터 계산)</div>' : '') +
+                (!(s.extVwap > 0) ? '<div style="color:#888;font-size:0.8em">※ 키움 VWAP 미수신 → ' + vwLabel + ' 사용</div>' : '');
 
             var p = 'p' + panelIdx + '-';
             var sigEl = document.getElementById(p + 'sigtitle');
-            if (sigEl) { sigEl.innerHTML = line1; sigEl.style.color = titleColor; }
+            if (sigEl) { sigEl.innerHTML = line1; sigEl.style.color = color; }
             var subEl = document.getElementById(p + 'trend-sub');
             if (subEl) subEl.innerHTML = line2;
             var nextEl = document.getElementById(p + 'trend-next');
-            if (nextEl) nextEl.innerHTML = "- " + line3;
+            if (nextEl) nextEl.innerHTML = '- ' + line3 + extra;
         }
 
-        // 5초마다 실시간 주가를 반영하여 전략 갱신
+
+        // ════════════════════════════════════════════════════════
+        // ★ 가상매매 (백테스트 기록용, 슬리피지·수수료 무시)
+        //   - 윈폼 대시보드 창(WebView2) 안에서만 기록 / 일반 브라우저는 보기 전용
+        //   - 전략 문구의 계획(진입·손절·목표)을 대기주문으로 걸고, 가격이 진입가에 닿으면 체결
+        //   - 청산: 손절 / 목표 / 반대신호 / 최대 보유시간 / 정규장 마감(15:59 ET)
+        //   - 정규장(09:30~16:00 ET)에만 신규 진입, 15:55 이후 신규 진입 없음
+        //   - 윈폼이 2초마다 window.paperDrain() 으로 체결·청산 내역을 가져감
+        // ════════════════════════════════════════════════════════
+        var PAPER_RECORDER = !!(window.chrome && window.chrome.webview);
+        var PAPER_NOTIONAL = 10000;        // 1회 매매 금액($)
+        var PAPER_MAX_HOLD_MIN = 60;       // 최대 보유시간(분)
+        var PAPER_MIN_RR = 1.2;            // 이 손익비 미만 계획은 매매하지 않음
+        var PAPER_LAST_ENTRY_MIN = 955;    // 15:55 ET 이후 신규 진입 금지
+        var PAPER_EOD_MIN = 959;           // 15:59 ET 에 전량 청산
+        var PAPER_COOLDOWN_SEC = 60;       // 청산 후 같은 종목 재진입 대기(초)
+        var PAPER_LS_KEY = 'paperState_v1';
+        var paper = { day: '', pos: {}, pend: {}, queue: [], lastClose: {} };
+
+        function paperPad(n) { return (n < 10 ? '0' : '') + n; }
+        function paperEt() { return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })); }
+        function paperDay(et) { return et.getFullYear() + '-' + paperPad(et.getMonth() + 1) + '-' + paperPad(et.getDate()); }
+        function paperStamp(et) { return paperDay(et) + ' ' + paperPad(et.getHours()) + ':' + paperPad(et.getMinutes()) + ':' + paperPad(et.getSeconds()); }
+        function paperMin(et) { return et.getHours() * 60 + et.getMinutes(); }
+        function paperRegular(et) {
+            var d = et.getDay(); if (d === 0 || d === 6) return false;
+            var m = paperMin(et); return m >= 570 && m < 960;
+        }
+        function paperPlain(html) { var t = document.createElement('div'); t.innerHTML = html || ''; return (t.textContent || '').trim(); }
+
+        function paperSave() {
+            if (!PAPER_RECORDER) return;
+            try { localStorage.setItem(PAPER_LS_KEY, JSON.stringify(paper)); } catch (e) { }
+        }
+
+        function paperLoad() {
+            if (!PAPER_RECORDER) return;
+            var today = paperDay(paperEt());
+            try {
+                var saved = JSON.parse(localStorage.getItem(PAPER_LS_KEY) || 'null');
+                if (saved && saved.pos) {
+                    paper.queue = saved.queue || [];
+                    if (saved.day === today) {
+                        paper.pos = saved.pos;          // 같은 날 창을 다시 열면 보유 포지션 이어서 관리
+                    } else {
+                        // 지난 거래일에 창이 닫혀 청산되지 못한 포지션 → 마지막 가격으로 기록 후 정리
+                        Object.keys(saved.pos).forEach(function (tk) {
+                            var p = saved.pos[tk];
+                            paperCloseTrade(p, p.last || p.entry, '미청산(창 종료)', p.lastStamp || p.openTime);
+                        });
+                    }
+                }
+            } catch (e) { }
+            paper.day = today; paper.pend = {};
+            paperSave();
+        }
+
+        // 1초마다 전략 계산 후 호출: 현재 계획을 대기주문으로 반영
+        function paperSetPlan(ticker, plan, ctx) {
+            if (!PAPER_RECORDER || !ticker) return;
+            var et = paperEt();
+            var pos = paper.pos[ticker];
+            var ok = plan && plan.rr >= PAPER_MIN_RR && paperRegular(et) && paperMin(et) < PAPER_LAST_ENTRY_MIN;
+            if (!ok || (pos && pos.dir === plan.dir)) { delete paper.pend[ticker]; return; }   // 같은 방향 추가 진입 없음
+            if (!pos && paper.lastClose[ticker] && (Date.now() - paper.lastClose[ticker]) / 1000 < PAPER_COOLDOWN_SEC) {
+                delete paper.pend[ticker]; return;                                                 // 청산 직후 재진입 방지
+            }
+
+            var cur = paper.pend[ticker];
+            function same(a, b) { return Math.abs(a - b) / b < 0.0005; }
+            if (cur && cur.dir === plan.dir && same(cur.entry, plan.entry) && same(cur.stop, plan.stop) && same(cur.target, plan.target)) return;
+
+            paper.pend[ticker] = {
+                dir: plan.dir, entry: plan.entry, stop: plan.stop, target: plan.target, rr: plan.rr,
+                // 계획 시점 가격 대비 진입가 위치로 체결 조건 결정
+                trig: plan.entry > ctx.price * 1.0001 ? 'up' : plan.entry < ctx.price * 0.9999 ? 'down' : 'now',
+                signal: ctx.signal, vwap: ctx.vwap, score: ctx.score, src: ctx.src
+            };
+        }
+
+        // 시세가 들어올 때마다 호출: 체결·청산 판정
+        function paperOnTick(ticker, price) {
+            if (!PAPER_RECORDER || !ticker || !(price > 0)) return;
+            var et = paperEt(), m = paperMin(et), stamp = paperStamp(et), changed = false;
+            if (paper.day !== paperDay(et)) { paper.day = paperDay(et); paper.pend = {}; changed = true; }
+
+            // ── 보유 포지션 청산 판정 ──
+            var pos = paper.pos[ticker];
+            if (pos) {
+                pos.last = price; pos.lastStamp = stamp;
+                var exitPx = null, reason = '';
+                if (pos.dir === 'long') {
+                    if (price <= pos.stop) { exitPx = pos.stop; reason = '손절'; }
+                    else if (price >= pos.target) { exitPx = pos.target; reason = '목표'; }
+                } else {
+                    if (price >= pos.stop) { exitPx = pos.stop; reason = '손절'; }
+                    else if (price <= pos.target) { exitPx = pos.target; reason = '목표'; }
+                }
+                if (exitPx === null && (Date.now() - pos.openAt) / 60000 >= PAPER_MAX_HOLD_MIN) { exitPx = price; reason = '시간초과'; }
+                if (exitPx === null && (!paperRegular(et) || m >= PAPER_EOD_MIN)) { exitPx = price; reason = '장마감'; }
+                if (exitPx !== null) { paperCloseTrade(pos, exitPx, reason, stamp); delete paper.pos[ticker]; pos = null; changed = true; }
+            }
+
+            // ── 대기주문 체결 판정 ──
+            var pd = paper.pend[ticker];
+            if (pd && paperRegular(et) && m < PAPER_LAST_ENTRY_MIN) {
+                var hit = pd.trig === 'now' || (pd.trig === 'up' && price >= pd.entry) || (pd.trig === 'down' && price <= pd.entry);
+                if (hit) {
+                    var fill = pd.trig === 'now' ? price : pd.entry;
+                    var valid = pd.dir === 'long' ? (pd.stop < fill && fill < pd.target) : (pd.target < fill && fill < pd.stop);
+                    if (valid) {
+                        if (pos) { paperCloseTrade(pos, fill, '반대신호', stamp); delete paper.pos[ticker]; }
+                        var np = {
+                            id: ticker + '-' + Date.now(), day: paper.day, ticker: ticker, dir: pd.dir,
+                            entry: fill, stop: pd.stop, target: pd.target,
+                            planRR: Math.abs(pd.target - fill) / Math.abs(fill - pd.stop),
+                            openAt: Date.now(), openTime: stamp, last: price, lastStamp: stamp,
+                            signal: pd.signal, vwap: pd.vwap, score: pd.score, src: pd.src
+                        };
+                        paper.pos[ticker] = np;
+                        paper.queue.push({ type: 'open', trade: paperRow(np, null) });
+                    }
+                    delete paper.pend[ticker];
+                    changed = true;
+                }
+            }
+            if (changed) paperSave();
+        }
+
+        function paperCloseTrade(pos, exitPx, reason, stamp) {
+            if (!paper.lastClose) paper.lastClose = {};
+            paper.lastClose[pos.ticker] = Date.now();
+            paper.queue.push({ type: 'close', trade: paperRow(pos, { price: exitPx, reason: reason, time: stamp }) });
+        }
+
+        function paperRow(p, ex) {
+            var r = {
+                id: p.id, day: p.day, ticker: p.ticker, dir: p.dir === 'long' ? '롱' : '숏',
+                openTime: p.openTime, entry: +p.entry.toFixed(4), stop: +p.stop.toFixed(4), target: +p.target.toFixed(4),
+                planRR: +p.planRR.toFixed(2), vwap: +(p.vwap || 0).toFixed(4), score: +(p.score || 0).toFixed(1),
+                src: p.src || '', signal: p.signal || ''
+            };
+            if (ex) {
+                var sign = p.dir === 'long' ? 1 : -1;
+                var pnl = (ex.price - p.entry) * sign;
+                var risk = Math.abs(p.entry - p.stop);
+                r.exitTime = ex.time; r.exit = +ex.price.toFixed(4); r.reason = ex.reason;
+                r.pnlPct = +(pnl / p.entry * 100).toFixed(3);
+                r.pnlUsd = +(pnl / p.entry * PAPER_NOTIONAL).toFixed(2);
+                r.rMult = risk > 0 ? +(pnl / risk).toFixed(2) : 0;
+                r.holdMin = +((Date.now() - p.openAt) / 60000).toFixed(1);
+            }
+            return r;
+        }
+
+        // 윈폼이 호출: 쌓인 체결·청산 내역을 넘기고 비움
+        window.paperDrain = function () {
+            var q = paper.queue; paper.queue = [];
+            if (q.length) paperSave();
+            return q;
+        };
+
+        // 패널에 표시할 가상매매 상태 한 줄
+        function paperStatusHtml(ticker, price) {
+            if (!PAPER_RECORDER || !ticker) return '';
+            var pos = paper.pos[ticker], pd = paper.pend[ticker];
+            if (pos) {
+                var pnl = (price - pos.entry) / pos.entry * 100 * (pos.dir === 'long' ? 1 : -1);
+                var mins = Math.floor((Date.now() - pos.openAt) / 60000);
+                return '<div style="font-size:0.85em;color:' + (pnl >= 0 ? '#ff7777' : '#77aaff') + '">🧪 가상 ' +
+                    (pos.dir === 'long' ? '롱' : '숏') + ' 보유 · 진입 $' + pos.entry.toFixed(2) +
+                    ' · 손절 $' + pos.stop.toFixed(2) + ' · 목표 $' + pos.target.toFixed(2) +
+                    ' · 현재 ' + (pnl >= 0 ? '+' : '') + pnl.toFixed(2) + '% · ' + mins + '분</div>';
+            }
+            if (pd) {
+                var how = pd.trig === 'now' ? '즉시' : '$' + pd.entry.toFixed(2) + (pd.trig === 'up' ? ' 이상' : ' 이하') + ' 도달 시';
+                return '<div style="font-size:0.85em;color:#aaa">🧪 가상 대기: ' + (pd.dir === 'long' ? '롱' : '숏') + ' ' + how + ' 체결</div>';
+            }
+            return '';
+        }
+
+        paperLoad();
+
+        // 1초마다 전략 갱신
         setInterval(function () {
             [0, 1, 2].forEach(function (i) {
-                if (panelDataStore[i] && panelDataStore[i].price > 0) {
-                    applySmartStrategy(i);
-                }
+                if (panelDataStore[i] && panelDataStore[i].price > 0) applySmartStrategy(i);
             });
-        }, 5000);
+        }, 1000);
 
         function hideInitialLoading() {
             if (initialLoadDone) return;
@@ -1724,7 +2159,7 @@
             if (kiwoomAlive === alive) return;
             kiwoomAlive = alive;
             console.log(alive ? '[소스] 키움 연결 → 키움 시세 출력 (' + reason + ')'
-                              : '[소스] 키움 꺼짐 → 야후 시세 출력 (' + reason + ')');
+                : '[소스] 키움 꺼짐 → 야후 시세 출력 (' + reason + ')');
             [0, 1, 2].forEach(renderPanelQuote);
             renderHeaderQuotes();
         }
@@ -1748,7 +2183,7 @@
                 setDotState(idx, null);
                 return;
             }
-            applyPanelQuote(idx, pick.q);
+            applyPanelQuote(idx, pick.q, pick.src);
             updatePanelDot(idx);
         }
 
@@ -1780,11 +2215,13 @@
         // 1초마다 신선도 재평가 (수신이 끊기면 10초 후 자동으로 흐려짐)
         setInterval(function () { [0, 1, 2].forEach(updatePanelDot); updateHeaderDot(); }, 1000);
 
-        function applyPanelQuote(idx, q) {
+        function applyPanelQuote(idx, q, src) {
             updatePanelPrice(idx, q.price, q.changeRate, q.change, q.volume > 0 ? q.volume : null);
+            rtTick(idx, q.price, q.volume, src, q.vwap);   // ★ 실시간 단타 엔진에 시세 전달
             var d = panelDataStore[idx];
             if (d) {
                 d.price = q.price;
+                d.vwap = (src === 'kiwoom' && q.vwap > 0) ? q.vwap : 0;
                 if (q.dayHigh > 0) d.dayHigh = q.dayHigh;
                 if (q.dayLow > 0) d.dayLow = q.dayLow;
                 var p = 'p' + idx + '-';
@@ -1803,6 +2240,7 @@
             var pick = pickQuote(ticker), q = pick && pick.q;
             if (q) {
                 d.price = q.price;
+                d.vwap = (pick.src === 'kiwoom' && q.vwap > 0) ? q.vwap : 0;
                 if (q.dayHigh > 0) d.dayHigh = q.dayHigh;
                 if (q.dayLow > 0) d.dayLow = q.dayLow;
             }
@@ -1835,6 +2273,7 @@
                         volume: window._lastVolMap[ticker] || 0,
                         dayHigh: toNum(rtData.dayHigh),
                         dayLow: toNum(rtData.dayLow),
+                        vwap: toNum(rtData.vwap),     // ★ C#이 체결 단위로 계산한 VWAP
                         // 최초 스냅샷은 과거 값일 수 있으므로 수신 시각을 갱신하지 않음
                         recvAt: isFirst ? ((kiwoomCache[ticker] && kiwoomCache[ticker].recvAt) || 0) : Date.now()
                     };
