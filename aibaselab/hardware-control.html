@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>이기종 계측 장비 연동 자동 검사 시스템 구축 사례 — 음향기기 생산라인 | AI BASE LAB</title>
+<meta name="description" content="블루투스 스피커·사운드바 ODM 제조사의 출하 검사(EOL) 라인에 오디오 분석기, 전원공급기, PLC, 바코드, 라벨 프린터 등 7종 장비를 연동한 통합 검사 시스템을 구축했습니다. 검사 택트타임 35% 단축, 시리얼별 측정 데이터 자동 기록 사례입니다.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://aibaselab.com/hardware-control.html">
+<meta name="theme-color" content="#0b1121">
+<meta name="format-detection" content="telephone=no">
+<!-- 검색엔진 소유 확인: 발급받은 코드로 교체 후 주석 해제 -->
+<!-- <meta name="google-site-verification" content="[구글 서치콘솔 코드]"> -->
+<!-- <meta name="naver-site-verification" content="[네이버 서치어드바이저 코드]"> -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AI BASE LAB">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="7종 계측 장비를 하나의 검사 프로그램으로 — 생산라인 EOL 검사 자동화 사례">
+<meta property="og:description" content="블루투스 스피커·사운드바 ODM 제조사의 출하 검사(EOL) 라인에 오디오 분석기, 전원공급기, PLC, 바코드, 라벨 프린터 등 7종 장비를 연동한 통합 검사 시스템을 구축했습니다. 검사 택트타임 35% 단축, 시리얼별 측정 데이터 자동 기록 사례입니다.">
+<meta property="og:url" content="https://aibaselab.com/hardware-control.html">
+<meta property="og:image" content="https://aibaselab.com/image/case-hardware-hero.webp">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="7종 계측 장비를 하나의 검사 프로그램으로 — 생산라인 EOL 검사 자동화 사례">
+<meta name="twitter:description" content="블루투스 스피커·사운드바 ODM 제조사의 출하 검사(EOL) 라인에 오디오 분석기, 전원공급기, PLC, 바코드, 라벨 프린터 등 7종 장비를 연동한 통합 검사 시스템을 구축했습니다. 검사 택트타임 35% 단축, 시리얼별 측정 데이터 자동 기록 사례입니다.">
+<meta name="twitter:image" content="https://aibaselab.com/image/case-hardware-hero.webp">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="image/apple-touch-icon.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="css/style.css">
+<!-- Google Analytics 4: 측정 ID 발급 후 G-XXXXXXXXXX 교체하고 주석 해제
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script>
+-->
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "홈",
+     "item": "https://aibaselab.com/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "솔루션 사례",
+     "item": "https://aibaselab.com/cases.html"
+    },
+    {
+     "@type": "ListItem",
+     "position": 3,
+     "name": "이기종 장비 연동 검사 시스템",
+     "item": "https://aibaselab.com/hardware-control.html"
+    }
+   ]
+  },
+  {
+   "@type": "Article",
+   "headline": "음향기기 ODM 제조사 이기종 계측 장비 연동 자동 검사 시스템 구축 사례",
+   "description": "블루투스 스피커·사운드바 ODM 제조사의 출하 검사(EOL) 라인에 오디오 분석기, 전원공급기, PLC, 바코드, 라벨 프린터 등 7종 장비를 연동한 통합 검사 시스템을 구축했습니다. 검사 택트타임 35% 단축, 시리얼별 측정 데이터 자동 기록 사례입니다.",
+   "image": [
+    "https://aibaselab.com/image/case-hardware-hero.webp"
+   ],
+   "datePublished": "2026-09-30",
+   "dateModified": "2026-09-30",
+   "author": {
+    "@type": "Organization",
+    "name": "AI BASE LAB",
+    "url": "https://aibaselab.com/"
+   },
+   "publisher": {
+    "@type": "Organization",
+    "name": "AI BASE LAB",
+    "logo": {
+     "@type": "ImageObject",
+     "url": "https://aibaselab.com/image/logo-512.png"
+    }
+   },
+   "mainEntityOfPage": "https://aibaselab.com/hardware-control.html",
+   "inLanguage": "ko-KR",
+   "about": [
+    "장비 제어",
+    "EOL 검사",
+    "계측기 연동",
+    "생산라인 자동화"
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "기존 장비를 바꾸지 않고도 연동할 수 있나요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "대부분 가능합니다. RS-232/485, USB, LAN(SCPI, Modbus TCP), PLC 전용 프로토콜 등 통신 포트가 있는 장비라면 드라이버를 개발해 연동합니다. 통신 매뉴얼이 없는 장비는 현장에서 통신 내용을 분석해 확인합니다."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "해외 공장에도 설치와 지원이 가능한가요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "네. 중국 현지 공장 구축 경험이 있으며, 초기 설치와 파일럿은 현장에서 진행하고 이후 유지보수는 원격 접속으로 지원합니다. 작업자 화면은 중국어, 영어, 한국어를 지원합니다."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "MES나 ERP와 연동할 수 있나요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "검사 결과를 DB 뷰, CSV 파일, REST API 중 기존 시스템이 받을 수 있는 방식으로 제공합니다. 작업 지시를 MES에서 받아오는 양방향 연동도 가능합니다."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "신모델이 추가될 때마다 개발 비용이 드나요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "측정 항목이 기존 장비 범위 안이라면 고객사 엔지니어가 레시피 편집기에서 직접 추가할 수 있어 별도 비용이 들지 않습니다. 새로운 장비를 추가할 때만 드라이버 개발이 필요합니다."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">본문 바로가기</a>
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="logo" aria-label="AI BASE LAB 홈"><span>AI</span> BASE LAB</a>
+    <nav aria-label="주 메뉴">
+      <ul class="nav-menu" id="site-menu">
+        <li><a href="technology.html">핵심 기술</a></li><li><a href="cases.html" aria-current="page">솔루션 사례</a></li><li><a href="infrastructure.html">인프라 현황</a></li><li><a href="about.html">기업 소개</a></li><li class="nav-drawer-cta"><a href="index.html#contact" class="btn btn-primary">도입 문의하기</a></li>
+      </ul>
+    </nav>
+    <div class="nav-cta">
+      <a href="index.html#contact" class="btn btn-outline btn-sm">도입 문의</a>
+      <button type="button" class="nav-toggle" aria-controls="site-menu" aria-expanded="false" aria-label="메뉴 열기">
+        <span class="icon-open"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span><span class="icon-close"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
+      </button>
+    </div>
+  </div>
+</header>
+<main id="main">
+<section class="page-hero has-summary">
+  <div class="container container-narrow">
+    <nav class="breadcrumb" aria-label="현재 위치"><ol><li><a href="index.html">홈</a></li><li><a href="cases.html">솔루션 사례</a></li><li aria-current="page">이기종 장비 연동 검사 시스템</li></ol></nav>
+    <span class="eyebrow eyebrow-dark">CASE 02 · 장비 연동 · 자동 검사</span>
+    <h1>음향기기 ODM 생산라인, 7종 계측 장비를 하나의 검사 프로그램으로</h1>
+    <p class="lead">장비마다 따로 켜던 프로그램 3~4개와 종이 체크시트를 없앴습니다. 바코드 한 번 스캔으로 전원 인가, 음향 측정, 블루투스 검사, 판정, 라벨 출력까지 자동으로 진행되고 모든 측정값이 시리얼 번호별로 저장됩니다.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="container container-narrow">
+    <dl class="summary">
+      <div><dt>고객사</dt><dd>B사 (음향기기 ODM 제조사)</dd></div>
+      <div><dt>생산 품목</dt><dd>블루투스 스피커 · 사운드바</dd></div>
+      <div><dt>구축 기간</dt><dd>2025.02 – 2025.05 (14주)</dd></div>
+      <div><dt>적용 범위</dt><dd>출하 검사(EOL) 라인 4개</dd></div>
+      <div><dt>연동 장비</dt><dd>7종 · 라인당 11대</dd></div>
+      <div><dt>개발 환경</dt><dd>C# .NET 8 · PostgreSQL</dd></div>
+    </dl>
+    <figure class="figure wide case-cover"><div class="ph"><img src="image/case-hardware-hero.webp" width="1600" height="900" alt="블루투스 스피커 생산라인의 출하 검사 스테이션에서 작업자가 통합 검사 프로그램을 사용하는 모습" fetchpriority="high"></div></figure>
+
+    <div class="prose" style="margin-top:56px">
+      <h2><span class="h-num">01</span>도입 배경: 장비는 좋은데, 연결이 안 되어 있었다</h2>
+      <p>B사는 한국 브랜드사의 블루투스 스피커와 사운드바를 주문자 개발 생산(ODM) 방식으로 만드는 제조사입니다. 중국 광둥성 공장에서 출하 검사 라인 4개를 운영하며, 제품 1대마다 소비 전류, 주파수 응답, 왜곡률(THD), 잡음(Rub &amp; Buzz), 블루투스 연결 상태를 검사합니다.</p>
+      <p>측정 장비 자체는 충분히 정밀했지만 장비마다 전용 프로그램이 따로 있었습니다. 작업자는 제품 1대를 검사할 때마다 화면 3~4개를 번갈아 조작하고, 결과를 종이 체크시트에 적은 뒤 교대 종료 후 엑셀로 옮겼습니다. 한국 고객사가 품질 클레임과 함께 <strong>“해당 시리얼 번호의 출하 검사 데이터를 제출해 달라”</strong>고 요청하면, 종이 기록을 뒤져 찾는 데 반나절이 걸렸습니다.</p>
+      <ul class="pain-list">
+        <li><strong>검사 속도 병목</strong>프로그램 전환과 수기 기록 때문에 1대당 검사 시간이 52초로, 조립 공정보다 느려 라인 끝에 재공품이 쌓였습니다.</li>
+        <li><strong>작업자 판정 오류</strong>합격 기준을 사람이 눈으로 비교하다 보니 경계값 제품의 판정이 작업자마다 달랐습니다. (월 평균 14건 확인)</li>
+        <li><strong>데이터 추적 불가</strong>측정값이 저장되지 않고 합격·불합격만 기록되어, 불량 원인 분석과 고객사 대응이 어려웠습니다.</li>
+        <li><strong>언어 장벽</strong>장비 프로그램이 영어로만 되어 있어 현지 작업자 교육에 시간이 오래 걸렸습니다.</li>
+      </ul>
+
+      <h2><span class="h-num">02</span>연동 장비 구성</h2>
+      <p>기존 장비는 교체하지 않고 그대로 사용했습니다. 각 장비의 통신 방식에 맞는 드라이버를 개발해 하나의 공통 인터페이스로 묶었습니다.</p>
+      <div class="table-wrap">
+        <table class="spec-table">
+          <thead><tr><th>장비</th><th>검사 항목 / 역할</th><th>통신 방식</th></tr></thead>
+          <tbody>
+            <tr><td>오디오 분석기</td><td>주파수 응답, THD, 감도, Rub &amp; Buzz</td><td>LAN · SCPI (VISA)</td></tr>
+            <tr><td>프로그래머블 DC 전원공급기</td><td>전원 인가, 대기·동작 소비 전류 측정</td><td>RS-232</td></tr>
+            <tr><td>블루투스 테스트 모듈</td><td>페어링, 신호 세기(RSSI), 펌웨어 버전 확인</td><td>USB 시리얼 · AT 커맨드</td></tr>
+            <tr><td>PLC (지그 제어)</td><td>지그 클램프, 무향 박스 도어, 양품·불량 배출</td><td>Ethernet · MC Protocol</td></tr>
+            <tr><td>바코드 스캐너</td><td>제품 시리얼 번호 입력 → 검사 시작 트리거</td><td>USB 시리얼</td></tr>
+            <tr><td>라벨 프린터</td><td>합격 제품 시리얼·검사일 라벨 출력</td><td>TCP 9100 · ZPL</td></tr>
+            <tr><td>온습도 로거</td><td>검사 환경 조건 기록 (측정 신뢰성 확보)</td><td>RS-485 · Modbus RTU</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2><span class="h-num">03</span>시스템 구조</h2>
+      <p>장비 드라이버, 검사 시퀀스, 판정·기록, 관제 화면을 분리해 설계했습니다. 신모델이 들어오면 코드를 고치지 않고 <strong>검사 레시피(측정 순서와 합격 기준)</strong>만 추가하면 됩니다.</p>
+      <ol class="flow" aria-label="검사 시스템 처리 흐름">
+        <li><b>INPUT</b>바코드 스캔 · 모델 레시피 자동 선택</li>
+        <li><b>SEQUENCE</b>전원 인가 → 음향 측정 → BT 검사</li>
+        <li><b>JUDGE</b>기준값 자동 판정</li>
+        <li><b>RECORD</b>로컬 저장 → 서버 DB 동기화</li>
+        <li><b>OUTPUT</b>라벨 출력 · 양품/불량 배출</li>
+      </ol>
+      <div class="feature-grid">
+        <div class="feature"><h3><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22v-5M9 8V2M15 8V2M18 8v5a6 6 0 0 1-12 0V8z"/></svg>장비 공통 드라이버 계층</h3><p>모든 장비를 ‘연결·측정·해제’ 공통 인터페이스로 감쌌습니다. 장비 모델이 바뀌어도 드라이버만 교체하면 검사 로직은 그대로 동작합니다.</p></div>
+        <div class="feature"><h3><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg>병렬 측정으로 시간 단축</h3><p>전원 안정화를 기다리는 동안 블루투스 페어링을 동시에 진행하는 등 서로 독립적인 측정을 병렬로 처리해 대기 시간을 줄였습니다.</p></div>
+        <div class="feature"><h3><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>모델별 검사 레시피 편집기</h3><p>엔지니어 권한으로 측정 순서, 주파수 대역, 합격 상·하한값을 화면에서 수정합니다. 변경 이력은 누가, 언제, 무엇을 바꿨는지 모두 남습니다.</p></div>
+        <div class="feature"><h3><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>통신 장애 자동 복구</h3><p>장비 응답이 없으면 자동 재연결을 3회 시도하고, 실패 시 해당 장비를 화면에 빨간색으로 표시해 작업자가 즉시 알 수 있게 했습니다.</p></div>
+        <div class="feature"><h3><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/></svg>끊김 없는 데이터 기록</h3><p>측정값은 먼저 라인 PC의 로컬 DB(SQLite)에 저장한 뒤 서버(PostgreSQL)로 동기화합니다. 공장 네트워크가 끊겨도 데이터가 유실되지 않습니다.</p></div>
+        <div class="feature"><h3><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/></svg>중국어 · 한국어 화면</h3><p>작업자 화면은 중국어, 관리자 화면과 리포트는 한국어로 표시합니다. 버튼 수를 최소화해 신규 작업자도 30분 교육으로 검사를 시작할 수 있습니다.</p></div>
+      </div>
+
+      <div class="figure-grid">
+        <figure class="figure wide"><div class="ph"><img src="image/hardware-dashboard.webp" width="1600" height="900" alt="검사 라인 4개의 실시간 합격률, 택트타임, 장비 연결 상태를 보여주는 중앙 관제 대시보드" loading="lazy"></div><figcaption>[그림 1] 4개 라인 실시간 관제 화면 — 라인별 합격률, 택트타임, 장비 연결 상태</figcaption></figure>
+        <figure class="figure"><div class="ph"><img src="image/hardware-test-station.webp" width="1200" height="900" alt="무향 검사 박스 안에 블루투스 스피커가 지그에 고정되어 음향 측정을 받는 모습" loading="lazy"></div><figcaption>[그림 2] 무향 검사 박스와 자동 클램프 지그</figcaption></figure>
+        <figure class="figure"><div class="ph"><img src="image/hardware-rack.webp" width="1200" height="900" alt="검사 스테이션 하단 랙에 설치된 오디오 분석기, 전원공급기, PLC와 통신 케이블" loading="lazy"></div><figcaption>[그림 3] 검사 스테이션 장비 랙 (오디오 분석기 · 전원공급기 · PLC)</figcaption></figure>
+      </div>
+
+      <h2><span class="h-num">04</span>구축 과정</h2>
+      <ol class="timeline">
+        <li><span class="when">1–3주차</span><p class="what">현장 조사 · 장비 통신 검증</p><p>현지 공장에서 라인별 작업 동선을 촬영하고, 7종 장비의 통신 명령과 응답 시간을 전부 측정했습니다. 오디오 분석기 측정 1회에 약 6.8초가 걸린다는 점을 확인하고 병렬 처리 설계에 반영했습니다.</p></li>
+        <li><span class="when">4–8주차</span><p class="what">드라이버 · 시퀀스 엔진 개발</p><p>사무실 테스트 벤치에 동일 장비를 구성해 드라이버와 검사 시퀀스를 개발했습니다. 기존 수기 기록 3,000건과 비교해 판정 결과가 일치하는지 검증했습니다.</p></li>
+        <li><span class="when">9–11주차</span><p class="what">1개 라인 파일럿 · 기존 방식과 병행</p><p>1번 라인에서 2주간 기존 방식과 신규 시스템을 병행 운영하며 판정 차이를 비교했습니다. 경계값 판정 기준 2건을 품질팀과 협의해 조정했습니다.</p></li>
+        <li><span class="when">12–14주차</span><p class="what">4개 라인 확대 · 교육 · 리포트</p><p>나머지 3개 라인에 설치하고, 조장·작업자 교육과 고객사 제출용 시리얼별 검사 성적서 양식을 완성했습니다.</p></li>
+      </ol>
+
+      <h2><span class="h-num">05</span>도입 성과</h2>
+      <p>도입 전 4주와 4개 라인 전면 적용 후 4주를 비교했습니다. (동일 모델 3종 기준)</p>
+      <div class="stat-grid">
+        <div class="stat"><div class="before">52초</div><div class="num">34<small>초</small></div><div class="label">1대당 검사 택트타임</div></div>
+        <div class="stat"><div class="before">월 14건</div><div class="num">1<small>건</small></div><div class="label">작업자 판정 오류</div></div>
+        <div class="stat"><div class="before">반나절</div><div class="num">1<small>분 이내</small></div><div class="label">시리얼별 검사 이력 조회</div></div>
+        <div class="stat"><div class="before">교대당 약 40분</div><div class="num">0<small>분</small></div><div class="label">수기 기록 · 엑셀 입력</div></div>
+      </div>
+      <p>검사 공정이 더 이상 병목이 아니게 되면서 라인 끝 재공품이 사라졌고, 검사 인원을 늘리지 않고도 성수기 증산 물량을 소화했습니다. 무엇보다 모든 제품의 측정값이 남기 때문에 <strong>고객사 품질 문의에 시리얼 번호만으로 즉시 성적서를 제출</strong>할 수 있게 됐습니다.</p>
+      <p>누적된 측정 데이터로 뜻밖의 개선점도 찾았습니다. 특정 스피커 유닛 입고 로트에서 저음역 감도가 기준 하한에 몰려 있는 경향을 발견해, 협력사 입고 검사 기준을 조정하도록 요청했습니다.</p>
+
+      <h2><span class="h-num">06</span>자주 묻는 질문</h2>
+      <div class="faq">
+        <details><summary>기존 장비를 바꾸지 않고도 연동할 수 있나요?</summary><p>대부분 가능합니다. RS-232/485, USB, LAN(SCPI, Modbus TCP), PLC 전용 프로토콜 등 통신 포트가 있는 장비라면 드라이버를 개발해 연동합니다. 통신 매뉴얼이 없는 장비는 현장에서 통신 내용을 분석해 확인합니다.</p></details>
+        <details><summary>해외 공장에도 설치와 지원이 가능한가요?</summary><p>네. 중국 현지 공장 구축 경험이 있으며, 초기 설치와 파일럿은 현장에서 진행하고 이후 유지보수는 원격 접속으로 지원합니다. 작업자 화면은 중국어, 영어, 한국어를 지원합니다.</p></details>
+        <details><summary>MES나 ERP와 연동할 수 있나요?</summary><p>검사 결과를 DB 뷰, CSV 파일, REST API 중 기존 시스템이 받을 수 있는 방식으로 제공합니다. 작업 지시를 MES에서 받아오는 양방향 연동도 가능합니다.</p></details>
+        <details><summary>신모델이 추가될 때마다 개발 비용이 드나요?</summary><p>측정 항목이 기존 장비 범위 안이라면 고객사 엔지니어가 레시피 편집기에서 직접 추가할 수 있어 별도 비용이 들지 않습니다. 새로운 장비를 추가할 때만 드라이버 개발이 필요합니다.</p></details>
+      </div>
+
+      <div class="cta-band">
+        <div><h2>흩어진 장비, 하나로 연결해 드립니다</h2><p>사용 중인 장비 목록만 보내주셔도 연동 가능 여부를 먼저 확인해 드립니다.</p></div>
+        <a href="index.html?type=hardware#contact" class="btn btn-primary">장비 연동 문의하기 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="related">
+        <h2>다른 구축 사례</h2>
+        <div class="grid grid-3">
+          <a class="case-card" href="vision-inspection.html"><div class="case-body"><div class="tags"><span class="tag">#비전AI</span></div><h3>식품 공장 — 비전 AI 불량 검사·생산 카운팅</h3><span class="link-arrow">보기 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></div></a>
+          <a class="case-card" href="autotube.html"><div class="case-body"><div class="tags"><span class="tag">#콘텐츠자동화</span></div><h3>교육 콘텐츠 제작사 — 영상 제작 자동화</h3><span class="link-arrow">보기 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></div></a>
+          <a class="case-card" href="finance-ai.html"><div class="case-body"><div class="tags"><span class="tag">#자동매매</span></div><h3>투자법인 — 키움증권 국내·미국 자동매매</h3><span class="link-arrow">보기 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></div></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <a href="index.html" class="logo"><span>AI</span> BASE LAB</a>
+        <p>현장 장비, 데이터, AI를 하나로 연결하는<br>자동화 소프트웨어 개발 스튜디오</p>
+      </div>
+      <div>
+        <h2>솔루션 사례</h2>
+        <ul>
+          <li><a href="autotube.html">유튜브 콘텐츠 제작 자동화</a></li>
+          <li><a href="hardware-control.html">이기종 장비 연동 검사 시스템</a></li>
+          <li><a href="finance-ai.html">키움증권 국내·미국 자동매매</a></li>
+          <li><a href="vision-inspection.html">비전 AI 불량 검사·생산 카운팅</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>회사</h2>
+        <ul>
+          <li><a href="technology.html">핵심 기술</a></li>
+          <li><a href="infrastructure.html">인프라 현황</a></li>
+          <li><a href="about.html">기업 소개</a></li>
+          <li><a href="privacy.html">개인정보처리방침</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>문의</h2>
+        <ul>
+          <li><a href="mailto:contact@aibaselab.com">contact@aibaselab.com</a></li>
+          <li>평일 09:00 – 18:00 (주말·공휴일 휴무)</li>
+          <li><a href="index.html#contact">온라인 프로젝트 문의 →</a></li>
+        </ul>
+      </div>
+    </div>
+    <!-- [입력필요] 사업자 정보: 실제 정보로 교체하세요 -->
+    <div class="biz-info">
+      <span>상호: AI BASE LAB</span><span>대표: [입력필요]</span><span>사업자등록번호: [입력필요]</span><span>통신판매업신고: [입력필요]</span><br>
+      <span>주소: [입력필요]</span><span>이메일: contact@aibaselab.com</span>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 AI BASE LAB. All rights reserved.</p>
+      <a href="privacy.html">개인정보처리방침</a>
+    </div>
+  </div>
+</footer>
+<script src="js/main.js" defer></script>
+</body>
+</html>
