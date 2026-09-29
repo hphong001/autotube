@@ -487,6 +487,41 @@
             white-space: nowrap;
         }
 
+        /* ★ 장외 시간 2줄 표시: 1줄 = 정규장 종가, 2줄 = 프리/애프터/오버나이트 현재가 */
+        .reg-label {
+            font-size: 11px;
+            color: #8899aa;
+            white-space: nowrap;
+        }
+
+        .price-ext {
+            flex-basis: 100%;
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 2px;
+        }
+
+        .price-ext .ext-px {
+            font-size: 17px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .price-ext .ext-diff, .price-ext .ext-chg {
+            font-size: 14px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .price-ext .ext-label {
+            font-size: 11px;
+            color: #99aacc;
+            white-space: nowrap;
+        }
+
         .vol-badge {
             font-size: 11px;
             font-weight: bold;
@@ -1375,10 +1410,8 @@
         function rtState(idx) {
             var tk = panelTickers[idx], s = RT[idx];
             if (!s || s.ticker !== tk) {
-                s = RT[idx] = {
-                    ticker: tk, ticks: [], pv: 0, vol: 0, lastCum: 0, levels: {}, events: [],
-                    src: '', extVwap: 0, sessKey: ''
-                };
+                s = RT[idx] = { ticker: tk, ticks: [], pv: 0, vol: 0, lastCum: 0, levels: {}, events: [],
+                                src: '', extVwap: 0, sessKey: '' };
             }
             return s;
         }
@@ -1528,10 +1561,8 @@
             var risk = dir === 'long' ? price - stop : stop - price;
             var reward = dir === 'long' ? target - price : price - target;
             if (risk <= 0 || reward <= 0) return null;
-            return {
-                dir: dir, entry: price, stop: stop, target: target, rr: reward / risk,
-                riskPct: risk / price * 100, rewardPct: reward / price * 100
-            };
+            return { dir: dir, entry: price, stop: stop, target: target, rr: reward / risk,
+                     riskPct: risk / price * 100, rewardPct: reward / price * 100 };
         }
         function planText(pl) {
             if (!pl) return '';
@@ -1561,7 +1592,7 @@
             var surge = rtVolSurge(s);
 
             var optState = score >= 8.5 ? '콜 과열' : score <= 1.5 ? '풋 과열' :
-                score >= 6 ? '콜 우위' : score <= 4 ? '풋 우위' : '중립';
+                           score >= 6 ? '콜 우위' : score <= 4 ? '풋 우위' : '중립';
 
             // ── 방향 점수 (-4 ~ +4): VWAP 위치 + 3분 모멘텀 + 10분 추세 + 옵션수급 ──
             var bias = 0;
@@ -1575,11 +1606,11 @@
             if (m1 != null) {
                 var am1 = Math.round(Math.abs(m1) * 100) / 100;   // 표시값(소수 2자리)과 판정 일치
                 speed = am1 >= 0.3 ? (m1 > 0 ? '급등' : '급락') :
-                    am1 >= 0.1 ? (m1 > 0 ? '상승' : '하락') : '횡보';
+                        am1 >= 0.1 ? (m1 > 0 ? '상승' : '하락') : '횡보';
             }
             var volTxt = surge == null ? '' : surge >= 2 ? '거래량 폭증 ' + surge.toFixed(1) + '배' :
-                surge >= 1.3 ? '거래량 증가 ' + surge.toFixed(1) + '배' :
-                    surge < 0.6 ? '거래량 한산' : '거래량 보통';
+                         surge >= 1.3 ? '거래량 증가 ' + surge.toFixed(1) + '배' :
+                         surge < 0.6 ? '거래량 한산' : '거래량 보통';
             var volStrong = surge != null && surge >= 1.5;
 
             // ── 가장 최근 이벤트 (90초 이내면 헤드라인) ──
@@ -1615,13 +1646,13 @@
                 if (ev.dir === 'up') {
                     if (confirmed && !chasing) plan = rtPlan('long', price, s.levels[ev.key] ? s.levels[ev.key].lv * 0.998 : (below[0] && below[0].v), above[0] && above[0].v);
                     line3 = confirmed && chasing ? '이미 레벨에서 멀어짐. 추격 금지, 눌림 대기'
-                        : confirmed ? '돌파 추종 가능. 레벨 아래로 다시 밀리면 즉시 청산'
-                            : '거래량 없는 돌파는 되밀림 잦음. 리테스트(되돌림 후 지지) 확인 후 진입';
+                          : confirmed ? '돌파 추종 가능. 레벨 아래로 다시 밀리면 즉시 청산'
+                                      : '거래량 없는 돌파는 되밀림 잦음. 리테스트(되돌림 후 지지) 확인 후 진입';
                 } else {
                     if (confirmed && !chasing) plan = rtPlan('short', price, s.levels[ev.key] ? s.levels[ev.key].lv * 1.002 : (above[0] && above[0].v), below[0] && below[0].v);
                     line3 = confirmed && chasing ? '이미 레벨에서 멀어짐. 추격 금지, 반등 대기'
-                        : confirmed ? '이탈 추종 가능. 레벨 위로 재탈환하면 즉시 청산'
-                            : '거래량 없는 이탈은 재탈환(휩소) 잦음. 저가 매도 추격 금지';
+                          : confirmed ? '이탈 추종 가능. 레벨 위로 재탈환하면 즉시 청산'
+                                      : '거래량 없는 이탈은 재탈환(휩소) 잦음. 저가 매도 추격 금지';
                 }
             }
             else if (near && Math.abs(near.dist) <= RT_AWAY) {
@@ -1634,7 +1665,7 @@
                 var flipped = (isSup && (near.k === 'R1' || near.k === 'R2')) || (!isSup && (near.k === 'S1' || near.k === 'S2'));
                 var roleTxt = isSup ? (flipped ? ' 돌파 후 지지 확인' : ' 방어전') : (flipped ? ' 이탈 후 저항 확인' : ' 테스트');
                 line1 = '🎯 ' + near.n + ' $' + near.v.toFixed(1) + roleTxt +
-                    (touches > 0 ? ' · ' + touches + '번째 터치' : '') + (stay > 0 ? ' · ' + stay + '분째 공방' : '');
+                        (touches > 0 ? ' · ' + touches + '번째 터치' : '') + (stay > 0 ? ' · ' + stay + '분째 공방' : '');
                 color = isSup ? '#66bbff' : '#ff6666';
 
                 if (isSup) {
@@ -1659,7 +1690,7 @@
                         // 저항에서 밀리는 것을 확인한 뒤 진입 (레벨 -0.2% 아래, 이미 그 아래면 현재가)
                         plan = rtPlan('short', Math.min(price, near.v * 0.998), near.v * 1.003, below[0] && below[0].v);
                         line3 = (touches >= 3 ? '저항 반복 터치 → 돌파 가능성도 커지는 중. ' : '') +
-                            '돌파 힘 부족. $' + (near.v * 0.998).toFixed(2) + ' 아래로 밀리면 숏';
+                                '돌파 힘 부족. $' + (near.v * 0.998).toFixed(2) + ' 아래로 밀리면 숏';
                     }
                 }
             }
@@ -1704,9 +1735,9 @@
                 return '<span style="color:' + c + '">' + fmtAgo(e.t) + ' ' + e.msg + '</span>';
             }).join(' · ');
             var extra = paperStatusHtml(s.ticker, price) + (note ? '<div style="color:#e0a040;font-size:0.9em">⏱ ' + note + '</div>' : '') +
-                (log ? '<div style="font-size:0.85em">📜 ' + log + '</div>' : '') +
-                (s.ticks.length < 20 ? '<div style="color:#888;font-size:0.8em">※ 실시간 데이터 수집 중 (모멘텀·거래량은 페이지를 연 뒤부터 계산)</div>' : '') +
-                (!(s.extVwap > 0) ? '<div style="color:#888;font-size:0.8em">※ 키움 VWAP 미수신 → ' + vwLabel + ' 사용</div>' : '');
+                        (log ? '<div style="font-size:0.85em">📜 ' + log + '</div>' : '') +
+                        (s.ticks.length < 20 ? '<div style="color:#888;font-size:0.8em">※ 실시간 데이터 수집 중 (모멘텀·거래량은 페이지를 연 뒤부터 계산)</div>' : '') +
+                        (!(s.extVwap > 0) ? '<div style="color:#888;font-size:0.8em">※ 키움 VWAP 미수신 → ' + vwLabel + ' 사용</div>' : '');
 
             var p = 'p' + panelIdx + '-';
             var sigEl = document.getElementById(p + 'sigtitle');
@@ -1938,6 +1969,13 @@
                 + '<span class="price-diff" id="p' + i + '-diff">─</span>'
                 + '<span class="price-chg"  id="p' + i + '-chg">─</span>'
                 + '<span class="vol-badge"  id="p' + i + '-vol">거래량: ─</span>'
+                + '<span class="reg-label" id="p' + i + '-reg-label"></span>'
+                + '</div>'
+                + '<div class="price-ext" id="p' + i + '-ext" style="display:none">'
+                + '<span class="ext-px" id="p' + i + '-ext-px">─</span>'
+                + '<span class="ext-diff" id="p' + i + '-ext-diff"></span>'
+                + '<span class="ext-chg" id="p' + i + '-ext-chg"></span>'
+                + '<span class="ext-label" id="p' + i + '-ext-label"></span>'
                 + '</div>'
                 + '</div>'
                 + '</div>'
@@ -2295,7 +2333,14 @@
                         window.onWsMessage(p);
                     }
                 });
-                fbRefs[panelIdx] = { refs: [rtRef, panelRef], ticker: ticker, gen: myGen };
+                var sessRef = firebase.database().ref('tickers/' + ticker + '/session');
+                sessRef.on('value', function (snap) {
+                    var v = snap.val();
+                    if (!v) return;
+                    sessionCache[ticker] = { regClose: toNum(v.regClose), prevClose: toNum(v.prevClose), regDate: v.regDate || '' };
+                    if (fbGen[panelIdx] === myGen && panelTickers[panelIdx] === ticker) renderPanelQuote(panelIdx);
+                });
+                fbRefs[panelIdx] = { refs: [rtRef, panelRef, sessRef], ticker: ticker, gen: myGen };
             } catch (e) { }
         }
 
@@ -2363,23 +2408,97 @@
             if (cgEl) { cgEl.textContent = numPrice > 0 ? '(' + (numRate > 0 ? '+' : '') + numRate.toFixed(2) + '%)' : '─'; cgEl.className = 'price-chg ' + cls; }
         }
 
+        // ════════════════════════════════════════════════════════
+        // ★ 장외 시간 2줄 표시 (야후 방식)
+        //   정규장(09:30~16:00 ET) : 1줄 — 현재가 (기존과 동일)
+        //   그 외 시간             : 1줄 = 마지막 정규장 종가 + 전일 대비
+        //                            2줄 = 프리마켓/애프터마켓/오버나이트 현재가 + 종가 대비
+        //   종가 정보: C#이 키움 일봉으로 기록한 tickers/{종목}/session (우선)
+        //              없으면 야후 장외 시세(현재가 - 종가대비)로 역산
+        // ════════════════════════════════════════════════════════
+        var sessionCache = {};   // ticker → { regClose, regDate, prevClose }
+        var yahooRegCache = {};  // ticker → { regClose, prevClose } (야후 장외 시세에서 역산)
+
+        function etNowParts() {
+            var et = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+            return { d: et.getDay(), m: et.getHours() * 60 + et.getMinutes(), et: et };
+        }
+
+        // 현재 ET 세션 구분
+        function marketPhase() {
+            var t = etNowParts(), d = t.d, m = t.m;
+            var weekend = d === 6 || (d === 0 && m < 1200) || (d === 5 && m >= 1200);
+            if (weekend) return { type: 'WEEKEND', label: '주말 휴장 · 마지막 시세', icon: '⏸' };
+            if (m >= 570 && m < 960) return { type: 'REG' };
+            if (m >= 240 && m < 570) return { type: 'PRE', label: '프리마켓', icon: '☀' };
+            if (m >= 960 && m < 1200) return { type: 'POST', label: '애프터마켓', icon: '🌙' };
+            return { type: 'NIGHT', label: '오버나이트', icon: '🌙' };
+        }
+
+        function getRegClose(ticker) {
+            var s = sessionCache[ticker];
+            if (s && s.regClose > 0) return { regClose: s.regClose, prevClose: s.prevClose || 0, regDate: s.regDate || '' };
+            var y = yahooRegCache[ticker];
+            if (y && y.regClose > 0) return { regClose: y.regClose, prevClose: y.prevClose || 0, regDate: '' };
+            return null;
+        }
+
+        function fmtSigned(v, dig) { return (v > 0 ? '+' : '') + v.toFixed(dig); }
+        function clsOf(v) { return v > 0 ? 'up' : v < 0 ? 'dn' : 'neu'; }
+
         function updatePanelPrice(idx, price, changeRate, changeAmt, volume) {
             var p = 'p' + idx + '-';
             var numPrice = Number(String(price).replace(/[^0-9.-]+/g, "")) || 0;
             var numAmt = Number(String(changeAmt).replace(/[^0-9.-]+/g, "")) || 0;
             var numRate = Number(String(changeRate || '0').replace('%', '').trim()) || 0;
-            var cls = numRate > 0 ? 'up' : numRate < 0 ? 'dn' : 'neu';
             var pxEl = document.getElementById(p + 'price'),
                 dfEl = document.getElementById(p + 'diff'),
                 cgEl = document.getElementById(p + 'chg'),
-                volEl = document.getElementById(p + 'vol');
-            if (pxEl) { pxEl.textContent = numPrice > 0 ? numPrice.toFixed(2) : '─'; pxEl.className = 'price-now ' + cls; }
-            if (dfEl) { dfEl.textContent = numPrice > 0 ? (numAmt > 0 ? '+' : '') + numAmt.toFixed(2) : '─'; dfEl.className = 'price-diff ' + cls; }
-            if (cgEl) { cgEl.textContent = numPrice > 0 ? '(' + (numRate > 0 ? '+' : '') + numRate.toFixed(2) + '%)' : '─'; cgEl.className = 'price-chg ' + cls; }
+                volEl = document.getElementById(p + 'vol'),
+                regLbl = document.getElementById(p + 'reg-label'),
+                extEl = document.getElementById(p + 'ext');
+
+            var phase = marketPhase();
+            var rc = phase.type !== 'REG' ? getRegClose(panelTickers[idx]) : null;
+
+            if (rc && numPrice > 0) {
+                // ── 1줄: 마지막 정규장 종가 ──
+                var regAmt = rc.prevClose > 0 ? rc.regClose - rc.prevClose : null;
+                var regPct = rc.prevClose > 0 ? regAmt / rc.prevClose * 100 : null;
+                var rcls = regAmt === null ? 'neu' : clsOf(regAmt);
+                if (pxEl) { pxEl.textContent = rc.regClose.toFixed(2); pxEl.className = 'price-now ' + rcls; }
+                if (dfEl) { dfEl.textContent = regAmt === null ? '' : fmtSigned(regAmt, 2); dfEl.className = 'price-diff ' + rcls; }
+                if (cgEl) { cgEl.textContent = regPct === null ? '' : '(' + fmtSigned(regPct, 2) + '%)'; cgEl.className = 'price-chg ' + rcls; }
+                if (regLbl) regLbl.textContent = '종가' + (rc.regDate ? ' ' + rc.regDate.substring(5).replace('-', '/') : '') + ' 16:00 ET';
+
+                // ── 2줄: 장외 현재가 (종가 대비) ──
+                var extAmt = numPrice - rc.regClose, extPct = extAmt / rc.regClose * 100, ecls = clsOf(extAmt);
+                var t = etNowParts().et;
+                var hh = t.getHours(), mm = t.getMinutes();
+                var clock = (hh % 12 === 0 ? 12 : hh % 12) + ':' + (mm < 10 ? '0' : '') + mm + (hh < 12 ? ' AM' : ' PM') + ' ET';
+                var ePx = document.getElementById(p + 'ext-px'), eDf = document.getElementById(p + 'ext-diff'),
+                    eCg = document.getElementById(p + 'ext-chg'), eLb = document.getElementById(p + 'ext-label');
+                if (ePx) { ePx.textContent = numPrice.toFixed(2); ePx.className = 'ext-px ' + ecls; }
+                if (eDf) { eDf.textContent = fmtSigned(extAmt, 2); eDf.className = 'ext-diff ' + ecls; }
+                if (eCg) { eCg.textContent = '(' + fmtSigned(extPct, 2) + '%)'; eCg.className = 'ext-chg ' + ecls; }
+                if (eLb) eLb.textContent = phase.icon + ' ' + phase.label + ' · ' + clock;
+                if (extEl) extEl.style.display = '';
+            } else {
+                // ── 정규장 (또는 종가 정보 없음): 기존 1줄 ──
+                var cls = numRate > 0 ? 'up' : numRate < 0 ? 'dn' : 'neu';
+                if (pxEl) { pxEl.textContent = numPrice > 0 ? numPrice.toFixed(2) : '─'; pxEl.className = 'price-now ' + cls; }
+                if (dfEl) { dfEl.textContent = numPrice > 0 ? (numAmt > 0 ? '+' : '') + numAmt.toFixed(2) : '─'; dfEl.className = 'price-diff ' + cls; }
+                if (cgEl) { cgEl.textContent = numPrice > 0 ? '(' + (numRate > 0 ? '+' : '') + numRate.toFixed(2) + '%)' : '─'; cgEl.className = 'price-chg ' + cls; }
+                if (regLbl) regLbl.textContent = '';
+                if (extEl) extEl.style.display = 'none';
+            }
             if (volEl && volume !== null && volume !== undefined) {
                 volEl.textContent = '거래량: ' + numberWithCommas(volume);
             }
         }
+
+        // 세션 경계(09:30 / 16:00 등)를 넘을 때 표시 방식이 바로 바뀌도록 1분마다 다시 그림
+        setInterval(function () { [0, 1, 2].forEach(function (i) { try { renderPanelQuote(i); } catch (e) { } }); }, 60000);
 
         function renderPanel(panel, d) {
             var p = 'p' + panel + '-'; var price = d.price || 0;
@@ -2801,6 +2920,18 @@
                     var ticker = fromYahooSym(msg.id);
                     var px = Number(msg.price) || 0;
                     if (!(px > 0)) return;
+
+                    // 장외 시세(marketHours ≠ 1)의 대비는 정규장 종가 기준 → 종가 역산 (Firebase 종가 정보가 없을 때 대체용)
+                    var mh = Number(msg.marketHours);
+                    if (mh !== 1 && msg.change !== undefined && Math.abs(Number(msg.change)) < px) {
+                        var yrc = px - Number(msg.change);
+                        if (yrc > 0) yahooRegCache[ticker] = {
+                            regClose: Math.round(yrc * 10000) / 10000,
+                            // previousClose 가 종가와 같으면(장외 기준값) 전일 종가로 쓸 수 없음
+                            prevClose: (Number(msg.previousClose) > 0 && Math.abs(Number(msg.previousClose) - yrc) > 0.005)
+                                ? Number(msg.previousClose) : ((yahooRegCache[ticker] || {}).prevClose || 0)
+                        };
+                    }
 
                     var prev = yahooCache[ticker] || {};
                     yahooCache[ticker] = {
