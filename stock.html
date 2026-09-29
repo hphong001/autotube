@@ -593,6 +593,25 @@
             width: 100%;
         }
 
+        /* ★ 분석 문구 줄바꿈 정리: 단어·항목 단위로만 줄바꿈 */
+        .strategy-box { word-break: keep-all; overflow-wrap: break-word; }
+        .nw { white-space: nowrap; }
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: baseline;
+            row-gap: 2px;
+        }
+        .chips { column-gap: 14px; }                         /* 구분선 대신 간격 → 줄 머리에 구분자가 남지 않음 */
+        .chips .chip { white-space: nowrap; }
+        .plan-line { color: #ccc; margin-top: 3px; }
+
+        /* ★ 시세 영역: 가격 묶음 / 거래량·종가시각 묶음 단위로만 줄바꿈 */
+        .px-group { display: inline-flex; align-items: baseline; gap: 8px; white-space: nowrap; }
+        .meta-group { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
+        .meta-group .vol-badge { margin-left: 0; }
+
         .c-red {
             color: #ff4444;
         }
@@ -1154,6 +1173,14 @@
             }
         }
 
+        @media screen and (max-width: 700px) {
+            /* 모바일: 가격 줄 → 거래량·종가 줄 → 장외 가격 줄 → 장외 시각 줄 */
+            .price-block { flex-direction: column; gap: 4px; align-items: center; }
+            .price-ext { flex-direction: column; gap: 2px; align-items: center; }
+            .sb-line1, .sb-line2, .sb-line3 { font-size: 12.5px; }
+            .chips { column-gap: 12px; row-gap: 3px; }
+        }
+
         @media screen and (max-width: 800px) {
             .oi-grid-header {
                 grid-template-columns: 1fr 28px 32px 38px 32px 28px 1fr !important;
@@ -1566,13 +1593,27 @@
             return { dir: dir, entry: price, stop: stop, target: target, rr: reward / risk,
                      riskPct: risk / price * 100, rewardPct: reward / price * 100 };
         }
+        // 항목 배열 → 항목 단위로만 줄바꿈되는 칩 묶음
+        function chipsHtml(items, extraClass) {
+            return '<div class="chips' + (extraClass ? ' ' + extraClass : '') + '">' +
+                items.filter(Boolean).map(function (t) { return '<span class="chip">' + t + '</span>'; }).join('') + '</div>';
+        }
+        // "A → B · C" 형태의 문장을 구분자 단위로 묶어 중간에서 끊기지 않게
+        function nwJoin(text) {
+            var toks = String(text).split(/( → | · )/);
+            var out = '<span class="nw">' + toks[0] + '</span>';
+            for (var i = 1; i < toks.length; i += 2) out += ' <span class="nw">' + toks[i].trim() + ' ' + (toks[i + 1] || '') + '</span>';
+            return out;
+        }
+
         function planText(pl) {
             if (!pl) return '';
-            return (pl.dir === 'long' ? '🔺롱' : '🔻숏') +
-                ' 진입 $' + pl.entry.toFixed(2) +
-                ' · 손절 $' + pl.stop.toFixed(2) + ' (' + pl.riskPct.toFixed(2) + '%)' +
-                ' · 목표 $' + pl.target.toFixed(2) + ' (' + pl.rewardPct.toFixed(2) + '%)' +
-                ' · 손익비 1:' + pl.rr.toFixed(1);
+            return chipsHtml([
+                (pl.dir === 'long' ? '🔺롱' : '🔻숏') + ' 진입 $' + pl.entry.toFixed(2),
+                '손절 $' + pl.stop.toFixed(2) + ' (' + pl.riskPct.toFixed(2) + '%)',
+                '목표 $' + pl.target.toFixed(2) + ' (' + pl.rewardPct.toFixed(2) + '%)',
+                '손익비 1:' + pl.rr.toFixed(1)
+            ], 'plan-line');
         }
 
         // ════════════════════════════════════════════════════════
@@ -1719,7 +1760,7 @@
 
             // 손익비 나쁘면 경고
             if (plan && plan.rr < 1.2) line3 += ' ⚠️ 손익비 낮음(1:' + plan.rr.toFixed(1) + ') — 진입 비추천';
-            else if (plan) line3 += '<br><span style="color:#ccc">' + planText(plan) + '</span>';
+            else if (plan) line3 += planText(plan);
 
             // ── 2번째 줄: 수치 대시보드 ──
             var parts = [];
@@ -1734,18 +1775,18 @@
             var note = rtSessionNote();
             var log = s.events.slice(0, 3).map(function (e) {
                 var c = e.dir === 'up' ? '#ff6666' : e.dir === 'down' ? '#66bbff' : '#aaa';
-                return '<span style="color:' + c + '">' + fmtAgo(e.t) + ' ' + e.msg + '</span>';
+                return '<span class="nw" style="color:' + c + '">' + fmtAgo(e.t) + ' ' + e.msg + '</span>';
             }).join(' · ');
-            var extra = paperStatusHtml(s.ticker, price) + (note ? '<div style="color:#e0a040;font-size:0.9em">⏱ ' + note + '</div>' : '') +
+            var extra = paperStatusHtml(s.ticker, price) + (note ? '<div style="color:#e0a040;font-size:0.9em">⏱ ' + nwJoin(note) + '</div>' : '') +
                         (log ? '<div style="font-size:0.85em">📜 ' + log + '</div>' : '') +
                         (s.ticks.length < 20 ? '<div style="color:#888;font-size:0.8em">※ 실시간 데이터 수집 중 (모멘텀·거래량은 페이지를 연 뒤부터 계산)</div>' : '') +
                         (!(s.extVwap > 0) ? '<div style="color:#888;font-size:0.8em">※ 키움 VWAP 미수신 → ' + vwLabel + ' 사용</div>' : '');
 
             var p = 'p' + panelIdx + '-';
             var sigEl = document.getElementById(p + 'sigtitle');
-            if (sigEl) { sigEl.innerHTML = line1; sigEl.style.color = color; }
+            if (sigEl) { sigEl.innerHTML = nwJoin(line1); sigEl.style.color = color; }
             var subEl = document.getElementById(p + 'trend-sub');
-            if (subEl) subEl.innerHTML = line2;
+            if (subEl) subEl.innerHTML = chipsHtml(parts);
             var nextEl = document.getElementById(p + 'trend-next');
             if (nextEl) nextEl.innerHTML = '- ' + line3 + extra;
         }
@@ -1919,10 +1960,10 @@
             if (pos) {
                 var pnl = (price - pos.entry) / pos.entry * 100 * (pos.dir === 'long' ? 1 : -1);
                 var mins = Math.floor((Date.now() - pos.openAt) / 60000);
-                return '<div style="font-size:0.85em;color:' + (pnl >= 0 ? '#ff7777' : '#77aaff') + '">🧪 가상 ' +
+                return '<div style="font-size:0.85em;color:' + (pnl >= 0 ? '#ff7777' : '#77aaff') + '">' + nwJoin('🧪 가상 ' +
                     (pos.dir === 'long' ? '롱' : '숏') + ' 보유 · 진입 $' + pos.entry.toFixed(2) +
                     ' · 손절 $' + pos.stop.toFixed(2) + ' · 목표 $' + pos.target.toFixed(2) +
-                    ' · 현재 ' + (pnl >= 0 ? '+' : '') + pnl.toFixed(2) + '% · ' + mins + '분</div>';
+                    ' · 현재 ' + (pnl >= 0 ? '+' : '') + pnl.toFixed(2) + '% · ' + mins + '분') + '</div>';
             }
             if (pd) {
                 var how = pd.trig === 'now' ? '즉시' : '$' + pd.entry.toFixed(2) + (pd.trig === 'up' ? ' 이상' : ' 이하') + ' 도달 시';
@@ -1967,17 +2008,23 @@
                 + '</div>'
                 + '<div class="price-container">'
                 + '<div class="price-block" id="p' + i + '-reg-block">'
+                + '<span class="px-group">'
                 + '<span class="price-now" id="p' + i + '-price">─</span>'
                 + '<span class="price-diff" id="p' + i + '-diff">─</span>'
                 + '<span class="price-chg"  id="p' + i + '-chg">─</span>'
+                + '</span>'
+                + '<span class="meta-group">'
                 + '<span class="vol-badge"  id="p' + i + '-vol">거래량: ─</span>'
                 + '<span class="reg-label" id="p' + i + '-reg-label"></span>'
+                + '</span>'
                 + '</div>'
                 + '<div class="price-ext" id="p' + i + '-ext" style="display:none">'
+                + '<span class="px-group">'
                 + '<span class="ext-px" id="p' + i + '-ext-px">─</span>'
                 + '<span class="ext-diff" id="p' + i + '-ext-diff"></span>'
                 + '<span class="ext-chg" id="p' + i + '-ext-chg"></span>'
-                + '<span class="ext-label" id="p' + i + '-ext-label"></span>'
+                + '</span>'
+                + '<span class="ext-label nw" id="p' + i + '-ext-label"></span>'
                 + '</div>'
                 + '</div>'
                 + '</div>'
@@ -2775,12 +2822,17 @@
                 host.appendChild(dot);
             });
 
+            // 라벨 겹침 방지: 실제 화면 폭 기준으로 라벨 폭(약 52px)보다 가까우면 아래 줄로 내림 (모바일 대응)
+            var hostW = host.clientWidth || 300;
+            var minGapPct = Math.max(9, 52 / hostW * 100);
+            var LBL_BLOCK_H = 36;                                  // 가격·이름·% 3줄 높이
             var offsets = nodePcts.map(function () { return 0; });
             for (var i = 0; i < nodePcts.length - 1; i++) {
-                if (nodePcts[i + 1] - nodePcts[i] < 9) {
-                    offsets[i + 1] = offsets[i] === 0 ? 13 : 0;
+                if (nodePcts[i + 1] - nodePcts[i] < minGapPct) {
+                    offsets[i + 1] = offsets[i] === 0 ? LBL_BLOCK_H : 0;
                 }
             }
+            if (offsets.some(function (o) { return o > 0; })) host.style.height = (TOTAL_H + LBL_BLOCK_H) + 'px';
 
             nodes.forEach(function (n, i) {
                 var lp = nodePcts[i];
