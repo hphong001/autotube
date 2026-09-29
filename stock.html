@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdn.jsdelivr.net/npm/protobufjs@7.2.5/dist/protobuf.min.js"></script>
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <link rel="preconnect" href="https://streamer.finance.yahoo.com">
+    <link rel="preconnect" href="https://hphong-2cb03-default-rtdb.asia-southeast1.firebasedatabase.app">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
@@ -2217,8 +2219,9 @@
             if (!ticker) return;
             var pick = pickQuote(ticker);
             if (!pick) {
-                // 아직 어느 소스에도 값이 없으면 점만 끄고 기존 표시는 유지
+                // 아직 실시간 값이 없음 → 확정된 종가 줄만 표시하고 현재가는 "연결 중"
                 setDotState(idx, null);
+                updatePanelPrice(idx, 0, 0, 0, null);
                 return;
             }
             applyPanelQuote(idx, pick.q, pick.src);
@@ -2337,7 +2340,8 @@
                 sessRef.on('value', function (snap) {
                     var v = snap.val();
                     if (!v) return;
-                    sessionCache[ticker] = { regClose: toNum(v.regClose), prevClose: toNum(v.prevClose), regDate: v.regDate || '' };
+                    sessionCache[ticker] = { regClose: toNum(v.regClose), prevClose: toNum(v.prevClose), regDate: v.regDate || '', source: v.source || '' };
+                    saveSessionLS();
                     if (fbGen[panelIdx] === myGen && panelTickers[panelIdx] === ticker) renderPanelQuote(panelIdx);
                 });
                 fbRefs[panelIdx] = { refs: [rtRef, panelRef, sessRef], ticker: ticker, gen: myGen };
@@ -2413,8 +2417,10 @@
         //   정규장(09:30~16:00 ET) : 1줄 — 현재가 (기존과 동일)
         //   그 외 시간             : 1줄 = 마지막 정규장 종가 + 전일 대비
         //                            2줄 = 프리마켓/애프터마켓/오버나이트 현재가 + 종가 대비
-        //   종가 정보: C#이 키움 일봉으로 기록한 tickers/{종목}/session (우선)
+        //   종가 정보: Cloudflare Worker가 매일 자동 기록한 tickers/{종목}/session (우선)
+        //              → 날짜 검증 후 사용, 브라우저에도 저장해 다음 방문 시 즉시 표시
         //              없으면 야후 장외 시세(현재가 - 종가대비)로 역산
+        //   현재가: 실시간 값이 도착하기 전에는 숫자 대신 "실시간 연결 중" 표시 (지난 값 표시 안 함)
         // ════════════════════════════════════════════════════════
         var sessionCache = {};   // ticker → { regClose, regDate, prevClose }
         var yahooRegCache = {};  // ticker → { regClose, prevClose } (야후 장외 시세에서 역산)
@@ -2435,11 +2441,53 @@
             return { type: 'NIGHT', label: '오버나이트', icon: '🌙' };
         }
 
+        var closeStatus = null;           // system/closeUpdate (Worker 진행 상태)
+        // ★ Cloudflare Worker 주소 (배포 후 실제 주소로 바꾸세요. 예: https://stock-close.계정이름.workers.dev)
+        var CLOSE_WORKER_URL = 'https://stock-close.YOUR-ACCOUNT.workers.dev';
+        var _ensureAt = 0;
+
+        // 오늘 필요한 종가가 아직 기록되지 않았으면 Worker에 즉시 실행 요청 (3분에 1번까지)
+        function ensureCloseUpdated() {
+            if (!CLOSE_WORKER_URL || CLOSE_WORKER_URL.indexOf('YOUR-ACCOUNT') >= 0) return;
+            if (closeStatus && closeStatus.completedDate === expectedSessionDate()) return;
+            if (Date.now() - _ensureAt < 3 * 60 * 1000) return;
+            _ensureAt = Date.now();
+            fetch(CLOSE_WORKER_URL.replace(/\/+$/, '') + '/ensure', { cache: 'no-store' })
+                .then(function (r) { return r.json(); })
+                .then(function (j) { console.info('[종가 Worker] ensure →', j && j.result); })
+                .catch(function (e) { console.warn('[종가 Worker] 호출 실패', e); });
+        }
+        var LS_SESSION = 'sessionClose_v1';
+
+        // 지금 기준 "마지막으로 끝난 정규장" 날짜 (ET, Worker 와 동일 규칙: 16:10 ET 이후 오늘, 주말 제외)
+        function expectedSessionDate() {
+            var t = etNowParts(), et = t.et;
+            var d = new Date(et.getFullYear(), et.getMonth(), et.getDate(), 12);
+            if (t.m < 16 * 60 + 10) d.setDate(d.getDate() - 1);
+            while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() - 1);
+            return d.getFullYear() + '-' + (d.getMonth() < 9 ? '0' : '') + (d.getMonth() + 1) + '-' + (d.getDate() < 10 ? '0' : '') + d.getDate();
+        }
+
+        // 저장된 종가가 "지금 기준 최신 정규장" 값인지 검증
+        function sessionValid(ticker, s) {
+            if (!s || !(s.regClose > 0) || !s.regDate) return false;
+            var exp = expectedSessionDate();
+            if (s.regDate === exp) return true;
+            // 휴장일: Worker가 오늘 기준으로 확인을 마쳤는데 날짜가 더 이르면 그 값이 최신
+            return s.regDate < exp && !!closeStatus && closeStatus.expected === exp &&
+                   !!closeStatus.done && closeStatus.done[ticker] === exp;
+        }
+
+        function saveSessionLS() { try { localStorage.setItem(LS_SESSION, JSON.stringify(sessionCache)); } catch (e) { } }
+        (function loadSessionLS() {
+            try { var v = JSON.parse(localStorage.getItem(LS_SESSION) || 'null'); if (v) sessionCache = v; } catch (e) { }
+        })();
+
         function getRegClose(ticker) {
             var s = sessionCache[ticker];
-            if (s && s.regClose > 0) return { regClose: s.regClose, prevClose: s.prevClose || 0, regDate: s.regDate || '' };
+            if (sessionValid(ticker, s)) return { regClose: s.regClose, prevClose: s.prevClose || 0, regDate: s.regDate, src: s.source || '' };
             var y = yahooRegCache[ticker];
-            if (y && y.regClose > 0) return { regClose: y.regClose, prevClose: y.prevClose || 0, regDate: '' };
+            if (y && y.regClose > 0) return { regClose: y.regClose, prevClose: y.prevClose || 0, regDate: '', src: 'yahoo-live' };
             return null;
         }
 
@@ -2461,7 +2509,7 @@
             var phase = marketPhase();
             var rc = phase.type !== 'REG' ? getRegClose(panelTickers[idx]) : null;
 
-            if (rc && numPrice > 0) {
+            if (rc) {
                 // ── 1줄: 마지막 정규장 종가 ──
                 var regAmt = rc.prevClose > 0 ? rc.regClose - rc.prevClose : null;
                 var regPct = rc.prevClose > 0 ? regAmt / rc.prevClose * 100 : null;
@@ -2469,7 +2517,11 @@
                 if (pxEl) { pxEl.textContent = rc.regClose.toFixed(2); pxEl.className = 'price-now ' + rcls; }
                 if (dfEl) { dfEl.textContent = regAmt === null ? '' : fmtSigned(regAmt, 2); dfEl.className = 'price-diff ' + rcls; }
                 if (cgEl) { cgEl.textContent = regPct === null ? '' : '(' + fmtSigned(regPct, 2) + '%)'; cgEl.className = 'price-chg ' + rcls; }
-                if (regLbl) regLbl.textContent = '종가' + (rc.regDate ? ' ' + rc.regDate.substring(5).replace('-', '/') : '') + ' 16:00 ET';
+                if (regLbl) {
+                    regLbl.textContent = '종가' + (rc.regDate ? ' ' + rc.regDate.substring(5).replace('-', '/') : '') + ' 16:00 ET' +
+                        (rc.src === 'yahoo' ? ' ✓' : '');
+                    regLbl.title = rc.src === 'yahoo' ? '자동 기록된 공식 종가 (Worker)' : '야후 장외 시세에서 계산한 종가';
+                }
 
                 // ── 2줄: 장외 현재가 (종가 대비) ──
                 var extAmt = numPrice - rc.regClose, extPct = extAmt / rc.regClose * 100, ecls = clsOf(extAmt);
@@ -2478,17 +2530,25 @@
                 var clock = (hh % 12 === 0 ? 12 : hh % 12) + ':' + (mm < 10 ? '0' : '') + mm + (hh < 12 ? ' AM' : ' PM') + ' ET';
                 var ePx = document.getElementById(p + 'ext-px'), eDf = document.getElementById(p + 'ext-diff'),
                     eCg = document.getElementById(p + 'ext-chg'), eLb = document.getElementById(p + 'ext-label');
-                if (ePx) { ePx.textContent = numPrice.toFixed(2); ePx.className = 'ext-px ' + ecls; }
-                if (eDf) { eDf.textContent = fmtSigned(extAmt, 2); eDf.className = 'ext-diff ' + ecls; }
-                if (eCg) { eCg.textContent = '(' + fmtSigned(extPct, 2) + '%)'; eCg.className = 'ext-chg ' + ecls; }
-                if (eLb) eLb.textContent = phase.icon + ' ' + phase.label + ' · ' + clock;
+                if (numPrice > 0) {
+                    if (ePx) { ePx.textContent = numPrice.toFixed(2); ePx.className = 'ext-px ' + ecls; }
+                    if (eDf) { eDf.textContent = fmtSigned(extAmt, 2); eDf.className = 'ext-diff ' + ecls; }
+                    if (eCg) { eCg.textContent = '(' + fmtSigned(extPct, 2) + '%)'; eCg.className = 'ext-chg ' + ecls; }
+                    if (eLb) eLb.textContent = phase.icon + ' ' + phase.label + ' · ' + clock;
+                } else {
+                    // 실시간 값이 아직 없음 → 지난 값 대신 연결 중 표시
+                    if (ePx) { ePx.textContent = '⋯'; ePx.className = 'ext-px neu'; }
+                    if (eDf) eDf.textContent = '';
+                    if (eCg) eCg.textContent = '';
+                    if (eLb) eLb.textContent = phase.icon + ' ' + phase.label + ' · 실시간 연결 중';
+                }
                 if (extEl) extEl.style.display = '';
             } else {
                 // ── 정규장 (또는 종가 정보 없음): 기존 1줄 ──
                 var cls = numRate > 0 ? 'up' : numRate < 0 ? 'dn' : 'neu';
-                if (pxEl) { pxEl.textContent = numPrice > 0 ? numPrice.toFixed(2) : '─'; pxEl.className = 'price-now ' + cls; }
-                if (dfEl) { dfEl.textContent = numPrice > 0 ? (numAmt > 0 ? '+' : '') + numAmt.toFixed(2) : '─'; dfEl.className = 'price-diff ' + cls; }
-                if (cgEl) { cgEl.textContent = numPrice > 0 ? '(' + (numRate > 0 ? '+' : '') + numRate.toFixed(2) + '%)' : '─'; cgEl.className = 'price-chg ' + cls; }
+                if (pxEl) { pxEl.textContent = numPrice > 0 ? numPrice.toFixed(2) : '⋯ 연결 중'; pxEl.className = 'price-now ' + cls; }
+                if (dfEl) { dfEl.textContent = numPrice > 0 ? (numAmt > 0 ? '+' : '') + numAmt.toFixed(2) : ''; dfEl.className = 'price-diff ' + cls; }
+                if (cgEl) { cgEl.textContent = numPrice > 0 ? '(' + (numRate > 0 ? '+' : '') + numRate.toFixed(2) + '%)' : ''; cgEl.className = 'price-chg ' + cls; }
                 if (regLbl) regLbl.textContent = '';
                 if (extEl) extEl.style.display = 'none';
             }
@@ -2498,7 +2558,10 @@
         }
 
         // 세션 경계(09:30 / 16:00 등)를 넘을 때 표시 방식이 바로 바뀌도록 1분마다 다시 그림
-        setInterval(function () { [0, 1, 2].forEach(function (i) { try { renderPanelQuote(i); } catch (e) { } }); }, 60000);
+        setInterval(function () {
+            ensureCloseUpdated();
+            [0, 1, 2].forEach(function (i) { try { renderPanelQuote(i); } catch (e) { } });
+        }, 60000);
 
         function renderPanel(panel, d) {
             var p = 'p' + panel + '-'; var price = d.price || 0;
@@ -2837,9 +2900,10 @@
         var yahooSubscribed = {};            // 현재 야후에 구독 중인 심볼
 
         function getAllSubs() {
-            var base = serverTickers && serverTickers.length
+            var base = (serverTickers && serverTickers.length
                 ? serverTickers
-                : WATCH_LIST.map(function (w) { return w.ticker; }).concat(HEADER_TICKERS);
+                : WATCH_LIST.map(function (w) { return w.ticker; }))
+                .concat(HEADER_TICKERS, panelTickers.filter(Boolean));   // 화면 종목은 항상 포함
             var seen = {}, res = [];
             base.map(toYahooSym).forEach(function (t) { if (!seen[t]) { seen[t] = true; res.push(t); } });
             return res;
@@ -2907,6 +2971,7 @@
                 yahooWs.onopen = function () {
                     yahooLastMsgAt = Date.now();
                     yahooSubscribed = {};                         // 새 연결은 구독이 비어 있음
+                    syncYahooSubs();                              // 화면 종목부터 즉시 구독 (첫 시세 대기시간 단축)
                     loadServerTickers().then(syncYahooSubs);      // 최신 서버 목록으로 전체 구독
                 };
 
@@ -2923,6 +2988,12 @@
 
                     // 장외 시세(marketHours ≠ 1)의 대비는 정규장 종가 기준 → 종가 역산 (Firebase 종가 정보가 없을 때 대체용)
                     var mh = Number(msg.marketHours);
+                    if (!window._pcLogged) window._pcLogged = {};
+                    if (!window._pcLogged[ticker]) {
+                        window._pcLogged[ticker] = 1;
+                        console.info('[야후 확인] ' + ticker + ' marketHours=' + mh + ' price=' + px +
+                            ' change=' + msg.change + ' previousClose=' + msg.previousClose);
+                    }
                     if (mh !== 1 && msg.change !== undefined && Math.abs(Number(msg.change)) < px) {
                         var yrc = px - Number(msg.change);
                         if (yrc > 0) yahooRegCache[ticker] = {
@@ -3079,6 +3150,13 @@
 
         (function start() {
             initDashboard(); buildWatchlist(); refreshAllDropdowns(); initFirebase();
+            try {
+                firebase.database().ref('system/closeUpdate').on('value', function (snap) {
+                    closeStatus = snap.val();
+                    ensureCloseUpdated();   // 플래그 OFF(오늘 기록 없음)면 Worker 즉시 실행 요청
+                    [0, 1, 2].forEach(function (i) { try { renderPanelQuote(i); } catch (e) { } });
+                });
+            } catch (e) { }
             initGlobalTickersListener(); yahooWsConnect(); initMacroListener(); initUsdKrwListener();
             // 서버 종목 목록 → 콤보박스 (야후 연결과 무관하게 바로 실행)
             loadServerTickerNames().then(loadServerTickers).then(syncYahooSubs);
