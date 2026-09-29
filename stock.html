@@ -2340,7 +2340,8 @@
                 sessRef.on('value', function (snap) {
                     var v = snap.val();
                     if (!v) return;
-                    sessionCache[ticker] = { regClose: toNum(v.regClose), prevClose: toNum(v.prevClose), regDate: v.regDate || '', source: v.source || '' };
+                    sessionCache[ticker] = { regClose: toNum(v.regClose), prevClose: toNum(v.prevClose), regDate: v.regDate || '',
+                                             regVolume: toNum(v.regVolume), source: v.source || '' };
                     saveSessionLS();
                     if (fbGen[panelIdx] === myGen && panelTickers[panelIdx] === ticker) renderPanelQuote(panelIdx);
                 });
@@ -2485,7 +2486,7 @@
 
         function getRegClose(ticker) {
             var s = sessionCache[ticker];
-            if (sessionValid(ticker, s)) return { regClose: s.regClose, prevClose: s.prevClose || 0, regDate: s.regDate, src: s.source || '' };
+            if (sessionValid(ticker, s)) return { regClose: s.regClose, prevClose: s.prevClose || 0, regDate: s.regDate, regVolume: s.regVolume || 0, src: s.source || '' };
             var y = yahooRegCache[ticker];
             if (y && y.regClose > 0) return { regClose: y.regClose, prevClose: y.prevClose || 0, regDate: '', src: 'yahoo-live' };
             return null;
@@ -2552,8 +2553,20 @@
                 if (regLbl) regLbl.textContent = '';
                 if (extEl) extEl.style.display = 'none';
             }
-            if (volEl && volume !== null && volume !== undefined) {
-                volEl.textContent = '거래량: ' + numberWithCommas(volume);
+            // 정확한 값(확정 종가 또는 실시간 현재가)이 하나라도 표시되면 전체 로딩 화면을 바로 걷어냄
+            if (rc || numPrice > 0) { try { hideInitialLoading(); } catch (e) { } }
+
+            // 거래량: 장외 시간에는 확정된 정규장 거래량(Worker 저장값) 표시 / 정규장에는 실시간 거래량
+            if (volEl) {
+                if (rc && rc.regVolume > 0) {
+                    volEl.textContent = '거래량: ' + numberWithCommas(rc.regVolume);
+                    volEl.title = '정규장 거래량 (' + (rc.regDate || '') + ')';
+                } else if (volume !== null && volume !== undefined && Number(String(volume).replace(/,/g, '')) > 0) {
+                    volEl.textContent = '거래량: ' + numberWithCommas(volume);
+                    volEl.title = '';
+                } else if (phase.type === 'REG' && numPrice === 0) {
+                    volEl.textContent = '거래량: ─';
+                }
             }
         }
 
