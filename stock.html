@@ -2015,7 +2015,8 @@
             var s = rtState(panelIdx);
 
             var price = d.price, r1 = d.resistance1, r2 = d.resistance2, s1 = d.support1, s2 = d.support2;
-            var score = d.score || 5, mp = d.maxPain || 0;
+            // 옵션 점수 0.0 은 '풋 극단'(유효한 값) → 0 을 '없음'으로 보지 않음 (값이 없을 때만 중립 5)
+            var score = (d.score !== undefined && d.score !== null && d.score !== '' && isFinite(Number(d.score))) ? Number(d.score) : 5, mp = d.maxPain || 0;
 
             // ── 실시간 지표 ──
             var vwReal = rtVwap(s), vwap = vwReal || d.vwap || ((d.dayHigh || price) + (d.dayLow || price) + price) / 3;
