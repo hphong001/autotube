@@ -640,6 +640,54 @@
         .sg-meter span { flex: 1 1 0; height: 7px; border-radius: 2px; }
         .sg-vtxt { font-size: 14px; font-weight: 600; white-space: nowrap; }
         .sg-foot { display: flex; flex-direction: column; gap: 5px; padding-top: 11px; border-top: 1px solid #242a38; }
+        /* 진입 점수 */
+        .sg-score { display: flex; flex-direction: column; gap: 10px; padding: 13px 14px; border-radius: 12px; background: #0d1018; min-height: 132px; }
+        .sg-sc-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+        .sg-sc-title { font-size: 15px; font-weight: 700; white-space: nowrap; }
+        .sg-sc-title small { font-size: 12px; font-weight: 500; color: #8b93a7; }
+        .sg-sc-num { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 28px; font-weight: 700; white-space: nowrap; }
+        .sg-sc-num small { font-size: 13px; color: #8b93a7; font-weight: 500; }
+        .sg-sc-bar { display: flex; gap: 2px; height: 14px; border-radius: 4px; overflow: hidden; background: #242a38; }
+        .sg-sc-bar span { height: 14px; }
+        .sg-sc-mark { position: relative; height: 12px; margin-top: -10px; }
+        .sg-sc-mark i { position: absolute; top: -16px; width: 2px; height: 22px; background: #e7e9f0; }
+        .sg-sc-mark em { position: absolute; top: 7px; transform: translateX(-50%); font-style: normal; font-size: 10.5px; color: #8b93a7; white-space: nowrap; }
+        .sg-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+        .sg-tag { display: inline-flex; align-items: center; gap: 7px; padding: 6px 10px; border-radius: 6px; font-size: 13px; border: 1px solid #262c3a; background: #141821; }
+        .sg-tag .sg-box { width: 16px; height: 16px; flex-shrink: 0; }
+        .sg-tag .sg-tn { font-weight: 600; white-space: nowrap; }
+        .sg-tag .sg-tp { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 12.5px; white-space: nowrap; }
+        .sg-tag.on .sg-tn, .sg-tag.on .sg-tp { color: #e7e9f0; }
+        .sg-tag.off .sg-tn { color: #6b7385; } .sg-tag.off .sg-tp { color: #5d6578; }
+        .sg-tag.na { background: transparent; } .sg-tag.na .sg-tn { color: #5d6578; } .sg-tag.na .sg-tp { color: #4a5163; }
+        /* 방향 띠 */
+        .sg-band { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 8px; font-size: 15px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sg-band span { font-weight: 600; opacity: 0.92; overflow: hidden; text-overflow: ellipsis; }
+        .sg-band .sg-ico { width: 16px; height: 16px; }
+        .sg-band.long { background: #ff5d5d; color: #ffffff; }
+        .sg-band.short { background: #4d8dff; color: #ffffff; }
+        .sg-band.cand { background: #1b202c; border: 1px dashed #3a4153; color: #8b93a7; font-weight: 700; }
+        .sg-band.cand span { font-weight: 500; }
+        .sg-band.flash { animation: sgFlash 0.5s ease-in-out 4; }
+        @keyframes sgFlash { 50% { filter: brightness(1.6); box-shadow: 0 0 0 3px rgba(255,255,255,0.35); } }
+        .sg-cell.warn { box-shadow: inset 0 0 0 1.5px #f5a524; background: rgba(245,165,36,0.08); }
+        /* 예상 수익 / 손실 */
+        .sg-pnls { display: flex; flex-direction: column; gap: 7px; font-size: 13px; min-height: 68px; }
+        .sg-pnl { display: grid; grid-template-columns: 124px minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+        .sg-pl { font-weight: 600; white-space: nowrap; }
+        .sg-ptrack { height: 8px; border-radius: 4px; background: #242a38; overflow: hidden; }
+        .sg-ptrack i { display: block; height: 8px; border-radius: 4px; }
+        .sg-pv { text-align: right; white-space: nowrap; }
+        .sg-pv b { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; }
+        .sg-pv small { font-size: 11.5px; color: #8b93a7; }
+        .sg-pnote { font-size: 12.5px; color: #9aa3b5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        /* 거래량 2줄 */
+        .sg-vol { display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: 12px; align-items: start; font-size: 14px; }
+        .sg-vlines { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+        .sg-vlines > div { display: flex; justify-content: space-between; gap: 8px; }
+        .sg-vlines b { font-weight: 600; }
+        .sg-vlines em { font-style: normal; font-weight: 700; font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; }
+        .sg-vlines small { font-size: 12px; color: #8b93a7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .sg-fl { font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-height: 1.4em; }
         .sg-paper { font-weight: 600; }
         .sg-small { font-size: 12px; color: #6f778a; }
@@ -660,6 +708,15 @@
             .sg-row { grid-template-columns: 50px minmax(0, 1fr) 112px; gap: 9px; font-size: 13.5px; }
             .sg-rv { font-size: 13.5px; } .sg-rv small { font-size: 11.5px; }
             .sg-fl { font-size: 13px; } .sg-small { font-size: 11.5px; }
+            .sg-score { padding: 11px 10px; }
+            .sg-sc-title { font-size: 14px; } .sg-sc-title small { font-size: 11px; }
+            .sg-sc-num { font-size: 24px; }
+            .sg-tag { padding: 5px 8px; font-size: 12px; gap: 5px; } .sg-tag .sg-tp { font-size: 11.5px; }
+            .sg-band { font-size: 14px; padding: 8px 10px; }
+            .sg-pnl { grid-template-columns: 108px minmax(0, 1fr) auto; gap: 7px; font-size: 12.5px; }
+            .sg-pv small { display: none; }
+            .sg-vol { grid-template-columns: 50px minmax(0, 1fr); gap: 9px; font-size: 13.5px; }
+            .sg-vlines small { font-size: 11px; }
         }
 
         /* (이전) 전략 카드 줄 배치 */
@@ -1568,9 +1625,15 @@
             return false;
         }
 
-        function rtTick(idx, price, cumVol, src, extVwap) {
-            if (!(price > 0)) return;
+        // 반환: true = 이 가격을 반영(화면에도 표시) / false = 체결 필터가 보류(화면·판단 모두 이전 값 유지)
+        //   recvAt: 시세를 실제로 받은 시각 (0 = 저장된 스냅샷). 같은 시세가 다시 들어오면(화면 갱신 등) 중복으로 무시
+        function rtTick(idx, price, cumVol, src, extVwap, recvAt) {
+            if (!(price > 0)) return false;
             var s = rtState(idx), now = Date.now();
+            var 틱키 = (src || '') + '|' + price + '|' + (cumVol || 0) + '|' + (recvAt || 0);
+            if (s.마지막틱키 === 틱키) return s.마지막수락 !== false;          // 같은 시세 재호출 → 처리 없이 이전 결과
+            s.마지막틱키 = 틱키;
+            var 신선 = recvAt > 0 && now - recvAt <= 15000;                   // 오래된·스냅샷 시세로는 가상매매 체결·청산 판정 안 함
 
             // 소스(키움↔야후)가 바뀌면 누적거래량 기준이 달라지므로 거래량 기준점 초기화
             if (src && s.src !== src) {
@@ -1578,7 +1641,9 @@
                 s.ticks.forEach(function (tk) { tk.cv = 0; });
             }
             // 정규장 외 급변 체결은 확인될 때까지 판단에서 제외 (수량 기준점만 옮김)
-            if (!체결필터(s, price)) { if (cumVol > 0) s.lastCum = cumVol; return; }
+            //   키움 시세는 윈폼(C#)이 같은 필터를 이미 적용해 통과한 값만 올리므로 여기서는 건너뜀
+            if (src !== 'kiwoom' && !체결필터(s, price)) { if (cumVol > 0) s.lastCum = cumVol; s.마지막수락 = false; return false; }
+            s.마지막수락 = true;
 
             // C#이 계산한 정확한 VWAP (키움 소스일 때만)
             s.extVwap = (src === 'kiwoom' && extVwap > 0) ? extVwap : 0;
@@ -1608,10 +1673,12 @@
                 rtLevel(s, 'R1', '1차저항', d.resistance1, price, now, 'res');
                 rtLevel(s, 'R2', '2차저항', d.resistance2, price, now, 'res');
                 rtLevel(s, 'MP', 'MaxPain', d.maxPain, price, now, 'mag');
-                var vw = rtVwap(s);
-                if (vw) rtLevel(s, 'VW', 'VWAP', Math.round(vw * 100) / 100, price, now, 'vwap');
+                // VWAP 돌파·이탈 이벤트는 윈폼이 계산한 실제 VWAP 일 때만 (페이지에서 모은 체결 VWAP 은 세션 전체 값이 아님)
+                if (s.extVwap > 0) rtLevel(s, 'VW', 'VWAP', Math.round(s.extVwap * 100) / 100, price, now, 'vwap');
+                else delete s.levels.VW;
             }
-            가상_시세반영(s.ticker, price);   // ★ 가상매매 체결·청산 판정
+            if (신선) 가상_시세반영(s.ticker, price);   // ★ 가상매매 체결·청산 판정 (실제로 방금 받은 시세만)
+            return true;
         }
 
         // ── 레벨별 터치 횟수 / 돌파·이탈·재탈환 이벤트 ──
@@ -1736,6 +1803,190 @@
         }
 
 
+
+        // ════════════════════════════════════════════════════════
+        // ★ 당일 반등·반락 구간 (윈폼이 정규장 3분봉으로 계산해 Firebase tickers/{종목}/zones 에 저장)
+        //   - 계산할 정규장 날짜와 같은 날짜의 데이터만 사용 (지난 날짜 = 데이터 없음)
+        // ════════════════════════════════════════════════════════
+        var 구간Cache = {};   // 종목 → zones 원본
+        function 구간_기대날짜() {
+            var et = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+            var d = new Date(et.getFullYear(), et.getMonth(), et.getDate(), 12);
+            var m = et.getHours() * 60 + et.getMinutes(), 요일 = d.getDay();
+            if (요일 === 0 || 요일 === 6 || m < 570) { do { d.setDate(d.getDate() - 1); } while (d.getDay() === 0 || d.getDay() === 6); }
+            return d.getFullYear() + '-' + (d.getMonth() < 9 ? '0' : '') + (d.getMonth() + 1) + '-' + (d.getDate() < 10 ? '0' : '') + d.getDate();
+        }
+        // 반환: { 상태: '정상'|'계산중'|'없음', 지지:[{v,횟수}], 저항:[...], 허용폭, 기준시각 }
+        function 구간_가져오기(종목) {
+            var z = 구간Cache[종목];
+            var ok = z && z.날짜 === 구간_기대날짜() && Array.isArray(z.지지 || []) && Array.isArray(z.저항 || []);
+            if (!ok) return { 상태: kiwoomAlive ? '계산중' : '없음', 지지: [], 저항: [], 허용폭: 0, 기준시각: '' };
+            function 변환(a) { return (a || []).map(function (x) { return { v: Number(x.가격), 횟수: Number(x.횟수) || 0 }; }).filter(function (x) { return x.v > 0; }); }
+            return { 상태: '정상', 지지: 변환(z.지지), 저항: 변환(z.저항), 허용폭: Number(z.허용폭) || 0, 기준시각: z.기준시각 || '' };
+        }
+
+        // ── 디버그 로그 (윈폼 대시보드 창에서만, 윈폼 로그·파일로 전달) ──
+        var 디버그로그사용 = true;
+        var 디버그_마지막 = {};
+        function 디버그(키, 글) {
+            if (!디버그로그사용 || !가상_기록가능) return;
+            if (키 && 디버그_마지막[키] === 글) return;          // 같은 내용 반복 기록 방지
+            if (키) 디버그_마지막[키] = 글;
+            가상매매.전송대기열.push({ 종류: '디버그', 글: 글 });
+        }
+
+        // ════════════════════════════════════════════════════════
+        // ★ 눌림(롱) / 반등(숏) 진입 계획
+        //   롱: 현재가 아래 −0.1% ~ 1.0% 안의 지지 후보 중 가장 가까운 것
+        //       후보 = 옵션 레벨(지지·MaxPain·돌파된 저항) + VWAP(실제 계산값일 때만) + 반등 지지 구간(2회 이상)
+        //       진입 = 후보 × (1 + 0.05%) / 손절 = 후보 − max(0.2%, 구간 묶음폭) / 목표 = 현재가 위 다음 레벨
+        //   숏: 위아래를 뒤집어 같은 방식
+        // ════════════════════════════════════════════════════════
+        var 눌림_최대거리 = 1.0, 눌림_최소거리 = -0.1;       // % (현재가 기준, 음수 = 레벨을 살짝 넘어선 상태까지 허용)
+        var 진입_여유 = 0.05, 손절_여유 = 0.2, 겹침_거리 = 0.15;   // %
+
+        // 레벨 고유 이름 (가상매매 "같은 레벨" 판정용): 가격이 조금 움직이거나 터치 횟수가 늘어도 같은 레벨이면 같은 값
+        //   옵션 레벨 = S1·R1·MP 등 / VWAP = 'VWAP' / 구간 = 종류 + 가격을 0.3% 칸으로 나눈 번호
+        function 레벨ID_구간(종류, v) { return 종류 + '@' + Math.round(Math.log(v) / Math.log(1.003)); }
+        function 레벨후보(방향, price, lvList, vwap, vwapReal, 구간) {
+            var 후보 = [];
+            lvList.forEach(function (x) { 후보.push({ n: x.n, v: x.v, 종류: '옵션', id: x.k }); });
+            if (vwapReal && vwap > 0) 후보.push({ n: 'VWAP', v: vwap, 종류: 'VWAP', id: 'VWAP' });
+            (방향 === 'long' ? 구간.지지 : 구간.저항).forEach(function (z) {
+                후보.push({ n: (방향 === 'long' ? '반등 지지 ×' : '반락 저항 ×') + z.횟수, v: z.v, 종류: '구간', 횟수: z.횟수,
+                            id: 레벨ID_구간(방향 === 'long' ? '구간지지' : '구간저항', z.v) });
+            });
+            후보.forEach(function (c) { c.거리 = 방향 === 'long' ? (price - c.v) / price * 100 : (c.v - price) / price * 100; });
+            return 후보;
+        }
+
+        function 눌림계획(방향, price, lvList, vwap, vwapReal, 구간, 목표목록) {
+            var 후보 = 레벨후보(방향, price, lvList, vwap, vwapReal, 구간);
+            // 정렬: 아직 넘어서지 않은 레벨(거리 ≥ 0)을 가까운 순으로 먼저, 살짝 넘어선 레벨(−0.1%~0)은 그 뒤에 가까운 순
+            var 유효 = 후보.filter(function (c) { return c.거리 >= 눌림_최소거리 && c.거리 <= 눌림_최대거리; })
+                          .sort(function (a, b) {
+                              var ga = a.거리 >= 0 ? 0 : 1, gb = b.거리 >= 0 ? 0 : 1;
+                              return ga !== gb ? ga - gb : Math.abs(a.거리) - Math.abs(b.거리);
+                          });
+            var 결과 = { 후보: 후보, 유효: 유효, 선택: null, 겹침: [], plan: null };
+            if (!유효.length) return 결과;
+            var c = 유효[0];
+            결과.선택 = c;
+            결과.겹침 = 유효.filter(function (x) { return x !== c && Math.abs(x.v - c.v) / c.v * 100 <= 겹침_거리; });
+            var 손절폭 = Math.max(c.v * 손절_여유 / 100, 구간.허용폭 || 0);
+            var 진입 = 방향 === 'long' ? c.v * (1 + 진입_여유 / 100) : c.v * (1 - 진입_여유 / 100);
+            var 손절 = 방향 === 'long' ? c.v - 손절폭 : c.v + 손절폭;
+            // 목표: 진입가보다 0.1% 이상 유리한 쪽의 가장 가까운 레벨
+            var 목표 = 목표목록.filter(function (x) { return 방향 === 'long' ? x.v > 진입 * 1.001 : x.v < 진입 * 0.999; })
+                              .sort(function (a, b) { return 방향 === 'long' ? a.v - b.v : b.v - a.v; })[0];
+            if (!목표) return 결과;
+            결과.목표 = 목표;
+            결과.plan = rtPlan(방향, 진입, 손절, 목표.v);
+            if (결과.plan) { 결과.plan.방식 = 방향 === 'long' ? '눌림' : '반등'; 결과.plan.기준가 = c.v; 결과.plan.레벨 = c.n + '@' + c.v.toFixed(2); 결과.plan.레벨ID = c.id; }
+            return 결과;
+        }
+
+        // 박스권: 현재가 아래 반등 지지(2회+) 와 위 반락 저항(2회+) 이 모두 있을 때, 가까운 끝에서 역방향 진입
+        function 박스찾기(price, 구간) {
+            var 하단 = 구간.지지.filter(function (z) { return z.v < price; }).sort(function (a, b) { return b.v - a.v; })[0];
+            var 상단 = 구간.저항.filter(function (z) { return z.v > price; }).sort(function (a, b) { return a.v - b.v; })[0];
+            if (!하단 || !상단) return null;
+            return { 하단: 하단, 상단: 상단 };
+        }
+        function 박스계획(price, 박스, 구간) {
+            var 하단거리 = (price - 박스.하단.v) / price, 상단거리 = (박스.상단.v - price) / price;
+            var 방향 = 하단거리 <= 상단거리 ? 'long' : 'short';
+            var 여유 = function (v) { return Math.max(v * 손절_여유 / 100, 구간.허용폭 || 0); };
+            var plan;
+            if (방향 === 'long') plan = rtPlan('long', 박스.하단.v * (1 + 진입_여유 / 100), 박스.하단.v - 여유(박스.하단.v), 박스.상단.v * (1 - 진입_여유 / 100));
+            else plan = rtPlan('short', 박스.상단.v * (1 - 진입_여유 / 100), 박스.상단.v + 여유(박스.상단.v), 박스.하단.v * (1 + 진입_여유 / 100));
+            if (plan) {
+                var 기준 = 방향 === 'long' ? 박스.하단 : 박스.상단;
+                plan.방식 = '박스'; plan.기준가 = 기준.v;
+                plan.레벨 = (방향 === 'long' ? '박스하단' : '박스상단') + '@' + 기준.v.toFixed(2);
+                plan.레벨ID = 레벨ID_구간(방향 === 'long' ? '구간지지' : '구간저항', 기준.v);   // 같은 구간의 눌림 진입과 같은 레벨로 취급
+            }
+            return plan;
+        }
+
+        // ════════════════════════════════════════════════════════
+        // ★ 진입 점수 (0~100, 표시·기록용 — 매매 판단에는 아직 사용하지 않음)
+        //   항목(만점): 추세 20 · 손익비 25 · 진입 위치 15 · 지지/저항 강도 10 · VWAP 10 · 옵션 10 · 거래량 10
+        //   상태: true 충족 / false 불충족(0점) / null 데이터 없음 (계산에서 제외하고 나머지로 100점 환산)
+        // ════════════════════════════════════════════════════════
+        var 점수_진입기준 = 70;
+        function 진입점수계산(c) {
+            // c: { 방향:'롱'|'숏'|null, plan, bias, 박스, vwDist, vwapReal, 옵션점수, volRatio, surge, 구간, 겹침, 후보들 }
+            if (!c.방향) return { 방향: null, 점수: null, 항목: [] };
+            var 롱 = c.방향 === '롱', 부호 = 롱 ? 1 : -1, b = c.bias * 부호, 항목 = [];
+            function 추가(이름, 설명, 점수, 만점, 상태) { 항목.push({ 이름: 이름, 설명: 설명, 점수: 상태 === true ? 점수 : 0, 만점: 만점, 상태: 상태 }); }
+
+            // 1) 추세
+            if (b >= 2) 추가('추세', (롱 ? '상승' : '하락') + ' 우위 ' + (c.bias > 0 ? '+' : '') + c.bias, 20, 20, true);
+            else if (c.plan && c.plan.방식 === '박스' && Math.abs(c.bias) <= 1) 추가('추세', '박스권 (중립)', 12, 20, true);
+            else if (b === 1) 추가('추세', '약한 ' + (롱 ? '상승' : '하락'), 10, 20, true);
+            else 추가('추세', b <= -1 ? '추세와 반대 방향' : '방향 없음', 0, 20, false);
+
+            // 2) 손익비
+            var p = c.plan;
+            if (!p) 추가('손익비', '손익비 — 계획 없음', 0, 25, false);
+            else {
+                var rr = p.rr, pt = rr >= 3 ? 25 : rr >= 2 ? 20 : rr >= 1.5 ? 15 : rr >= 가상_최소손익비 ? 10 : 0;
+                추가('손익비', '손익비 1:' + rr.toFixed(1) + (pt ? '' : ' (기준 1:' + 가상_최소손익비.toFixed(1) + ')'), pt, 25, pt > 0);
+            }
+
+            // 3) 진입 위치
+            var 방식 = p ? p.방식 : '';
+            if (방식 === '눌림' || 방식 === '반등' || 방식 === '박스' || 방식 === '지지반등' || 방식 === '저항반락')
+                추가('진입 위치', 방식 === '박스' ? (롱 ? '박스 하단' : '박스 상단') : (방식 === '눌림' || 방식 === '반등') ? (롱 ? '눌림 (지지 근접)' : '반등 (저항 근접)') : 방식, 15, 15, true);
+            else if (방식 === '돌파' || 방식 === '이탈' || 방식 === '저항돌파' || 방식 === '지지이탈')
+                추가('진입 위치', '돌파 추종', 8, 15, true);
+            else 추가('진입 위치', p ? '레벨 사이 추격' : '레벨 사이 중간', 0, 15, false);
+
+            // 4) 지지/저항 강도 (진입 기준 레벨이 오늘 검증된 구간인가 + 다른 레벨과 겹치는가)
+            var 강도이름 = 롱 ? '지지 강도' : '저항 강도';
+            if (c.구간.상태 !== '정상') 추가(강도이름, c.구간.상태 === '계산중' ? '반등 구간 계산 중' : '반등 구간 데이터 없음', 0, 10, null);
+            else if (!p || !(p.기준가 > 0)) 추가(강도이름, '진입 레벨 없음', 0, 10, false);
+            else {
+                var 목록 = 롱 ? c.구간.지지 : c.구간.저항, 허용 = Math.max(c.구간.허용폭, p.기준가 * 겹침_거리 / 100);
+                var 맞는 = 목록.filter(function (z) { return Math.abs(z.v - p.기준가) <= 허용; }).sort(function (a, b2) { return b2.횟수 - a.횟수; })[0];
+                var 겹침 = (c.겹침 || []).filter(function (x) { return x.종류 !== '구간'; });
+                var 점 = (맞는 ? (맞는.횟수 >= 3 ? 7 : 4) : 0) + (겹침.length ? 3 : 0);
+                if (!맞는 && p.방식 !== '박스') {
+                    // 구간이 아닌 레벨이면 옵션 레벨 자체로 4점 (근거 있는 레벨)
+                    var 옵션레벨 = (c.후보들 || []).some(function (x) { return x.종류 === '옵션' && Math.abs(x.v - p.기준가) <= 허용; });
+                    if (옵션레벨) 점 = Math.max(점, 4);
+                }
+                점 = Math.min(10, 점);
+                var 설명 = 맞는 ? (롱 ? '반등 ' : '반락 ') + 맞는.횟수 + '회' + (겹침.length ? ' + ' + 겹침[0].n : '') : 점 > 0 ? '옵션 레벨' + (겹침.length ? ' + ' + 겹침[0].n : '') : '검증 안 된 레벨';
+                추가(강도이름, 설명, 점, 10, 점 > 0);
+            }
+
+            // 5) VWAP
+            if (!c.vwapReal) 추가('VWAP', 'VWAP 추정치', 0, 10, null);
+            else if (롱 ? c.vwDist >= 0 : c.vwDist <= 0) 추가('VWAP', 롱 ? 'VWAP 위' : 'VWAP 아래', 10, 10, true);
+            else 추가('VWAP', (롱 ? 'VWAP 아래' : 'VWAP 위') + ' (' + (롱 ? '롱' : '숏') + '에 불리)', 0, 10, false);
+
+            // 6) 옵션 심리
+            var os = c.옵션점수, 우 = 롱 ? os >= 6 : os <= 4, 중 = os > 4 && os < 6;
+            if (우) 추가('옵션', '옵션 ' + (os >= 6 ? '콜' : '풋') + ' 우위 ' + os.toFixed(1), 10, 10, true);
+            else if (중) 추가('옵션', '옵션 중립 ' + os.toFixed(1), 5, 10, true);
+            else 추가('옵션', '옵션 ' + (os >= 6 ? '콜' : '풋') + ' 우위 (' + (롱 ? '롱' : '숏') + '과 반대)', 0, 10, false);
+
+            // 7) 거래량
+            var vr = c.volRatio > 0 ? c.volRatio : null, sg = c.surge;
+            if (vr == null && sg == null) 추가('거래량', '거래량 데이터 없음', 0, 10, null);
+            else {
+                var 점2 = Math.min(10, (vr >= 1.5 ? 7 : vr >= 1.0 ? 4 : 0) + (sg != null && sg >= 1.3 ? 3 : 0));
+                var 설명2 = [vr != null ? '당일 ' + vr.toFixed(1) + '배' : '', sg != null ? '순간 ' + sg.toFixed(1) + '배' : ''].filter(Boolean).join(' · ');
+                추가('거래량', '거래량 ' + 설명2 + (점2 > 0 ? '' : ' (부족)'), 점2, 10, 점2 > 0);
+            }
+
+            var 대상 = 항목.filter(function (x) { return x.상태 !== null; });
+            var 합 = 대상.reduce(function (a, x) { return a + x.점수; }, 0), 만 = 대상.reduce(function (a, x) { return a + x.만점; }, 0);
+            return { 방향: c.방향, 점수: 만 > 0 ? Math.round(합 / 만 * 100) : null, 항목: 항목, 항목수: 대상.length, 제외수: 항목.length - 대상.length };
+        }
+
         // ════════════════════════════════════════════════════════
         // ★ 전략 문구 (1초마다 갱신)
         // ════════════════════════════════════════════════════════
@@ -1789,35 +2040,81 @@
             var near = lvList.slice().sort(function (a, b) { return Math.abs(a.dist) - Math.abs(b.dist); })[0];
             var nearL = near ? s.levels[near.k] : null;
 
-            // ── 위/아래 다음 레벨 (손절·목표 계산용) ──
-            var above = lvList.concat(vwReal ? [{ n: 'VWAP', v: vwap }] : [])
-                .filter(function (x) { return x.v > price * 1.001; }).sort(function (a, b) { return a.v - b.v; });
-            var below = lvList.concat(vwReal ? [{ n: 'VWAP', v: vwap }] : [])
-                .filter(function (x) { return x.v < price * 0.999; }).sort(function (a, b) { return b.v - a.v; });
+            // ── 당일 반등·반락 구간 ──
+            var 구간 = 구간_가져오기(s.ticker);
+            var 구간레벨 = 구간.지지.map(function (z) { return { n: '반등 지지 ×' + z.횟수, v: z.v, k: 레벨ID_구간('구간지지', z.v) }; })
+                .concat(구간.저항.map(function (z) { return { n: '반락 저항 ×' + z.횟수, v: z.v, k: 레벨ID_구간('구간저항', z.v) }; }));
 
-            var line1 = '', line3 = '', color = '#ddbb00', plan = null, planLevel = '';
+            // ── 위/아래 다음 레벨 (손절·목표 계산용: 옵션 레벨 + VWAP(윈폼 계산값만) + 반등·반락 구간) ──
+            //   페이지가 연 뒤 모은 체결로 만든 VWAP 은 세션 전체 값이 아니라서 레벨로 쓰지 않음
+            var VWAP확정 = s.extVwap > 0;
+            var 전체레벨 = lvList.concat(VWAP확정 ? [{ k: 'VWAP', n: 'VWAP', v: vwap }] : []).concat(구간레벨);
+            // 기준가보다 0.1% 이상 유리한 쪽의 가장 가까운 레벨 가격 (롱=위, 숏=아래) — 진입가 기준 목표 계산용
+            function 다음레벨(기준가, 방향) {
+                var x = 전체레벨.filter(function (l) { return 방향 === 'long' ? l.v > 기준가 * 1.001 : l.v < 기준가 * 0.999; })
+                              .sort(function (a, b) { return 방향 === 'long' ? a.v - b.v : b.v - a.v; })[0];
+                return x ? x.v : null;
+            }
+            var above = 전체레벨.filter(function (x) { return x.v > price * 1.001; }).sort(function (a, b) { return a.v - b.v; });
+            var below = 전체레벨.filter(function (x) { return x.v < price * 0.999; }).sort(function (a, b) { return b.v - a.v; });
+            var 눌림결과 = null, 박스 = 구간.상태 === '정상' ? 박스찾기(price, 구간) : null;
 
-            if (fresh && (ev.dir === 'up' || ev.dir === 'down')) {
+            var line1 = '', line3 = '', color = '#ddbb00', plan = null, planLevel = '', planLevelID = '';
+
+            // ── 추세 눌림(롱)/반등(숏) 계획 먼저 계산 ──
+            //   시작: 방향 점수 ±2 이상 / 유지: 같은 방향 ±1 이상 (눌림으로 VWAP 에 가까워지면 점수가 1 줄어드는 것을 흡수)
+            //   취소: 0 또는 반대 방향
+            var 이전눌림 = s.눌림방향 || null;
+            var 추세방향 = bias >= 2 ? 'long' : bias <= -2 ? 'short'
+                        : (이전눌림 === 'long' && bias >= 1) ? 'long' : (이전눌림 === 'short' && bias <= -1) ? 'short' : null;
+            s.눌림방향 = 추세방향;
+            var 눌림사용 = false;
+            if (추세방향) {
+                눌림결과 = 눌림계획(추세방향, price, lvList, vwap, VWAP확정, 구간, 전체레벨);
+                눌림사용 = !!눌림결과.plan;
+            }
+            var 이벤트확인 = fresh && (ev.dir === 'up' || ev.dir === 'down') && volStrong &&
+                            ((ev.dir === 'up' && m1 > 0) || (ev.dir === 'down' && m1 < 0));
+
+            // 이벤트 분기: 눌림 계획이 살아 있으면 "거래량 확인된" 이벤트만 우선 (거래량 없는 돌파·이탈은 눌림 계획 유지)
+            if (fresh && (ev.dir === 'up' || ev.dir === 'down') && (!눌림사용 || 이벤트확인)) {
                 // ⚡ 방금 돌파/이탈 발생
                 var confirmed = volStrong && ((ev.dir === 'up' && m1 > 0) || (ev.dir === 'down' && m1 < 0));
                 // 이미 레벨에서 0.3% 넘게 멀어졌으면 추격 진입 금지 (손절이 멀어져 손익비가 나빠짐)
                 var evLv = s.levels[ev.key] ? s.levels[ev.key].lv : 0;
                 var chasing = evLv > 0 && Math.abs(price - evLv) / evLv * 100 > RT_AWAY;
                 line1 = '⚡ ' + ev.msg + ' (' + fmtAgo(ev.t) + ')' + (confirmed ? ' · 거래량 동반 ✅' : ' · 거래량 미확인 ⚠️');
-                planLevel = ev.key + '@' + (evLv > 0 ? evLv.toFixed(2) : '');
+                planLevel = ev.key + '@' + (evLv > 0 ? evLv.toFixed(2) : ''); planLevelID = ev.key;
                 color = ev.dir === 'up' ? '#ff4444' : '#4488ff';
                 // 거래량이 확인되지 않은 돌파/이탈은 휩소가 잦으므로 매매 계획을 만들지 않음 (문구만 안내)
                 if (ev.dir === 'up') {
-                    if (confirmed && !chasing) plan = rtPlan('long', price, s.levels[ev.key] ? s.levels[ev.key].lv * 0.998 : (below[0] && below[0].v), above[0] && above[0].v);
+                    if (confirmed && !chasing) { plan = rtPlan('long', price, s.levels[ev.key] ? s.levels[ev.key].lv * 0.998 : (below[0] && below[0].v), above[0] && above[0].v); if (plan) { plan.방식 = '돌파'; plan.기준가 = evLv; } }
                     line3 = confirmed && chasing ? '이미 레벨에서 멀어짐. 추격 금지, 눌림 대기'
                           : confirmed ? '돌파 추종 가능. 레벨 아래로 다시 밀리면 즉시 청산'
                                       : '거래량 없는 돌파는 되밀림 잦음. 리테스트(되돌림 후 지지) 확인 후 진입';
                 } else {
-                    if (confirmed && !chasing) plan = rtPlan('short', price, s.levels[ev.key] ? s.levels[ev.key].lv * 1.002 : (above[0] && above[0].v), below[0] && below[0].v);
+                    if (confirmed && !chasing) { plan = rtPlan('short', price, s.levels[ev.key] ? s.levels[ev.key].lv * 1.002 : (above[0] && above[0].v), below[0] && below[0].v); if (plan) { plan.방식 = '이탈'; plan.기준가 = evLv; } }
                     line3 = confirmed && chasing ? '이미 레벨에서 멀어짐. 추격 금지, 반등 대기'
                           : confirmed ? '이탈 추종 가능. 레벨 위로 재탈환하면 즉시 청산'
                                       : '거래량 없는 이탈은 재탈환(휩소) 잦음. 저가 매도 추격 금지';
                 }
+                // 추세 반대 방향 추격 진입 금지 (레벨 근접 분기와 같은 규칙)
+                if (추세방향 && plan && plan.dir !== 추세방향) {
+                    line3 = '역추세 진입 안 함 (' + (추세방향 === 'long' ? '상승' : '하락') + ' 우위) — 관망';
+                    plan = null;
+                }
+            }
+            else if (눌림사용) {
+                // 🧭 추세 눌림/반등 진입 (레벨 근처여도 추세 방향 눌림 계획 우선 → 역추세 진입 방지)
+                var 롱눌림 = 추세방향 === 'long', 기준 = 눌림결과.선택;
+                var tgt0 = 눌림결과.목표;
+                line1 = '🧭 ' + (롱눌림 ? '상승' : '하락') + ' 우위 ' + (bias > 0 ? '+' : '') + bias + ' → ' + (롱눌림 ? '눌림' : '반등') + ' 대기' +
+                        (tgt0 ? ' · 목표 ' + tgt0.n + ' $' + tgt0.v.toFixed(2) : '');
+                color = 롱눌림 ? '#ff6666' : '#66bbff';
+                plan = 눌림결과.plan;
+                line3 = (롱눌림 ? '눌림 매수 — ' : '반등 매도 — ') + 기준.n + ' $' + 기준.v.toFixed(2) +
+                        (눌림결과.겹침.length ? ' (' + 눌림결과.겹침.map(function (x) { return x.n; }).join('·') + ' 겹침)' : '') +
+                        ' 부근 ' + (롱눌림 ? '지지' : '저항') + ' 확인 시 진입';
             }
             else if (near && Math.abs(near.dist) <= RT_AWAY) {
                 // 🎯 레벨 근접 공방
@@ -1831,17 +2128,20 @@
                 line1 = '🎯 ' + near.n + ' $' + near.v.toFixed(1) + roleTxt +
                         (touches > 0 ? ' · ' + touches + '번째 터치' : '') + (stay > 0 ? ' · ' + stay + '분째 공방' : '');
                 color = isSup ? '#66bbff' : '#ff6666';
-                planLevel = near.k + '@' + near.v.toFixed(2);
+                planLevel = near.k + '@' + near.v.toFixed(2); planLevelID = near.k;
 
                 if (isSup) {
                     var weakening = touches >= 3;                         // 여러 번 두드리면 약해짐
                     var bouncing = m1 != null && m1 > 0.05;               // 막 반등 중
                     if (bouncing && bias >= -1 && !weakening) {
-                        plan = rtPlan('long', price, near.v * 0.998, above[0] && above[0].v);
+                        plan = rtPlan('long', price, near.v * 0.998, 다음레벨(price, 'long'));
+                        if (plan) { plan.방식 = '지지반등'; plan.기준가 = near.v; }
                         line3 = '지지 반등 시작. 저가 이탈 없으면 롱 타점';
                     } else if (bias <= -2 || weakening) {
                         // 진입가 = 문구의 이탈 확인가와 동일 (이미 그 아래면 현재가)
-                        plan = rtPlan('short', Math.min(price, near.v * 0.999), near.v * 1.002, below.length > 1 ? below[1].v : (below[0] && below[0].v));
+                        var 이탈진입 = Math.min(price, near.v * 0.999);
+                        plan = rtPlan('short', 이탈진입, near.v * 1.002, 다음레벨(이탈진입, 'short'));
+                        if (plan) { plan.방식 = '지지이탈'; plan.기준가 = near.v; }
                         line3 = (weakening ? touches + '회 터치로 지지 약화. ' : '하방 우위. ') + '$' + (near.v * 0.999).toFixed(2) + ' 이탈 확인 시 숏';
                     } else {
                         line3 = '방향 미정. 반등(1분 +) 또는 이탈($' + (near.v * 0.999).toFixed(2) + '↓) 확인 후 대응';
@@ -1849,62 +2149,105 @@
                 } else {
                     var pushing = m1 != null && m1 > 0.05 && volStrong;
                     if (pushing && bias >= 1) {
-                        plan = rtPlan('long', near.v * 1.001, near.v * 0.997, above.length > 1 ? above[1].v : null);
+                        plan = rtPlan('long', near.v * 1.001, near.v * 0.997, 다음레벨(near.v * 1.001, 'long'));
+                        if (plan) { plan.방식 = '저항돌파'; plan.기준가 = near.v; }
                         line3 = '거래량 실린 돌파 시도. $' + (near.v * 1.001).toFixed(2) + ' 돌파 시 롱';
                     } else {
                         // 저항에서 밀리는 것을 확인한 뒤 진입 (레벨 -0.2% 아래, 이미 그 아래면 현재가)
-                        plan = rtPlan('short', Math.min(price, near.v * 0.998), near.v * 1.003, below[0] && below[0].v);
+                        var 반락진입 = Math.min(price, near.v * 0.998);
+                        plan = rtPlan('short', 반락진입, near.v * 1.003, 다음레벨(반락진입, 'short'));
+                        if (plan) { plan.방식 = '저항반락'; plan.기준가 = near.v; }
                         line3 = (touches >= 3 ? '저항 반복 터치 → 돌파 가능성도 커지는 중. ' : '') +
                                 '돌파 힘 부족. $' + (near.v * 0.998).toFixed(2) + ' 아래로 밀리면 숏';
                     }
                 }
+                // 추세(눌림 모드) 중에는 레벨 근처라도 추세 반대 방향 계획을 만들지 않음 (역추세 진입 방지)
+                if (추세방향 && plan && plan.dir !== 추세방향) {
+                    line3 = '역추세 진입 안 함 (' + (추세방향 === 'long' ? '상승' : '하락') + ' 우위) — ' + (추세방향 === 'long' ? '눌림' : '반등') + ' 후보 없음, 관망';
+                    plan = null;
+                }
             }
             else {
-                // 🧭 레벨 사이 이동 중
+                // 🧭 레벨 사이: 추세면 눌림(롱)/반등(숏) 진입가, 박스권이면 가까운 끝에서 역방향, 그 외 관망
                 var dirTxt = bias >= 2 ? '상승 우위' : bias <= -2 ? '하락 우위' : '방향성 탐색';
                 var tgt = bias >= 0 ? above[0] : below[0];
-                line1 = '🧭 ' + dirTxt + (tgt ? ' → 다음 ' + tgt.n + ' $' + tgt.v.toFixed(1) + ' (' + fmtPct((tgt.v - price) / price * 100) + ')' : '');
+                line1 = '🧭 ' + dirTxt + (tgt ? ' → 다음 ' + tgt.n + ' $' + tgt.v.toFixed(2) + ' (' + fmtPct((tgt.v - price) / price * 100) + ')' : '');
                 color = bias >= 2 ? '#ff6666' : bias <= -2 ? '#66bbff' : '#ddbb00';
-                if (Math.abs(bias) >= 2 && tgt) {
-                    var opp = bias > 0 ? below[0] : above[0];
-                    planLevel = opp ? opp.n + '@' + opp.v.toFixed(2) : '추세';
-                    plan = rtPlan(bias > 0 ? 'long' : 'short', price, opp && opp.v, tgt.v);
-                    line3 = '추세 방향 눌림/반등에서만 진입. 레벨 사이 추격은 손익비 불리';
+                if (추세방향) {
+                    // 추세지만 눌림 계획을 만들 수 없음 (후보 없음 또는 목표 없음) → 관망
+                    var 방향 = 추세방향;
+                    if (눌림결과 && 눌림결과.선택) {
+                        line3 = (방향 === 'long' ? '눌림' : '반등') + ' 후보 ' + 눌림결과.선택.n + ' $' + 눌림결과.선택.v.toFixed(2) + ' — ' + (방향 === 'long' ? '위' : '아래') + '쪽 목표 레벨 없음, 관망';
+                    } else {
+                        line3 = (방향 === 'long' ? '눌림 대기 — 현재가 아래 ' : '반등 대기 — 현재가 위 ') + 눌림_최대거리 + '% 안에 ' + (방향 === 'long' ? '지지' : '저항') + ' 없음';
+                    }
+                } else if (박스) {
+                    line1 = '📦 박스권 ' + 박스.하단.v.toFixed(2) + ' ~ ' + 박스.상단.v.toFixed(2) + ' · 하단 반등 ' + 박스.하단.횟수 + '회 · 상단 반락 ' + 박스.상단.횟수 + '회';
+                    plan = 박스계획(price, 박스, 구간);
+                    var 롱박스 = plan && plan.dir === 'long';
+                    line3 = plan ? (롱박스 ? '박스 하단 반등 매수 — 반등 지지 $' + 박스.하단.v.toFixed(2) + ' (' + 박스.하단.횟수 + '회 반등)'
+                                          : '박스 상단 반락 매도 — 반락 저항 $' + 박스.상단.v.toFixed(2) + ' (' + 박스.상단.횟수 + '회 반락)')
+                                 : '박스권 — 진입 계획을 만들 수 없음';
                 } else {
                     line3 = '레벨 사이 중간 구간. 다음 레벨 도달 전까지 관망';
                 }
             }
+            // 상황 줄 보강: 구간 데이터 상태
+            if (구간.상태 === '계산중') line1 += ' · 반등 구간 계산 중';
+            else if (구간.상태 === '없음') line1 += ' · 반등 구간 데이터 없음';
 
-            if (plan) plan.레벨 = planLevel || '기타';
+            if (plan) { plan.레벨 = plan.레벨 || planLevel || '기타'; plan.레벨ID = plan.레벨ID || planLevelID || plan.레벨; plan.방식 = plan.방식 || '기타'; }
 
             // ── ① 결론: 매수 고려 / 매도 고려 / 관망 (3초 이상 유지된 판단만 반영, 바뀐 뒤 최소 10초 유지) ──
             var now = Date.now();
             var okPlan = plan && plan.rr >= 가상_최소손익비;
             var cand = okPlan ? (plan.dir === 'long' ? '매수' : '매도') : '관망';
             var candReason = okPlan ? paperPlain(line3)
-                           : plan ? '손익비 낮음 (1:' + plan.rr.toFixed(1) + ') — 진입 비추천'
+                           : plan ? '손익비 부족 (1:' + plan.rr.toFixed(1) + ', 기준 1:' + 가상_최소손익비.toFixed(1) + ') — 진입하지 않음'
                            : paperPlain(line3);
+
+            // ── 진입 점수 (표시·기록용) ──
+            var vwapReal = VWAP확정;
+            function 점수만들기(pl) {
+                var 방향 = pl ? (pl.dir === 'long' ? '롱' : '숏') : bias > 0 ? '롱' : bias < 0 ? '숏' : 박스 ? ((price - 박스.하단.v) <= (박스.상단.v - price) ? '롱' : '숏') : null;
+                var 후보들 = 방향 ? 레벨후보(방향 === '롱' ? 'long' : 'short', price, lvList, vwap, vwapReal, 구간) : [];
+                var 겹침 = [];
+                if (pl && pl.기준가 > 0) 겹침 = 후보들.filter(function (x) { return Math.abs(x.v - pl.기준가) / pl.기준가 * 100 <= 겹침_거리 && Math.abs(x.v - pl.기준가) > 1e-9; });
+                return 진입점수계산({ 방향: 방향, plan: pl, bias: bias, vwDist: vwDist, vwapReal: vwapReal, 옵션점수: score,
+                                    volRatio: d.volRatio || 0, surge: surge, 구간: 구간, 겹침: 겹침, 후보들: 후보들 });
+            }
+            var 지금점수 = 점수만들기(plan);
+
             var jd = s.판단;
-            if (!jd) { jd = s.판단 = { 상태: cand, 시작: now, 후보: cand, 후보시작: now, 이유: candReason, 계획: plan }; 판단전환(s, jd, price); }
+            // 처음(페이지 로드·종목 변경)에는 관망에서 시작 → 첫 판단도 3초 유지 확인을 거침 (최소 유지 10초는 이미 지난 것으로 둠)
+            if (!jd) { jd = s.판단 = { 상태: '관망', 시작: now - 10000, 후보: cand, 후보시작: now, 이유: '판단 확인 중', 계획: null, 점수: 지금점수 }; }
             if (cand !== jd.후보) { jd.후보 = cand; jd.후보시작 = now; }
             if (jd.상태 !== cand && now - jd.후보시작 >= 3000 && now - jd.시작 >= 10000) {
-                jd.상태 = cand; jd.시작 = now; jd.이유 = candReason; jd.계획 = plan;
+                jd.상태 = cand; jd.시작 = now; jd.이유 = candReason; jd.계획 = plan; jd.점수 = 지금점수;
                 판단전환(s, jd, price);
             } else if (jd.상태 === cand) {
-                jd.이유 = candReason; jd.계획 = plan;          // 같은 판단이면 이유·계획 숫자는 최신값으로
+                jd.이유 = candReason; jd.계획 = plan; jd.점수 = 지금점수;   // 같은 판단이면 이유·계획·점수는 최신값으로
             }
             // ★ 가상매매: 카드에 표시된(안정화된) 결론이 지금 계획과 같을 때만 대기주문으로 반영
-            가상_계획반영(s.ticker, (jd.상태 !== '관망' && cand === jd.상태) ? plan : null, {
+            //   결론과 다른 후보가 3초 미만으로 잠깐 나온 경우('유지')는 기존 대기주문을 그대로 둠 (깜빡임으로 주문이 지워졌다 다시 걸리는 것 방지)
+            var 가상계획 = jd.상태 === '관망' ? null : cand === jd.상태 ? plan : (now - jd.후보시작 < 3000 ? '유지' : null);
+            가상_계획반영(s.ticker, 가상계획, {
                 가격: price, VWAP: vwap, 옵션점수: score, 시세출처: s.src,
-                신호: paperPlain(line1) + ' / ' + paperPlain(line3)
+                신호: paperPlain(line1) + ' / ' + paperPlain(line3),
+                진입점수: 지금점수.점수
             });
+            // 눌림 후보 선택 과정 (바뀔 때만 기록)
+            if (눌림결과) 디버그('눌림' + s.ticker, '[' + s.ticker + '] ' + (눌림결과.plan && 눌림결과.plan.dir === 'short' ? '반등' : '눌림') + ' 후보 (현재가 ' + price.toFixed(2) + ') ' +
+                (눌림결과.후보.map(function (c) { return c.n + ' ' + c.v.toFixed(2) + '(' + fmtPct((c.v - price) / price * 100) + ')' + (눌림결과.유효.indexOf(c) >= 0 ? '' : '✕거리'); }).join(', ') || '없음') +
+                ' → 선택 ' + (눌림결과.선택 ? 눌림결과.선택.n + ' ' + 눌림결과.선택.v.toFixed(2) : '없음') +
+                (눌림결과.plan ? ' · 진입 ' + 눌림결과.plan.entry.toFixed(2) + ' 손절 ' + 눌림결과.plan.stop.toFixed(2) + ' 목표 ' + 눌림결과.plan.target.toFixed(2) + ' 1:' + 눌림결과.plan.rr.toFixed(1) : ''));
 
-            var 결론 = jd.상태 === '매수' ? { 글: '매수 고려', 색: '#ff5d5d', 모양: '▲' }
+            var 결론 = jd.상태 === '매수' ? { 글: '매수(롱) 고려', 색: '#ff5d5d', 모양: '▲' }
                      : jd.상태 === '매도' ? { 글: '매도(숏) 고려', 색: '#4d8dff', 모양: '▼' }
                      : { 글: '관망 중', 색: '#f2c14e', 모양: '관망' };
 
-            // ════ 카드 출력 (방향 게이지형, 모든 칸 위치 고정 · 값이 없으면 ─) ════
-            var 빨강 = '#ff5d5d', 파랑 = '#4d8dff', 흐림 = '#5d6578';
+            // ════ 카드 출력 (H 디자인: 게이지·상태 → 진입 점수 → 방향 띠 → 계획 → 예상 수익/손실 → 지표 → 최근·상태) ════
+            var 빨강 = '#ff5d5d', 파랑 = '#4d8dff', 흐림 = '#5d6578', 주황 = '#f5a524', 녹색 = '#3ecf8e';
 
             // ① 방향 게이지 (−4 ~ +4)
             var 점수 = Math.max(-4, Math.min(4, bias));
@@ -1920,34 +2263,91 @@
                 '<circle cx="70" cy="70" r="5.5" fill="#e7e9f0"></circle></svg>' +
                 '<div class="sg-glabel">' + 점수이름 + ' <span class="sg-mono">' + (점수 > 0 ? '+' : '') + 점수 + '</span></div>' +
                 '<div class="sg-gsub">방향 점수 (−4 ~ +4)</div>';
-
-            // ② 상태 · 이유 · 상황
             var 상태아이콘 = 결론.모양 === '관망'
                 ? '<svg viewBox="0 0 16 16" class="sg-ico"><rect x="3.5" y="3" width="3" height="10" rx="1" fill="currentColor"></rect><rect x="9.5" y="3" width="3" height="10" rx="1" fill="currentColor"></rect></svg>'
                 : 결론.모양 === '▲' ? '<svg viewBox="0 0 16 16" class="sg-ico"><path d="M8 3 L13.5 12 H2.5 Z" fill="currentColor"></path></svg>'
                 : '<svg viewBox="0 0 16 16" class="sg-ico"><path d="M8 13 L13.5 4 H2.5 Z" fill="currentColor"></path></svg>';
 
-            // ③ 계획 4칸 + 손익비 설명
-            var pl = jd.계획, 흐린계획 = jd.상태 === '관망';
-            function 칸(이름, 값, 색) { return '<div class="sg-cell"><div class="sg-cl">' + 이름 + '</div><div class="sg-cv" style="color:' + 색 + '">' + 값 + '</div></div>'; }
-            var 계획칸, 손익비설명;
-            if (pl) {
-                var 조건 = pl.entry > price * 1.0001 ? '이상 도달 시' : pl.entry < price * 0.9999 ? '이하 도달 시' : '현재가 부근';
-                var 진입색 = 흐린계획 ? '#8b93a7' : (pl.dir === 'long' ? 빨강 : 파랑);
-                // 진입가보다 위 = 빨강 / 아래 = 파랑 (롱: 손절 파랑·목표 빨강, 숏: 손절 빨강·목표 파랑)
-                function 위아래색(v) { return 흐린계획 ? '#8b93a7' : v > pl.entry ? 빨강 : 파랑; }
-                계획칸 = 칸(pl.dir === 'long' ? '매수 진입' : '숏 진입', pl.entry.toFixed(2), 진입색) +
-                         칸('손절', pl.stop.toFixed(2), 위아래색(pl.stop)) +
-                         칸('목표', pl.target.toFixed(2), 위아래색(pl.target)) +
-                         칸('손익비', '1:' + pl.rr.toFixed(1), 흐린계획 ? '#8b93a7' : '#e7e9f0');
-                손익비설명 = '손절 −' + pl.riskPct.toFixed(2) + '% 대비 목표 +' + pl.rewardPct.toFixed(2) + '% · ' + 조건 +
-                            (pl.rr < 가상_최소손익비 ? ' · 기준 1:' + 가상_최소손익비.toFixed(1) + ' 미만 (진입 안 함)' : '');
+            // ② 진입 점수 (항목 색 = 막대 조각 색 = 체크 칸 색, 빨강·파랑은 방향 전용이라 사용 안 함)
+            var 항목색 = { '추세': '#2dd4bf', '손익비': '#facc15', '진입 위치': '#a78bfa', '지지 강도': '#a3e635', '저항 강도': '#a3e635', 'VWAP': '#22d3ee', '옵션': '#fb923c', '거래량': '#e879f9' };
+            var 표시점수 = jd.점수 || 지금점수, 점수HTML;
+            if (!표시점수 || !표시점수.방향 || 표시점수.점수 == null) {
+                점수HTML = '<div class="sg-sc-head"><span class="sg-sc-title">진입 점수 <small>· 방향 없음</small></span><span class="sg-sc-num" style="color:' + 흐림 + '">—</span></div>' +
+                          '<div class="sg-sc-bar"></div><div class="sg-sc-mark"></div><div class="sg-tags"><span class="sg-dim">방향이 정해지면 계산</span></div>';
             } else {
-                계획칸 = 칸('진입', '—', 흐림) + 칸('손절', '—', 흐림) + 칸('목표', '—', 흐림) + 칸('손익비', '—', 흐림);
-                손익비설명 = '진입 계획 없음 — 레벨에 닿거나 추세가 생기면 표시';
+                var 대상항목 = 표시점수.항목.filter(function (x) { return x.상태 !== null; });
+                var 만점합 = 대상항목.reduce(function (a, x) { return a + x.만점; }, 0);
+                var 점수색 = 표시점수.점수 >= 점수_진입기준 ? 녹색 : 표시점수.점수 >= 50 ? 주황 : 빨강;
+                var 조각 = 대상항목.filter(function (x) { return x.점수 > 0; }).map(function (x) {
+                    return '<span style="width:' + (x.점수 / 만점합 * 100).toFixed(2) + '%;background:' + 항목색[x.이름] + '"></span>';
+                }).join('');
+                var 태그 = 표시점수.항목.map(function (x) {
+                    var 칸 = x.상태 === true
+                        ? '<svg viewBox="0 0 16 16" class="sg-box"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="' + 항목색[x.이름] + '"></rect><path d="M4.2 8.3 L6.8 10.8 L11.8 5.4" stroke="#0b0d12" stroke-width="2.1" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>'
+                        : x.상태 === false
+                        ? '<svg viewBox="0 0 16 16" class="sg-box"><rect x="1" y="1" width="14" height="14" rx="3.5" fill="none" stroke="#4a5163" stroke-width="1.4"></rect><path d="M5.4 5.4 L10.6 10.6 M10.6 5.4 L5.4 10.6" stroke="#6b7385" stroke-width="1.7" stroke-linecap="round"></path></svg>'
+                        : '<svg viewBox="0 0 16 16" class="sg-box"><rect x="1" y="1" width="14" height="14" rx="3.5" fill="none" stroke="#3a4153" stroke-width="1.4" stroke-dasharray="2.5 2"></rect><path d="M5 8 H11" stroke="#5d6578" stroke-width="1.7" stroke-linecap="round"></path></svg>';
+                    var 클래스 = x.상태 === true ? 'on' : x.상태 === false ? 'off' : 'na';
+                    var 배경 = x.상태 === true ? ' style="background:' + 항목색[x.이름] + '1a;border-color:' + 항목색[x.이름] + '59"' : '';
+                    // 데이터 없음: "항목 이름 + 사유" (예: 거래량 · 데이터 없음 / 지지 강도 · 계산 중)
+                    var 이름글 = x.상태 === null ? x.이름 : x.설명;
+                    var 점수글 = x.상태 === null ? (x.설명.indexOf('계산 중') >= 0 ? '계산 중' : x.설명.indexOf('추정') >= 0 ? '추정치라 제외' : '데이터 없음') : x.점수 + '/' + x.만점 + '점';
+                    return '<span class="sg-tag ' + 클래스 + '"' + 배경 + ' title="' + x.이름 + ': ' + x.설명 + '">' + 칸 +
+                           '<span class="sg-tn">' + 이름글 + '</span><span class="sg-tp">' + 점수글 + '</span></span>';
+                }).join('');
+                var 기준글 = 표시점수.항목수 + '개 항목 기준' + (표시점수.제외수 ? ' · ' + 표시점수.제외수 + '개 데이터 없음' : '');
+                점수HTML = '<div class="sg-sc-head"><span class="sg-sc-title">진입 점수 <small>· ' + 기준글 + '</small></span>' +
+                          '<span class="sg-sc-num" style="color:' + 점수색 + '">' + 표시점수.점수 + '<small> / 100</small></span></div>' +
+                          '<div class="sg-sc-bar">' + 조각 + '</div><div class="sg-sc-mark"><i style="left:' + 점수_진입기준 + '%"></i><em style="left:' + 점수_진입기준 + '%">진입 기준 ' + 점수_진입기준 + '</em></div>' +
+                          '<div class="sg-tags">' + 태그 + '</div>';
             }
 
-            // ④ 지표 막대 (가운데 0 기준 좌우) + 옵션 눈금 + 거래량
+            // ③ 방향 띠 (롱·숏을 계획 숫자 바로 위에서 한 번 더 명확히)
+            var pl = jd.계획, 흐린계획 = jd.상태 === '관망';
+            var 후보방향 = pl ? (pl.dir === 'long' ? '롱' : '숏') : (표시점수 && 표시점수.방향) || null;
+            var 띠, 띠키;
+            if (jd.상태 === '매수') { 띠 = '<div class="sg-band long"><svg viewBox="0 0 16 16" class="sg-ico"><path d="M8 3 L13.5 12 H2.5 Z" fill="currentColor"></path></svg>롱 진입 <span>· 가격이 오르면 수익</span></div>'; 띠키 = '롱'; }
+            else if (jd.상태 === '매도') { 띠 = '<div class="sg-band short"><svg viewBox="0 0 16 16" class="sg-ico"><path d="M8 13 L13.5 4 H2.5 Z" fill="currentColor"></path></svg>숏 진입 <span>· 가격이 내리면 수익</span></div>'; 띠키 = '숏'; }
+            else {
+                var 후보사유 = pl ? (pl.rr < 가상_최소손익비 ? '손익비 부족 (1:' + pl.rr.toFixed(1) + ')' : '확인 대기') : (paperPlain(line3).split(' — ')[0] || '진입 조건 미충족');
+                띠 = '<div class="sg-band cand">' + (후보방향 ? (후보방향 === '롱' ? '<svg viewBox="0 0 16 16" class="sg-ico"><path d="M8 3 L13.5 12 H2.5 Z" fill="currentColor"></path></svg>' : '<svg viewBox="0 0 16 16" class="sg-ico"><path d="M8 13 L13.5 4 H2.5 Z" fill="currentColor"></path></svg>') + '후보: ' + 후보방향 : '방향 없음') +
+                     ' <span>· ' + 후보사유 + '</span></div>';
+                띠키 = '관망';
+            }
+            // 롱↔숏이 바뀌는 순간 띠를 잠깐 깜빡여 알림
+            if (s.띠키 && s.띠키 !== 띠키 && (띠키 === '롱' || 띠키 === '숏')) s.띠깜빡임 = Date.now();
+            s.띠키 = 띠키;
+            if (s.띠깜빡임 && Date.now() - s.띠깜빡임 < 2000) 띠 = 띠.replace('class="sg-band ', 'class="sg-band flash ');
+
+            // ④ 계획 4칸 (진입가보다 위 = 빨강, 아래 = 파랑 / 관망이면 회색 / 손익비 부족이면 주황 강조)
+            function 칸(이름, 값, 색, 추가) { return '<div class="sg-cell' + (추가 || '') + '"><div class="sg-cl">' + 이름 + '</div><div class="sg-cv" style="color:' + 색 + '">' + 값 + '</div></div>'; }
+            var 계획칸, 손익HTML;
+            if (pl) {
+                function 위아래색(v) { return 흐린계획 ? '#8b93a7' : v > pl.entry ? 빨강 : 파랑; }
+                var 부족 = pl.rr < 가상_최소손익비;
+                계획칸 = 칸(pl.dir === 'long' ? '롱 진입' : '숏 진입', pl.entry.toFixed(2), 흐린계획 ? '#8b93a7' : (pl.dir === 'long' ? 빨강 : 파랑)) +
+                         칸('손절', pl.stop.toFixed(2), 위아래색(pl.stop)) +
+                         칸('목표', pl.target.toFixed(2), 위아래색(pl.target)) +
+                         (부족 ? 칸('손익비', '1:' + pl.rr.toFixed(1) + ' ✕', 주황, ' warn') : 칸('손익비', '1:' + pl.rr.toFixed(1), 흐린계획 ? '#8b93a7' : '#e7e9f0'));
+                // ⑤ 예상 수익 / 손실 (롱: 상승 시 수익·하락 시 손실 / 숏: 하락 시 수익·상승 시 손실, 색 = 가격 방향)
+                var 롱 = pl.dir === 'long', 최대 = Math.max(pl.rewardPct, pl.riskPct);
+                function 줄(글, 값, 색, 부호, 기준) {
+                    return '<div class="sg-pnl"><span class="sg-pl">' + 글 + '</span><div class="sg-ptrack"><i style="width:' + (값 / 최대 * 100).toFixed(0) + '%;background:' + 색 + '"></i></div>' +
+                           '<span class="sg-pv"><b style="color:' + 색 + '">' + 부호 + 값.toFixed(2) + '%</b> <small>(' + 기준 + ')</small></span></div>';
+                }
+                var 조건 = pl.entry > price * 1.0001 ? pl.entry.toFixed(2) + ' 이상 도달 시' : pl.entry < price * 0.9999 ? pl.entry.toFixed(2) + ' 이하 도달 시' : '현재가 부근';
+                var 배수 = pl.rewardPct / pl.riskPct;
+                손익HTML = 줄(롱 ? '상승 시 예상 수익' : '하락 시 예상 수익', pl.rewardPct, 롱 ? 빨강 : 파랑, '+', '목표 ' + pl.target.toFixed(2)) +
+                          줄(롱 ? '하락 시 예상 손실' : '상승 시 예상 손실', pl.riskPct, 롱 ? 파랑 : 빨강, '−', '손절 ' + pl.stop.toFixed(2)) +
+                          '<div class="sg-pnote">진입 조건: ' + 조건 + ' · <span style="color:' + (부족 ? 주황 : '#9aa3b5') + '">예상 수익이 예상 손실의 ' + 배수.toFixed(1) + '배' + (부족 ? ' → 부족 (기준 ' + 가상_최소손익비.toFixed(1) + '배)' : '') + '</span></div>';
+            } else {
+                계획칸 = 칸('진입', '—', 흐림) + 칸('손절', '—', 흐림) + 칸('목표', '—', 흐림) + 칸('손익비', '—', 흐림);
+                var 빈줄 = function (글) { return '<div class="sg-pnl"><span class="sg-pl sg-dim">' + 글 + '</span><div class="sg-ptrack"></div><span class="sg-pv sg-dim">—</span></div>'; };
+                손익HTML = 빈줄((후보방향 === '숏') ? '하락 시 예상 수익' : '상승 시 예상 수익') + 빈줄((후보방향 === '숏') ? '상승 시 예상 손실' : '하락 시 예상 손실') +
+                          '<div class="sg-pnote sg-dim">진입 조건이 생기면 표시</div>';
+            }
+
+            // ⑥ 지표 막대 (가운데 0 기준 좌우) + 옵션 눈금 + 거래량 2줄
             function 막대(이름, 값, 한도, 설명) {
                 var 있음 = 값 != null, 비 = 있음 ? Math.max(-1, Math.min(1, 값 / 한도)) : 0;
                 var 색 = !있음 ? 흐림 : 값 > 0 ? 빨강 : 값 < 0 ? 파랑 : '#8b93a7';
@@ -1956,18 +2356,18 @@
                 return '<div class="sg-row"><span class="sg-rl">' + 이름 + '</span><div class="sg-track"><div class="sg-mid"></div>' + 채움 + '</div>' +
                        '<span class="sg-rv" style="color:' + 색 + '">' + (있음 ? fmtPct(값) : '—') + (설명 ? ' <small>' + 설명 + '</small>' : '') + '</span></div>';
             }
-            var 옵션눈금 = '';
-            for (var q = 0; q < 10; q++) 옵션눈금 += '<span style="background:' + (q < Math.round(score) ? (score >= 6 ? 빨강 : score <= 4 ? 파랑 : '#8b93a7') : '#242a38') + '"></span>';
-            var 옵션색 = score >= 6 ? 빨강 : score <= 4 ? 파랑 : '#8b93a7';
-            var 지표 = 막대('VWAP', vwDist, 0.5, vwDist >= 0 ? '위' : '아래') +
-                       막대('1분', m1, 0.3, m1 != null ? speed : '') +
-                       막대('3분', m3, 0.5, '') +
-                       '<div class="sg-row"><span class="sg-rl">옵션</span><div class="sg-meter">' + 옵션눈금 + '</div>' +
-                       '<span class="sg-rv" style="color:' + 옵션색 + '">' + optState + ' ' + score.toFixed(1) + '</span></div>' +
-                       '<div class="sg-row"><span class="sg-rl">거래량</span><span class="sg-vtxt" style="color:' + (volTxt ? (surge >= 1.3 ? 빨강 : '#c9cedb') : 흐림) + '">' +
-                       (volTxt || '데이터 수집 중') + '</span><span></span></div>';
+            var 옵션색 = score >= 6 ? 빨강 : score <= 4 ? 파랑 : '#8b93a7', 옵션눈금 = '';
+            for (var q = 0; q < 10; q++) 옵션눈금 += '<span style="background:' + (q < Math.round(score) ? 옵션색 : '#242a38') + '"></span>';
+            var 당일비 = d.volRatio > 0 ? d.volRatio : null;
+            var 거래량HTML = '<div class="sg-vol"><span class="sg-rl">거래량</span><div class="sg-vlines">' +
+                '<div><span><b>당일</b> <em style="color:' + (당일비 ? (당일비 >= 1 ? 빨강 : '#c9cedb') : 흐림) + '">' + (당일비 ? 당일비.toFixed(1) + '배' : '—') + '</em></span><small>' + (당일비 ? '과거 같은 시각 평균 대비' : '윈폼(키움) 연결 · 고정 종목만 표시') + '</small></div>' +
+                '<div><span><b>순간</b> <em style="color:' + (surge != null ? (surge >= 1.3 ? 빨강 : '#c9cedb') : 흐림) + '">' + (surge != null ? surge.toFixed(1) + '배' : '—') + '</em></span><small>' + (surge != null ? '최근 1분 ÷ 직전 10분 평균' : '수집 중 (화면 연 뒤 11분부터)') + '</small></div>' +
+                '</div></div>';
+            var 지표 = 막대('VWAP', vwDist, 0.5, vwDist >= 0 ? '위' : '아래') + 막대('1분', m1, 0.3, m1 != null ? speed : '') + 막대('3분', m3, 0.5, '') +
+                       '<div class="sg-row"><span class="sg-rl">옵션</span><div class="sg-meter">' + 옵션눈금 + '</div><span class="sg-rv" style="color:' + 옵션색 + '">' + optState + ' ' + score.toFixed(1) + '</span></div>' +
+                       거래량HTML;
 
-            // ⑤ 최근 이벤트 · 상태
+            // ⑦ 최근 이벤트 · 상태
             var 최근 = s.events.slice(0, 1).map(function (e) {
                 var c = e.dir === 'up' ? '#ff7a7a' : e.dir === 'down' ? '#7aa8ff' : '#c9cedb';
                 return '<span class="sg-mut">' + fmtAgo(e.t) + '</span> <span style="color:' + c + '">' + e.msg + '</span>';
@@ -1979,6 +2379,7 @@
                 정규장VWAP > 0 ? '정규장 VWAP $' + 정규장VWAP.toFixed(2) + ' (현재가 ' + fmtPct((price - 정규장VWAP) / 정규장VWAP * 100) + ')' : '',
                 '시세 ' + (s.src === 'kiwoom' ? '키움' : s.src === 'yahoo' ? '야후' : '─'),
                 s.extVwap > 0 ? 'VWAP 키움 계산' : vwReal ? 'VWAP 페이지 수집값' : 'VWAP 추정치',
+                구간.상태 === '정상' ? '반등 구간 ' + 구간.기준시각 + ' 기준' : '',
                 s.ticks.length < 20 ? '실시간 수집 중' : ''
             ].filter(Boolean).join(' · ');
 
@@ -1993,8 +2394,10 @@
             put('sigtitle', 상태아이콘 + '<span>' + 결론.글 + '</span>', 결론.색, 결론.글);
             put('reason', jd.이유, undefined, jd.이유);
             put('situ', paperPlain(line1).replace(/^[^\w가-힣$]+/, ''), undefined, paperPlain(line1));
+            put('score', 점수HTML);
+            put('band', 띠);
             put('plan', 계획칸);
-            put('plan-b', 손익비설명, undefined, 손익비설명);
+            put('pnl', 손익HTML);
             put('ind', 지표);
             put('recent', 최근, undefined, paperPlain(최근));
             if (가상_기록가능) {
@@ -2008,6 +2411,10 @@
 
         // 결론이 매수/매도 고려로 바뀌는 순간 → 진입 고려 이벤트 (윈폼이 차트 표시·소리에 사용)
         function 판단전환(s, jd, price) {
+            var pl = jd.계획, sc = jd.점수;
+            디버그(null, '[' + s.ticker + '] 결론 → ' + jd.상태 + ' (현재가 ' + price.toFixed(2) + ') · ' + jd.이유 +
+                (pl ? ' · ' + (pl.dir === 'long' ? '롱' : '숏') + ' ' + pl.방식 + ' 진입 ' + pl.entry.toFixed(2) + ' 손절 ' + pl.stop.toFixed(2) + ' 목표 ' + pl.target.toFixed(2) + ' 1:' + pl.rr.toFixed(2) : ' · 계획 없음') +
+                (sc && sc.점수 != null ? ' · 점수 ' + sc.점수 + ' [' + sc.항목.map(function (x) { return x.이름 + ' ' + (x.상태 === null ? '—' : x.점수 + '/' + x.만점); }).join(', ') + ']' : ''));
             if (jd.상태 === '관망' || !jd.계획) return;
             가상_고려기록(s.ticker, jd.상태 === '매수' ? '롱' : '숏', price, jd.계획, jd.이유);
         }
@@ -2033,7 +2440,7 @@
         var 가상_레벨손절대기분 = 30;      // 같은 레벨·같은 방향으로 손절되면 이 시간 동안 재진입 금지
         var 가상_레벨최대시도 = 2;         // 같은 레벨·같은 방향 진입은 하루 최대 횟수
         var 가상_사후추적분 = 30;          // 손절 등으로 청산된 뒤 원래 목표 도달 여부를 추적하는 시간
-        var 가상_저장키 = 'paperState_v2';
+        var 가상_저장키 = 'paperState_v3';
         var 가상_대상종목 = null;          // 윈폼이 지정 (null = 아직 전달 안 됨 → 매매 안 함)
         var 가상매매 = { 날짜: '', 보유: {}, 대기: {}, 전송대기열: [], 마지막청산: {}, 레벨기록: {}, 추적: [] };
 
@@ -2083,22 +2490,23 @@
         function 가상_계획반영(종목, 계획, 상황) {
             if (!가상_기록가능 || !종목) return;
             if (!가상_대상인가(종목)) { delete 가상매매.대기[종목]; return; }      // 대상 종목만 매매
+            if (계획 === '유지') return;                                              // 잠깐 흔들림 → 기존 대기주문 유지 (체결 순간 조건은 다시 확인)
+            function 막힘(사유) { if (계획) 디버그('막힘' + 종목, '[' + 종목 + '] 가상매매 진입 안 함: ' + 사유); delete 가상매매.대기[종목]; }
             var et = 가상_뉴욕시각();
             var 포지션 = 가상매매.보유[종목];
-            var 가능 = 계획 && 계획.rr >= 가상_최소손익비 && 가상_정규장(et) && 가상_분(et) < 가상_신규진입마감분;
             var 방향 = 계획 ? (계획.dir === 'long' ? '롱' : '숏') : '';
-            if (!가능 || (포지션 && 포지션.방향 === 방향)) { delete 가상매매.대기[종목]; return; }   // 같은 방향 추가 진입 없음
+            if (!계획) { delete 가상매매.대기[종목]; return; }
+            if (계획.rr < 가상_최소손익비) { 막힘('손익비 1:' + 계획.rr.toFixed(2) + ' < 기준 ' + 가상_최소손익비); return; }
+            if (!가상_정규장(et)) { 막힘('정규장 아님'); return; }
+            if (가상_분(et) >= 가상_신규진입마감분) { 막힘('15:55 이후 신규 진입 금지'); return; }
+            if (포지션 && 포지션.방향 === 방향) { delete 가상매매.대기[종목]; return; }                    // 같은 방향 추가 진입 없음
             // 최소 보유시간 안에는 반대신호로 뒤집지 않음
-            if (포지션 && (Date.now() - 포지션.진입시각값) / 60000 < 가상_최소보유분) { delete 가상매매.대기[종목]; return; }
-            // 같은 레벨·같은 방향: 손절 후 30분 금지 / 하루 최대 2회
-            var 레벨키 = 종목 + '|' + (계획.레벨 || '기타') + '|' + 방향, 기록 = 가상매매.레벨기록[레벨키];
-            if (기록 && (기록.시도 >= 가상_레벨최대시도 ||
-                        (기록.마지막손절 && (Date.now() - 기록.마지막손절) / 60000 < 가상_레벨손절대기분))) {
-                delete 가상매매.대기[종목]; return;
-            }
-            if (!포지션 && 가상매매.마지막청산[종목] && (Date.now() - 가상매매.마지막청산[종목]) / 1000 < 가상_재진입대기초) {
-                delete 가상매매.대기[종목]; return;                                                   // 청산 직후 재진입 방지
-            }
+            if (포지션 && (Date.now() - 포지션.진입시각값) / 60000 < 가상_최소보유분) { 막힘('보유 ' + 가상_최소보유분 + '분 전 반대신호 무시'); return; }
+            // 같은 레벨·같은 방향: 손절 후 30분 금지 / 하루 최대 2회 / 청산 직후 재진입 대기
+            var 레벨이름 = 계획.레벨 || '기타';
+            var 레벨키 = 종목 + '|' + (계획.레벨ID || 레벨이름) + '|' + 방향;
+            var 사유 = 가상_진입막힘사유(종목, 방향, 레벨키, 레벨이름);
+            if (사유) { 막힘(사유); return; }
 
             var 기존 = 가상매매.대기[종목];
             function 같음(a, b) { return Math.abs(a - b) / b < 0.0005; }
@@ -2109,36 +2517,58 @@
                 // 계획 시점 가격 대비 진입가 위치로 체결 조건 결정: 위=이상 도달 / 아래=이하 도달 / 즉시
                 체결조건: 계획.entry > 상황.가격 * 1.0001 ? '이상' : 계획.entry < 상황.가격 * 0.9999 ? '이하' : '즉시',
                 신호: 상황.신호, VWAP: 상황.VWAP, 옵션점수: 상황.옵션점수, 시세출처: 상황.시세출처,
-                레벨: 계획.레벨 || '기타', 레벨키: 레벨키
+                레벨: 계획.레벨 || '기타', 레벨키: 레벨키, 진입방식: 계획.방식 || '기타',
+                진입점수: 상황.진입점수 == null ? null : 상황.진입점수
             };
+            디버그('대기' + 종목, '[' + 종목 + '] 가상 대기주문 ' + 방향 + ' ' + (계획.방식 || '') + ' ' + 계획.entry.toFixed(2) + ' (' + 가상매매.대기[종목].체결조건 + ') 손절 ' +
+                계획.stop.toFixed(2) + ' 목표 ' + 계획.target.toFixed(2) + ' 1:' + 계획.rr.toFixed(2) + ' 점수 ' + (상황.진입점수 == null ? '—' : 상황.진입점수));
+        }
+
+        // 진입을 막는 사유 (대기주문을 걸 때 + 실제 체결 순간 두 번 확인)
+        function 가상_진입막힘사유(종목, 방향, 레벨키, 레벨이름) {
+            var 기록 = 가상매매.레벨기록[레벨키];
+            if (기록 && 기록.시도 >= 가상_레벨최대시도) return '같은 레벨(' + 레벨이름 + ') ' + 방향 + ' 오늘 ' + 기록.시도 + '회 시도 — 하루 최대 ' + 가상_레벨최대시도 + '회';
+            if (기록 && 기록.마지막손절 && (Date.now() - 기록.마지막손절) / 60000 < 가상_레벨손절대기분) return '같은 레벨(' + 레벨이름 + ') 손절 후 ' + 가상_레벨손절대기분 + '분 대기 중';
+            if (!가상매매.보유[종목] && 가상매매.마지막청산[종목] && (Date.now() - 가상매매.마지막청산[종목]) / 1000 < 가상_재진입대기초) return '청산 후 ' + 가상_재진입대기초 + '초 재진입 대기';
+            return '';
+        }
+
+        // 보유 포지션의 손절·목표 판정 (체결 직후 같은 틱에도 적용)
+        //   손절: 손절가와 현재가 중 불리한 값(갭으로 손절가를 건너뛴 경우 현재가) / 목표: 목표가
+        function 가상_손절목표판정(포지션, 가격) {
+            if (포지션.방향 === '롱') {
+                if (가격 <= 포지션.손절가) return { 가격: Math.min(포지션.손절가, 가격), 사유: '손절' };
+                if (가격 >= 포지션.목표가) return { 가격: 포지션.목표가, 사유: '목표' };
+            } else {
+                if (가격 >= 포지션.손절가) return { 가격: Math.max(포지션.손절가, 가격), 사유: '손절' };
+                if (가격 <= 포지션.목표가) return { 가격: 포지션.목표가, 사유: '목표' };
+            }
+            return null;
+        }
+
+        function 가상_포지션종료(종목, 포지션, 청산가, 사유, 시각, 시각값) {
+            가상_청산기록(포지션, 청산가, 사유, 시각, 시각값);
+            delete 가상매매.보유[종목];
+            delete 가상매매.대기[종목];          // 청산 뒤 남은 대기주문은 버림 → 다음 계산에서 대기시간·레벨 조건을 다시 확인
+            디버그(null, '[' + 종목 + '] 가상 청산 ' + 포지션.방향 + ' ' + 사유 + ' ' + 청산가.toFixed(2) + ' (진입 ' + 포지션.진입가.toFixed(2) + ')');
         }
 
         // 시세가 들어올 때마다 호출: 체결·청산 판정
         function 가상_시세반영(종목, 가격) {
             if (!가상_기록가능 || !종목 || !(가격 > 0)) return;
-            var et = 가상_뉴욕시각(), 분 = 가상_분(et), 시각 = 가상_시각문자(et), 변경 = false;
+            var et = 가상_뉴욕시각(), 분 = 가상_분(et), 시각 = 가상_시각문자(et), 지금 = Date.now(), 변경 = false;
             if (가상매매.날짜 !== 가상_날짜문자(et)) { 가상매매.날짜 = 가상_날짜문자(et); 가상매매.대기 = {}; 가상매매.레벨기록 = {}; 변경 = true; }
             if (가상_사후추적(종목, 가격)) 변경 = true;
 
             // ── 보유 포지션 청산 판정 (대상에서 빠져도 보유 중인 포지션은 끝까지 관리) ──
             var 포지션 = 가상매매.보유[종목];
             if (포지션) {
-                포지션.최근가 = 가격; 포지션.최근시각 = 시각;
-                // 보유 중 가장 유리했던 폭(최대순행) / 가장 불리했던 폭(최대역행), 진입가 대비 %
-                var 유리 = (가격 - 포지션.진입가) / 포지션.진입가 * 100 * (포지션.방향 === '롱' ? 1 : -1);
-                포지션.최대순행 = Math.max(포지션.최대순행 || 0, 유리);
-                포지션.최대역행 = Math.min(포지션.최대역행 || 0, 유리);
-                var 청산가 = null, 사유 = '';
-                if (포지션.방향 === '롱') {
-                    if (가격 <= 포지션.손절가) { 청산가 = 포지션.손절가; 사유 = '손절'; }
-                    else if (가격 >= 포지션.목표가) { 청산가 = 포지션.목표가; 사유 = '목표'; }
-                } else {
-                    if (가격 >= 포지션.손절가) { 청산가 = 포지션.손절가; 사유 = '손절'; }
-                    else if (가격 <= 포지션.목표가) { 청산가 = 포지션.목표가; 사유 = '목표'; }
-                }
-                if (청산가 === null && (Date.now() - 포지션.진입시각값) / 60000 >= 가상_최대보유분) { 청산가 = 가격; 사유 = '시간초과'; }
-                if (청산가 === null && (!가상_정규장(et) || 분 >= 가상_장마감청산분)) { 청산가 = 가격; 사유 = '장마감'; }
-                if (청산가 !== null) { 가상_청산기록(포지션, 청산가, 사유, 시각); delete 가상매매.보유[종목]; 포지션 = null; 변경 = true; }
+                포지션.최근가 = 가격; 포지션.최근시각 = 시각; 포지션.최근시각값 = 지금;
+                가상_순역행갱신(포지션, 가격);
+                var 판정 = 가상_손절목표판정(포지션, 가격);
+                if (!판정 && (지금 - 포지션.진입시각값) / 60000 >= 가상_최대보유분) 판정 = { 가격: 가격, 사유: '시간초과' };
+                if (!판정 && (!가상_정규장(et) || 분 >= 가상_장마감청산분)) 판정 = { 가격: 가격, 사유: '장마감' };
+                if (판정) { 가상_포지션종료(종목, 포지션, 판정.가격, 판정.사유, 시각, 지금); 포지션 = null; 변경 = true; }
             }
 
             // ── 대기주문 체결 판정 ──
@@ -2146,42 +2576,80 @@
             if (주문 && 가상_정규장(et) && 분 < 가상_신규진입마감분) {
                 var 도달 = 주문.체결조건 === '즉시' || (주문.체결조건 === '이상' && 가격 >= 주문.진입가) || (주문.체결조건 === '이하' && 가격 <= 주문.진입가);
                 if (도달) {
-                    var 체결가 = 주문.체결조건 === '즉시' ? 가격 : 주문.진입가;
+                    // 체결가: 진입가와 현재가 중 불리한 값 (롱=높은 값, 숏=낮은 값) / 즉시=현재가
+                    var 체결가 = 주문.체결조건 === '즉시' ? 가격 : (주문.방향 === '롱' ? Math.max(주문.진입가, 가격) : Math.min(주문.진입가, 가격));
                     var 유효 = 주문.방향 === '롱' ? (주문.손절가 < 체결가 && 체결가 < 주문.목표가) : (주문.목표가 < 체결가 && 체결가 < 주문.손절가);
-                    if (유효) {
-                        if (포지션) { 가상_청산기록(포지션, 체결가, '반대신호', 시각); delete 가상매매.보유[종목]; }
+                    var 막힘사유 = 유효 ? 가상_진입막힘사유(종목, 주문.방향, 주문.레벨키, 주문.레벨) : '체결가 ' + 체결가.toFixed(2) + '가 손절~목표 범위 밖';
+                    if (!막힘사유) {
+                        if (포지션) { 가상_포지션종료(종목, 포지션, 체결가, '반대신호', 시각, 지금); 포지션 = null; }
                         var 새포지션 = {
-                            번호: 종목 + '-' + Date.now(), 날짜: 가상매매.날짜, 종목: 종목, 방향: 주문.방향,
+                            번호: 종목 + '-' + 지금, 날짜: 가상매매.날짜, 종목: 종목, 방향: 주문.방향,
                             진입가: 체결가, 손절가: 주문.손절가, 목표가: 주문.목표가,
                             계획손익비: Math.abs(주문.목표가 - 체결가) / Math.abs(체결가 - 주문.손절가),
-                            진입시각값: Date.now(), 진입시각: 시각, 최근가: 가격, 최근시각: 시각,
+                            진입시각값: 지금, 진입시각: 시각, 최근가: 가격, 최근시각: 시각, 최근시각값: 지금,
                             신호: 주문.신호, VWAP: 주문.VWAP, 옵션점수: 주문.옵션점수, 시세출처: 주문.시세출처,
-                            레벨: 주문.레벨, 레벨키: 주문.레벨키, 최대순행: 0, 최대역행: 0
+                            레벨: 주문.레벨, 레벨키: 주문.레벨키, 최대순행: 0, 최대역행: 0,
+                            진입방식: 주문.진입방식, 진입점수: 주문.진입점수
                         };
                         var 레벨기록 = 가상매매.레벨기록[주문.레벨키] || (가상매매.레벨기록[주문.레벨키] = { 시도: 0, 마지막손절: 0 });
                         레벨기록.시도++;
                         가상매매.보유[종목] = 새포지션;
                         가상매매.전송대기열.push({ 종류: '진입', 거래: 가상_기록행(새포지션, null) });
+                        디버그(null, '[' + 종목 + '] 가상 체결 ' + 주문.방향 + ' ' + 체결가.toFixed(2) + ' (주문 ' + 주문.진입가.toFixed(2) + ' ' + 주문.체결조건 + ', 틱 ' + 가격.toFixed(2) + ')');
+                        delete 가상매매.대기[종목];
+                        // 체결된 틱에서 이미 손절·목표를 넘었으면 바로 청산
+                        가상_순역행갱신(새포지션, 가격);
+                        var 즉시판정 = 가상_손절목표판정(새포지션, 가격);
+                        if (즉시판정) 가상_포지션종료(종목, 새포지션, 즉시판정.가격, 즉시판정.사유, 시각, 지금);
+                    } else {
+                        디버그('막힘' + 종목, '[' + 종목 + '] 가상 체결 취소: ' + 막힘사유);
+                        delete 가상매매.대기[종목];
                     }
-                    delete 가상매매.대기[종목];
                     변경 = true;
                 }
             }
             if (변경) 가상_저장();
         }
 
-        function 가상_청산기록(포지션, 청산가, 사유, 시각) {
+        function 가상_순역행갱신(포지션, 가격) {
+            // 보유 중 가장 유리했던 폭(최대순행) / 가장 불리했던 폭(최대역행), 진입가 대비 %
+            var 유리 = (가격 - 포지션.진입가) / 포지션.진입가 * 100 * (포지션.방향 === '롱' ? 1 : -1);
+            포지션.최대순행 = Math.max(포지션.최대순행 || 0, 유리);
+            포지션.최대역행 = Math.min(포지션.최대역행 || 0, 유리);
+        }
+
+        // 1초마다: 시세가 끊겨도 시간초과·장마감 청산은 제때 (마지막 받은 가격으로)
+        function 가상_시간청산() {
+            var 종목들 = Object.keys(가상매매.보유);
+            if (!종목들.length) return false;
+            var et = 가상_뉴욕시각(), 분 = 가상_분(et), 시각 = 가상_시각문자(et), 지금 = Date.now(), 변경 = false;
+            종목들.forEach(function (종목) {
+                var 포지션 = 가상매매.보유[종목];
+                if (!포지션 || !(포지션.최근가 > 0)) return;
+                var 사유 = '';
+                if ((지금 - 포지션.진입시각값) / 60000 >= 가상_최대보유분) 사유 = '시간초과';
+                else if (!가상_정규장(et) || 분 >= 가상_장마감청산분) 사유 = '장마감';
+                if (!사유) return;
+                가상_포지션종료(종목, 포지션, 포지션.최근가, 사유, 시각, 지금);
+                변경 = true;
+            });
+            return 변경;
+        }
+
+        function 가상_청산기록(포지션, 청산가, 사유, 시각, 시각값) {
+            var 미청산 = 사유.indexOf('미청산') === 0;
+            if (!시각값) 시각값 = 미청산 ? (포지션.최근시각값 || 포지션.진입시각값) : Date.now();
             가상매매.마지막청산[포지션.종목] = Date.now();
             if (사유 === '손절' && 포지션.레벨키) {
                 var 기록 = 가상매매.레벨기록[포지션.레벨키] || (가상매매.레벨기록[포지션.레벨키] = { 시도: 1, 마지막손절: 0 });
                 기록.마지막손절 = Date.now();
             }
             // 목표로 끝난 거래가 아니면 청산 후 30분 동안 "원래 목표 도달" 여부 추적 (반대 휩소 측정)
-            if (사유 !== '목표' && 포지션.번호) {
+            if (사유 !== '목표' && !미청산 && 포지션.번호) {
                 가상매매.추적.push({ 번호: 포지션.번호, 종목: 포지션.종목, 방향: 포지션.방향, 목표가: 포지션.목표가,
                                      청산시각값: Date.now(), 마지막틱: 0 });
             }
-            가상매매.전송대기열.push({ 종류: '청산', 거래: 가상_기록행(포지션, { 가격: 청산가, 사유: 사유, 시각: 시각 }) });
+            가상매매.전송대기열.push({ 종류: '청산', 거래: 가상_기록행(포지션, { 가격: 청산가, 사유: 사유, 시각: 시각, 시각값: 시각값 }) });
         }
 
         function 가상_기록행(p, 청산) {
@@ -2190,7 +2658,8 @@
                 진입시각: p.진입시각, 진입가: +p.진입가.toFixed(4), 손절가: +p.손절가.toFixed(4), 목표가: +p.목표가.toFixed(4),
                 계획손익비: +p.계획손익비.toFixed(2), 진입VWAP: +(p.VWAP || 0).toFixed(4), 옵션점수: +(p.옵션점수 || 0).toFixed(1),
                 시세출처: p.시세출처 || '', 신호: p.신호 || '',
-                진입레벨: p.레벨 || '', 최대순행률: +(p.최대순행 || 0).toFixed(3), 최대역행률: +(p.최대역행 || 0).toFixed(3)
+                진입레벨: p.레벨 || '', 최대순행률: +(p.최대순행 || 0).toFixed(3), 최대역행률: +(p.최대역행 || 0).toFixed(3),
+                진입방식: p.진입방식 || '', 진입점수: p.진입점수 == null ? null : p.진입점수
             };
             if (청산) {
                 var 부호 = p.방향 === '롱' ? 1 : -1;
@@ -2200,7 +2669,7 @@
                 행.손익률 = +(손익 / p.진입가 * 100).toFixed(3);
                 행.손익금액 = +(손익 / p.진입가 * 가상_1회금액).toFixed(2);
                 행.R배수 = 위험 > 0 ? +(손익 / 위험).toFixed(2) : 0;
-                행.보유분 = +((Date.now() - p.진입시각값) / 60000).toFixed(1);
+                행.보유분 = +(Math.max(0, (청산.시각값 || Date.now()) - p.진입시각값) / 60000).toFixed(1);
             }
             return 행;
         }
@@ -2225,7 +2694,11 @@
             });
             return 변경;
         }
-        setInterval(function () { if (가상_기록가능 && 가상_사후추적('', 0)) 가상_저장(); }, 1000);
+        setInterval(function () {
+            if (!가상_기록가능) return;
+            var a = 가상_사후추적('', 0), b = 가상_시간청산();
+            if (a || b) 가상_저장();
+        }, 1000);
 
         // 결론이 매수/매도 "고려"로 바뀐 순간 기록 (대상 여부와 관계없이 → 차트 표시는 모든 패널 종목, 소리는 윈폼이 대상만)
         function 가상_고려기록(종목, 방향, 가격, 계획, 이유) {
@@ -2336,8 +2809,10 @@
                 + '<div class="sg-reason" id="p' + i + '-reason">데이터 로딩 중</div>'
                 + '<div class="sg-situ" id="p' + i + '-situ">─</div>'
                 + '</div></div>'
+                + '<div class="sg-score" id="p' + i + '-score"></div>'
+                + '<div id="p' + i + '-band"><div class="sg-band cand">방향 없음</div></div>'
                 + '<div class="sg-plan" id="p' + i + '-plan"></div>'
-                + '<div class="sg-rr" id="p' + i + '-plan-b">─</div>'
+                + '<div class="sg-pnls" id="p' + i + '-pnl"></div>'
                 + '<div class="sg-bars" id="p' + i + '-ind"></div>'
                 + '<div class="sg-foot">'
                 + '<div class="sg-fl" id="p' + i + '-recent"><span class="sg-dim">최근 이벤트 없음</span></div>'
@@ -2458,8 +2933,9 @@
         function resetPanelUI(panelIdx, ticker) {
             var p = 'p' + panelIdx + '-';
             ['price', 'diff', 'chg', 'vol'].forEach(function (f) { var el = document.getElementById(p + f); if (el) el.textContent = '─'; });
-            var 초기값 = { 'gauge': '', 'sigtitle': '<span>관망 중</span>', 'reason': '데이터 로딩 중', 'situ': '─', 'plan': '',
-                          'plan-b': '─', 'ind': '', 'recent': '<span class="sg-dim">최근 이벤트 없음</span>', 'paper': '─', 'state': '─' };
+            var 초기값 = { 'gauge': '', 'sigtitle': '<span>관망 중</span>', 'reason': '데이터 로딩 중', 'situ': '─', 'score': '', 'band': '<div class="sg-band cand">방향 없음</div>',
+                          'plan': '', 'pnl': '', 'ind': '', 'recent': '<span class="sg-dim">최근 이벤트 없음</span>', 'paper': '─', 'state': '─' };
+            if (RT[panelIdx]) { RT[panelIdx].판단 = null; RT[panelIdx].띠키 = null; }
             Object.keys(초기값).forEach(function (k) {
                 var el = document.getElementById(p + k); if (!el) return;
                 el.innerHTML = 초기값[k]; el._html = null; el.style.color = k === 'sigtitle' ? '#f2c14e' : '';
@@ -2717,18 +3193,19 @@
         setInterval(function () { [0, 1, 2].forEach(updatePanelDot); updateHeaderDot(); }, 1000);
 
         function applyPanelQuote(idx, q, src) {
-            updatePanelPrice(idx, q.price, q.changeRate, q.change, q.volume > 0 ? q.volume : null);
-            rtTick(idx, q.price, q.volume, src, q.vwap);   // ★ 실시간 단타 엔진에 시세 전달
+            var 수락 = rtTick(idx, q.price, q.volume, src, q.vwap, q.recvAt);   // ★ 실시간 단타 엔진에 시세 전달 (필터 보류면 false)
+            if (수락) updatePanelPrice(idx, q.price, q.changeRate, q.change, q.volume > 0 ? q.volume : null);
             var d = panelDataStore[idx];
             if (d) {
-                d.price = q.price;
+                if (수락) d.price = q.price;
                 d.vwap = (src === 'kiwoom' && q.vwap > 0) ? q.vwap : 0;
                 d.vwapReg = (src === 'kiwoom' && q.vwapReg > 0) ? q.vwapReg : 0;
+                d.volRatio = (src === 'kiwoom' && q.volRatio > 0) ? q.volRatio : 0;
                 if (q.dayHigh > 0) d.dayHigh = q.dayHigh;
                 if (q.dayLow > 0) d.dayLow = q.dayLow;
                 var p = 'p' + idx + '-';
                 if (d.maxPain > 0) renderTimeline(p, d);
-                if (d.optionRows && d.optionRows.length > 0) renderOiSafe(idx, d.optionRows, q.price);
+                if (d.optionRows && d.optionRows.length > 0 && d.price > 0) renderOiSafe(idx, d.optionRows, d.price);
             }
             hidePanelOverlay(idx);
             setSelectDisabled(idx, false);
@@ -2741,7 +3218,7 @@
             if (!ticker || !d) return;
             var pick = pickQuote(ticker), q = pick && pick.q;
             if (q) {
-                d.price = q.price;
+                if (!(RT[idx] && RT[idx].ticker === ticker && RT[idx].마지막수락 === false)) d.price = q.price;   // 체결 필터가 보류 중인 가격은 쓰지 않음
                 d.vwap = (pick.src === 'kiwoom' && q.vwap > 0) ? q.vwap : 0;
                 if (q.dayHigh > 0) d.dayHigh = q.dayHigh;
                 if (q.dayLow > 0) d.dayLow = q.dayLow;
@@ -2777,6 +3254,7 @@
                         dayLow: toNum(rtData.dayLow),
                         vwap: toNum(rtData.vwap),     // ★ C#이 체결 단위로 계산한 VWAP
                         vwapReg: toNum(rtData.vwapReg), // ★ 장외 시간: 정규장 VWAP(16:00 고정)
+                        volRatio: toNum(rtData.volRatio), // ★ 정규장: 오늘 누적 거래량 ÷ 과거 같은 시각 평균
                         // 최초 스냅샷은 과거 값일 수 있으므로 수신 시각을 갱신하지 않음
                         recvAt: isFirst ? ((kiwoomCache[ticker] && kiwoomCache[ticker].recvAt) || 0) : Date.now()
                     };
@@ -2807,7 +3285,16 @@
                     saveSessionLS();
                     if (fbGen[panelIdx] === myGen && panelTickers[panelIdx] === ticker) renderPanelQuote(panelIdx);
                 });
-                fbRefs[panelIdx] = { refs: [rtRef, panelRef, sessRef], ticker: ticker, gen: myGen };
+                // ★ 당일 반등·반락 구간 (윈폼이 3분마다 / 종목 변경 시 즉시 계산해 저장)
+                var zoneRef = firebase.database().ref('tickers/' + ticker + '/zones');
+                zoneRef.on('value', function (snap) {
+                    var v = snap.val();
+                    구간Cache[ticker] = v || null;
+                    if (v) 디버그('구간' + ticker, '[' + ticker + '] 반등 구간 수신 ' + (v.날짜 || '') + ' ' + (v.기준시각 || '') + ' 기준 · 지지 ' +
+                        (v.지지 || []).map(function (z) { return z.가격 + '×' + z.횟수; }).join(', ') + ' / 저항 ' + (v.저항 || []).map(function (z) { return z.가격 + '×' + z.횟수; }).join(', ') +
+                        (v.날짜 !== 구간_기대날짜() ? ' (날짜 불일치 → 사용 안 함)' : ''));
+                });
+                fbRefs[panelIdx] = { refs: [rtRef, panelRef, sessRef, zoneRef], ticker: ticker, gen: myGen };
             } catch (e) { }
         }
 
