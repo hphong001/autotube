@@ -1445,7 +1445,8 @@
         // ★ 실시간 단타 엔진 (틱 버퍼 → 모멘텀·거래량·VWAP·레벨 이벤트)
         //   - VWAP: 키움 연결 시 C#이 체결 단위로 계산한 값(realtime.vwap) 사용
         //           야후 시세일 때는 페이지를 연 뒤 수집한 값으로 자체 계산
-        //   - VWAP 세션 기준(ET): 20:00~ / 04:00~ / 09:30~ (C# VwapAnchorEt 와 동일)
+        //   - VWAP 세션 기준(ET): 20:00~ / 04:00~ / 09:30~16:00(정규장, 16:00 고정) / 16:00~ (C# VwapAnchorEt 와 동일)
+        //   - 정규장 외 시간에는 체결 필터(급변 체결 보류·확인)를 거친 시세만 판단에 사용
         // ════════════════════════════════════════════════════════
         var RT = {};                       // 패널별 실시간 상태
         var RT_KEEP_MS = 15 * 60 * 1000;   // 틱 15분 보관
@@ -1463,13 +1464,53 @@
         }
 
         // 시세가 들어올 때마다 호출 (applyPanelQuote 안에서)
-        // 현재 ET 시각 기준 VWAP 세션 키 (20:00~ / 04:00~ / 09:30~)
+        // 현재 ET 시각 기준 VWAP 세션 키 (20:00~ / 04:00~ / 09:30~ / 16:00~)
         function rtSessKey() {
             var et = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
             var m = et.getHours() * 60 + et.getMinutes();
             var d = new Date(et.getFullYear(), et.getMonth(), et.getDate());
             if (m < 240) { d.setDate(d.getDate() - 1); return d.toDateString() + ' 20'; }
-            return d.toDateString() + (m >= 1200 ? ' 20' : m >= 570 ? ' 0930' : ' 04');
+            return d.toDateString() + (m >= 1200 ? ' 20' : m >= 960 ? ' 16' : m >= 570 ? ' 0930' : ' 04');
+        }
+
+        // ── 실시간 체결 필터 (정규장 외, C# 체결필터_판정 과 같은 규칙) ──
+        //   키움 시세는 C#에서 이미 걸러져 오고, 야후 시세(윈폼 없이 웹만 사용)일 때 여기서 거름
+        var 필터_정규장사용 = false, 필터_한도 = { 프리: 1.5, 애프터: 1.5, 오버나이트: 2.0, 정규장: 3.0 };
+        function 필터_세션() {
+            var et = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+            var m = et.getHours() * 60 + et.getMinutes(), 요일 = et.getDay();
+            if (요일 === 6 || (요일 === 0 && m < 1200)) return '오버나이트';
+            return m < 240 || m >= 1200 ? '오버나이트' : m < 570 ? '프리' : m < 960 ? '정규장' : '애프터';
+        }
+        function 필터_중앙값(a) { var b = a.slice().sort(function (x, y) { return x - y; }), k = b.length >> 1; return b.length % 2 ? b[k] : (b[k - 1] + b[k]) / 2; }
+        // true = 판단에 반영 / false = 보류(이번 체결은 무시)
+        function 체결필터(s, 가격) {
+            var 세션 = 필터_세션(), f = s.필터 || (s.필터 = { 세션: '', 최근: [], 보류: [], 이어짐: 0, 복귀: 0, 판정수: 0, 방향: 0 });
+            if (f.세션 !== 세션) { f.세션 = 세션; f.최근 = []; f.보류 = []; f.이어짐 = f.복귀 = f.판정수 = 0; }
+            if (세션 === '정규장' && !필터_정규장사용) return true;
+            function 정상(p) { f.최근.push(p); if (f.최근.length > 9) f.최근.shift(); }
+            if (f.최근.length < 3) { 정상(가격); return true; }
+            var 한도 = 필터_한도[세션], 기준 = 필터_중앙값(f.최근), 이탈 = (가격 - 기준) / 기준 * 100;
+            if (!f.보류.length) {
+                if (Math.abs(이탈) <= 한도) { 정상(가격); return true; }
+                f.보류 = [가격]; f.방향 = 이탈 > 0 ? 1 : -1; f.이어짐 = f.복귀 = f.판정수 = 0;
+                return false;
+            }
+            var 근접 = Math.abs(가격 - f.보류[0]) / f.보류[0] * 100 <= 0.5;
+            var 같은방향 = (이탈 > 0 ? 1 : -1) === f.방향 && Math.abs(이탈) > 한도;
+            f.판정수++;
+            if (근접 || 같은방향) {
+                f.보류.push(가격); f.이어짐++;
+                if (f.이어짐 >= 2) { f.최근 = f.보류.slice(-9); f.보류 = []; f.이어짐 = f.복귀 = f.판정수 = 0; return true; }
+                return false;
+            }
+            if (Math.abs(이탈) <= 한도) {
+                정상(가격); f.복귀++;
+                if (f.복귀 >= 2 || f.판정수 >= 3) { console.info('[체결 필터] ' + s.ticker + ' 이상 체결 무시 ' + f.보류.join(', ')); f.보류 = []; f.이어짐 = f.복귀 = f.판정수 = 0; }
+                return true;
+            }
+            f.보류 = [가격]; f.방향 = 이탈 > 0 ? 1 : -1; f.이어짐 = f.복귀 = f.판정수 = 0;
+            return false;
         }
 
         function rtTick(idx, price, cumVol, src, extVwap) {
@@ -1481,12 +1522,18 @@
                 s.src = src; s.lastCum = 0; s.pv = 0; s.vol = 0;
                 s.ticks.forEach(function (tk) { tk.cv = 0; });
             }
+            // 정규장 외 급변 체결은 확인될 때까지 판단에서 제외 (수량 기준점만 옮김)
+            if (!체결필터(s, price)) { if (cumVol > 0) s.lastCum = cumVol; return; }
+
             // C#이 계산한 정확한 VWAP (키움 소스일 때만)
             s.extVwap = (src === 'kiwoom' && extVwap > 0) ? extVwap : 0;
 
-            // ── 자체 VWAP (야후 대체용): 세션이 바뀌면 초기화 ──
+            // ── 자체 VWAP (야후 대체용): 세션이 바뀌면 초기화, 정규장 → 애프터 전환 시 정규장 값 보관 ──
             var key = rtSessKey();
-            if (s.sessKey !== key) { s.sessKey = key; s.pv = 0; s.vol = 0; s.lastCum = 0; }
+            if (s.sessKey !== key) {
+                if (/ 0930$/.test(s.sessKey) && / 16$/.test(key) && s.vol > 0) s.정규장VWAP = s.pv / s.vol;
+                s.sessKey = key; s.pv = 0; s.vol = 0; s.lastCum = 0;
+            }
             if (cumVol > 0) {
                 if (s.lastCum > 0 && cumVol < s.lastCum) { s.pv = 0; s.vol = 0; }      // 누적거래량 리셋
                 if (s.lastCum > 0 && cumVol > s.lastCum) {
@@ -1693,7 +1740,7 @@
             var below = lvList.concat(vwReal ? [{ n: 'VWAP', v: vwap }] : [])
                 .filter(function (x) { return x.v < price * 0.999; }).sort(function (a, b) { return b.v - a.v; });
 
-            var line1 = '', line3 = '', color = '#ddbb00', plan = null;
+            var line1 = '', line3 = '', color = '#ddbb00', plan = null, planLevel = '';
 
             if (fresh && (ev.dir === 'up' || ev.dir === 'down')) {
                 // ⚡ 방금 돌파/이탈 발생
@@ -1702,6 +1749,7 @@
                 var evLv = s.levels[ev.key] ? s.levels[ev.key].lv : 0;
                 var chasing = evLv > 0 && Math.abs(price - evLv) / evLv * 100 > RT_AWAY;
                 line1 = '⚡ ' + ev.msg + ' (' + fmtAgo(ev.t) + ')' + (confirmed ? ' · 거래량 동반 ✅' : ' · 거래량 미확인 ⚠️');
+                planLevel = ev.key + '@' + (evLv > 0 ? evLv.toFixed(2) : '');
                 color = ev.dir === 'up' ? '#ff4444' : '#4488ff';
                 // 거래량이 확인되지 않은 돌파/이탈은 휩소가 잦으므로 매매 계획을 만들지 않음 (문구만 안내)
                 if (ev.dir === 'up') {
@@ -1728,6 +1776,7 @@
                 line1 = '🎯 ' + near.n + ' $' + near.v.toFixed(1) + roleTxt +
                         (touches > 0 ? ' · ' + touches + '번째 터치' : '') + (stay > 0 ? ' · ' + stay + '분째 공방' : '');
                 color = isSup ? '#66bbff' : '#ff6666';
+                planLevel = near.k + '@' + near.v.toFixed(2);
 
                 if (isSup) {
                     var weakening = touches >= 3;                         // 여러 번 두드리면 약해짐
@@ -1763,6 +1812,7 @@
                 color = bias >= 2 ? '#ff6666' : bias <= -2 ? '#66bbff' : '#ddbb00';
                 if (Math.abs(bias) >= 2 && tgt) {
                     var opp = bias > 0 ? below[0] : above[0];
+                    planLevel = opp ? opp.n + '@' + opp.v.toFixed(2) : '추세';
                     plan = rtPlan(bias > 0 ? 'long' : 'short', price, opp && opp.v, tgt.v);
                     line3 = '추세 방향 눌림/반등에서만 진입. 레벨 사이 추격은 손익비 불리';
                 } else {
@@ -1770,11 +1820,7 @@
                 }
             }
 
-            // ★ 가상매매: 현재 계획을 대기주문으로 반영 (손익비 기준 미만은 제외)
-            가상_계획반영(s.ticker, plan, {
-                가격: price, VWAP: vwap, 옵션점수: score, 시세출처: s.src,
-                신호: paperPlain(line1) + ' / ' + paperPlain(line3)
-            });
+            if (plan) plan.레벨 = planLevel || '기타';
 
             // ── ① 결론: 매수 고려 / 매도 고려 / 관망 (3초 이상 유지된 판단만 반영, 바뀐 뒤 최소 10초 유지) ──
             var now = Date.now();
@@ -1792,6 +1838,12 @@
             } else if (jd.상태 === cand) {
                 jd.이유 = candReason; jd.계획 = plan;          // 같은 판단이면 이유·계획 숫자는 최신값으로
             }
+            // ★ 가상매매: 카드에 표시된(안정화된) 결론이 지금 계획과 같을 때만 대기주문으로 반영
+            가상_계획반영(s.ticker, (jd.상태 !== '관망' && cand === jd.상태) ? plan : null, {
+                가격: price, VWAP: vwap, 옵션점수: score, 시세출처: s.src,
+                신호: paperPlain(line1) + ' / ' + paperPlain(line3)
+            });
+
             var 결론 = jd.상태 === '매수' ? { 글: '🔺 매수 고려', 색: '#ff5555' }
                      : jd.상태 === '매도' ? { 글: '🔻 매도(숏) 고려', 색: '#5599ff' }
                      : { 글: '⏸ 관망 중', 색: '#ddbb00' };
@@ -1828,8 +1880,10 @@
 
             // ── ⑦ 상태 (작은 글씨) ──
             var note = rtSessionNote();
+            var 정규장VWAP = marketPhase().type !== 'REG' ? (d.vwapReg || s.정규장VWAP || 0) : 0;
             var stateTxt = [
                 note ? '⏱ ' + note : '⏱ 정규장',
+                정규장VWAP > 0 ? '정규장 VWAP $' + 정규장VWAP.toFixed(2) + ' (현재가 ' + fmtPct((price - 정규장VWAP) / 정규장VWAP * 100) + ')' : '',
                 '시세 ' + (s.src === 'kiwoom' ? '키움' : s.src === 'yahoo' ? '야후' : '─'),
                 s.extVwap > 0 ? 'VWAP 키움 계산' : vwReal ? 'VWAP 페이지 수집값' : 'VWAP 추정치',
                 s.ticks.length < 20 ? '실시간 수집 중' : ''
@@ -1881,9 +1935,13 @@
         var 가상_신규진입마감분 = 955;     // 15:55 ET 이후 신규 진입 금지
         var 가상_장마감청산분 = 959;       // 15:59 ET 에 전량 청산
         var 가상_재진입대기초 = 60;        // 청산 후 같은 종목 재진입 대기(초)
+        var 가상_최소보유분 = 3;           // 진입 후 이 시간 안에는 반대신호로 뒤집지 않음 (손절·목표는 정상 적용)
+        var 가상_레벨손절대기분 = 30;      // 같은 레벨·같은 방향으로 손절되면 이 시간 동안 재진입 금지
+        var 가상_레벨최대시도 = 2;         // 같은 레벨·같은 방향 진입은 하루 최대 횟수
+        var 가상_사후추적분 = 30;          // 손절 등으로 청산된 뒤 원래 목표 도달 여부를 추적하는 시간
         var 가상_저장키 = 'paperState_v2';
         var 가상_대상종목 = null;          // 윈폼이 지정 (null = 아직 전달 안 됨 → 매매 안 함)
-        var 가상매매 = { 날짜: '', 보유: {}, 대기: {}, 전송대기열: [], 마지막청산: {} };
+        var 가상매매 = { 날짜: '', 보유: {}, 대기: {}, 전송대기열: [], 마지막청산: {}, 레벨기록: {}, 추적: [] };
 
         function 가상_두자리(n) { return (n < 10 ? '0' : '') + n; }
         function 가상_뉴욕시각() { return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })); }
@@ -1909,8 +1967,11 @@
                 var 저장값 = JSON.parse(localStorage.getItem(가상_저장키) || 'null');
                 if (저장값 && 저장값.보유) {
                     가상매매.전송대기열 = 저장값.전송대기열 || [];
+                    가상매매.추적 = 저장값.추적 || [];
                     if (저장값.날짜 === 오늘) {
                         가상매매.보유 = 저장값.보유;          // 같은 날 창을 다시 열면 보유 포지션 이어서 관리
+                        가상매매.레벨기록 = 저장값.레벨기록 || {};
+                        가상매매.마지막청산 = 저장값.마지막청산 || {};
                     } else {
                         // 지난 거래일에 창이 닫혀 청산되지 못한 포지션 → 마지막 가격으로 기록 후 정리
                         Object.keys(저장값.보유).forEach(function (종목) {
@@ -1933,6 +1994,14 @@
             var 가능 = 계획 && 계획.rr >= 가상_최소손익비 && 가상_정규장(et) && 가상_분(et) < 가상_신규진입마감분;
             var 방향 = 계획 ? (계획.dir === 'long' ? '롱' : '숏') : '';
             if (!가능 || (포지션 && 포지션.방향 === 방향)) { delete 가상매매.대기[종목]; return; }   // 같은 방향 추가 진입 없음
+            // 최소 보유시간 안에는 반대신호로 뒤집지 않음
+            if (포지션 && (Date.now() - 포지션.진입시각값) / 60000 < 가상_최소보유분) { delete 가상매매.대기[종목]; return; }
+            // 같은 레벨·같은 방향: 손절 후 30분 금지 / 하루 최대 2회
+            var 레벨키 = 종목 + '|' + (계획.레벨 || '기타') + '|' + 방향, 기록 = 가상매매.레벨기록[레벨키];
+            if (기록 && (기록.시도 >= 가상_레벨최대시도 ||
+                        (기록.마지막손절 && (Date.now() - 기록.마지막손절) / 60000 < 가상_레벨손절대기분))) {
+                delete 가상매매.대기[종목]; return;
+            }
             if (!포지션 && 가상매매.마지막청산[종목] && (Date.now() - 가상매매.마지막청산[종목]) / 1000 < 가상_재진입대기초) {
                 delete 가상매매.대기[종목]; return;                                                   // 청산 직후 재진입 방지
             }
@@ -1945,7 +2014,8 @@
                 방향: 방향, 진입가: 계획.entry, 손절가: 계획.stop, 목표가: 계획.target, 손익비: 계획.rr,
                 // 계획 시점 가격 대비 진입가 위치로 체결 조건 결정: 위=이상 도달 / 아래=이하 도달 / 즉시
                 체결조건: 계획.entry > 상황.가격 * 1.0001 ? '이상' : 계획.entry < 상황.가격 * 0.9999 ? '이하' : '즉시',
-                신호: 상황.신호, VWAP: 상황.VWAP, 옵션점수: 상황.옵션점수, 시세출처: 상황.시세출처
+                신호: 상황.신호, VWAP: 상황.VWAP, 옵션점수: 상황.옵션점수, 시세출처: 상황.시세출처,
+                레벨: 계획.레벨 || '기타', 레벨키: 레벨키
             };
         }
 
@@ -1953,12 +2023,17 @@
         function 가상_시세반영(종목, 가격) {
             if (!가상_기록가능 || !종목 || !(가격 > 0)) return;
             var et = 가상_뉴욕시각(), 분 = 가상_분(et), 시각 = 가상_시각문자(et), 변경 = false;
-            if (가상매매.날짜 !== 가상_날짜문자(et)) { 가상매매.날짜 = 가상_날짜문자(et); 가상매매.대기 = {}; 변경 = true; }
+            if (가상매매.날짜 !== 가상_날짜문자(et)) { 가상매매.날짜 = 가상_날짜문자(et); 가상매매.대기 = {}; 가상매매.레벨기록 = {}; 변경 = true; }
+            if (가상_사후추적(종목, 가격)) 변경 = true;
 
             // ── 보유 포지션 청산 판정 (대상에서 빠져도 보유 중인 포지션은 끝까지 관리) ──
             var 포지션 = 가상매매.보유[종목];
             if (포지션) {
                 포지션.최근가 = 가격; 포지션.최근시각 = 시각;
+                // 보유 중 가장 유리했던 폭(최대순행) / 가장 불리했던 폭(최대역행), 진입가 대비 %
+                var 유리 = (가격 - 포지션.진입가) / 포지션.진입가 * 100 * (포지션.방향 === '롱' ? 1 : -1);
+                포지션.최대순행 = Math.max(포지션.최대순행 || 0, 유리);
+                포지션.최대역행 = Math.min(포지션.최대역행 || 0, 유리);
                 var 청산가 = null, 사유 = '';
                 if (포지션.방향 === '롱') {
                     if (가격 <= 포지션.손절가) { 청산가 = 포지션.손절가; 사유 = '손절'; }
@@ -1986,8 +2061,11 @@
                             진입가: 체결가, 손절가: 주문.손절가, 목표가: 주문.목표가,
                             계획손익비: Math.abs(주문.목표가 - 체결가) / Math.abs(체결가 - 주문.손절가),
                             진입시각값: Date.now(), 진입시각: 시각, 최근가: 가격, 최근시각: 시각,
-                            신호: 주문.신호, VWAP: 주문.VWAP, 옵션점수: 주문.옵션점수, 시세출처: 주문.시세출처
+                            신호: 주문.신호, VWAP: 주문.VWAP, 옵션점수: 주문.옵션점수, 시세출처: 주문.시세출처,
+                            레벨: 주문.레벨, 레벨키: 주문.레벨키, 최대순행: 0, 최대역행: 0
                         };
+                        var 레벨기록 = 가상매매.레벨기록[주문.레벨키] || (가상매매.레벨기록[주문.레벨키] = { 시도: 0, 마지막손절: 0 });
+                        레벨기록.시도++;
                         가상매매.보유[종목] = 새포지션;
                         가상매매.전송대기열.push({ 종류: '진입', 거래: 가상_기록행(새포지션, null) });
                     }
@@ -2000,6 +2078,15 @@
 
         function 가상_청산기록(포지션, 청산가, 사유, 시각) {
             가상매매.마지막청산[포지션.종목] = Date.now();
+            if (사유 === '손절' && 포지션.레벨키) {
+                var 기록 = 가상매매.레벨기록[포지션.레벨키] || (가상매매.레벨기록[포지션.레벨키] = { 시도: 1, 마지막손절: 0 });
+                기록.마지막손절 = Date.now();
+            }
+            // 목표로 끝난 거래가 아니면 청산 후 30분 동안 "원래 목표 도달" 여부 추적 (반대 휩소 측정)
+            if (사유 !== '목표' && 포지션.번호) {
+                가상매매.추적.push({ 번호: 포지션.번호, 종목: 포지션.종목, 방향: 포지션.방향, 목표가: 포지션.목표가,
+                                     청산시각값: Date.now(), 마지막틱: 0 });
+            }
             가상매매.전송대기열.push({ 종류: '청산', 거래: 가상_기록행(포지션, { 가격: 청산가, 사유: 사유, 시각: 시각 }) });
         }
 
@@ -2008,7 +2095,8 @@
                 번호: p.번호, 날짜: p.날짜, 종목: p.종목, 방향: p.방향,
                 진입시각: p.진입시각, 진입가: +p.진입가.toFixed(4), 손절가: +p.손절가.toFixed(4), 목표가: +p.목표가.toFixed(4),
                 계획손익비: +p.계획손익비.toFixed(2), 진입VWAP: +(p.VWAP || 0).toFixed(4), 옵션점수: +(p.옵션점수 || 0).toFixed(1),
-                시세출처: p.시세출처 || '', 신호: p.신호 || ''
+                시세출처: p.시세출처 || '', 신호: p.신호 || '',
+                진입레벨: p.레벨 || '', 최대순행률: +(p.최대순행 || 0).toFixed(3), 최대역행률: +(p.최대역행 || 0).toFixed(3)
             };
             if (청산) {
                 var 부호 = p.방향 === '롱' ? 1 : -1;
@@ -2022,6 +2110,28 @@
             }
             return 행;
         }
+
+        // ── 청산 후 사후 추적: 원래 목표에 도달했는지 (시세가 들어올 때 + 1초마다 만료 확인) ──
+        //   결과: 도달(몇 분 만에) / 미도달 / 추적불가(청산 뒤 시세를 받지 못함, 예: 패널에서 종목이 빠짐)
+        function 가상_사후추적(종목, 가격) {
+            if (!가상매매.추적.length) return false;
+            var 지금 = Date.now(), 변경 = false;
+            가상매매.추적 = 가상매매.추적.filter(function (추) {
+                var 결과 = null, 도달분 = '';
+                if (종목 && 추.종목 === 종목 && 가격 > 0) {
+                    추.마지막틱 = 지금;
+                    var 도달 = 추.방향 === '롱' ? 가격 >= 추.목표가 : 가격 <= 추.목표가;
+                    if (도달) { 결과 = '도달'; 도달분 = +((지금 - 추.청산시각값) / 60000).toFixed(1); }
+                }
+                if (!결과 && 지금 - 추.청산시각값 >= 가상_사후추적분 * 60000) 결과 = 추.마지막틱 ? '미도달' : '추적불가';
+                if (!결과) return true;
+                가상매매.전송대기열.push({ 종류: '추적', 추적: { 번호: 추.번호, 종목: 추.종목, 결과: 결과, 도달분: 도달분 } });
+                변경 = true;
+                return false;
+            });
+            return 변경;
+        }
+        setInterval(function () { if (가상_기록가능 && 가상_사후추적('', 0)) 가상_저장(); }, 1000);
 
         // 결론이 매수/매도 "고려"로 바뀐 순간 기록 (대상 여부와 관계없이 → 차트 표시는 모든 패널 종목, 소리는 윈폼이 대상만)
         function 가상_고려기록(종목, 방향, 가격, 계획, 이유) {
@@ -2512,6 +2622,7 @@
             if (d) {
                 d.price = q.price;
                 d.vwap = (src === 'kiwoom' && q.vwap > 0) ? q.vwap : 0;
+                d.vwapReg = (src === 'kiwoom' && q.vwapReg > 0) ? q.vwapReg : 0;
                 if (q.dayHigh > 0) d.dayHigh = q.dayHigh;
                 if (q.dayLow > 0) d.dayLow = q.dayLow;
                 var p = 'p' + idx + '-';
@@ -2564,6 +2675,7 @@
                         dayHigh: toNum(rtData.dayHigh),
                         dayLow: toNum(rtData.dayLow),
                         vwap: toNum(rtData.vwap),     // ★ C#이 체결 단위로 계산한 VWAP
+                        vwapReg: toNum(rtData.vwapReg), // ★ 장외 시간: 정규장 VWAP(16:00 고정)
                         // 최초 스냅샷은 과거 값일 수 있으므로 수신 시각을 갱신하지 않음
                         recvAt: isFirst ? ((kiwoomCache[ticker] && kiwoomCache[ticker].recvAt) || 0) : Date.now()
                     };
