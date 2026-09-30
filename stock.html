@@ -607,7 +607,62 @@
         .chips .chip { white-space: nowrap; }
         .plan-line { color: #ccc; margin-top: 3px; }
 
-        /* ★ 전략 카드: 줄 위치·높이 고정 (값이 없어도 자리 유지) */
+        /* ★ 전략 카드 (방향 게이지형): 모든 칸 위치·높이 고정 */
+        .sg-card { display: flex; flex-direction: column; gap: 14px; padding: 16px; border-radius: 14px; background: #11141d;
+                   border: 1px solid #242a38; color: #e7e9f0; text-align: left; word-break: keep-all; }
+        .sg-mono, .sg-cv, .sg-rv { font-family: ui-monospace, 'Cascadia Mono', Consolas, 'JetBrains Mono', monospace; }
+        .sg-top { display: flex; gap: 18px; align-items: center; }
+        .sg-gauge { width: 150px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 124px; }
+        .sg-svg { width: 150px; height: 84px; display: block; }
+        .sg-glabel { font-size: 14px; font-weight: 700; color: #e7e9f0; white-space: nowrap; }
+        .sg-glabel .sg-mono { color: #8b93a7; }
+        .sg-gsub { font-size: 11.5px; color: #5d6578; white-space: nowrap; }
+        .sg-head { flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+        .sg-state { display: flex; align-items: center; gap: 8px; font-size: 23px; font-weight: 800; line-height: 1.2; white-space: nowrap; }
+        .sg-ico { width: 18px; height: 18px; flex-shrink: 0; }
+        .sg-reason { font-size: 16px; font-weight: 600; line-height: 1.45; height: 2.9em; overflow: hidden;
+                     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .sg-situ { font-size: 13.5px; color: #9aa3b5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sg-plan { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: #242a38; border-radius: 10px; overflow: hidden; min-height: 62px; }
+        .sg-cell { background: #151925; padding: 10px 12px; min-width: 0; }
+        .sg-cl { font-size: 12.5px; color: #8b93a7; white-space: nowrap; }
+        .sg-cv { font-size: 18px; font-weight: 700; white-space: nowrap; margin-top: 2px; }
+        .sg-rr { font-size: 13px; color: #9aa3b5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: -6px; }
+        .sg-bars { display: flex; flex-direction: column; gap: 9px; min-height: 150px; }
+        .sg-row { display: grid; grid-template-columns: 60px minmax(0, 1fr) 128px; gap: 12px; align-items: center; font-size: 14px; }
+        .sg-rl { color: #9aa3b5; white-space: nowrap; }
+        .sg-track { position: relative; height: 7px; border-radius: 4px; background: #242a38; }
+        .sg-mid { position: absolute; left: 50%; top: -4px; width: 1px; height: 15px; background: #5d6578; }
+        .sg-fill { position: absolute; top: 0; height: 7px; border-radius: 4px; }
+        .sg-rv { text-align: right; white-space: nowrap; font-weight: 700; font-size: 14px; }
+        .sg-rv small { font-family: inherit; font-size: 12px; font-weight: 500; color: #9aa3b5; }
+        .sg-meter { display: flex; gap: 3px; }
+        .sg-meter span { flex: 1 1 0; height: 7px; border-radius: 2px; }
+        .sg-vtxt { font-size: 14px; font-weight: 600; white-space: nowrap; }
+        .sg-foot { display: flex; flex-direction: column; gap: 5px; padding-top: 11px; border-top: 1px solid #242a38; }
+        .sg-fl { font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-height: 1.4em; }
+        .sg-paper { font-weight: 600; }
+        .sg-small { font-size: 12px; color: #6f778a; }
+        .sg-mut { color: #9aa3b5; } .sg-dim { color: #5d6578; }
+        @media screen and (max-width: 700px) {
+            .sg-card { padding: 14px 12px; gap: 12px; }
+            .sg-top { gap: 12px; }
+            .sg-gauge { width: 118px; min-height: 104px; }
+            .sg-svg { width: 118px; height: 66px; }
+            .sg-glabel { font-size: 13px; } .sg-gsub { font-size: 10.5px; }
+            .sg-state { font-size: 20px; }
+            .sg-reason { font-size: 15px; }
+            .sg-situ { font-size: 13px; }
+            .sg-cell { padding: 8px 8px; }
+            .sg-cl { font-size: 11.5px; }
+            .sg-cv { font-size: 15.5px; }
+            .sg-rr { font-size: 12.5px; }
+            .sg-row { grid-template-columns: 50px minmax(0, 1fr) 112px; gap: 9px; font-size: 13.5px; }
+            .sg-rv { font-size: 13.5px; } .sg-rv small { font-size: 11.5px; }
+            .sg-fl { font-size: 13px; } .sg-small { font-size: 11.5px; }
+        }
+
+        /* (이전) 전략 카드 줄 배치 */
         .sb-rows { display: grid; grid-template-columns: 30px minmax(0, 1fr); column-gap: 8px; row-gap: 4px;
                    text-align: left; align-items: start; }
         .sb-lbl { font-size: 10.5px; color: #7f8fa6; font-weight: 700; line-height: 18px; white-space: nowrap; }
@@ -1844,45 +1899,83 @@
                 신호: paperPlain(line1) + ' / ' + paperPlain(line3)
             });
 
-            var 결론 = jd.상태 === '매수' ? { 글: '🔺 매수 고려', 색: '#ff5555' }
-                     : jd.상태 === '매도' ? { 글: '🔻 매도(숏) 고려', 색: '#5599ff' }
-                     : { 글: '⏸ 관망 중', 색: '#ddbb00' };
+            var 결론 = jd.상태 === '매수' ? { 글: '매수 고려', 색: '#ff5d5d', 모양: '▲' }
+                     : jd.상태 === '매도' ? { 글: '매도(숏) 고려', 색: '#4d8dff', 모양: '▼' }
+                     : { 글: '관망 중', 색: '#f2c14e', 모양: '관망' };
 
-            // ── ③ 계획: 항상 2줄 (없으면 ─) ──
-            var pl = jd.계획, planA, planB, planColor = '#dddddd';
+            // ════ 카드 출력 (방향 게이지형, 모든 칸 위치 고정 · 값이 없으면 ─) ════
+            var 빨강 = '#ff5d5d', 파랑 = '#4d8dff', 흐림 = '#5d6578';
+
+            // ① 방향 게이지 (−4 ~ +4)
+            var 점수 = Math.max(-4, Math.min(4, bias));
+            var 점수이름 = { '-4': '강한 하락', '-3': '하락', '-2': '하락 우위', '-1': '약한 하락', '0': '중립', '1': '약한 상승', '2': '상승 우위', '3': '상승', '4': '강한 상승' }[String(점수)];
+            var 각 = Math.PI * (1 - (점수 + 4) / 8), 바늘x = 70 + 46 * Math.cos(각), 바늘y = 70 - 46 * Math.sin(각);
+            function 호(a0, a1, 색) {
+                var x0 = 70 + 56 * Math.cos(a0), y0 = 70 - 56 * Math.sin(a0), x1 = 70 + 56 * Math.cos(a1), y1 = 70 - 56 * Math.sin(a1);
+                return '<path d="M ' + x0.toFixed(1) + ' ' + y0.toFixed(1) + ' A 56 56 0 0 1 ' + x1.toFixed(1) + ' ' + y1.toFixed(1) + '" stroke="' + 색 + '" stroke-width="11" fill="none"></path>';
+            }
+            var 게이지 = '<svg viewBox="0 0 140 78" class="sg-svg" aria-hidden="true">' +
+                호(Math.PI, Math.PI * 0.62, 파랑) + 호(Math.PI * 0.60, Math.PI * 0.40, '#3a4153') + 호(Math.PI * 0.38, 0.0001, 빨강) +
+                '<line x1="70" y1="70" x2="' + 바늘x.toFixed(1) + '" y2="' + 바늘y.toFixed(1) + '" stroke="#e7e9f0" stroke-width="3.5" stroke-linecap="round"></line>' +
+                '<circle cx="70" cy="70" r="5.5" fill="#e7e9f0"></circle></svg>' +
+                '<div class="sg-glabel">' + 점수이름 + ' <span class="sg-mono">' + (점수 > 0 ? '+' : '') + 점수 + '</span></div>' +
+                '<div class="sg-gsub">방향 점수 (−4 ~ +4)</div>';
+
+            // ② 상태 · 이유 · 상황
+            var 상태아이콘 = 결론.모양 === '관망'
+                ? '<svg viewBox="0 0 16 16" class="sg-ico"><rect x="3.5" y="3" width="3" height="10" rx="1" fill="currentColor"></rect><rect x="9.5" y="3" width="3" height="10" rx="1" fill="currentColor"></rect></svg>'
+                : 결론.모양 === '▲' ? '<svg viewBox="0 0 16 16" class="sg-ico"><path d="M8 3 L13.5 12 H2.5 Z" fill="currentColor"></path></svg>'
+                : '<svg viewBox="0 0 16 16" class="sg-ico"><path d="M8 13 L13.5 4 H2.5 Z" fill="currentColor"></path></svg>';
+
+            // ③ 계획 4칸 + 손익비 설명
+            var pl = jd.계획, 흐린계획 = jd.상태 === '관망';
+            function 칸(이름, 값, 색) { return '<div class="sg-cell"><div class="sg-cl">' + 이름 + '</div><div class="sg-cv" style="color:' + 색 + '">' + 값 + '</div></div>'; }
+            var 계획칸, 손익비설명;
             if (pl) {
-                var cond = pl.entry > price * 1.0001 ? ' 이상 도달 시' : pl.entry < price * 0.9999 ? ' 이하 도달 시' : ' (현재가 부근)';
-                planA = (pl.dir === 'long' ? '매수 ' : '숏 ') + '$' + pl.entry.toFixed(2) + cond +
-                        ' · 손절 $' + pl.stop.toFixed(2) + ' · 목표 $' + pl.target.toFixed(2);
-                planB = '손익비 1 : ' + pl.rr.toFixed(1) + ' = 손절 −' + pl.riskPct.toFixed(2) + '% 대비 목표 +' + pl.rewardPct.toFixed(2) + '%' +
-                        (pl.rr < 가상_최소손익비 ? ' · 기준 1:' + 가상_최소손익비.toFixed(1) + ' 미만' : '');
-                if (jd.상태 === '관망') planColor = '#888888';
+                var 조건 = pl.entry > price * 1.0001 ? '이상 도달 시' : pl.entry < price * 0.9999 ? '이하 도달 시' : '현재가 부근';
+                var 진입색 = 흐린계획 ? '#8b93a7' : (pl.dir === 'long' ? 빨강 : 파랑);
+                // 진입가보다 위 = 빨강 / 아래 = 파랑 (롱: 손절 파랑·목표 빨강, 숏: 손절 빨강·목표 파랑)
+                function 위아래색(v) { return 흐린계획 ? '#8b93a7' : v > pl.entry ? 빨강 : 파랑; }
+                계획칸 = 칸(pl.dir === 'long' ? '매수 진입' : '숏 진입', pl.entry.toFixed(2), 진입색) +
+                         칸('손절', pl.stop.toFixed(2), 위아래색(pl.stop)) +
+                         칸('목표', pl.target.toFixed(2), 위아래색(pl.target)) +
+                         칸('손익비', '1:' + pl.rr.toFixed(1), 흐린계획 ? '#8b93a7' : '#e7e9f0');
+                손익비설명 = '손절 −' + pl.riskPct.toFixed(2) + '% 대비 목표 +' + pl.rewardPct.toFixed(2) + '% · ' + 조건 +
+                            (pl.rr < 가상_최소손익비 ? ' · 기준 1:' + 가상_최소손익비.toFixed(1) + ' 미만 (진입 안 함)' : '');
             } else {
-                planA = '진입 ─ · 손절 ─ · 목표 ─';
-                planB = '손익비 ─ (관망 중)';
-                planColor = '#777777';
+                계획칸 = 칸('진입', '—', 흐림) + 칸('손절', '—', 흐림) + 칸('목표', '—', 흐림) + 칸('손익비', '—', 흐림);
+                손익비설명 = '진입 계획 없음 — 레벨에 닿거나 추세가 생기면 표시';
             }
 
-            // ── ④ 지표: 항목·순서 고정 (값이 없으면 ─) ──
-            var chips = [
-                'VWAP ' + (vwDist >= 0 ? '위 ' : '아래 ') + fmtPct(vwDist),
-                '1분 ' + (m1 != null ? fmtPct(m1) + ' ' + speed : '─'),
-                '3분 ' + (m3 != null ? fmtPct(m3) : '─'),
-                volTxt || '거래량 ─',
-                '옵션 ' + optState + ' ' + score.toFixed(1) + '/10'
-            ];
+            // ④ 지표 막대 (가운데 0 기준 좌우) + 옵션 눈금 + 거래량
+            function 막대(이름, 값, 한도, 설명) {
+                var 있음 = 값 != null, 비 = 있음 ? Math.max(-1, Math.min(1, 값 / 한도)) : 0;
+                var 색 = !있음 ? 흐림 : 값 > 0 ? 빨강 : 값 < 0 ? 파랑 : '#8b93a7';
+                var 채움 = 있음 && Math.abs(비) > 0.02
+                    ? '<div class="sg-fill" style="' + (비 >= 0 ? 'left:50%' : 'right:50%') + ';width:' + (Math.abs(비) * 50).toFixed(0) + '%;background:' + 색 + '"></div>' : '';
+                return '<div class="sg-row"><span class="sg-rl">' + 이름 + '</span><div class="sg-track"><div class="sg-mid"></div>' + 채움 + '</div>' +
+                       '<span class="sg-rv" style="color:' + 색 + '">' + (있음 ? fmtPct(값) : '—') + (설명 ? ' <small>' + 설명 + '</small>' : '') + '</span></div>';
+            }
+            var 옵션눈금 = '';
+            for (var q = 0; q < 10; q++) 옵션눈금 += '<span style="background:' + (q < Math.round(score) ? (score >= 6 ? 빨강 : score <= 4 ? 파랑 : '#8b93a7') : '#242a38') + '"></span>';
+            var 옵션색 = score >= 6 ? 빨강 : score <= 4 ? 파랑 : '#8b93a7';
+            var 지표 = 막대('VWAP', vwDist, 0.5, vwDist >= 0 ? '위' : '아래') +
+                       막대('1분', m1, 0.3, m1 != null ? speed : '') +
+                       막대('3분', m3, 0.5, '') +
+                       '<div class="sg-row"><span class="sg-rl">옵션</span><div class="sg-meter">' + 옵션눈금 + '</div>' +
+                       '<span class="sg-rv" style="color:' + 옵션색 + '">' + optState + ' ' + score.toFixed(1) + '</span></div>' +
+                       '<div class="sg-row"><span class="sg-rl">거래량</span><span class="sg-vtxt" style="color:' + (volTxt ? (surge >= 1.3 ? 빨강 : '#c9cedb') : 흐림) + '">' +
+                       (volTxt || '데이터 수집 중') + '</span><span></span></div>';
 
-            // ── ⑤ 최근 이벤트 ──
-            var recent = s.events.slice(0, 2).map(function (e) {
-                var c = e.dir === 'up' ? '#ff6666' : e.dir === 'down' ? '#66bbff' : '#bbbbbb';
-                return '<span style="color:' + c + '">' + fmtAgo(e.t) + ' ' + e.msg + '</span>';
-            }).join(' · ') || '<span style="color:#777">최근 이벤트 없음</span>';
-
-            // ── ⑦ 상태 (작은 글씨) ──
+            // ⑤ 최근 이벤트 · 상태
+            var 최근 = s.events.slice(0, 1).map(function (e) {
+                var c = e.dir === 'up' ? '#ff7a7a' : e.dir === 'down' ? '#7aa8ff' : '#c9cedb';
+                return '<span class="sg-mut">' + fmtAgo(e.t) + '</span> <span style="color:' + c + '">' + e.msg + '</span>';
+            }).join('') || '<span class="sg-dim">최근 이벤트 없음</span>';
             var note = rtSessionNote();
             var 정규장VWAP = marketPhase().type !== 'REG' ? (d.vwapReg || s.정규장VWAP || 0) : 0;
             var stateTxt = [
-                note ? '⏱ ' + note : '⏱ 정규장',
+                note ? note : '정규장',
                 정규장VWAP > 0 ? '정규장 VWAP $' + 정규장VWAP.toFixed(2) + ' (현재가 ' + fmtPct((price - 정규장VWAP) / 정규장VWAP * 100) + ')' : '',
                 '시세 ' + (s.src === 'kiwoom' ? '키움' : s.src === 'yahoo' ? '야후' : '─'),
                 s.extVwap > 0 ? 'VWAP 키움 계산' : vwReal ? 'VWAP 페이지 수집값' : 'VWAP 추정치',
@@ -1896,19 +1989,20 @@
                 if (color !== undefined) el.style.color = color;
                 if (title !== undefined) el.title = title;
             }
-            put('sigtitle', 결론.글 + ' <span class="sb-reason">— ' + jd.이유 + '</span>', 결론.색, 결론.글 + ' — ' + jd.이유);
-            put('situ', line1, color, paperPlain(line1));
-            put('plan-a', planA, planColor, planA);
-            put('plan-b', planB, planColor, planB);
-            put('ind', chips.map(function (t) { return '<span class="chip">' + t + '</span>'; }).join(''));
-            put('recent', recent, undefined, paperPlain(recent));
+            put('gauge', 게이지);
+            put('sigtitle', 상태아이콘 + '<span>' + 결론.글 + '</span>', 결론.색, 결론.글);
+            put('reason', jd.이유, undefined, jd.이유);
+            put('situ', paperPlain(line1).replace(/^[^\w가-힣$]+/, ''), undefined, paperPlain(line1));
+            put('plan', 계획칸);
+            put('plan-b', 손익비설명, undefined, 손익비설명);
+            put('ind', 지표);
+            put('recent', 최근, undefined, paperPlain(최근));
             if (가상_기록가능) {
                 var ps = 가상_상태문구(s.ticker, price);
-                put('paper', ps.글, ps.색, ps.글);
+                put('paper', ps.글.replace('🧪 ', ''), ps.색, ps.글);
             }
             put('state', stateTxt, undefined, stateTxt);
 
-            // 가격 막대(당일변동)에 VWAP 위치 표시
             VWAP막대표시(panelIdx, vwap, price, !(s.extVwap > 0) && !vwReal);
         }
 
@@ -2234,14 +2328,22 @@
                 + '</div>'
                 + '</div>'
                 + '<div class="strategy-box">'
-                + '<div class="sb-header sb-rows">'
-                + '<div class="sb-lbl">결론</div><div class="sb-val sb-one sb-two sb-main" id="p' + i + '-sigtitle">⏸ 관망 중 <span class="sb-reason">— 데이터 로딩 중</span></div>'
-                + '<div class="sb-lbl">상황</div><div class="sb-val sb-one" id="p' + i + '-situ">─</div>'
-                + '<div class="sb-lbl">계획</div><div class="sb-val"><div class="sb-one sb-two" id="p' + i + '-plan-a">진입 ─ · 손절 ─ · 목표 ─</div><div class="sb-one sb-sub" id="p' + i + '-plan-b">손익비 ─ (관망 중)</div></div>'
-                + '<div class="sb-lbl">지표</div><div class="sb-val sb-ind" id="p' + i + '-ind"><span class="chip">─</span></div>'
-                + '<div class="sb-lbl">최근</div><div class="sb-val sb-one sb-sub" id="p' + i + '-recent">최근 이벤트 없음</div>'
-                + (가상_기록가능 ? '<div class="sb-lbl">가상</div><div class="sb-val sb-one sb-sub" id="p' + i + '-paper">─</div>' : '')
-                + '<div class="sb-lbl">상태</div><div class="sb-val sb-one sb-small" id="p' + i + '-state">─</div>'
+                + '<div class="sg-card">'
+                + '<div class="sg-top">'
+                + '<div class="sg-gauge" id="p' + i + '-gauge"></div>'
+                + '<div class="sg-head">'
+                + '<div class="sg-state" id="p' + i + '-sigtitle"><span>관망 중</span></div>'
+                + '<div class="sg-reason" id="p' + i + '-reason">데이터 로딩 중</div>'
+                + '<div class="sg-situ" id="p' + i + '-situ">─</div>'
+                + '</div></div>'
+                + '<div class="sg-plan" id="p' + i + '-plan"></div>'
+                + '<div class="sg-rr" id="p' + i + '-plan-b">─</div>'
+                + '<div class="sg-bars" id="p' + i + '-ind"></div>'
+                + '<div class="sg-foot">'
+                + '<div class="sg-fl" id="p' + i + '-recent"><span class="sg-dim">최근 이벤트 없음</span></div>'
+                + (가상_기록가능 ? '<div class="sg-fl sg-paper" id="p' + i + '-paper">─</div>' : '')
+                + '<div class="sg-fl sg-small" id="p' + i + '-state">─</div>'
+                + '</div>'
                 + '</div>'
                 + '<div class="timeline" id="p' + i + '-timeline"></div>'
                 + '</div>'
@@ -2356,12 +2458,11 @@
         function resetPanelUI(panelIdx, ticker) {
             var p = 'p' + panelIdx + '-';
             ['price', 'diff', 'chg', 'vol'].forEach(function (f) { var el = document.getElementById(p + f); if (el) el.textContent = '─'; });
-            var 초기값 = { 'sigtitle': '⏸ 관망 중 <span class="sb-reason">— 데이터 로딩 중</span>', 'situ': '─',
-                          'plan-a': '진입 ─ · 손절 ─ · 목표 ─', 'plan-b': '손익비 ─ (관망 중)', 'ind': '<span class="chip">─</span>',
-                          'recent': '최근 이벤트 없음', 'paper': '─', 'state': '─' };
+            var 초기값 = { 'gauge': '', 'sigtitle': '<span>관망 중</span>', 'reason': '데이터 로딩 중', 'situ': '─', 'plan': '',
+                          'plan-b': '─', 'ind': '', 'recent': '<span class="sg-dim">최근 이벤트 없음</span>', 'paper': '─', 'state': '─' };
             Object.keys(초기값).forEach(function (k) {
                 var el = document.getElementById(p + k); if (!el) return;
-                el.innerHTML = 초기값[k]; el._html = null; el.style.color = k === 'sigtitle' ? '#ddbb00' : '';
+                el.innerHTML = 초기값[k]; el._html = null; el.style.color = k === 'sigtitle' ? '#f2c14e' : '';
             });
             var dte = document.getElementById(p + 'dte'); if (dte) dte.textContent = '옵션만기 : 대기중';
             var tl = document.getElementById(p + 'timeline'); if (tl) tl.innerHTML = '';
