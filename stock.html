@@ -2553,7 +2553,7 @@
         // 오늘 필요한 종가가 아직 기록되지 않았으면 Worker에 즉시 실행 요청 (3분에 1번까지)
         function ensureCloseUpdated() {
             if (!CLOSE_WORKER_URL || CLOSE_WORKER_URL.indexOf('YOUR-ACCOUNT') >= 0) return;
-            if (closeStatus && closeStatus.completedDate === expectedSessionDate()) return;
+            if (closeStatus && closeStatus.completedDate === expectedSessionDate() && closeStatus.ver === 2) return;
             if (Date.now() - _ensureAt < 3 * 60 * 1000) return;
             _ensureAt = Date.now();
             fetch(CLOSE_WORKER_URL.replace(/\/+$/, '') + '/ensure', { cache: 'no-store' })
@@ -2578,7 +2578,7 @@
             var exp = expectedSessionDate();
             if (s.regDate === exp) return true;
             // 휴장일: Worker가 오늘 기준으로 확인을 마쳤는데 날짜가 더 이르면 그 값이 최신
-            return s.regDate < exp && !!closeStatus && closeStatus.expected === exp &&
+            return s.regDate < exp && !!closeStatus && closeStatus.expected === exp && closeStatus.ver === 2 &&
                    !!closeStatus.done && closeStatus.done[ticker] === exp;
         }
 
@@ -2589,6 +2589,10 @@
 
         function getRegClose(ticker) {
             var s = sessionCache[ticker];
+            var y0 = yahooRegCache[ticker];
+            // 저장 종가가 최신 날짜가 아닌데(휴장일 판정) 야후 실시간 기준 종가와 다르면 → 저장값 대신 실시간 기준 사용
+            if (sessionValid(ticker, s) && s.regDate < expectedSessionDate() && y0 && y0.regClose > 0 &&
+                Math.abs(y0.regClose - s.regClose) > 0.005) s = null;
             if (sessionValid(ticker, s)) return { regClose: s.regClose, prevClose: s.prevClose || 0, regDate: s.regDate, regVolume: s.regVolume || 0, src: s.source || '' };
             var y = yahooRegCache[ticker];
             if (y && y.regClose > 0) return { regClose: y.regClose, prevClose: y.prevClose || 0, regDate: '', src: 'yahoo-live' };
