@@ -2262,31 +2262,74 @@
             var yOk = y && y.price > 0, rOk = r && r.price > 0;
             if (yOk && (!rOk || y.recvAt >= r.recvAt)) return { q: y, src: 'yahoo' };
             if (rOk) return { q: r, src: 'yahoo' };
+            var sn = snapFor(ticker);   // 주말·휴장일: 장 마감 스냅샷
+            if (sn) return { q: { price: sn.price, change: sn.change, changeRate: sn.changePct, volume: 0, dayHigh: 0, dayLow: 0, recvAt: 0 }, src: 'yahoo' };
             return null;
         }
 
         // ════════════════════════════════════════════════════════
         // ★ 첫 화면 즉시 시세: Worker /quote (야후 REST 중계)
-        //   - 페이지를 열 때 화면 종목을 1번 조회 → WebSocket 데이터가 오면 그 종목은 REST 중단
-        //   - WebSocket이 30초 넘게 조용한 종목만 30초 간격으로 보조 조회 (거래 뜸한 시간 대비)
+        //   - 페이지를 열 때(또는 새 종목을 화면에 띄울 때) 그 종목을 1번만 조회
+        //   - WebSocket 이 연결돼 있으면 다시 조회하지 않음 (조용한 종목 = 체결 없음 = 가격 그대로)
+        //   - WebSocket 이 끊겨 있을 때만 60초 간격으로 보조 조회 (재연결되면 중단)
+        //   - 주말·휴장일: Worker 가 저장한 장 마감 스냅샷(system/snap)만 표시, 조회하지 않음
         //   - 키움 시세를 쓰는 중이거나, 탭이 숨겨져 있으면 조회하지 않음
         // ════════════════════════════════════════════════════════
         var restCache = {};        // ticker → { price, change, changeRate, volume, recvAt }
         var yahooWsAt = {};        // ticker → 마지막 WebSocket 수신 시각
         var restLastAt = {};       // ticker → 마지막 REST 조회 시각
-        var REST_SILENT_MS = 30000;
+        var REST_WS_DOWN_MS = 60000;   // WebSocket 이 끊겨 있을 때 보조 조회 간격
         var restBusy = false;
+        var restPageStart = Date.now();
+
+        // ── 휴장일 판정·장 마감 스냅샷 (Worker 가 하루 1번 기록) ──
+        var marketDay = null;       // system/marketDay { date, open }
+        var snapData = null;        // system/snap { date, savedAt, q: { TSLA: {...} } }
+        var snapLoaded = false;     // 첫 로딩 완료 여부 (완료 전에는 첫 조회를 잠깐 보류)
+
+        function etYmd(d) { return d.getFullYear() + '-' + (d.getMonth() < 9 ? '0' : '') + (d.getMonth() + 1) + '-' + (d.getDate() < 10 ? '0' : '') + d.getDate(); }
+        function isHolidayToday(t) {
+            t = t || etNowParts();
+            return !!marketDay && marketDay.open === false && marketDay.date === etYmd(t.et);
+        }
+        function prevWeekdayYmd(et) {
+            var d = new Date(et.getFullYear(), et.getMonth(), et.getDate(), 12);
+            do { d.setDate(d.getDate() - 1); } while (d.getDay() === 0 || d.getDay() === 6);
+            return etYmd(d);
+        }
+        // 지금이 "가격이 멈춘 시간"이면 필요한 스냅샷 날짜, 아니면 null
+        //   금 20:00 ~ 일 20:00 : 금요일 스냅샷 / 휴장일 20:00 전 : 직전 거래일 스냅샷
+        function staticSnapDay() {
+            var t = etNowParts(), d = t.d, m = t.m;
+            if (d === 5 && m >= 1200) return etYmd(t.et);
+            if (d === 6 || (d === 0 && m < 1200)) {
+                var f = new Date(t.et.getFullYear(), t.et.getMonth(), t.et.getDate() - (d === 6 ? 1 : 2), 12);
+                return etYmd(f);
+            }
+            if (isHolidayToday(t) && m < 1200) return prevWeekdayYmd(t.et);
+            return null;
+        }
+        function snapFor(t) {
+            var day = staticSnapDay();
+            if (!day || !snapData || !snapData.q || !(snapData.date >= day)) return null;
+            var q = snapData.q[t];
+            return q && q.price > 0 ? q : null;
+        }
 
         function restNeeded(t) {
             if (!t) return false;
             var k = kiwoomCache[t];
-            if (kiwoomAlive && k && k.price > 0) return false;                    // 키움 시세 사용 중
-            if (Date.now() - (yahooWsAt[t] || 0) < REST_SILENT_MS) return false;  // WebSocket 정상 수신 중
-            return Date.now() - (restLastAt[t] || 0) >= REST_SILENT_MS;           // 처음이거나 30초 경과
+            if (kiwoomAlive && k && k.price > 0) return false;                  // 키움 시세 사용 중
+            if (snapFor(t)) return false;                                       // 주말·휴장일: 스냅샷 사용
+            if (yahooWsAt[t]) return false;                                     // 이 종목은 WebSocket 으로 이미 받음
+            if (!restLastAt[t]) return true;                                    // 처음 화면에 띄운 종목
+            var wsDown = !yahooWs || yahooWs.readyState !== 1;
+            return wsDown && Date.now() - restLastAt[t] >= REST_WS_DOWN_MS;     // WebSocket 끊김 → 60초 간격
         }
 
         function restTick() {
             if (restBusy || !CLOSE_WORKER_URL || CLOSE_WORKER_URL.indexOf('YOUR-ACCOUNT') >= 0) return;
+            if (!snapLoaded && Date.now() - restPageStart < 2500) return;      // 스냅샷 확인 전 (최대 2.5초 대기)
             if (document.visibilityState === 'hidden') return;
             var seen = {}, list = [];
             panelTickers.concat(HEADER_TICKERS).forEach(function (t) { if (t && !seen[t] && restNeeded(t)) { seen[t] = 1; list.push(t); } });
@@ -2539,6 +2582,7 @@
             var t = etNowParts(), d = t.d, m = t.m;
             var weekend = d === 6 || (d === 0 && m < 1200) || (d === 5 && m >= 1200);
             if (weekend) return { type: 'WEEKEND', label: '주말 휴장 · 마지막 시세', icon: '⏸' };
+            if (isHolidayToday(t) && m < 1200) return { type: 'HOLIDAY', label: '휴장일 · 마지막 시세', icon: '⏸' };
             if (m >= 570 && m < 960) return { type: 'REG' };
             if (m >= 240 && m < 570) return { type: 'PRE', label: '프리마켓', icon: '☀' };
             if (m >= 960 && m < 1200) return { type: 'POST', label: '애프터마켓', icon: '🌙' };
@@ -2595,6 +2639,10 @@
                 Math.abs(y0.regClose - s.regClose) > 0.005) s = null;
             if (sessionValid(ticker, s)) return { regClose: s.regClose, prevClose: s.prevClose || 0, regDate: s.regDate, regVolume: s.regVolume || 0, src: s.source || '' };
             var y = yahooRegCache[ticker];
+            if (!(y && y.regClose > 0)) {
+                var sn = snapFor(ticker);
+                if (sn && sn.regPrice > 0) y = { regClose: sn.regPrice, prevClose: sn.regPrevClose || 0 };
+            }
             if (y && y.regClose > 0) return { regClose: y.regClose, prevClose: y.prevClose || 0, regDate: '', src: 'yahoo-live' };
             return null;
         }
@@ -3169,6 +3217,7 @@
             var h = Number(new Date().toLocaleString('en-US', { timeZone: 'America/New_York', hour: 'numeric', hour12: false }));
             var dow = new Date().toLocaleString('en-US', { timeZone: 'America/New_York', weekday: 'short' });
             if (dow === 'Sat' || dow === 'Sun' || h < 4 || h >= 20) return;
+            if (staticSnapDay()) return;   // 휴장일: 수신 없음이 정상
             console.warn('[야후] 60초간 수신 없음 → 재연결');
             try { yahooWs.close(); } catch (e) { }
         }, 15000);
@@ -3283,9 +3332,24 @@
                     [0, 1, 2].forEach(function (i) { try { renderPanelQuote(i); } catch (e) { } });
                 });
             } catch (e) { }
+            // 휴장일 판정·장 마감 스냅샷 (하루 1번 바뀜) → 주말·휴장일이면 Worker 조회 없이 표시
+            try {
+                var redraw = function () {
+                    [0, 1, 2].forEach(function (i) { try { renderPanelQuote(i); } catch (e) { } });
+                    try { renderHeaderQuotes(); } catch (e) { }
+                };
+                var mdFirst = false, snFirst = false;
+                var firstDone = function () { if (mdFirst && snFirst && !snapLoaded) { snapLoaded = true; restTick(); } };
+                firebase.database().ref('system/marketDay').on('value', function (snap) {
+                    marketDay = snap.val(); mdFirst = true; firstDone(); redraw();
+                }, function () { mdFirst = true; firstDone(); });
+                firebase.database().ref('system/snap').on('value', function (snap) {
+                    snapData = snap.val(); snFirst = true; firstDone(); redraw();
+                }, function () { snFirst = true; firstDone(); });
+            } catch (e) { snapLoaded = true; }
             initGlobalTickersListener(); yahooWsConnect();
             initMacroListener(); initUsdKrwListener();
-            restTick();   // ★ 첫 화면 즉시 시세 (WebSocket 첫 체결을 기다리지 않음)
+            setTimeout(restTick, 2600);   // 스냅샷 확인이 늦어져도 2.6초 뒤에는 첫 시세 조회
             // 서버 종목 목록 → 콤보박스 (야후 연결과 무관하게 바로 실행)
             loadServerTickerNames().then(loadServerTickers).then(syncYahooSubs);
         })();
