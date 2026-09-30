@@ -9,12 +9,15 @@
     <link rel="preconnect" href="https://hphong-2cb03-default-rtdb.asia-southeast1.firebasedatabase.app">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <!-- 화면 전체 폰트: Pretendard (불러오지 못하면 맑은 고딕) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Malgun Gothic', sans-serif;
+            font-family: 'Pretendard Variable', Pretendard, 'Malgun Gothic', sans-serif;
+            font-variant-numeric: tabular-nums;   /* 숫자 폭 고정 → 시세가 바뀌어도 자리 흔들림 없음 */
         }
 
         html, body {
@@ -610,7 +613,7 @@
         /* ★ 전략 카드 (방향 게이지형): 모든 칸 위치·높이 고정 */
         .sg-card { display: flex; flex-direction: column; gap: 14px; padding: 16px; border-radius: 14px; background: #11141d;
                    border: 1px solid #242a38; color: #e7e9f0; text-align: left; word-break: keep-all; }
-        .sg-mono, .sg-cv, .sg-rv { font-family: ui-monospace, 'Cascadia Mono', Consolas, 'JetBrains Mono', monospace; }
+        .sg-mono, .sg-cv, .sg-rv { font-family: 'Pretendard Variable', Pretendard, 'Malgun Gothic', sans-serif; }
         .sg-top { display: flex; gap: 18px; align-items: center; }
         .sg-gauge { width: 150px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 124px; }
         .sg-svg { width: 150px; height: 84px; display: block; }
@@ -645,7 +648,7 @@
         .sg-sc-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
         .sg-sc-title { font-size: 15px; font-weight: 700; white-space: nowrap; }
         .sg-sc-title small { font-size: 12px; font-weight: 500; color: #8b93a7; }
-        .sg-sc-num { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 28px; font-weight: 700; white-space: nowrap; }
+        .sg-sc-num { font-family: 'Pretendard Variable', Pretendard, 'Malgun Gothic', sans-serif; font-size: 28px; font-weight: 700; white-space: nowrap; }
         .sg-sc-num small { font-size: 13px; color: #8b93a7; font-weight: 500; }
         .sg-sc-bar { display: flex; gap: 2px; height: 14px; border-radius: 4px; overflow: hidden; background: #242a38; }
         .sg-sc-bar span { height: 14px; }
@@ -656,7 +659,7 @@
         .sg-tag { display: inline-flex; align-items: center; gap: 7px; padding: 6px 10px; border-radius: 6px; font-size: 13px; border: 1px solid #262c3a; background: #141821; }
         .sg-tag .sg-box { width: 16px; height: 16px; flex-shrink: 0; }
         .sg-tag .sg-tn { font-weight: 600; white-space: nowrap; }
-        .sg-tag .sg-tp { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 12.5px; white-space: nowrap; }
+        .sg-tag .sg-tp { font-family: 'Pretendard Variable', Pretendard, 'Malgun Gothic', sans-serif; font-size: 12.5px; white-space: nowrap; }
         .sg-tag.on .sg-tn, .sg-tag.on .sg-tp { color: #e7e9f0; }
         .sg-tag.off .sg-tn { color: #6b7385; } .sg-tag.off .sg-tp { color: #5d6578; }
         .sg-tag.na { background: transparent; } .sg-tag.na .sg-tn { color: #5d6578; } .sg-tag.na .sg-tp { color: #4a5163; }
@@ -678,7 +681,7 @@
         .sg-ptrack { height: 8px; border-radius: 4px; background: #242a38; overflow: hidden; }
         .sg-ptrack i { display: block; height: 8px; border-radius: 4px; }
         .sg-pv { text-align: right; white-space: nowrap; }
-        .sg-pv b { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; }
+        .sg-pv b { font-family: 'Pretendard Variable', Pretendard, 'Malgun Gothic', sans-serif; }
         .sg-pv small { font-size: 11.5px; color: #8b93a7; }
         .sg-pnote { font-size: 12.5px; color: #9aa3b5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         /* 거래량 2줄 */
@@ -686,7 +689,7 @@
         .sg-vlines { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
         .sg-vlines > div { display: flex; justify-content: space-between; gap: 8px; }
         .sg-vlines b { font-weight: 600; }
-        .sg-vlines em { font-style: normal; font-weight: 700; font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; }
+        .sg-vlines em { font-style: normal; font-weight: 700; font-family: 'Pretendard Variable', Pretendard, 'Malgun Gothic', sans-serif; }
         .sg-vlines small { font-size: 12px; color: #8b93a7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .sg-fl { font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-height: 1.4em; }
         .sg-paper { font-weight: 600; }
@@ -1819,7 +1822,8 @@
         // 반환: { 상태: '정상'|'계산중'|'없음', 지지:[{v,횟수}], 저항:[...], 허용폭, 기준시각 }
         function 구간_가져오기(종목) {
             var z = 구간Cache[종목];
-            var ok = z && z.날짜 === 구간_기대날짜() && Array.isArray(z.지지 || []) && Array.isArray(z.저항 || []);
+            // 윈폼이 "어느 정규장 날짜를 목표로 계산했는지"(대상날짜)로 비교 → 휴장일에는 이전 거래일 구간도 사용 가능
+            var ok = z && (z.대상날짜 || z.날짜) === 구간_기대날짜() && Array.isArray(z.지지 || []) && Array.isArray(z.저항 || []);
             if (!ok) return { 상태: kiwoomAlive ? '계산중' : '없음', 지지: [], 저항: [], 허용폭: 0, 기준시각: '' };
             function 변환(a) { return (a || []).map(function (x) { return { v: Number(x.가격), 횟수: Number(x.횟수) || 0 }; }).filter(function (x) { return x.v > 0; }); }
             return { 상태: '정상', 지지: 변환(z.지지), 저항: 변환(z.저항), 허용폭: Number(z.허용폭) || 0, 기준시각: z.기준시각 || '' };
