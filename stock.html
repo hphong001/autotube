@@ -165,14 +165,14 @@
         .mk-sess.ext { color: #fda4af; border-color: rgba(251, 113, 133, .6); background: rgba(251, 113, 133, .13); }
         .mk-sess.off { color: #aab2c3; border-color: #3a4153; background: rgba(93, 101, 120, .15); }
         .mk-fg { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
-        .mk-fg .tit { font-size: 11.5px; color: #8b949e; }
+        .mk-fg .tit { font-size: 12px; font-weight: 600; color: #e3e7ef; }
         .mk-fg .val { font-size: 13px; font-weight: 700; color: #ccc; }
         .mk-tag { font-size: 10.5px; font-weight: 700; line-height: 1; padding: 3px 5px; border-radius: 4px; border: 1px solid; margin-left: 4px; vertical-align: 1px; }
-        .mk-grid { flex: 1; min-width: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: 38px 38px; column-gap: 8px; row-gap: 5px; }
+        .mk-grid { flex: 1; min-width: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-template-rows: 38px 38px; column-gap: 8px; row-gap: 5px; }
         .mk-cell { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 0 8px; border-radius: 7px; background: rgba(255, 255, 255, .025); border: 1px solid rgba(255, 255, 255, .04); }
-        .mk-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+        .mk-txt { flex: 0 0 124px; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
         .mk-nm { display: flex; align-items: center; gap: 5px; white-space: nowrap; }
-        .mk-nm .tit { font-size: 11.5px; color: #8b949e; overflow: hidden; text-overflow: ellipsis; }
+        .mk-nm .tit { font-size: 12px; font-weight: 600; color: #e3e7ef; overflow: hidden; text-overflow: ellipsis; }
         .mk-dot { width: 6px; height: 6px; border-radius: 50%; background: #4a5163; flex-shrink: 0; }
         .mk-dot.live { background: #3ecf8e; box-shadow: 0 0 0 3px rgba(62, 207, 142, .18); }
         .mk-vl { display: flex; align-items: baseline; gap: 5px; white-space: nowrap; overflow: hidden; }
@@ -181,7 +181,7 @@
         .mk-ch { font-size: 11.5px; font-weight: 600; color: #8b949e; }
         .mk-ch.up { color: #ff6b6b; } .mk-ch.dn { color: #6aa0ff; }
         .mk-cell.stale .val, .mk-cell.stale .mk-ch { color: #aab2c3 !important; }
-        .mk-sp { width: 100px; height: 30px; flex-shrink: 0; }
+        .mk-sp { flex: 1 1 auto; min-width: 90px; max-width: 220px; height: 30px; }   /* 제목 바로 옆에서 시작, 칸의 남은 폭을 채움 (최대 220px) */
         .mk-sp svg { display: block; }
 
         .logo-top {
@@ -291,7 +291,14 @@
             font-weight: bold;
             color: #ffffff;
             white-space: nowrap;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
+        .tt-row { display: flex; align-items: baseline; gap: 6px; }
+        .tt-nm { font-size: 11px; font-weight: 600; color: #9aa3b5; width: 26px; }
+        .tt-v { font-size: 13px; font-weight: 700; color: #e7e9f0; }
+        .tt-z { font-size: 10.5px; font-weight: 600; color: #7d8596; }
 
         .ws-dot {
             width: 8px;
@@ -1200,7 +1207,7 @@
                 order: 3;
                 margin-top: 4px;
             }
-            .mk-sp { width: 80px; }
+            .mk-sp { min-width: 70px; }
 
 
             .content-wrapper {
@@ -1297,10 +1304,11 @@
             /* 모바일 상단 시황: 시간대·F&G 한 줄 → 2칸 × 4줄 */
             .mk-bar { flex-direction: column; gap: 6px; }
             .mk-left { width: auto; flex-direction: row; justify-content: space-between; border-right: none; border-bottom: 1px solid #1d2230; padding: 0 2px 6px; }
-            .mk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(4, 36px); column-gap: 10px; }
-            .mk-sp { width: 50px; height: 26px; }
+            .mk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(5, 36px); column-gap: 10px; }
+            .mk-txt { flex: 1 1 auto; }
+            .mk-sp { flex: 0 0 50px; min-width: 50px; height: 26px; }
             .mk-cell { padding: 0 6px; gap: 5px; }
-            .mk-vl { gap: 3px; } .mk-vl .val { font-size: 13px; } .mk-ch { font-size: 10.5px; } .mk-ch .mk-tag { display: none; }
+            .mk-vl { gap: 3px; } .mk-vl .val { font-size: 12.5px; } .mk-ch { font-size: 10.5px; } .mk-ch .mk-tag { display: none; }
             .mk-nm .tit { font-size: 11px; }
             /* 모바일: 가격 줄 → 거래량·종가 줄 → 장외 가격 줄 → 장외 시각 줄 */
             .price-block { flex-direction: column; gap: 4px; align-items: center; }
@@ -1338,17 +1346,19 @@
             <div class="logo-top-line"></div>
             <div class="logo-top-sub">STOCK PREMIUM</div>
         </div>
-        <!-- ★ 상단 시황 바: 왼쪽 = 시간대·F&G / 오른쪽 = 2줄 × 4칸 (위: 주식·지수, 아래: 원자재·금리·환율) + 최근 24시간 미니차트 -->
+        <!-- ★ 상단 시황 바: 왼쪽 = 시간대·공포탐욕지수 / 오른쪽 = 2줄 × 5칸 (위: 주식·지수·위험자산, 아래: 원자재·금리·환율) + 최근 24시간 미니차트 -->
         <div class="neon-ticker-bar mk-bar">
             <div class="mk-left">
                 <div class="mk-sessrow"><span class="ws-dot dead" id="ws-dot-header"></span><span class="mk-sess" id="mk-sess">─</span></div>
-                <div class="mk-fg" id="neon-fg"><span class="tit">F&amp;G</span><span class="val neu">─</span></div>
+                <div class="mk-fg" id="neon-fg"><span class="tit">공포탐욕지수</span><span class="val neu">─</span></div>
             </div>
             <div class="mk-grid">
                 <div class="mk-cell" id="neon-qqq"><div class="mk-txt"><div class="mk-nm"><i class="mk-dot"></i><span class="tit">나스닥(QQQ)</span></div><div class="mk-vl"><span class="val neu">─</span><span class="mk-ch"></span></div></div><div class="mk-sp"></div></div>
                 <div class="mk-cell" id="neon-spy"><div class="mk-txt"><div class="mk-nm"><i class="mk-dot"></i><span class="tit">S&amp;P500(SPY)</span></div><div class="mk-vl"><span class="val neu">─</span><span class="mk-ch"></span></div></div><div class="mk-sp"></div></div>
                 <div class="mk-cell" id="neon-nq"><div class="mk-txt"><div class="mk-nm"><i class="mk-dot"></i><span class="tit">나스닥선물</span></div><div class="mk-vl"><span class="val neu">─</span><span class="mk-ch"></span></div></div><div class="mk-sp"></div></div>
                 <div class="mk-cell" id="neon-vix"><div class="mk-txt"><div class="mk-nm"><i class="mk-dot"></i><span class="tit">VIX</span></div><div class="mk-vl"><span class="val neu">─</span><span class="mk-ch"></span></div></div><div class="mk-sp"></div></div>
+                <div class="mk-cell" id="neon-btc"><div class="mk-txt"><div class="mk-nm"><i class="mk-dot"></i><span class="tit">비트코인</span></div><div class="mk-vl"><span class="val neu">─</span><span class="mk-ch"></span></div></div><div class="mk-sp"></div></div>
+                <div class="mk-cell" id="neon-gold"><div class="mk-txt"><div class="mk-nm"><i class="mk-dot"></i><span class="tit">금선물</span></div><div class="mk-vl"><span class="val neu">─</span><span class="mk-ch"></span></div></div><div class="mk-sp"></div></div>
                 <div class="mk-cell" id="neon-cl"><div class="mk-txt"><div class="mk-nm"><i class="mk-dot"></i><span class="tit">WTI원유</span></div><div class="mk-vl"><span class="val neu">─</span><span class="mk-ch"></span></div></div><div class="mk-sp"></div></div>
                 <div class="mk-cell" id="neon-tnx"><div class="mk-txt"><div class="mk-nm"><i class="mk-dot"></i><span class="tit">미국채10년</span></div><div class="mk-vl"><span class="val neu">─</span><span class="mk-ch"></span></div></div><div class="mk-sp"></div></div>
                 <div class="mk-cell" id="neon-dxy"><div class="mk-txt"><div class="mk-nm"><i class="mk-dot"></i><span class="tit">달러인덱스</span></div><div class="mk-vl"><span class="val neu">─</span><span class="mk-ch"></span></div></div><div class="mk-sp"></div></div>
@@ -3622,9 +3632,19 @@
             el.innerHTML = '지수: QQQ ' + qStr + ' / SPY ' + sStr + ' / VIX <b class="' + (globVixState.indexOf('공포') >= 0 ? 'c-red' : 'c-green') + '">' + globVixState + '</b>';
         }
 
+        // 오른쪽 위 시계: 위 = 뉴욕(미국 동부, 서머타임 자동 EDT/EST) / 아래 = 서울
         function updateTimeDisplay() {
             var el = document.getElementById('h-time'); if (!el) return; var n = new Date();
-            el.textContent = n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0') + '-' + String(n.getDate()).padStart(2, '0') + ' ' + (n.getHours() >= 12 ? '오후' : '오전') + ' ' + (n.getHours() % 12 || 12) + ':' + String(n.getMinutes()).padStart(2, '0') + ':' + String(n.getSeconds()).padStart(2, '0');
+            function 줄(tz) {
+                var d = new Date(n.toLocaleString('en-US', { timeZone: tz }));
+                return String(d.getMonth() + 1).padStart(2, '0') + '/' + String(d.getDate()).padStart(2, '0') + ' ' +
+                    String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0') + ':' + String(d.getSeconds()).padStart(2, '0');
+            }
+            var 약어 = 'ET';
+            try { 약어 = (new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', timeZoneName: 'short' }).formatToParts(n).filter(function (x) { return x.type === 'timeZoneName'; })[0] || {}).value || 'ET'; } catch (e) { }
+            var html = '<div class="tt-row"><span class="tt-nm">뉴욕</span><span class="tt-v">' + 줄('America/New_York') + '</span><span class="tt-z">' + 약어 + '</span></div>' +
+                       '<div class="tt-row"><span class="tt-nm">서울</span><span class="tt-v">' + 줄('Asia/Seoul') + '</span><span class="tt-z">KST</span></div>';
+            if (el._html !== html) { el.innerHTML = html; el._html = html; }
         } setInterval(updateTimeDisplay, 1000);
 
         // ★ 당일변동 막대 위 VWAP 위치 (◆ 키움·수집값 / ◇ 추정치) + 라벨 "VWAP 354.8 (+0.3%)"
@@ -3930,7 +3950,7 @@
             var base = (serverTickers && serverTickers.length
                 ? serverTickers
                 : WATCH_LIST.map(function (w) { return w.ticker; }))
-                .concat(HEADER_TICKERS, panelTickers.filter(Boolean));   // 화면 종목은 항상 포함
+                .concat(HEADER_TICKERS, panelTickers.filter(Boolean), (typeof 시황_WS !== 'undefined' && 시황_WS) ? Object.keys(시황_WS) : []);   // 화면 종목 + 상단 비트코인·금은 항상 포함
             var seen = {}, res = [];
             base.map(toYahooSym).forEach(function (t) { if (!seen[t]) { seen[t] = true; res.push(t); } });
             return res;
@@ -4045,6 +4065,8 @@
 
                     // 헤더(QQQ/SPY)
                     if (HEADER_TICKERS.indexOf(ticker) >= 0) renderHeaderQuotes();
+                    // 상단 비트코인·금선물
+                    if (시황_WS[ticker]) 시황_WS값(ticker, px, Number(msg.changePercent));
 
                     // 패널: 해당 종목을 야후 소스로 보여주는 중일 때만 갱신
                     panelTickers.forEach(function (t, idx) {
@@ -4143,7 +4165,7 @@
                         var rKr = fgr.includes('extreme fear') ? '극단적 공포' : fgr.includes('fear') ? '공포' : fgr.includes('extreme greed') ? '극단적 탐욕' : fgr.includes('greed') ? '탐욕' : '중립';
                         var fgEl = document.getElementById('neon-fg');
                         var fgc = fgs <= 25 ? '#ff5d5d' : fgs <= 45 ? '#4d8dff' : fgs >= 75 ? '#ff5d5d' : fgs >= 55 ? '#3ecf8e' : '#aab2c3';
-                        if (fgEl) fgEl.innerHTML = '<span class="tit">F&amp;G</span><span class="val">' + fgs + '</span>' +
+                        if (fgEl) fgEl.innerHTML = '<span class="tit">공포탐욕지수</span><span class="val">' + fgs + '</span>' +
                             '<span class="mk-tag" style="color:' + fgc + ';border-color:' + fgc + '88;background:' + fgc + '1f">' + rKr + '</span>';
                         if (fgEl) fgEl.title = 'CNN 공포·탐욕 지수 (하루 단위 값)';
                     }
@@ -4172,8 +4194,11 @@
         //   - 거래된 봉만 이어 그림 (거래 없는 시간은 건너뛰고 얇은 세로 점선으로 표시)
         //   - 마지막 봉이 35분보다 오래됐으면 "멈춤": 회색 선 + 회색 점 + 마지막 거래일 표시
         // ════════════════════════════════════════════════════════
-        var 시황_선키 = { 'neon-qqq': 'QQQ', 'neon-spy': 'SPY', 'neon-nq': 'NQ', 'neon-vix': 'VIX', 'neon-cl': 'CL', 'neon-tnx': 'TNX', 'neon-dxy': 'DXY', 'neon-usdkrw': 'KRW' };
-        var 시황_최소폭 = { QQQ: 0.5, SPY: 0.5, NQ: 0.5, VIX: 5, CL: 1, TNX: 1, DXY: 0.3, KRW: 0.3 };   // 세로 최소 폭 (±%): 작은 움직임이 과장되지 않게
+        var 시황_선키 = { 'neon-qqq': 'QQQ', 'neon-spy': 'SPY', 'neon-nq': 'NQ', 'neon-vix': 'VIX', 'neon-btc': 'BTC', 'neon-gold': 'GOLD', 'neon-cl': 'CL', 'neon-tnx': 'TNX', 'neon-dxy': 'DXY', 'neon-usdkrw': 'KRW' };
+        var 시황_최소폭 = { QQQ: 0.5, SPY: 0.5, NQ: 0.5, VIX: 5, BTC: 2, GOLD: 0.5, CL: 1, TNX: 1, DXY: 0.3, KRW: 0.3 };
+        // 야후 실시간(WebSocket)으로 직접 받는 항목: 윈폼 매크로에 없음
+        //   비트코인 = 24시간 전 가격 대비 (종가가 없음) / 금선물 = 전일 정산가 대비
+        var 시황_WS = { 'BTC-USD': { id: 'neon-btc', 이름: '비트코인', 키: 'BTC' }, 'GC=F': { id: 'neon-gold', 이름: '금선물', 키: 'GOLD' } };   // 세로 최소 폭 (±%): 작은 움직임이 과장되지 않게
         var 시황_값 = {};         // id → { p, c, at, 키움 }
         var 시황_선 = {};         // 키 → { t:[초], c:[가격], last }
         var 시황_멈춤분 = 35;
@@ -4184,7 +4209,7 @@
             if (!(numP > 0)) return;
             var cls = (태그 && 태그.값색) || (numC > 0 ? 'up' : numC < 0 ? 'dn' : 'neu');
             var vEl = el.querySelector('.val'), cEl = el.querySelector('.mk-ch');
-            if (vEl) { vEl.className = 'val ' + cls; vEl.textContent = numP.toFixed(2) + (단위 || ''); }
+            if (vEl) { vEl.className = 'val ' + cls; vEl.textContent = 시황_숫자(numP) + (단위 || ''); }
             if (cEl) {
                 cEl.className = 'mk-ch ' + (numC > 0 ? 'up' : numC < 0 ? 'dn' : '');
                 cEl.innerHTML = (numC > 0 ? '+' : numC < 0 ? '−' : '') + Math.abs(numC).toFixed(2) + '%' +
@@ -4194,6 +4219,24 @@
             시황_값[id] = { p: numP, c: numC, at: 이전 && 이전.p === numP ? 이전.at : Date.now() };
             시황_그리기(id);
         }
+
+        // 1만 이상은 천 단위 쉼표, 5만 이상(비트코인 등)은 소수점 없이
+        function 시황_숫자(v) {
+            if (v >= 50000) return Math.round(v).toLocaleString('en-US');
+            if (v >= 10000) return v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            return v.toFixed(2);
+        }
+
+        // 비트코인·금선물 값 갱신 (야후 WebSocket 수신 시 / 없으면 Worker 미니차트의 마지막 가격)
+        function 시황_WS값(sym, px, 야후등락) {
+            var m = 시황_WS[sym]; if (!m || !(px > 0)) return;
+            var 선 = 시황_선[m.키], c = null;
+            if (m.키 === 'BTC') { if (선 && 선.c && 선.c[0] > 0) c = (px - 선.c[0]) / 선.c[0] * 100; }
+            else if (m.키 === 'GOLD') { if (선 && 선.prev > 0) c = (px - 선.prev) / 선.prev * 100; }
+            if (c == null && 야후등락 != null && isFinite(야후등락)) c = Number(야후등락);
+            updateNeonItem(m.id, m.이름, px, c == null ? 0 : c);
+        }
+        function 시황_WS신선(sym) { var y = yahooCache[sym]; return !!(y && y.recvAt && Date.now() - y.recvAt <= 90000); }
 
         function 시황_ET날짜(초) {
             var d = new Date(new Date(초 * 1000).toLocaleString('en-US', { timeZone: 'America/New_York' }));
@@ -4206,8 +4249,10 @@
             var 키 = 시황_선키[id], 선 = 시황_선[키], 값 = 시황_값[id];
             var 지금 = Date.now();
             // 키움 실시간(QQQ·SPY)은 방금 받은 가격이면 실시간으로 보고 마지막 점으로 이어 붙임
-            var 키움 = null;
+            var 키움 = null;   // 실시간으로 받는 중인 가격 (QQQ·SPY = 키움/야후, 비트코인·금 = 야후 WebSocket)
             if (id === 'neon-qqq' || id === 'neon-spy') { var pk = pickQuote(id === 'neon-qqq' ? 'QQQ' : 'SPY'); if (pk && pk.q && pk.q.recvAt && 지금 - pk.q.recvAt <= 90000) 키움 = pk.q; }   // 오버나이트는 체결 간격이 길어 90초까지 실시간으로 봄
+            else if (id === 'neon-btc' && 시황_WS신선('BTC-USD')) 키움 = yahooCache['BTC-USD'];
+            else if (id === 'neon-gold' && 시황_WS신선('GC=F')) 키움 = yahooCache['GC=F'];
             if (!선 || !선.c || selectedLen(선) < 2) {
                 칸.innerHTML = ''; if (점) 점.className = 'mk-dot' + (키움 ? ' live' : '');
                 el.classList.remove('stale'); return;
@@ -4225,7 +4270,8 @@
             var lo = Math.min(기준 - 최소, Math.min.apply(null, cs)), hi = Math.max(기준 + 최소, Math.max.apply(null, cs));
             var W = 칸.clientWidth || 100, H = 칸.clientHeight || 30, n = cs.length;
             function X(i) { return 1.5 + i * (W - 5) / (n - 1); }
-            function Y(v) { return 2 + (hi - v) / ((hi - lo) || 1) * (H - 4); }
+            var 위여백 = 멈춤 ? 11 : 2;   // 멈춤이면 위쪽에 '9/29 마감' 글자 자리를 비워 선과 겹치지 않게
+            function Y(v) { return 위여백 + (hi - v) / ((hi - lo) || 1) * (H - 2 - 위여백); }
             var 기준y = Y(기준).toFixed(1);
             var 선점 = cs.map(function (v, i) { return X(i).toFixed(1) + ',' + Y(v).toFixed(1); }).join(' ');
             var 면 = X(0).toFixed(1) + ',' + 기준y + ' ' + 선점 + ' ' + X(n - 1).toFixed(1) + ',' + 기준y;
@@ -4238,7 +4284,7 @@
             }
             var 끝x = X(n - 1).toFixed(1), 끝y = Y(cs[n - 1]).toFixed(1), 끝색 = cs[n - 1] >= 기준 ? 빨 : 파;
             var 마지막 = 시황_ET날짜(ts[ts.length - 1]);
-            var 멈춤글 = 멈춤 ? (마지막.분 >= 945 && 마지막.분 <= 975 ? 마지막.월일 + ' 종가' : 마지막.월일 + ' ' + 마지막.시각) : '';
+            var 멈춤글 = 멈춤 ? 마지막.월일 + ' 마감' : '';   // 거래·계산이 멈춘 날짜 (자세한 시각은 마우스를 올리면 표시)
             칸.innerHTML = '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">' +
                 '<defs><clipPath id="up' + uid + '"><rect x="0" y="0" width="' + W + '" height="' + 기준y + '"></rect></clipPath>' +
                 '<clipPath id="dn' + uid + '"><rect x="0" y="' + 기준y + '" width="' + W + '" height="' + H + '"></rect></clipPath></defs>' +
@@ -4249,34 +4295,58 @@
                 '<polyline points="' + 선점 + '" fill="none" stroke="' + 파 + '" stroke-width="1.6" stroke-linejoin="round" clip-path="url(#dn' + uid + ')"></polyline>' +
                 (멈춤 ? '' : '<circle cx="' + 끝x + '" cy="' + 끝y + '" r="3.8" fill="' + 끝색 + '" opacity=".28"></circle>') +
                 '<circle cx="' + 끝x + '" cy="' + 끝y + '" r="1.9" fill="' + 끝색 + '"></circle>' +
-                (멈춤글 ? '<text x="2" y="9" font-size="9" fill="#8b93a6" font-weight="600">' + 멈춤글 + '</text>' : '') + '</svg>';
+                (멈춤글 ? '<text x="1" y="8" font-size="8.5" fill="#8b93a6" font-weight="600">' + 멈춤글 + '</text>' : '') + '</svg>';
             칸.title = (멈춤 ? '거래 멈춤 · 마지막 ' + 마지막.월일 + ' ' + 마지막.시각 + ' ET' : '실시간') + ' · 최근 24시간(거래된 구간만) · 점선 = 등락률 기준가 ' + 기준.toFixed(2);
         }
         function selectedLen(선) { return (선 && 선.c) ? 선.c.length : 0; }
 
         function 시황_모두그리기() { Object.keys(시황_선키).forEach(시황_그리기); }
 
-        // Worker 에서 미니차트 받기: 평일 1분 / 주말·휴장 30분 간격, 화면이 보일 때만
+        // Worker 에서 미니차트 받기: 평일 1분 / 주말·휴장 5분 간격, 화면이 보일 때만
         var 시황_마지막조회 = 0;
         function 시황_선불러오기(강제) {
             if (!CLOSE_WORKER_URL || CLOSE_WORKER_URL.indexOf('YOUR-ACCOUNT') >= 0) return;
             if (!강제 && document.visibilityState === 'hidden') return;
-            var 장 = marketPhase(), 간격 = (장.type === 'WEEKEND' || 장.type === 'HOLIDAY') ? 30 * 60000 : 60000;
+            var 장 = marketPhase(), 간격 = (장.type === 'WEEKEND' || 장.type === 'HOLIDAY') ? 5 * 60000 : 60000;   // 주말은 비트코인만 움직임 (실시간 값은 WebSocket 으로 따로 받음)
             if (!강제 && Date.now() - 시황_마지막조회 < 간격 - 2000) return;
             시황_마지막조회 = Date.now();
             fetch(CLOSE_WORKER_URL.replace(/\/+$/, '') + '/spark', { cache: 'no-store' })
                 .then(function (r) { return r.json(); })
-                .then(function (j) { if (j && j.data) { 시황_선 = j.data; 시황_모두그리기(); } })
+                .then(function (j) {
+                    if (!(j && j.data)) return;
+                    시황_선 = j.data;
+                    Object.keys(시황_WS).forEach(function (sym) {
+                        var d = 시황_선[시황_WS[sym].키];
+                        if (시황_WS신선(sym)) 시황_WS값(sym, yahooCache[sym].price, yahooCache[sym].changeRate);   // 기준값(24시간 전·정산가)이 새로 와서 등락률 다시 계산
+                        else if (d && d.price > 0) 시황_WS값(sym, d.price, null);
+                    });
+                    시황_모두그리기();
+                })
                 .catch(function (e) { console.warn('[시황 미니차트] 조회 실패', e); });
         }
 
         // 시간대 배지 (1초마다)
         function 시황_세션갱신() {
             var el = document.getElementById('mk-sess'); if (!el) return;
-            var 장 = marketPhase(), t = etNowParts(), hh = Math.floor(t.m / 60), mm = t.m % 60;
-            var 시각 = (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm + ' ET';
-            var 글 = 장.type === 'REG' ? '● 정규장 ' + 시각 : (장.type === 'WEEKEND' || 장.type === 'HOLIDAY') ? '⏸ 휴장 ' + 시각 : (장.icon || '🌙') + ' ' + 장.label + ' ' + 시각;
-            var 종류 = 장.type === 'REG' ? 'reg' : (장.type === 'WEEKEND' || 장.type === 'HOLIDAY') ? 'off' : 'ext';
+            var 장 = marketPhase(), t = etNowParts();
+            // 다음 기준 시각까지 남은 시간: 정규장 = 마감(16:00)까지 / 그 외 = 다음 평일 개장(09:30)까지
+            function 남은(분) { var h = Math.floor(분 / 60), m = 분 % 60; return h + ':' + (m < 10 ? '0' : '') + m; }
+            var 휴장 = 장.type === 'WEEKEND' || 장.type === 'HOLIDAY';
+            var 개장까지 = function () {
+                var 분 = 570 - t.m, 요일 = t.d;
+                if (분 <= 0 || 장.type === 'HOLIDAY') { 분 += 1440; 요일 = (요일 + 1) % 7; }   // 휴장일이면 오늘 개장 없음
+                while (요일 === 0 || 요일 === 6) { 분 += 1440; 요일 = (요일 + 1) % 7; }
+                return { 분: 분, 요일: 요일 };
+            };
+            var 요일명 = ['일', '월', '화', '수', '목', '금', '토'];
+            var 글;
+            if (장.type === 'REG') 글 = '● 정규장 · 마감 ' + 남은(960 - t.m) + ' 전';
+            else {
+                var 다음 = 개장까지();
+                var 뒤 = 다음.분 < 1440 ? '개장 ' + 남은(다음.분) + ' 전' : 요일명[다음.요일] + ' 09:30 개장';
+                글 = 휴장 ? '⏸ 휴장 · ' + 뒤 : (장.icon || '🌙') + ' ' + 장.label + ' · ' + 뒤;
+            }
+            var 종류 = 장.type === 'REG' ? 'reg' : 휴장 ? 'off' : 'ext';
             if (el.textContent !== 글) el.textContent = 글;
             if (el.className !== 'mk-sess ' + 종류) el.className = 'mk-sess ' + 종류;
         }
