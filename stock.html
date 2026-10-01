@@ -665,6 +665,31 @@
         /* 가격 아래 수준 막대 섹션 (지지·저항·MaxPain·당일 변동) */
         .lv-box { border: 1px solid #22263a; border-radius: 8px; padding: 6px 8px 4px; background: #0b0c14; flex-shrink: 0; }
         .lv-box .timeline:empty { min-height: 0; }
+        .px-bell { font: inherit; font-size: 13px; line-height: 1; background: transparent; border: 1px solid #2f3446; border-radius: 6px; padding: 3px 5px; cursor: pointer; color: #cfd5e2; align-self: center; white-space: nowrap; }
+        .px-bell:hover { border-color: #f5c542; }
+        .px-bell.on { border-color: #f5c542; background: rgba(245, 197, 66, .12); }
+        .px-bell b { font-size: 10.5px; color: #f5c542; margin-left: 2px; }
+        .al-ban { display: none; margin: 0 0 6px; padding: 7px 10px; border-radius: 7px; background: rgba(245, 197, 66, .18); border: 1px solid #f5c542; color: #ffe08a; font-weight: 700; font-size: 13px; text-align: center; cursor: pointer; }
+        .al-ban.show { display: block; }
+        .al-ban.flash { animation: alFlash .5s ease-in-out 10 alternate; }
+        @keyframes alFlash { from { background: rgba(245, 197, 66, .35); } to { background: rgba(245, 197, 66, .08); } }
+        .al-pop { position: fixed; z-index: 9999; width: 300px; background: #11131d; border: 1px solid #4a4020; border-radius: 10px; box-shadow: 0 12px 32px rgba(0,0,0,.6); padding: 12px; color: #cfd5e2; font-size: 12px; }
+        .al-pop .al-h { font-weight: 700; color: #ffe08a; margin-bottom: 8px; }
+        .al-pop .al-x { position: absolute; top: 6px; right: 8px; background: none; border: 0; color: #8b93a7; font-size: 16px; cursor: pointer; }
+        .al-pop .al-in { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
+        .al-pop input[type=number] { width: 96px; background: #0b0c14; color: #f1f3f8; border: 1px solid #2f3446; border-radius: 6px; padding: 5px 6px; font: inherit; font-size: 13px; font-weight: 700; }
+        .al-pop .al-dir { font-size: 11.5px; font-weight: 700; min-width: 86px; }
+        .al-pop .al-add { font: inherit; font-weight: 700; background: #f5c542; color: #1a1400; border: 0; border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+        .al-pop .al-q { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0 6px; }
+        .al-pop .al-q button { font: inherit; font-size: 11px; background: #1a1d2b; color: #cfd5e2; border: 1px solid #2f3446; border-radius: 5px; padding: 3px 6px; cursor: pointer; }
+        .al-pop .al-opt { display: flex; gap: 12px; font-size: 11.5px; color: #9aa3b5; margin-bottom: 8px; }
+        .al-pop .al-list { border-top: 1px solid #22263a; padding-top: 6px; max-height: 180px; overflow: auto; }
+        .al-pop .al-row { display: flex; align-items: center; justify-content: space-between; height: 24px; font-size: 12px; }
+        .al-pop .al-row .hit { color: #8b93a7; }
+        .al-pop .al-row button { background: none; border: 0; color: #8b93a7; cursor: pointer; font-size: 13px; }
+        .lvs-r { position: relative; }
+        .lvs-bell { position: absolute; right: -2px; top: 1px; display: none; background: #1a1d2b; border: 1px solid #4a4020; border-radius: 4px; font-size: 10px; padding: 1px 3px; cursor: pointer; }
+        .lvs-r:hover .lvs-bell { display: block; }
         .lv-sum { display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px; margin-top: 4px; padding-top: 6px; border-top: 1px solid #1a1e2c; }
         .lvs-col { min-width: 0; }
         .lvs-h { display: flex; justify-content: space-between; font-size: 10px; color: #6b7386; height: 16px; line-height: 16px; }
@@ -3146,6 +3171,7 @@
                 + '<span id="p' + i + '-market-badge" style="display:none; background-color:rgba(231,76,60,0.15); color:#e74c3c; border:1px solid rgba(231,76,60,0.4); font-size:10px; font-weight:bold; padding:2px 6px; border-radius:4px;">장마감</span>'
                 + '</div>'
                 + '</div>'
+                + '<div class="al-ban" id="p' + i + '-alban"></div>'
                 + '<div class="price-container"><div class="px-grid" id="p' + i + '-reg-block">'
                 // 1줄: 종가 (정규장 외 = 마지막 정규장 종가·전일 대비 / 정규장 = 전일 종가)
                 + '<span class="px-l" id="p' + i + '-l1">종가</span><span class="px-v">'
@@ -3154,6 +3180,7 @@
                 // 2줄: 현재가 (정규장 외 = 시간외 현재가·종가 대비 / 정규장 = 정규장 현재가·전일 대비)
                 + '<span class="px-l" id="p' + i + '-l2">현재가</span><span class="px-v">'
                 + '<span class="price-now" id="p' + i + '-price">─</span><span class="price-diff" id="p' + i + '-diff"></span><span class="price-chg" id="p' + i + '-chg"></span>'
+                + '<button type="button" class="px-bell" id="p' + i + '-bell" title="가격 알람">🔔</button>'
                 + '</span>'
                 // 2줄 보조: 세션·시각 (작은 글씨, 값 열 아래 별도 줄 → 좁은 화면에서도 3줄이 각각 한 줄 유지)
                 + '<span class="px-note" id="p' + i + '-ext-label"></span>'
@@ -3295,6 +3322,7 @@
         function resetPanelUI(panelIdx, ticker) {
             var p = 'p' + panelIdx + '-';
             try { 레벨요약표시(p, { ticker: ticker }); } catch (e) { }   // 종목 바꾸면 요약은 빈 틀로
+            setTimeout(function () { try { 알람_화면갱신(); var 띠 = document.getElementById(p + 'alban'); if (띠) 띠.className = 'al-ban'; } catch (e) { } }, 0);
             ['price', 'diff', 'chg', 'vol', 'c1px', 'c1df', 'c1cg', 'reg-label', 'ext-label'].forEach(function (f) { var el = document.getElementById(p + f); if (el) el.textContent = (f === 'price' || f === 'vol' || f === 'c1px') ? '─' : ''; });
             var 초기값 = { 'gauge': '', 'sigtitle': '<span>관망 중</span>', 'reason': '데이터 로딩 중', 'situ': '<b>가격</b><span>─</span><b>판단</b><span>─</span><b>목표</b><span>─</span>', 'score': '', 'band': '<div class="sg-band cand">방향 없음</div>',
                           'plan': '', 'pnl': '', 'ind': '', 'recent': '<span class="sg-dim">최근 이벤트 없음</span>', 'paper': '─', 'state': '─' };
@@ -3571,7 +3599,7 @@
             if (수락) updatePanelPrice(idx, q.price, q.changeRate, q.change, q.volume > 0 ? q.volume : null);
             var d = panelDataStore[idx];
             if (d) {
-                if (수락) { d.price = q.price; 고저_체결(panelTickers[idx], q.price); }
+                if (수락) { d.price = q.price; 고저_체결(panelTickers[idx], q.price); 알람_확인(panelTickers[idx], q.price); }
                 d.vwap = (src === 'kiwoom' && q.vwap > 0) ? q.vwap : 0;
                 d.vwapReg = (src === 'kiwoom' && q.vwapReg > 0) ? q.vwapReg : 0;
                 d.volRatio = (src === 'kiwoom' && q.volRatio > 0) ? q.volRatio : 0;
@@ -4541,6 +4569,12 @@
                 pctEl.textContent = '(' + signStr + totalTargetRate.toFixed(2) + '%)';
                 host.appendChild(pctEl);
             });
+            // 가격 알람 위치 (노란 점선 눈금)
+            알람_목록(d.ticker || panelTickers[parseInt(String(prefix).replace(/[^0-9]/g, ''), 10)]).forEach(function (a) {
+                if (a.상태 !== '대기' || a.가격 < minV || a.가격 > maxV) return;
+                host.appendChild(mkEl({ position: 'absolute', zIndex: '4', top: (BOT_TRACK_Y - 8) + 'px', left: pct(a.가격) + '%', height: (BOT_TRACK_H + 16) + 'px',
+                                        borderLeft: '2px dashed #f5c542', transform: 'translateX(-50%)' }));
+            });
         }
 
         // 막대 아래 요약 (세분화 지지·저항): 왼쪽 = 저항(콜 쪽), 오른쪽 = 지지(풋 쪽), 머리 1줄 + 3줄 고정 → 3개 패널 높이 동일
@@ -4564,7 +4598,8 @@
                     '<span class="lvs-p ' + (지지 ? 'sup' : 'res') + '">' + x.v.toFixed(2) + (x.옵션 ? '<i class="lvs-o"></i>' : '') + '</span>' +
                     '<span class="lvs-s ' + (지지 ? 'sup' : 'res') + '">' + '●●●'.slice(0, x.강도) + '<em>' + '●●●'.slice(0, 3 - x.강도) + '</em></span>' +
                     '<span class="lvs-w">' + 근거 + '</span>' +
-                    '<span class="lvs-d">' + (거리 > 0 ? '+' : '') + 거리.toFixed(2) + '%</span></div>';
+                    '<span class="lvs-d">' + (거리 > 0 ? '+' : '') + 거리.toFixed(2) + '%</span>' +
+                    '<span class="lvs-bell" title="이 가격으로 알람 등록" onclick="알람_추가(\'' + 종목 + '\',' + x.v + ')">🔔</span></div>';
             }
             var 저 = 세분 ? 세분.저항 : [], 지 = 세분 ? 세분.지지 : [];
             var 열 = function (목록, 지지) { var h = ''; for (var i = 0; i < 3; i++) h += 줄(목록[i], i, 지지); return h; };
@@ -5327,9 +5362,158 @@
             document.addEventListener('keydown', function (e) { if (e.key === 'Escape') AI_닫기(); });
         })();
 
+        // ════════════════════════════════════════════════════════
+        // ★ 가격 알람 (패널 "정규장 현재가" 옆 🔔)
+        //   - 등록 시 지금가보다 높으면 "이상 도달", 낮으면 "이하 도달" 로 방향 자동
+        //   - 체결 필터를 통과한 실시간 가격으로만 판정 (튄 시세에 울리지 않음)
+        //   - 기본 한 번 울리고 꺼짐 / 반복: 반대쪽으로 0.1% 이상 되돌아간 뒤 다시 도달하면 다시 울림 (최소 60초 간격)
+        //   - 이 브라우저에 저장 (localStorage). 대시보드가 열려 있을 때만 동작
+        //   - 윈폼 대시보드 창 안에서는 윈폼 알림음 + "최근 알림" 줄로도 전달
+        // ════════════════════════════════════════════════════════
+        var 알람_저장키 = 'sz_alarms_v1', 알람_모음 = {};
+        (function () { try { 알람_모음 = JSON.parse(localStorage.getItem(알람_저장키) || '{}') || {}; } catch (e) { 알람_모음 = {}; } })();
+        function 알람_저장() { try { localStorage.setItem(알람_저장키, JSON.stringify(알람_모음)); } catch (e) { } }
+        function 알람_목록(종목) { return (종목 && 알람_모음[종목]) || []; }
+        function 알람_현재가(종목) { var i = panelTickers.indexOf(종목), d = i >= 0 ? panelDataStore[i] : null; if (d && d.price > 0) return d.price; var pk = pickQuote(종목); return pk && pk.q && pk.q.price > 0 ? pk.q.price : 0; }
+        function 알람_시각() { var e = etNowParts().et; return ('0' + e.getHours()).slice(-2) + ':' + ('0' + e.getMinutes()).slice(-2) + ':' + ('0' + e.getSeconds()).slice(-2); }
+
+        function 알람_추가(종목, 가격, 옵션) {
+            가격 = Math.round(Number(가격) * 100) / 100;
+            var 지금 = 알람_현재가(종목);
+            if (!(가격 > 0) || !(지금 > 0)) { alert('가격 또는 현재가가 없어 알람을 등록할 수 없습니다.'); return false; }
+            if (Math.abs(가격 - 지금) < 0.005) { alert('현재가와 같은 가격입니다. 위나 아래 가격을 입력하세요.'); return false; }
+            옵션 = 옵션 || {};
+            var a = { id: Date.now() + '' + Math.floor(Math.random() * 1000), 가격: 가격, 방향: 가격 > 지금 ? '이상' : '이하', 반복: !!옵션.반복, 정규장만: !!옵션.정규장만,
+                      상태: '대기', 등록가: 지금, 도달: '', 마지막울림: 0, 재무장: true };
+            (알람_모음[종목] = 알람_모음[종목] || []).push(a);
+            알람_저장(); 알람_화면갱신(종목);
+            try { if (window.Notification && Notification.permission === 'default') Notification.requestPermission(); } catch (e) { }
+            return true;
+        }
+        function 알람_삭제(종목, id) {
+            알람_모음[종목] = 알람_목록(종목).filter(function (a) { return a.id !== id; });
+            if (!알람_모음[종목].length) delete 알람_모음[종목];
+            알람_저장(); 알람_화면갱신(종목);
+        }
+
+        // 체결 가격이 들어올 때마다 확인
+        function 알람_확인(종목, 가격) {
+            var 목록 = 알람_목록(종목); if (!목록.length || !(가격 > 0)) return;
+            var 정규 = marketPhase().type === 'REG', 바뀜 = false, 지금 = Date.now();
+            목록.forEach(function (a) {
+                if (a.상태 !== '대기') return;
+                if (a.정규장만 && !정규) return;
+                var 도달 = a.방향 === '이상' ? 가격 >= a.가격 : 가격 <= a.가격;
+                if (!도달) {   // 반복 알람: 반대쪽으로 0.1% 이상 되돌아가면 다시 울릴 준비
+                    if (!a.재무장 && Math.abs(가격 - a.가격) / a.가격 >= 0.001) { a.재무장 = true; 바뀜 = true; }
+                    return;
+                }
+                if (!a.재무장 || 지금 - (a.마지막울림 || 0) < 60000) return;
+                a.마지막울림 = 지금; a.재무장 = false; a.도달 = 알람_시각();
+                if (!a.반복) a.상태 = '도달';
+                바뀜 = true;
+                알람_울림(종목, a, 가격);
+            });
+            if (바뀜) { 알람_저장(); 알람_화면갱신(종목); }
+        }
+
+        var 알람_소리문맥 = null;
+        function 알람_소리() {
+            if (가상_기록가능) return;   // 윈폼 창 안: 윈폼이 알림음 재생 (중복 방지)
+            try {
+                알람_소리문맥 = 알람_소리문맥 || new (window.AudioContext || window.webkitAudioContext)();
+                var c = 알람_소리문맥, t0 = c.currentTime;
+                [0, 0.22, 0.44].forEach(function (dt, k) {
+                    var o = c.createOscillator(), g = c.createGain();
+                    o.type = 'sine'; o.frequency.value = [880, 1175, 880][k];
+                    g.gain.setValueAtTime(0.0001, t0 + dt); g.gain.exponentialRampToValueAtTime(0.3, t0 + dt + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dt + 0.2);
+                    o.connect(g); g.connect(c.destination); o.start(t0 + dt); o.stop(t0 + dt + 0.22);
+                });
+            } catch (e) { }
+        }
+
+        function 알람_울림(종목, a, 가격) {
+            var 글 = '🔔 ' + 종목 + ' ' + a.가격.toFixed(2) + ' ' + a.방향 + ' 도달 · 현재 ' + 가격.toFixed(2) + ' (' + a.도달 + ' ET)';
+            var i = panelTickers.indexOf(종목), 띠 = i >= 0 ? document.getElementById('p' + i + '-alban') : null;
+            if (띠) {
+                띠.textContent = 글 + '  · 클릭하면 닫기'; 띠.className = 'al-ban show';
+                void 띠.offsetWidth; 띠.className = 'al-ban show flash';
+                띠.onclick = function () { 띠.className = 'al-ban'; };
+                clearTimeout(띠._닫기); 띠._닫기 = setTimeout(function () { 띠.className = 'al-ban'; }, 60000);
+            }
+            알람_소리();
+            try { if (document.hidden && window.Notification && Notification.permission === 'granted') new Notification('🔔 ' + 종목 + ' 가격 알람', { body: a.가격.toFixed(2) + ' ' + a.방향 + ' 도달 · 현재 ' + 가격.toFixed(2) }); } catch (e) { }
+            if (가상_기록가능) 가상매매.전송대기열.push({ 종류: '알람', 알람: { 종목: 종목, 가격: a.가격, 방향: a.방향, 현재가: 가격, 시각: a.도달, 반복: a.반복 } });
+            console.info('[가격 알람]', 글);
+        }
+
+        // 🔔 버튼 숫자 · 막대 표시 갱신
+        function 알람_화면갱신(종목) {
+            [0, 1, 2].forEach(function (i) {
+                var t = panelTickers[i], b = document.getElementById('p' + i + '-bell'); if (!b) return;
+                var n = 알람_목록(t).filter(function (a) { return a.상태 === '대기'; }).length;
+                b.innerHTML = '🔔' + (n ? '<b>' + n + '</b>' : '');
+                b.classList.toggle('on', n > 0);
+                if (!종목 || t === 종목) { try { if (panelDataStore[i] && panelDataStore[i].price > 0) renderTimeline('p' + i + '-', panelDataStore[i]); } catch (e) { } }
+            });
+            var p = document.getElementById('al-pop'); if (p && (!종목 || p._종목 === 종목)) 알람_창그리기(p);
+        }
+
+        function 알람_닫기() { var p = document.getElementById('al-pop'); if (p) p.remove(); }
+        function 알람_창그리기(창) {
+            var 종목 = 창._종목, 지금 = 알람_현재가(종목), 입력 = 창.querySelector('input[type=number]'), 값 = 입력 ? 입력.value : (지금 > 0 ? 지금.toFixed(2) : '');
+            var 반복 = 창.querySelector('#al-rep'), 정규 = 창.querySelector('#al-reg');
+            var 반복값 = 반복 ? 반복.checked : false, 정규값 = 정규 ? 정규.checked : false;
+            var i = panelTickers.indexOf(종목), st = RT[i] && RT[i].ticker === 종목 ? RT[i] : null, 세 = st && st.레벨세분;
+            var 빠른 = [];
+            if (세) { if (세.저항[0]) 빠른.push(['1차저항', 세.저항[0].v]); if (세.저항[1]) 빠른.push(['2차저항', 세.저항[1].v]); if (세.지지[0]) 빠른.push(['1차지지', 세.지지[0].v]); if (세.지지[1]) 빠른.push(['2차지지', 세.지지[1].v]); }
+            var 목록 = 알람_목록(종목);
+            창.innerHTML = '<button class="al-x" title="닫기">×</button>' +
+                '<div class="al-h">🔔 ' + 종목 + ' 가격 알람 <span style="color:#8b93a7;font-weight:400">· 현재 ' + (지금 > 0 ? 지금.toFixed(2) : '─') + '</span></div>' +
+                '<div class="al-in">가격 <input type="number" step="0.01" value="' + 값 + '"><span class="al-dir"></span><button class="al-add">등록</button></div>' +
+                (빠른.length ? '<div class="al-q">' + 빠른.map(function (q) { return '<button data-v="' + q[1] + '">' + q[0] + ' ' + q[1].toFixed(2) + '</button>'; }).join('') + '</div>' : '') +
+                '<div class="al-opt"><label><input type="checkbox" id="al-rep"' + (반복값 ? ' checked' : '') + '> 반복 울림</label><label><input type="checkbox" id="al-reg"' + (정규값 ? ' checked' : '') + '> 정규장에만</label></div>' +
+                '<div class="al-list">' + (목록.length ? 목록.slice().sort(function (a, b) { return b.가격 - a.가격; }).map(function (a) {
+                    return '<div class="al-row"><span style="color:' + (a.방향 === '이상' ? '#ff6b6b' : '#4da3ff') + '">' + (a.방향 === '이상' ? '▲ ' : '▼ ') + a.가격.toFixed(2) + ' ' + a.방향 + '</span>' +
+                        '<span class="' + (a.상태 === '도달' ? 'hit' : '') + '">' + (a.상태 === '도달' ? '도달 ' + a.도달 : (a.반복 ? '반복 · ' : '') + (a.정규장만 ? '정규장 · ' : '') + (a.도달 ? '최근 ' + a.도달 : '대기 중')) + '</span>' +
+                        '<button data-id="' + a.id + '" title="삭제">✕</button></div>';
+                }).join('') : '<div style="color:#6b7386">등록된 알람 없음</div>') + '</div>';
+            var inp = 창.querySelector('input[type=number]'), 방향칸 = 창.querySelector('.al-dir');
+            function 방향표시() { var v = Number(inp.value); 방향칸.textContent = !(v > 0) || !(지금 > 0) ? '' : v > 지금 ? '▲ 이상 도달 시' : v < 지금 ? '▼ 이하 도달 시' : '현재가와 같음'; 방향칸.style.color = v > 지금 ? '#ff6b6b' : '#4da3ff'; }
+            inp.oninput = 방향표시; 방향표시();
+            function 등록() {
+                if (알람_추가(종목, inp.value, { 반복: 창.querySelector('#al-rep').checked, 정규장만: 창.querySelector('#al-reg').checked })) {
+                    var 새 = 창.querySelector('input[type=number]'); if (새) 새.value = '';   // 등록 뒤 입력칸 비움 (창은 이미 새로 그려짐)
+                    알람_창그리기(창);
+                }
+            }
+            창.querySelector('.al-add').onclick = 등록;
+            inp.onkeydown = function (e) { if (e.key === 'Enter') 등록(); };
+            창.querySelector('.al-x').onclick = 알람_닫기;
+            Array.prototype.forEach.call(창.querySelectorAll('.al-q button'), function (b) { b.onclick = function () { inp.value = Number(b.getAttribute('data-v')).toFixed(2); 방향표시(); }; });
+            Array.prototype.forEach.call(창.querySelectorAll('.al-row button'), function (b) { b.onclick = function () { 알람_삭제(종목, b.getAttribute('data-id')); }; });
+        }
+        function 알람_창열기(i, 단추) {
+            var 종목 = panelTickers[i]; if (!종목) return;
+            var 기존 = document.getElementById('al-pop'); if (기존) { var 같음 = 기존._종목 === 종목; 기존.remove(); if (같음) return; }
+            var 창 = document.createElement('div'); 창.className = 'al-pop'; 창.id = 'al-pop'; 창._종목 = 종목;
+            document.body.appendChild(창); 알람_창그리기(창);
+            var r = 단추.getBoundingClientRect();
+            창.style.top = Math.min(window.innerHeight - 260, r.bottom + 6) + 'px';
+            창.style.left = Math.max(8, Math.min(window.innerWidth - 308, r.right - 300)) + 'px';
+            var inp = 창.querySelector('input[type=number]'); if (inp) { inp.focus(); inp.select(); }
+        }
+        document.addEventListener('click', function (e) {
+            var b = e.target.closest && e.target.closest('.px-bell');
+            if (b) { e.stopPropagation(); 알람_창열기(parseInt(b.id.replace(/[^0-9]/g, ''), 10), b); return; }
+            var p = document.getElementById('al-pop'); if (p && !p.contains(e.target) && !(e.target.closest && e.target.closest('.lvs-bell'))) 알람_닫기();
+        });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') 알람_닫기(); });
+
         (function start() {
             initDashboard(); buildWatchlist(); refreshAllDropdowns(); initFirebase();
-            [0, 1, 2].forEach(function (i) { try { 레벨요약표시('p' + i + '-', { ticker: panelTickers[i] }); } catch (e) { } });   // 요약 틀(빈 줄) 먼저 → 3개 패널 높이 동일
+            [0, 1, 2].forEach(function (i) { try { 레벨요약표시('p' + i + '-', { ticker: panelTickers[i] }); } catch (e) { } });
+            try { 알람_화면갱신(); } catch (e) { }   // 요약 틀(빈 줄) 먼저 → 3개 패널 높이 동일
             try {
                 firebase.database().ref('system/closeUpdate').on('value', function (snap) {
                     closeStatus = snap.val();
