@@ -1835,14 +1835,55 @@
             return d.getFullYear() + '-' + (d.getMonth() < 9 ? '0' : '') + (d.getMonth() + 1) + '-' + (d.getDate() < 10 ? '0' : '') + d.getDate();
         }
         // 반환: { 상태: '정상'|'계산중'|'없음', 지지:[{v,횟수}], 저항:[...], 허용폭, 기준시각 }
+        // 지지·저항 구간: 윈폼(Firebase, 키움 1분봉) 과 Worker(/day, 야후 1분봉) 중 같은 목표 날짜의 더 최신 값 (같으면 윈폼)
+        //   윈폼이 꺼져 있어도 Worker 값으로 계속 갱신됨
         function 구간_가져오기(종목) {
-            var z = 구간Cache[종목];
-            // 윈폼이 "어느 정규장 날짜를 목표로 계산했는지"(대상날짜)로 비교 → 휴장일에는 이전 거래일 구간도 사용 가능
-            var ok = z && (z.대상날짜 || z.날짜) === 구간_기대날짜() && Array.isArray(z.지지 || []) && Array.isArray(z.저항 || []);
-            if (!ok) return { 상태: kiwoomAlive ? '계산중' : '없음', 지지: [], 저항: [], 허용폭: 0, 평균폭: 0, 기준시각: '' };
-            function 변환(a) { return (a || []).map(function (x) { return { v: Number(x.가격), 횟수: Number(x.횟수) || 0 }; }).filter(function (x) { return x.v > 0; }); }
-            return { 상태: '정상', 지지: 변환(z.지지), 저항: 변환(z.저항), 허용폭: Number(z.허용폭) || 0, 평균폭: Number(z.평균폭) || 0, 기준시각: z.기준시각 || '' };
+            var 기대 = 구간_기대날짜();
+            function 유효(z) { return z && (z.대상날짜 || z.날짜) === 기대 && Array.isArray(z.지지 || []) && Array.isArray(z.저항 || []); }
+            var a = 구간Cache[종목], w = 일데이터[종목] && 일데이터[종목].zones;
+            var z = null, 출처 = '';
+            if (유효(a) && 유효(w)) { if (String(w.기준시각 || '') > String(a.기준시각 || '')) { z = w; 출처 = '야후'; } else { z = a; 출처 = '윈폼'; } }
+            else if (유효(a)) { z = a; 출처 = '윈폼'; }
+            else if (유효(w)) { z = w; 출처 = '야후'; }
+            if (!z) return { 상태: 일_요청중[종목] || !일데이터[종목] ? '계산중' : '없음', 지지: [], 저항: [], 허용폭: 0, 평균폭: 0, 기준시각: '', 출처: '' };
+            function 변환(arr) { return (arr || []).map(function (x) { return { v: Number(x.가격), 횟수: Number(x.횟수) || 0 }; }).filter(function (x) { return x.v > 0; }); }
+            return { 상태: '정상', 지지: 변환(z.지지), 저항: 변환(z.저항), 허용폭: Number(z.허용폭) || 0, 평균폭: Number(z.평균폭) || 0, 기준시각: z.기준시각 || '', 출처: 출처 };
         }
+
+        // ════════════════════════════════════════════════════════
+        // ★ Worker /day : 정규장 구간 + 마감 정보 (화면이 보일 때만, 패널 종목만)
+        //   정규장 중 3분마다 / 장 마감 후에는 목표 날짜의 확정 값을 한 번 받으면 끝 (확정 전이면 5분마다)
+        // ════════════════════════════════════════════════════════
+        var 일데이터 = {}, 일_요청중 = {}, 일_요청시각 = {};
+        function 일_점검() {
+            if (document.visibilityState === 'hidden') return;
+            if (!CLOSE_WORKER_URL || CLOSE_WORKER_URL.indexOf('YOUR-ACCOUNT') >= 0) return;
+            var 장 = marketPhase(), 기대 = 구간_기대날짜(), 지금 = Date.now();
+            panelTickers.forEach(function (t) {
+                if (!t || 일_요청중[t]) return;
+                var v = 일데이터[t];
+                var 완료 = v && v.대상날짜 === 기대 && v.마감 && v.마감.확정 && 장.type !== 'REG';
+                if (완료) return;                                                     // 장 마감 후 확정 값 있음 → 다시 받을 필요 없음
+                var 간격 = 장.type === 'REG' ? 3 * 60000 : 5 * 60000;
+                if (일_요청시각[t] && 지금 - 일_요청시각[t] < 간격 && v && v.대상날짜 === 기대) return;
+                일_요청중[t] = true; 일_요청시각[t] = 지금;
+                fetch(CLOSE_WORKER_URL.replace(/\/+$/, '') + '/day?s=' + encodeURIComponent(t), { cache: 'no-store' })
+                    .then(function (r) { return r.json(); })
+                    .then(function (j) {
+                        if (!j || j.error) { 디버그('일' + t, '[' + t + '] 구간·마감 정보 조회 실패: ' + ((j && j.error) || '응답 없음')); return; }
+                        일데이터[t] = j;
+                        var m = j.마감 || {}, z = j.zones;
+                        디버그('일' + t, '[' + t + '] 야후 구간·마감 정보 수신 (대상 ' + j.대상날짜 + ', 실제 ' + (m.날짜 || '') + (m.확정 ? ' 확정' : ' 진행 중') + ') 종가 ' + (m.종가 || 0).toFixed(2) +
+                            ' · 정규장 VWAP ' + (m.VWAP || 0).toFixed(2) + ' · 마감 30분 ' + (m.마감30분 == null ? '—' : fmtPct(m.마감30분)) + ' · 당일 ' + (m.당일 == null ? '—' : fmtPct(m.당일)) +
+                            (z ? ' · 구간 ' + z.기준시각 + ' 기준 지지 ' + z.지지.map(function (x) { return x.가격 + '×' + x.횟수; }).join(',') + ' / 저항 ' + z.저항.map(function (x) { return x.가격 + '×' + x.횟수; }).join(',') : ' · 구간 없음 (' + (j.사유 || '') + ')'));
+                    })
+                    .catch(function (e) { 일_요청시각[t] = 지금 - (장.type === 'REG' ? 2 : 4) * 60000; console.warn('[구간·마감] 조회 실패', t, e); })   // 실패 → 1분 뒤 다시
+                    .then(function () { 일_요청중[t] = false; });
+            });
+        }
+        setInterval(일_점검, 15000);
+        setTimeout(일_점검, 2000);
+        document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') 일_점검(); });
 
         // ── 디버그 로그 (윈폼 대시보드 창에서만, 윈폼 로그·파일로 전달) ──
         var 디버그로그사용 = true;
@@ -2041,6 +2082,19 @@
             var m1 = rtChange(s, 60), m3 = rtChange(s, 180), m10 = rtChange(s, 600);
             var surge = rtVolSurge(s);
 
+            // ── 장 마감 기준 모드: 정규장이 아닐 때는 마지막 정규장 마감 값으로 판단 (다음 정규장 계획) ──
+            //   현재가 = 정규장 종가 / VWAP = 정규장 VWAP / 3분 자리 = 마감 30분 흐름 / 10분 자리 = 당일 흐름
+            //   실시간(프리·애프터·오버나이트) 가격은 상황 줄에 따로 표시
+            var 장지금 = marketPhase(), 일 = 일데이터[s.ticker];
+            var 마감 = (장지금.type !== 'REG' && 일 && 일.마감 && 일.마감.확정 && 일.마감.종가 > 0 && 일.마감.VWAP > 0 && 일.대상날짜 === 구간_기대날짜()) ? 일.마감 : null;
+            var 실시간가 = price;
+            s.마감모드 = !!마감;
+            if (마감) {
+                price = 마감.종가; vwap = 마감.VWAP; vwLabel = '정규장 VWAP';
+                vwDist = (price - vwap) / vwap * 100;
+                m1 = null; m3 = 마감.마감30분; m10 = 마감.당일; surge = null;
+            }
+
             var optState = score >= 8.5 ? '콜 과열' : score <= 1.5 ? '풋 과열' :
                            score >= 6 ? '콜 우위' : score <= 4 ? '풋 우위' : '중립';
 
@@ -2051,7 +2105,8 @@
             var 구간 = 구간_가져오기(s.ticker);
             var 변동 = 변동폭계산(s, 구간, price);
             var 기준3분 = 변동 ? Math.max(0.15, 변동.값 * 0.5) : 0.15, 기준10분 = 변동 ? Math.max(0.3, 변동.값) : 0.3;
-            var 점수_VWAP = s.extVwap > 0 ? (vwDist > 0.1 ? 1 : vwDist < -0.1 ? -1 : 0) : 0;
+            if (마감) { 기준3분 = 기준10분; 기준10분 = 변동 ? Math.max(0.5, 변동.값 * 2) : 0.5; }   // 마감 30분 = 평균 폭 × 1, 당일 = 평균 폭 × 2 (최소 0.5%)
+            var 점수_VWAP = (s.extVwap > 0 || 마감) ? (vwDist > 0.1 ? 1 : vwDist < -0.1 ? -1 : 0) : 0;
             var 점수_3분 = m3 == null ? 0 : m3 > 기준3분 ? 1 : m3 < -기준3분 ? -1 : 0;
             var 점수_10분 = m10 == null ? 0 : m10 > 기준10분 ? 1 : m10 < -기준10분 ? -1 : 0;
             var 점수_옵션 = score >= 6 ? 1 : score <= 4 ? -1 : 0;
@@ -2059,8 +2114,8 @@
             // ±2 이상(추세)은 가격 항목(VWAP·3분·10분) 중 하나 이상이 같은 방향일 때만 인정 → 옵션만으로는 추세가 되지 않음
             var 가격근거 = bias > 0 ? (점수_VWAP > 0 || 점수_3분 > 0 || 점수_10분 > 0) : bias < 0 ? (점수_VWAP < 0 || 점수_3분 < 0 || 점수_10분 < 0) : false;
             if (Math.abs(bias) >= 2 && !가격근거) bias = bias > 0 ? 1 : -1;
-            디버그('방향' + s.ticker, '[' + s.ticker + '] 방향 점수 ' + (bias > 0 ? '+' : '') + bias + ' = VWAP ' + (s.extVwap > 0 ? 점수_VWAP : '0(실제 VWAP 없음)') +
-                ' · 3분 ' + 점수_3분 + ' · 10분 ' + 점수_10분 + ' · 옵션 ' + 점수_옵션 +
+            디버그('방향' + s.ticker, '[' + s.ticker + '] ' + (마감 ? '마감 기준(' + 마감.날짜 + ') ' : '') + '방향 점수 ' + (bias > 0 ? '+' : '') + bias + ' = VWAP ' + ((s.extVwap > 0 || 마감) ? 점수_VWAP : '0(실제 VWAP 없음)') +
+                (마감 ? ' · 마감30분 ' + 점수_3분 + ' · 당일 ' + 점수_10분 : ' · 3분 ' + 점수_3분 + ' · 10분 ' + 점수_10분) + ' · 옵션 ' + 점수_옵션 +
                 ' (기준 3분 ±' + 기준3분.toFixed(2) + '% · 10분 ±' + 기준10분.toFixed(2) + '%' + (변동 ? ', 3분봉 평균 폭 ' + 변동.값.toFixed(2) + '% ' + 변동.출처 : ', 기본값') + ')');
 
             // 속도 표현
@@ -2076,7 +2131,7 @@
             var volStrong = surge != null && surge >= 1.5;
 
             // ── 가장 최근 이벤트 (90초 이내면 헤드라인) ──
-            var ev = s.events[0], fresh = ev && Date.now() - ev.t < 90 * 1000;
+            var ev = s.events[0], fresh = !마감 && ev && Date.now() - ev.t < 90 * 1000;   // 마감 기준 모드에서는 실시간 돌파·이탈 이벤트를 쓰지 않음
 
             // 가장 가까운 레벨
             var lvList = [
@@ -2094,7 +2149,7 @@
 
             // ── 위/아래 다음 레벨 (손절·목표 계산용: 옵션 레벨 + VWAP(윈폼 계산값만) + 반등·반락 구간) ──
             //   페이지가 연 뒤 모은 체결로 만든 VWAP 은 세션 전체 값이 아니라서 레벨로 쓰지 않음
-            var VWAP확정 = s.extVwap > 0;
+            var VWAP확정 = s.extVwap > 0 || !!마감;
             var 전체레벨 = lvList.concat(VWAP확정 ? [{ k: 'VWAP', n: 'VWAP', v: vwap }] : []).concat(구간레벨);
             // 기준가보다 0.1% 이상 유리한 쪽의 가장 가까운 레벨 가격 (롱=위, 숏=아래) — 진입가 기준 목표 계산용
             function 다음레벨(기준가, 방향) {
@@ -2255,6 +2310,11 @@
                 } else {
                     line3 = '레벨 사이 중간 구간. 다음 레벨 도달 전까지 관망';
                 }
+            }
+            // 마감 기준 모드: 실시간 가격을 상황 줄 앞에 표시
+            if (마감) {
+                var 실시간글 = 장지금.type === 'WEEKEND' || 장지금.type === 'HOLIDAY' ? '휴장 · 마지막 ' : (장지금.label || '장외') + ' ';
+                line1 = 실시간글 + 실시간가.toFixed(2) + ' (마감가 대비 ' + fmtPct((실시간가 - 마감.종가) / 마감.종가 * 100) + ') · ' + line1.replace(/^[^\w가-힣$]+/, '');
             }
             // 상황 줄 보강: 구간 데이터 상태
             if (구간.상태 === '계산중') line1 += ' · 지지·저항 구간 계산 중';
@@ -2435,7 +2495,9 @@
                 '<div><span><b>당일</b> <em style="color:' + (당일비 ? (당일비 >= 1 ? 빨강 : '#c9cedb') : 흐림) + '">' + (당일비 ? 당일비.toFixed(1) + '배' : '—') + '</em></span><small>' + (당일비 ? '과거 같은 시각 평균 대비' : '윈폼(키움) 연결 · 고정 종목만 표시') + '</small></div>' +
                 '<div><span><b>순간</b> <em style="color:' + (surge != null ? (surge >= 1.3 ? 빨강 : '#c9cedb') : 흐림) + '">' + (surge != null ? surge.toFixed(1) + '배' : '—') + '</em></span><small>' + (surge != null ? '최근 1분 ÷ 직전 10분 평균' : '수집 중 (화면 연 뒤 11분부터)') + '</small></div>' +
                 '</div></div>';
-            var 지표 = 막대('VWAP', vwDist, 0.5, vwDist >= 0 ? '위' : '아래') + 막대('1분', m1, 0.3, m1 != null ? speed : '') + 막대('3분', m3, 0.5, '') +
+            var 지표 = (마감
+                    ? 막대('VWAP', vwDist, 0.5, '종가 ' + (vwDist >= 0 ? '위' : '아래')) + 막대('마감30분', m3, 0.5, '') + 막대('당일', m10, 2, '')
+                    : 막대('VWAP', vwDist, 0.5, vwDist >= 0 ? '위' : '아래') + 막대('1분', m1, 0.3, m1 != null ? speed : '') + 막대('3분', m3, 0.5, '')) +
                        '<div class="sg-row"><span class="sg-rl">옵션</span><div class="sg-meter">' + 옵션눈금 + '</div><span class="sg-rv" style="color:' + 옵션색 + '">' + optState + ' ' + score.toFixed(1) + '</span></div>' +
                        거래량HTML;
 
@@ -2446,12 +2508,16 @@
             }).join('') || '<span class="sg-dim">최근 이벤트 없음</span>';
             var note = rtSessionNote();
             var 정규장VWAP = marketPhase().type !== 'REG' ? (d.vwapReg || s.정규장VWAP || 0) : 0;
-            var stateTxt = [
+            var stateTxt = 마감 ? [
+                마감.날짜.slice(5).replace('-', '/') + ' 정규장 마감 기준 (종가 ' + 마감.종가.toFixed(2) + ' · 정규장 VWAP ' + 마감.VWAP.toFixed(2) + ')',
+                '시세 ' + (s.src === 'kiwoom' ? '키움' : s.src === 'yahoo' ? '야후' : '─'),
+                구간.상태 === '정상' ? '지지·저항 구간 ' + 구간.기준시각 + ' 기준 (' + 구간.출처 + ')' : ''
+            ].filter(Boolean).join(' · ') : [
                 note ? note : '정규장',
                 정규장VWAP > 0 ? '정규장 VWAP $' + 정규장VWAP.toFixed(2) + ' (현재가 ' + fmtPct((price - 정규장VWAP) / 정규장VWAP * 100) + ')' : '',
                 '시세 ' + (s.src === 'kiwoom' ? '키움' : s.src === 'yahoo' ? '야후' : '─'),
                 s.extVwap > 0 ? 'VWAP 키움 계산' : vwReal ? 'VWAP 페이지 수집값' : 'VWAP 추정치',
-                구간.상태 === '정상' ? '지지·저항 구간 ' + 구간.기준시각 + ' 기준' : '',
+                구간.상태 === '정상' ? '지지·저항 구간 ' + 구간.기준시각 + ' 기준 (' + 구간.출처 + ')' : '',
                 s.ticks.length < 20 ? '실시간 수집 중' : ''
             ].filter(Boolean).join(' · ');
 
@@ -2465,7 +2531,8 @@
             put('gauge', 게이지);
             // 시간대 배지: 정규장 = 실시간 / 그 외 = 참고용 (가상매매는 정규장에만 진입)
             var 장 = marketPhase();
-            var 배지 = 장.type === 'REG' ? { 글: '정규장 · 실시간', 종류: 'reg' }
+            var 배지 = 마감 ? { 글: 마감.날짜.slice(5).replace('-', '/') + ' 마감 기준 · 참고용', 종류: 'ext' }
+                     : 장.type === 'REG' ? { 글: '정규장 · 실시간', 종류: 'reg' }
                      : (장.type === 'WEEKEND' || 장.type === 'HOLIDAY') ? { 글: '휴장 · 참고용', 종류: 'off' }
                      : { 글: 장.label + ' · 참고용', 종류: 'ext' };
             put('sigtitle', 상태아이콘 + '<span>' + 결론.글 + '</span><em class="sg-sess sg-sess-' + 배지.종류 + '">' + 배지.글 + '</em>', 결론.색,
@@ -2494,6 +2561,7 @@
                 (pl ? ' · ' + (pl.dir === 'long' ? '롱' : '숏') + ' ' + pl.방식 + ' 진입 ' + pl.entry.toFixed(2) + ' 손절 ' + pl.stop.toFixed(2) + ' 목표 ' + pl.target.toFixed(2) + ' 1:' + pl.rr.toFixed(2) : ' · 계획 없음') +
                 (sc && sc.점수 != null ? ' · 점수 ' + sc.점수 + ' [' + sc.항목.map(function (x) { return x.이름 + ' ' + (x.상태 === null ? '—' : x.점수 + '/' + x.만점); }).join(', ') + ']' : ''));
             if (jd.상태 === '관망' || !jd.계획) return;
+            if (s.마감모드) return;   // 마감 기준(다음 장 계획) 판단은 실시간 신호가 아니므로 차트 표시·알림음에 보내지 않음
             가상_고려기록(s.ticker, jd.상태 === '매수' ? '롱' : '숏', price, jd.계획, jd.이유);
         }
 
