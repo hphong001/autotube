@@ -1839,9 +1839,9 @@
             var z = 구간Cache[종목];
             // 윈폼이 "어느 정규장 날짜를 목표로 계산했는지"(대상날짜)로 비교 → 휴장일에는 이전 거래일 구간도 사용 가능
             var ok = z && (z.대상날짜 || z.날짜) === 구간_기대날짜() && Array.isArray(z.지지 || []) && Array.isArray(z.저항 || []);
-            if (!ok) return { 상태: kiwoomAlive ? '계산중' : '없음', 지지: [], 저항: [], 허용폭: 0, 기준시각: '' };
+            if (!ok) return { 상태: kiwoomAlive ? '계산중' : '없음', 지지: [], 저항: [], 허용폭: 0, 평균폭: 0, 기준시각: '' };
             function 변환(a) { return (a || []).map(function (x) { return { v: Number(x.가격), 횟수: Number(x.횟수) || 0 }; }).filter(function (x) { return x.v > 0; }); }
-            return { 상태: '정상', 지지: 변환(z.지지), 저항: 변환(z.저항), 허용폭: Number(z.허용폭) || 0, 기준시각: z.기준시각 || '' };
+            return { 상태: '정상', 지지: 변환(z.지지), 저항: 변환(z.저항), 허용폭: Number(z.허용폭) || 0, 평균폭: Number(z.평균폭) || 0, 기준시각: z.기준시각 || '' };
         }
 
         // ── 디버그 로그 (윈폼 대시보드 창에서만, 윈폼 로그·파일로 전달) ──
@@ -2009,6 +2009,22 @@
         // ════════════════════════════════════════════════════════
         // ★ 전략 문구 (1초마다 갱신)
         // ════════════════════════════════════════════════════════
+        // 종목 변동성: 3분봉 평균 폭 (%) — 윈폼 구간 계산값(오늘 정규장 전체) 우선, 없으면 최근 15분 체결로 계산
+        function 변동폭계산(s, 구간, price) {
+            if (구간 && 구간.상태 === '정상' && 구간.평균폭 > 0 && price > 0) return { 값: 구간.평균폭 / price * 100, 출처: '(오늘 3분봉)' };
+            if (!s || !s.ticks || s.ticks.length < 10 || !(price > 0)) return null;
+            var 칸 = {}, 현재 = Math.floor(Date.now() / 180000);
+            s.ticks.forEach(function (t) {
+                var k = Math.floor(t.t / 180000); if (k === 현재 || !(t.p > 0)) return;
+                var b = 칸[k] || (칸[k] = { h: -Infinity, l: Infinity, n: 0 });
+                if (t.p > b.h) b.h = t.p; if (t.p < b.l) b.l = t.p; b.n++;
+            });
+            var 폭 = Object.keys(칸).map(function (k) { return 칸[k]; }).filter(function (b) { return b.n >= 2; })
+                          .map(function (b) { return (b.h - b.l) / price * 100; });
+            if (폭.length < 3) return null;
+            return { 값: 폭.reduce(function (a, x) { return a + x; }, 0) / 폭.length, 출처: '(최근 체결)' };
+        }
+
         function applySmartStrategy(panelIdx) {
             var d = panelDataStore[panelIdx];
             if (!d || !d.price || !d.resistance1 || !d.support1) return;
@@ -2030,16 +2046,22 @@
 
             // ── 방향 점수 (-4 ~ +4): VWAP 위치 + 3분 모멘텀 + 10분 추세 + 옵션수급 ──
             //   VWAP 위치는 윈폼이 계산한 실제 VWAP 일 때만 반영 (추정·페이지 수집 VWAP 은 0점 — 진입 점수와 같은 기준)
+            //   3분·10분 기준은 종목 변동성(3분봉 평균 폭)에 맞춤: 3분 = 평균 폭 × 0.5 (최소 0.15%), 10분 = 평균 폭 × 1.0 (최소 0.3%)
+            //     → TSLA 처럼 출렁임이 큰 종목이 몇 초 만에 기준을 넘나들며 방향이 뒤집히는 것을 막음
+            var 구간 = 구간_가져오기(s.ticker);
+            var 변동 = 변동폭계산(s, 구간, price);
+            var 기준3분 = 변동 ? Math.max(0.15, 변동.값 * 0.5) : 0.15, 기준10분 = 변동 ? Math.max(0.3, 변동.값) : 0.3;
             var 점수_VWAP = s.extVwap > 0 ? (vwDist > 0.1 ? 1 : vwDist < -0.1 ? -1 : 0) : 0;
-            var 점수_3분 = m3 == null ? 0 : m3 > 0.15 ? 1 : m3 < -0.15 ? -1 : 0;
-            var 점수_10분 = m10 == null ? 0 : m10 > 0.3 ? 1 : m10 < -0.3 ? -1 : 0;
+            var 점수_3분 = m3 == null ? 0 : m3 > 기준3분 ? 1 : m3 < -기준3분 ? -1 : 0;
+            var 점수_10분 = m10 == null ? 0 : m10 > 기준10분 ? 1 : m10 < -기준10분 ? -1 : 0;
             var 점수_옵션 = score >= 6 ? 1 : score <= 4 ? -1 : 0;
             var bias = 점수_VWAP + 점수_3분 + 점수_10분 + 점수_옵션;
             // ±2 이상(추세)은 가격 항목(VWAP·3분·10분) 중 하나 이상이 같은 방향일 때만 인정 → 옵션만으로는 추세가 되지 않음
             var 가격근거 = bias > 0 ? (점수_VWAP > 0 || 점수_3분 > 0 || 점수_10분 > 0) : bias < 0 ? (점수_VWAP < 0 || 점수_3분 < 0 || 점수_10분 < 0) : false;
             if (Math.abs(bias) >= 2 && !가격근거) bias = bias > 0 ? 1 : -1;
             디버그('방향' + s.ticker, '[' + s.ticker + '] 방향 점수 ' + (bias > 0 ? '+' : '') + bias + ' = VWAP ' + (s.extVwap > 0 ? 점수_VWAP : '0(실제 VWAP 없음)') +
-                ' · 3분 ' + 점수_3분 + ' · 10분 ' + 점수_10분 + ' · 옵션 ' + 점수_옵션);
+                ' · 3분 ' + 점수_3분 + ' · 10분 ' + 점수_10분 + ' · 옵션 ' + 점수_옵션 +
+                ' (기준 3분 ±' + 기준3분.toFixed(2) + '% · 10분 ±' + 기준10분.toFixed(2) + '%' + (변동 ? ', 3분봉 평균 폭 ' + 변동.값.toFixed(2) + '% ' + 변동.출처 : ', 기본값') + ')');
 
             // 속도 표현
             var speed = '';
@@ -2067,7 +2089,6 @@
             var nearL = near ? s.levels[near.k] : null;
 
             // ── 당일 반등·반락 구간 ──
-            var 구간 = 구간_가져오기(s.ticker);
             var 구간레벨 = 구간.지지.map(function (z) { return { n: z.횟수 + '번 지지 반등', v: z.v, k: 레벨ID_구간('구간지지', z.v) }; })
                 .concat(구간.저항.map(function (z) { return { n: z.횟수 + '번 막힌 저항', v: z.v, k: 레벨ID_구간('구간저항', z.v) }; }));
 
@@ -2085,15 +2106,31 @@
             var below = 전체레벨.filter(function (x) { return x.v < price * 0.999; }).sort(function (a, b) { return b.v - a.v; });
             var 눌림결과 = null, 박스 = 구간.상태 === '정상' ? 박스찾기(price, 구간) : null;
 
-            var line1 = '', line3 = '', color = '#ddbb00', plan = null, planLevel = '', planLevelID = '';
+            var line1 = '', line3 = '', color = '#ddbb00', plan = null, planLevel = '', planLevelID = '', 근접후보 = null;
 
             // ── 추세 눌림(롱)/반등(숏) 계획 먼저 계산 ──
             //   시작: 방향 점수 ±2 이상 / 유지: 같은 방향 ±1 이상 (눌림으로 VWAP 에 가까워지면 점수가 1 줄어드는 것을 흡수)
             //   취소: 0 또는 반대 방향
-            var 이전눌림 = s.눌림방향 || null;
-            var 추세방향 = bias >= 2 ? 'long' : bias <= -2 ? 'short'
-                        : (이전눌림 === 'long' && bias >= 1) ? 'long' : (이전눌림 === 'short' && bias <= -1) ? 'short' : null;
-            s.눌림방향 = 추세방향;
+            //   추세 유지 규칙:
+            //     시작  = 방향 점수 ±2 이상
+            //     유지  = 같은 방향 ±1 이상 / 0 이면 시작 후 5분 안에는 유지, 그 뒤에는 0 이 2분 계속될 때 취소
+            //     취소  = 반대 방향(−1 이하) 즉시
+            var 추세 = s.추세 || null, 지금ms = Date.now();
+            if (추세) {
+                var 같은방향 = bias * 추세.부호;
+                if (같은방향 <= -1) { 디버그(null, '[' + s.ticker + '] 추세 취소: 반대 방향 (방향 점수 ' + bias + ')'); 추세 = null; }
+                else if (같은방향 >= 1) 추세.영시작 = 0;
+                else if (지금ms - 추세.시작 >= 5 * 60000) {
+                    if (!추세.영시작) 추세.영시작 = 지금ms;
+                    if (지금ms - 추세.영시작 >= 2 * 60000) { 디버그(null, '[' + s.ticker + '] 추세 취소: 방향 점수 0 이 2분 지속'); 추세 = null; }
+                }
+            }
+            if (!추세 && Math.abs(bias) >= 2) {
+                추세 = { 부호: bias > 0 ? 1 : -1, 시작: 지금ms, 영시작: 0 };
+                디버그(null, '[' + s.ticker + '] 추세 시작: ' + (bias > 0 ? '상승' : '하락') + ' (방향 점수 ' + (bias > 0 ? '+' : '') + bias + ')');
+            }
+            s.추세 = 추세;
+            var 추세방향 = 추세 ? (추세.부호 > 0 ? 'long' : 'short') : null;
             var 눌림사용 = false;
             if (추세방향) {
                 눌림결과 = 눌림계획(추세방향, price, lvList, vwap, VWAP확정, 구간, 전체레벨);
@@ -2171,6 +2208,7 @@
                         line3 = (weakening ? touches + '회 터치로 지지 약화. ' : '하방 우위. ') + '$' + (near.v * 0.999).toFixed(2) + ' 이탈 확인 시 숏';
                     } else {
                         line3 = '방향 미정. 반등(1분 +) 또는 이탈($' + (near.v * 0.999).toFixed(2) + '↓) 확인 후 대응';
+                        근접후보 = '롱';   // 지지 근처에서 방향 미정 → 반등(롱) 기준으로 점수 표시 (계획은 없음)
                     }
                 } else {
                     var pushing = m1 != null && m1 > 0.05 && volStrong;
@@ -2235,7 +2273,7 @@
             // ── 진입 점수 (표시·기록용) ──
             var vwapReal = VWAP확정;
             function 점수만들기(pl) {
-                var 방향 = pl ? (pl.dir === 'long' ? '롱' : '숏') : bias > 0 ? '롱' : bias < 0 ? '숏' : 박스 ? ((price - 박스.하단.v) <= (박스.상단.v - price) ? '롱' : '숏') : null;
+                var 방향 = pl ? (pl.dir === 'long' ? '롱' : '숏') : 추세방향 ? (추세방향 === 'long' ? '롱' : '숏') : bias > 0 ? '롱' : bias < 0 ? '숏' : 근접후보 ? 근접후보 : 박스 ? ((price - 박스.하단.v) <= (박스.상단.v - price) ? '롱' : '숏') : null;
                 var 후보들 = 방향 ? 레벨후보(방향 === '롱' ? 'long' : 'short', price, lvList, vwap, vwapReal, 구간) : [];
                 var 겹침 = [];
                 if (pl && pl.기준가 > 0) 겹침 = 후보들.filter(function (x) { return Math.abs(x.v - pl.기준가) / pl.기준가 * 100 <= 겹침_거리 && Math.abs(x.v - pl.기준가) > 1e-9; });
@@ -2296,7 +2334,13 @@
 
             // ② 진입 점수 (항목 색 = 막대 조각 색 = 체크 칸 색, 빨강·파랑은 방향 전용이라 사용 안 함)
             var 항목색 = { '추세': '#2dd4bf', '손익비': '#facc15', '진입 위치': '#a78bfa', '지지 강도': '#a3e635', '저항 강도': '#a3e635', 'VWAP': '#22d3ee', '옵션': '#fb923c', '거래량': '#e879f9' };
-            var 표시점수 = jd.점수 || 지금점수, 점수HTML;
+            var 표시점수 = jd.점수 || 지금점수, 점수HTML, 점수흐림 = '';
+            // 방향이 잠깐 사라져도 카드가 비지 않게: 5분 안의 마지막 점수를 흐리게 표시
+            if (표시점수 && 표시점수.방향 && 표시점수.점수 != null) s.마지막점수 = { 값: 표시점수, at: Date.now() };
+            else if (s.마지막점수 && Date.now() - s.마지막점수.at < 5 * 60000) {
+                점수흐림 = Math.max(0, Math.round((Date.now() - s.마지막점수.at) / 60000)) + '분 전';
+                표시점수 = s.마지막점수.값;
+            }
             if (!표시점수 || !표시점수.방향 || 표시점수.점수 == null) {
                 점수HTML = '<div class="sg-sc-head"><span class="sg-sc-title">진입 점수 <small>· 방향 없음</small></span><span class="sg-sc-num" style="color:' + 흐림 + '">—</span></div>' +
                           '<div class="sg-sc-bar"></div><div class="sg-sc-mark"></div><div class="sg-tags"><span class="sg-dim">방향이 정해지면 계산</span></div>';
@@ -2321,11 +2365,13 @@
                     return '<span class="sg-tag ' + 클래스 + '"' + 배경 + ' title="' + x.이름 + ': ' + x.설명 + '">' + 칸 +
                            '<span class="sg-tn">' + 이름글 + '</span><span class="sg-tp">' + 점수글 + '</span></span>';
                 }).join('');
-                var 기준글 = 표시점수.항목수 + '개 항목 기준' + (표시점수.제외수 ? ' · ' + 표시점수.제외수 + '개 데이터 없음' : '');
+                var 기준글 = 점수흐림 ? '방향 약해짐 · ' + 점수흐림 + ' ' + 표시점수.방향 + ' 기준 점수'
+                          : 표시점수.항목수 + '개 항목 기준' + (표시점수.제외수 ? ' · ' + 표시점수.제외수 + '개 데이터 없음' : '');
                 점수HTML = '<div class="sg-sc-head"><span class="sg-sc-title">진입 점수 <small>· ' + 기준글 + '</small></span>' +
                           '<span class="sg-sc-num" style="color:' + 점수색 + '">' + 표시점수.점수 + '<small> / 100</small></span></div>' +
                           '<div class="sg-sc-bar">' + 조각 + '</div><div class="sg-sc-mark"><i style="left:' + 점수_진입기준 + '%"></i><em style="left:' + 점수_진입기준 + '%">진입 기준 ' + 점수_진입기준 + '</em></div>' +
                           '<div class="sg-tags">' + 태그 + '</div>';
+                if (점수흐림) 점수HTML = '<div style="opacity:.5">' + 점수HTML + '</div>';
             }
 
             // ③ 방향 띠 (롱·숏을 계획 숫자 바로 위에서 한 번 더 명확히)
@@ -2781,7 +2827,12 @@
         // 1초마다 전략 갱신
         setInterval(function () {
             [0, 1, 2].forEach(function (i) {
-                if (panelDataStore[i] && panelDataStore[i].price > 0) applySmartStrategy(i);
+                if (!(panelDataStore[i] && panelDataStore[i].price > 0)) return;
+                try { applySmartStrategy(i); }
+                catch (e) {   // 한 패널 오류가 다른 패널 갱신을 막지 않게 + 원인 기록
+                    console.error('[전략] 패널 ' + i + ' 오류', e);
+                    디버그('오류' + i, '[' + (panelTickers[i] || '') + '] 전략 계산 오류: ' + (e && e.message) + ' @ ' + String((e && e.stack) || '').split('\n')[1]);
+                }
             });
         }, 1000);
 
@@ -3327,6 +3378,7 @@
                         (v.날짜 !== 구간_기대날짜() ? ' (날짜 불일치 → 사용 안 함)' : ''));
                 });
                 fbRefs[panelIdx] = { refs: [rtRef, panelRef, sessRef, zoneRef], ticker: ticker, gen: myGen };
+                setTimeout(옵션_점검, 1500);   // 종목을 바꾸면 옵션(키움이 오래됐으면 CBOE) 바로 확인
             } catch (e) { }
         }
 
@@ -3340,6 +3392,17 @@
             if (!d || !d.type || d.type !== 'optionUpdate' || !d.ticker) return;
             var panel = panelTickers.indexOf(d.ticker);
             if (panel < 0) return;
+            // 옵션 출처: 키움(윈폼 4460) 값이면 갱신 시각 기록 → 5분 안이면 CBOE 대신 키움 값 유지
+            if (d.옵션출처 !== 'CBOE') {
+                var 키움시각 = 옵션_KST시각(d.updatedAt);
+                if (키움시각) 옵션_키움시각[d.ticker] = 키움시각;
+                // 이미 CBOE 최신 값을 쓰는 중인데 들어온 키움 값이 오래된 것(예: 종목 전환 직후 Firebase 의 지난 값)이면 무시
+                if (옵션_CBOE적용[d.ticker] && (!키움시각 || Date.now() - 키움시각 > 옵션_키움유효ms)) {
+                    var 보관 = 옵션_CBOE값[d.ticker];
+                    if (보관) setTimeout(function () { 옵션_CBOE적용하기(d.ticker, 보관); }, 0);   // 종목을 다시 고른 경우: 받아 둔 CBOE 값으로 표시
+                    return;
+                }
+            }
 
 
             if (d.optionRows && d.optionRows.length > 0) {
@@ -3377,6 +3440,172 @@
             setSelectDisabled(panel, false);
             switchLocked[panel] = false;
         };
+
+
+        // ════════════════════════════════════════════════════════
+        // ★ 옵션 데이터 자동 전환: 키움(윈폼 4460, 실시간) ↔ CBOE(Worker, 15분 지연)
+        //   - 화면이 보이는 동안, 패널 종목만 15초마다 확인
+        //   - 키움 값이 5분 안에 갱신됐으면 키움 그대로 / 아니면 Worker /options (CBOE, 5분 공유 캐시) 를 받아 계산
+        //   - 계산 규칙은 윈폼 Execute4460Single 과 동일 (MaxPain·옵션 점수·1/2차 지지·저항·벽·옵션 체인 14행)
+        //   - Firebase 에는 저장하지 않음 (윈폼이 쓰는 키움 값을 덮어쓰지 않음)
+        // ════════════════════════════════════════════════════════
+        var 옵션_키움유효ms = 5 * 60000, 옵션_CBOE주기ms = 5 * 60000;
+        var 옵션_키움시각 = {};     // 종목 → 키움 옵션 갱신 시각(ms)
+        var 옵션_CBOE적용 = {};     // 종목 → CBOE 값을 마지막으로 받은 시각(ms)
+        var 옵션_요청중 = {};
+        var 옵션_CBOE값 = {};       // 종목 → 마지막으로 받은 Worker 응답 (종목을 다시 고를 때 재사용)
+
+        // "yyyy-MM-dd HH:mm:ss" (윈폼 PC 시각 = 한국시간) → ms
+        function 옵션_KST시각(txt) {
+            var m = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?/.exec(String(txt || ''));
+            if (!m) return 0;
+            return Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4] - 9, +m[5], +(m[6] || 0));
+        }
+
+        // C# Math.Round(v, 1) 과 같은 반올림 (중간값은 짝수 쪽)
+        function 옵션_반올림1(v) {
+            var x = v * 10, f = Math.floor(x), d = x - f;
+            var r = Math.abs(d - 0.5) < 1e-9 ? (f % 2 === 0 ? f : f + 1) : Math.round(x);
+            return r / 10;
+        }
+
+        function 옵션_추세문구(dailyChange) {   // 윈폼 EvaluateTrendStrength(change, null) 과 동일
+            var t = '보합 (횡보)', c = '#cccccc';
+            if (dailyChange >= 3.0) { t = '급등 (랠리)'; c = '#ff4444'; }
+            else if (dailyChange >= 1.0) { t = '강한 상승'; c = '#ff6666'; }
+            else if (dailyChange >= 0.3) { t = '완만한 상승'; c = '#ffaaaa'; }
+            else if (dailyChange <= -3.0) { t = '급락 (투매주의)'; c = '#4488ff'; }
+            else if (dailyChange <= -1.0) { t = '강한 하락'; c = '#66aaff'; }
+            else if (dailyChange <= -0.3) { t = '완만한 하락'; c = '#aaccff'; }
+            return "<span style='color:" + c + ";'>" + t + '</span>';
+        }
+
+        // rows: [{k, cOI, cVol, cChg, pOI, pVol, pChg}] / price: 현재가 → 윈폼과 같은 패널 값
+        function 옵션_계산(rows, price) {
+            var 맵 = {};
+            rows.forEach(function (r) { if (r && r.k > 0) 맵[r.k] = r; });
+            var all = Object.keys(맵).map(Number).sort(function (a, b) { return a - b; });
+            if (!all.length) return null;
+            if (!(price > 0)) price = all[Math.floor(all.length / 2)];   // 윈폼: 가운데 행사가
+            if (!(price > 0)) price = 100;
+            function g(s, f) { var r = 맵[s]; return r ? (Number(r[f]) || 0) : 0; }
+            function wC(s) { var oi = g(s, 'cOI'); return oi > 0 ? oi : g(s, 'cVol'); }
+            function wP(s) { var oi = g(s, 'pOI'); return oi > 0 ? oi : g(s, 'pVol'); }
+
+            // MaxPain: 행사가 k 에서 옵션 매수자 손실 합이 가장 작은 곳 (같으면 먼저 나온 낮은 행사가)
+            var minLoss = Infinity, maxPain = price, any = false;
+            all.forEach(function (k) {
+                var loss = 0;
+                all.forEach(function (s) {
+                    var c = wC(s), p = wP(s);
+                    if (c > 0 || p > 0) any = true;
+                    if (s < k) loss += c * (k - s); else if (s > k) loss += p * (s - k);
+                });
+                if (loss < minLoss) { minLoss = loss; maxPain = k; }
+            });
+            if (!any) maxPain = price;
+
+            var active = all.filter(function (s) { return s >= price * 0.80 && s <= price * 1.20; });
+            var tc = 0, tp = 0;
+            active.forEach(function (s) {
+                var cc = g(s, 'cChg'), pc = g(s, 'pChg');
+                tc += (g(s, 'cOI') + g(s, 'cVol')) * (1 + Math.abs(cc) / 100.0) * (cc >= 0 ? 1 : -1);
+                tp += (g(s, 'pOI') + g(s, 'pVol')) * (1 + Math.abs(pc) / 100.0) * (pc >= 0 ? 1 : -1);
+            });
+            var pcr = tc > 0 ? tp / tc : 1.0;
+
+            // 정렬은 안정 정렬 (동점이면 낮은 행사가 순서 유지 = LINQ OrderByDescending 과 동일)
+            var putsBelow = active.filter(function (s) { return s < price; })
+                .map(function (s, i) { return { s: s, w: wP(s), i: i }; })
+                .sort(function (a, b) { return b.w - a.w || a.i - b.i; }).slice(0, 5).map(function (x) { return x.s; });
+            var closestPuts = putsBelow.slice().sort(function (a, b) { return b - a; });
+            var support1 = closestPuts.length > 0 ? closestPuts[0] : price - 2.5;
+            var support2 = closestPuts.length > 1 ? closestPuts[1] : support1 - 2.5;
+            var putWall = putsBelow.length > 0 ? Math.min.apply(null, putsBelow) : price - 10.0;
+
+            var callsAbove = active.filter(function (s) { return s > price; })
+                .map(function (s, i) { return { s: s, w: wC(s), i: i }; })
+                .sort(function (a, b) { return b.w - a.w || a.i - b.i; }).slice(0, 5).map(function (x) { return x.s; });
+            var closestCalls = callsAbove.slice().sort(function (a, b) { return a - b; });
+            var resistance1 = closestCalls.length > 0 ? closestCalls[0] : price + 2.5;
+            var resistance2 = closestCalls.length > 1 ? closestCalls[1] : resistance1 + 2.5;
+            var callWall = callsAbove.length > 0 ? Math.max.apply(null, callsAbove) : price + 10.0;
+
+            var score = 5.0;
+            if ((Math.abs(tc) + Math.abs(tp)) > 0) score = 5.0 + ((tc - tp) / (Math.abs(tc) + Math.abs(tp)) * 5.0);
+            score = Math.max(0, Math.min(10, score));
+            var signal = score >= 6 ? 'BUY' : score <= 4 ? 'SELL' : 'WAIT';
+
+            // 옵션 체인 표: 현재가에 가장 가까운 행사가 기준 위 6 · 아래 7 (14행, 높은 행사가부터)
+            var closest = all[0], bestD = Math.abs(all[0] - price);
+            all.forEach(function (s) { var dd = Math.abs(s - price); if (dd < bestD) { bestD = dd; closest = s; } });
+            var center = all.indexOf(closest), start = Math.max(0, center - 6), take = 14;
+            if (start + take > all.length) start = Math.max(0, all.length - take);
+            var rowsOut = all.slice(start, start + take).sort(function (a, b) { return b - a; }).map(function (s) {
+                return { strike: s, callOI: g(s, 'cOI'), putOI: g(s, 'pOI'), callVol: g(s, 'cVol'), putVol: g(s, 'pVol'), callChg: g(s, 'cChg'), putChg: g(s, 'pChg') };
+            });
+            return { price: price, pcr: pcr, maxPain: maxPain, support1: support1, support2: support2, resistance1: resistance1, resistance2: resistance2,
+                     callWall: callWall, putWall: putWall, signal: signal, score: 옵션_반올림1(score), optionRows: rowsOut };
+        }
+
+        function 옵션_CBOE적용하기(ticker, v) {
+            var idx = panelTickers.indexOf(ticker); if (idx < 0) return;
+            var pick = pickQuote(ticker), q = pick && pick.q;
+            var price = (panelDataStore[idx] && panelDataStore[idx].price > 0) ? panelDataStore[idx].price : (q && q.price > 0 ? q.price : v.price);
+            var 계산 = 옵션_계산(v.strikes || [], price);
+            if (!계산) { 디버그('옵션' + ticker, '[' + ticker + '] CBOE 옵션 데이터 없음 (만기 ' + v.expiry + ')'); return; }
+            var change = q ? (Number(String(q.changeRate || '0').replace('%', '')) || 0) : 0;
+            var prev = change !== -100 ? 계산.price / (1 + change / 100) : 계산.price;
+            // 만기 표시: 윈폼과 같은 방식 (한국 날짜 기준 남은 일수)
+            var ex = v.expiry.split('-'), 오늘 = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+            var dte = Math.round((Date.UTC(+ex[0], +ex[1] - 1, +ex[2]) - Date.UTC(오늘.getFullYear(), 오늘.getMonth(), 오늘.getDate())) / 86400000);
+            var dteLabel = ex[1] + '/' + ex[2] + ' (D-' + dte + ')';
+            // CBOE 기준 시각(UTC) → 뉴욕 시각
+            var cboeET = '';
+            var m = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/.exec(v.cboeTime || '');
+            if (m) {
+                var et = new Date(new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5])).toLocaleString('en-US', { timeZone: 'America/New_York' }));
+                cboeET = (et.getMonth() + 1) + '/' + et.getDate() + ' ' + (et.getHours() < 10 ? '0' : '') + et.getHours() + ':' + (et.getMinutes() < 10 ? '0' : '') + et.getMinutes() + ' ET';
+            }
+            var 장 = marketPhase();
+            var 지금 = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+            function 두(n) { return (n < 10 ? '0' : '') + n; }
+            var p = Object.assign({ type: 'optionUpdate', ticker: ticker, change: change, priceDiff: 계산.price - prev,
+                qqqChange: globQqq || 0, spyChange: globSpy || 0, imbalance: 0,
+                isMarketOpen: 장.type === 'REG', sessionLabel: 장.type === 'REG' ? '실시간' : 장.label || '장마감',
+                dte: dte, dteLabel: dteLabel, trendText: 옵션_추세문구(change),
+                updatedAt: 지금.getFullYear() + '-' + 두(지금.getMonth() + 1) + '-' + 두(지금.getDate()) + ' ' + 두(지금.getHours()) + ':' + 두(지금.getMinutes()) + ':' + 두(지금.getSeconds()),
+                옵션출처: 'CBOE', cboeET: cboeET, 만기: v.expiry }, 계산);
+            옵션_CBOE적용[ticker] = 옵션_CBOE적용[ticker] && 옵션_CBOE값[ticker] === v ? 옵션_CBOE적용[ticker] : Date.now();
+            옵션_CBOE값[ticker] = v;
+            디버그('옵션' + ticker, '[' + ticker + '] 옵션 CBOE 적용 (만기 ' + v.expiry + ', ' + cboeET + ' 기준, 현재가 ' + 계산.price.toFixed(2) + ') → 지지 ' + 계산.support1 + '/' + 계산.support2 +
+                ' · 저항 ' + 계산.resistance1 + '/' + 계산.resistance2 + ' · MaxPain ' + 계산.maxPain + ' · 점수 ' + 계산.score + ' (' + 계산.signal + ')');
+            window.onWsMessage(p);
+        }
+
+        function 옵션_점검() {
+            if (document.visibilityState === 'hidden') return;
+            if (!CLOSE_WORKER_URL || CLOSE_WORKER_URL.indexOf('YOUR-ACCOUNT') >= 0) return;
+            var 지금 = Date.now();
+            panelTickers.forEach(function (t) {
+                if (!t || 옵션_요청중[t]) return;
+                if (옵션_키움시각[t] && 지금 - 옵션_키움시각[t] < 옵션_키움유효ms) return;       // 키움 실시간 값이 최근 → CBOE 안 받음
+                if (옵션_CBOE적용[t] && 지금 - 옵션_CBOE적용[t] < 옵션_CBOE주기ms) return;       // 5분 안에 받았음
+                옵션_요청중[t] = true;
+                fetch(CLOSE_WORKER_URL.replace(/\/+$/, '') + '/options?s=' + encodeURIComponent(t), { cache: 'no-store' })
+                    .then(function (r) { return r.json(); })
+                    .then(function (v) {
+                        if (!v || v.error || !v.strikes) { 디버그('옵션' + t, '[' + t + '] CBOE 옵션 조회 실패: ' + ((v && v.error) || '응답 없음')); 옵션_CBOE적용[t] = Date.now() - 옵션_CBOE주기ms + 60000; return; }
+                        if (옵션_키움시각[t] && Date.now() - 옵션_키움시각[t] < 옵션_키움유효ms) return;   // 기다리는 사이 키움 값이 들어옴
+                        옵션_CBOE적용하기(t, v);
+                    })
+                    .catch(function (e) { 옵션_CBOE적용[t] = Date.now() - 옵션_CBOE주기ms + 60000; console.warn('[옵션] CBOE 조회 실패', t, e); })   // 실패하면 1분 뒤 다시
+                    .then(function () { 옵션_요청중[t] = false; });
+            });
+        }
+        setInterval(옵션_점검, 15000);
+        setTimeout(옵션_점검, 3000);
+        document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') 옵션_점검(); });
 
         function updatePanelPriceOnly(idx, price, changeRate, changeAmt, volume) {
             var p = 'p' + idx + '-';
@@ -3584,7 +3813,8 @@
             var dteEl = document.getElementById(p + 'dte'); if (dteEl && d.dteLabel) { dteEl.textContent = '옵션만기 : ' + d.dteLabel; }
             var oit = document.getElementById(p + 'oi-title'); if (oit) { oit.textContent = (d.ticker || panelTickers[panel]) + ' 옵션 체인'; }
             var timeEl = document.getElementById(p + 'update-time');
-            if (timeEl && d.updatedAt) { var rawTime = d.updatedAt; if (rawTime.length >= 16) timeEl.textContent = '(최신 갱신 : ' + rawTime.substring(5, 7) + '월 ' + rawTime.substring(8, 10) + '일 ' + rawTime.substring(11, 16) + ')'; }
+            if (timeEl && d.옵션출처 === 'CBOE') timeEl.textContent = '(CBOE 15분 지연 · ' + (d.cboeET || '') + ' 기준)';
+            else if (timeEl && d.updatedAt) { var rawTime = d.updatedAt; if (rawTime.length >= 16) timeEl.textContent = '(키움 · 최신 갱신 : ' + rawTime.substring(5, 7) + '월 ' + rawTime.substring(8, 10) + '일 ' + rawTime.substring(11, 16) + ')'; }
             var badgeElem = document.getElementById(p + 'market-badge'); if (badgeElem) { badgeElem.style.display = d.isMarketOpen === false ? 'inline-block' : 'none'; }
             if (d.score !== undefined) {
                 var spEl = document.getElementById(p + 'sum-power');
