@@ -157,7 +157,7 @@
         }
 
         /* ── 상단 시황 바 (2줄 × 4칸 + 미니차트) ── */
-        .mk-bar { display: flex !important; align-items: stretch; gap: 12px; border-radius: 10px !important; padding: 6px 10px !important; justify-content: flex-start !important; max-width: 1480px !important; }
+        .mk-bar { display: flex !important; align-items: stretch; gap: 12px; border-radius: 10px !important; padding: 6px 10px !important; justify-content: flex-start !important; max-width: none !important; }
         .mk-left { width: 150px; flex-shrink: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 7px; border-right: 1px solid #1d2230; padding-right: 10px; }
         .mk-sessrow { display: flex; align-items: center; gap: 6px; }
         .mk-sess { font-size: 12px; font-weight: 700; line-height: 1; padding: 5px 8px; border-radius: 6px; border: 1px solid #3a4153; white-space: nowrap; color: #aab2c3; }
@@ -295,10 +295,14 @@
             flex-direction: column;
             gap: 4px;
         }
-        .tt-row { display: flex; align-items: baseline; gap: 6px; }
-        .tt-nm { font-size: 11px; font-weight: 600; color: #9aa3b5; width: 26px; }
-        .tt-v { font-size: 13px; font-weight: 700; color: #e7e9f0; }
+        .tt-row { display: flex; align-items: baseline; gap: 6px; line-height: 1.15; }
+        .tt-nm { font-size: 12px; font-weight: 600; color: #9aa3b5; }
+        .tt-v { font-size: 16px; font-weight: 800; color: #f1f3f8; letter-spacing: -0.2px; }
         .tt-z { font-size: 10.5px; font-weight: 600; color: #7d8596; }
+        /* 로고 아래 시계: 로고를 위로 붙이고 남는 높이에 두 줄 */
+        .logo-top { justify-content: flex-start !important; flex-shrink: 0; }
+        .logo-top .logo-top-line { margin: 3px 0 !important; }
+        .logo-top .top-time { margin-top: 7px; gap: 2px; align-items: flex-start; }
 
         .ws-dot {
             width: 8px;
@@ -720,6 +724,9 @@
         .sg-band.long { background: #ff5d5d; color: #ffffff; }
         .sg-band.short { background: #4d8dff; color: #ffffff; }
         .sg-band.cand { background: #1b202c; border: 1px dashed #3a4153; color: #8b93a7; font-weight: 700; }
+        .sg-band.long-wait { background: rgba(255, 93, 93, .08); border: 1px dashed rgba(255, 93, 93, .7); color: #ff8a8a; }
+        .sg-band.short-wait { background: rgba(77, 141, 255, .08); border: 1px dashed rgba(77, 141, 255, .7); color: #8ab4ff; }
+        .sg-waitd { font-size: 14px; font-weight: 700; opacity: .85; white-space: nowrap; }
         .sg-band.cand span { font-weight: 500; }
         .sg-band.flash { animation: sgFlash 0.5s ease-in-out 4; }
         @keyframes sgFlash { 50% { filter: brightness(1.6); box-shadow: 0 0 0 3px rgba(255,255,255,0.35); } }
@@ -1355,6 +1362,7 @@
             <div class="logo-top-main"><span class="lt-strike">STRIKE</span><span class="lt-zone">ZONE</span></div>
             <div class="logo-top-line"></div>
             <div class="logo-top-sub">STOCK PREMIUM</div>
+            <div class="top-time" id="h-time">연결 대기중</div>   <!-- 뉴욕 / 서울 시각 (로고 아래) -->
         </div>
         <!-- ★ 상단 시황 바: 왼쪽 = 시간대·공포탐욕지수 / 오른쪽 = 2줄 × 5칸 (위: 주식·지수·위험자산, 아래: 원자재·금리·환율) + 최근 24시간 미니차트 -->
         <div class="neon-ticker-bar mk-bar">
@@ -1375,7 +1383,7 @@
                 <div class="mk-cell" id="neon-usdkrw"><div class="mk-txt"><div class="mk-nm"><i class="mk-dot"></i><span class="tit">원달러환율</span></div><div class="mk-vl"><span class="val neu">─</span><span class="mk-ch"></span></div></div><div class="mk-sp"></div></div>
             </div>
         </div>
-        <div class="top-right"><div class="top-time" id="h-time">연결 대기중</div></div>
+
     </div>
 
     <div class="content-wrapper">
@@ -1930,10 +1938,11 @@
             return 후보;
         }
 
-        function 눌림계획(방향, price, lvList, vwap, vwapReal, 구간, 목표목록) {
+        function 눌림계획(방향, price, lvList, vwap, vwapReal, 구간, 목표목록, 최대거리) {
+            if (!(최대거리 > 0)) 최대거리 = 눌림_최대거리;
             var 후보 = 레벨후보(방향, price, lvList, vwap, vwapReal, 구간);
             // 정렬: 아직 넘어서지 않은 레벨(거리 ≥ 0)을 가까운 순으로 먼저, 살짝 넘어선 레벨(−0.1%~0)은 그 뒤에 가까운 순
-            var 유효 = 후보.filter(function (c) { return c.거리 >= 눌림_최소거리 && c.거리 <= 눌림_최대거리; })
+            var 유효 = 후보.filter(function (c) { return c.거리 >= 눌림_최소거리 && c.거리 <= 최대거리; })
                           .sort(function (a, b) {
                               var ga = a.거리 >= 0 ? 0 : 1, gb = b.거리 >= 0 ? 0 : 1;
                               return ga !== gb ? ga - gb : Math.abs(a.거리) - Math.abs(b.거리);
@@ -2011,7 +2020,7 @@
                 추가('진입 위치', 방식 === '박스' ? (롱 ? '박스 하단' : '박스 상단') : (방식 === '눌림' || 방식 === '반등') ? (롱 ? '눌림 (지지 근접)' : '반등 (저항 근접)') : 방식, 15, 15, true);
             else if (방식 === '돌파' || 방식 === '이탈' || 방식 === '저항돌파' || 방식 === '지지이탈')
                 추가('진입 위치', '돌파 추종', 8, 15, true);
-            else 추가('진입 위치', p ? '레벨 사이 추격' : '레벨 사이 중간', 0, 15, false);
+            else 추가('진입 위치', p ? '레벨 사이 추격' : c.근접대기 ? '지지 여부 확인 필요 (반등 대기)' : '레벨 사이 중간', 0, 15, false);
 
             // 4) 지지/저항 강도 (진입 기준 레벨이 오늘 검증된 구간인가 + 다른 레벨과 겹치는가)
             var 강도이름 = 롱 ? '지지 강도' : '저항 강도';
@@ -2166,6 +2175,7 @@
             // ── 위/아래 다음 레벨 (손절·목표 계산용: 옵션 레벨 + VWAP(윈폼 계산값만) + 반등·반락 구간) ──
             //   페이지가 연 뒤 모은 체결로 만든 VWAP 은 세션 전체 값이 아니라서 레벨로 쓰지 않음
             var VWAP확정 = s.extVwap > 0 || !!마감;
+            var 눌림범위 = 마감 ? 2.0 : 눌림_최대거리;   // 장 마감 기준(다음 정규장 계획)은 밤사이 갭을 고려해 현재가 ±2% 까지 눌림·반등 후보
             var 전체레벨 = lvList.concat(VWAP확정 ? [{ k: 'VWAP', n: 'VWAP', v: vwap }] : []).concat(구간레벨);
             // 기준가보다 0.1% 이상 유리한 쪽의 가장 가까운 레벨 가격 (롱=위, 숏=아래) — 진입가 기준 목표 계산용
             function 다음레벨(기준가, 방향) {
@@ -2204,7 +2214,7 @@
             var 추세방향 = 추세 ? (추세.부호 > 0 ? 'long' : 'short') : null;
             var 눌림사용 = false;
             if (추세방향) {
-                눌림결과 = 눌림계획(추세방향, price, lvList, vwap, VWAP확정, 구간, 전체레벨);
+                눌림결과 = 눌림계획(추세방향, price, lvList, vwap, VWAP확정, 구간, 전체레벨, 눌림범위);
                 눌림사용 = !!눌림결과.plan;
             }
             var 이벤트확인 = fresh && (ev.dir === 'up' || ev.dir === 'down') && volStrong &&
@@ -2314,7 +2324,7 @@
                     if (눌림결과 && 눌림결과.선택) {
                         line3 = (방향 === 'long' ? '눌림' : '반등') + ' 후보 ' + 눌림결과.선택.n + ' $' + 눌림결과.선택.v.toFixed(2) + ' — ' + (방향 === 'long' ? '위' : '아래') + '쪽 목표 레벨 없음, 관망';
                     } else {
-                        line3 = (방향 === 'long' ? '눌림 대기 — 현재가 아래 ' : '반등 대기 — 현재가 위 ') + 눌림_최대거리 + '% 안에 ' + (방향 === 'long' ? '지지' : '저항') + ' 없음';
+                        line3 = (방향 === 'long' ? '눌림 대기 — 현재가 아래 ' : '반등 대기 — 현재가 위 ') + 눌림범위 + '% 안에 ' + (방향 === 'long' ? '지지' : '저항') + ' 없음';
                     }
                 } else if (박스) {
                     line1 = '📦 박스권 ' + 박스.하단.v.toFixed(2) + ' ~ ' + 박스.상단.v.toFixed(2) + ' · 하단 ' + 박스.하단.횟수 + '번 지지 반등 · 상단 ' + 박스.상단.횟수 + '번 막힌 저항';
@@ -2354,7 +2364,8 @@
                 var 겹침 = [];
                 if (pl && pl.기준가 > 0) 겹침 = 후보들.filter(function (x) { return Math.abs(x.v - pl.기준가) / pl.기준가 * 100 <= 겹침_거리 && Math.abs(x.v - pl.기준가) > 1e-9; });
                 return 진입점수계산({ 방향: 방향, plan: pl, bias: bias, vwDist: vwDist, vwapReal: vwapReal, 옵션점수: score,
-                                    volRatio: d.volRatio || 0, surge: surge, 구간: 구간, 겹침: 겹침, 후보들: 후보들 });
+                                    volRatio: d.volRatio || 0, surge: surge, 구간: 구간, 겹침: 겹침, 후보들: 후보들,
+                                    근접대기: !pl && !!근접후보 && 근접후보 === 방향 && !추세방향 && bias === 0 });
             }
             var 지금점수 = 점수만들기(plan);
 
@@ -2382,9 +2393,19 @@
                 ' → 선택 ' + (눌림결과.선택 ? 눌림결과.선택.n + ' ' + 눌림결과.선택.v.toFixed(2) : '없음') +
                 (눌림결과.plan ? ' · 진입 ' + 눌림결과.plan.entry.toFixed(2) + ' 손절 ' + 눌림결과.plan.stop.toFixed(2) + ' 목표 ' + 눌림결과.plan.target.toFixed(2) + ' 1:' + 눌림결과.plan.rr.toFixed(1) : ''));
 
-            var 결론 = jd.상태 === '매수' ? { 글: '매수(롱) 고려', 색: '#ff5d5d', 모양: '▲' }
-                     : jd.상태 === '매도' ? { 글: '매도(숏) 고려', 색: '#4d8dff', 모양: '▼' }
+            // 결론 3단계: 관망 / 대기(계획은 있고 진입가까지 거리가 남음) / 진입 구간(진입가 0.1% 이내)
+            //   깜빡임 방지: 진입 구간이 된 뒤에는 0.15% 를 벗어나야 대기로 돌아감 (가상매매 주문·체결과는 무관한 표시)
+            var 진입거리 = null, 진입구간 = false;
+            if ((jd.상태 === '매수' || jd.상태 === '매도') && jd.계획 && price > 0) {
+                진입거리 = (jd.계획.entry - price) / price * 100;
+                var 이전구간 = s.진입구간키 === jd.상태 + jd.계획.entry.toFixed(4);
+                진입구간 = Math.abs(진입거리) <= (이전구간 ? 0.15 : 0.1);
+                s.진입구간키 = 진입구간 ? jd.상태 + jd.계획.entry.toFixed(4) : null;
+            } else s.진입구간키 = null;
+            var 결론 = jd.상태 === '매수' ? { 글: 진입구간 ? '매수(롱) 진입 구간' : '매수(롱) 대기', 색: '#ff5d5d', 모양: '▲' }
+                     : jd.상태 === '매도' ? { 글: 진입구간 ? '매도(숏) 진입 구간' : '매도(숏) 대기', 색: '#4d8dff', 모양: '▼' }
                      : { 글: '관망 중', 색: '#f2c14e', 모양: '관망' };
+            var 대기글 = (진입거리 != null && !진입구간) ? jd.계획.entry.toFixed(2) + ' 도달 시 (' + fmtPct(진입거리) + ')' : '';
 
             // ════ 카드 출력 (H 디자인: 게이지·상태 → 진입 점수 → 방향 띠 → 계획 → 예상 수익/손실 → 지표 → 최근·상태) ════
             var 빨강 = '#ff5d5d', 파랑 = '#4d8dff', 흐림 = '#5d6578', 주황 = '#f5a524', 녹색 = '#3ecf8e';
@@ -2454,8 +2475,11 @@
             var pl = jd.계획, 흐린계획 = jd.상태 === '관망';
             var 후보방향 = pl ? (pl.dir === 'long' ? '롱' : '숏') : (표시점수 && 표시점수.방향) || null;
             var 띠, 띠키;
-            if (jd.상태 === '매수') { 띠 = '<div class="sg-band long"><svg viewBox="0 0 16 16" class="sg-ico"><path d="M8 3 L13.5 12 H2.5 Z" fill="currentColor"></path></svg>롱 진입 <span>· 가격이 오르면 수익</span></div>'; 띠키 = '롱'; }
-            else if (jd.상태 === '매도') { 띠 = '<div class="sg-band short"><svg viewBox="0 0 16 16" class="sg-ico"><path d="M8 13 L13.5 4 H2.5 Z" fill="currentColor"></path></svg>숏 진입 <span>· 가격이 내리면 수익</span></div>'; 띠키 = '숏'; }
+            var 위삼각 = '<svg viewBox="0 0 16 16" class="sg-ico"><path d="M8 3 L13.5 12 H2.5 Z" fill="currentColor"></path></svg>', 아래삼각 = '<svg viewBox="0 0 16 16" class="sg-ico"><path d="M8 13 L13.5 4 H2.5 Z" fill="currentColor"></path></svg>';
+            if (jd.상태 === '매수' && 진입구간) { 띠 = '<div class="sg-band long">' + 위삼각 + '롱 진입 <span>· 가격이 오르면 수익</span></div>'; 띠키 = '롱'; }
+            else if (jd.상태 === '매도' && 진입구간) { 띠 = '<div class="sg-band short">' + 아래삼각 + '숏 진입 <span>· 가격이 내리면 수익</span></div>'; 띠키 = '숏'; }
+            else if (jd.상태 === '매수') { 띠 = '<div class="sg-band long-wait">' + 위삼각 + '롱 대기 <span>· 가격이 ' + jd.계획.entry.toFixed(2) + (진입거리 < 0 ? '까지 내려오면' : '을 넘으면') + ' 진입</span></div>'; 띠키 = '롱대기'; }
+            else if (jd.상태 === '매도') { 띠 = '<div class="sg-band short-wait">' + 아래삼각 + '숏 대기 <span>· 가격이 ' + jd.계획.entry.toFixed(2) + (진입거리 > 0 ? '까지 올라오면' : '아래로 내려가면') + ' 진입</span></div>'; 띠키 = '숏대기'; }
             else {
                 var 후보사유 = pl ? (pl.rr < 가상_최소손익비 ? '손익비 부족 (1:' + pl.rr.toFixed(1) + ')' : '확인 대기') : (paperPlain(line3).split(' — ')[0] || '진입 조건 미충족');
                 띠 = '<div class="sg-band cand">' + (후보방향 ? (후보방향 === '롱' ? '<svg viewBox="0 0 16 16" class="sg-ico"><path d="M8 3 L13.5 12 H2.5 Z" fill="currentColor"></path></svg>' : '<svg viewBox="0 0 16 16" class="sg-ico"><path d="M8 13 L13.5 4 H2.5 Z" fill="currentColor"></path></svg>') + '후보: ' + 후보방향 : '방향 없음') +
@@ -2551,7 +2575,7 @@
                      : 장.type === 'REG' ? { 글: '정규장 · 실시간', 종류: 'reg' }
                      : (장.type === 'WEEKEND' || 장.type === 'HOLIDAY') ? { 글: '휴장 · 참고용', 종류: 'off' }
                      : { 글: 장.label + ' · 참고용', 종류: 'ext' };
-            put('sigtitle', 상태아이콘 + '<span>' + 결론.글 + '</span><em class="sg-sess sg-sess-' + 배지.종류 + '">' + 배지.글 + '</em>', 결론.색,
+            put('sigtitle', 상태아이콘 + '<span>' + 결론.글 + '</span>' + (대기글 ? '<small class="sg-waitd">' + 대기글 + '</small>' : '') + '<em class="sg-sess sg-sess-' + 배지.종류 + '">' + 배지.글 + '</em>', 결론.색,
                 결론.글 + ' (' + 배지.글 + (배지.종류 === 'reg' ? '' : ' — 정규장 외 시간이라 가상매매 진입 없음') + ')');
             put('reason', jd.이유, undefined, jd.이유);
             put('situ', paperPlain(line1).replace(/^[^\w가-힣$]+/, ''), undefined, paperPlain(line1));
