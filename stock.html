@@ -315,7 +315,8 @@
         .tt-row { display: flex; align-items: baseline; gap: 6px; line-height: 1.15; }
         .tt-nm { font-size: 12px; font-weight: 600; color: #9aa3b5; }
         .tt-v { font-size: 14.5px; font-weight: 800; color: #f1f3f8; letter-spacing: -0.2px; }
-        .tt-z { font-size: 10.5px; font-weight: 600; color: #7d8596; }
+        .tt-z { font-size: 9px; font-weight: 600; color: #6b7386; }
+        .tt-w { font-size: 11.5px; font-weight: 600; color: #aab2c3; margin-left: 1px; }
         /* 로고 아래 시계: 로고를 위로 붙이고 남는 높이에 두 줄 */
         .logo-top { justify-content: flex-start !important; flex-shrink: 0; }
         .logo-top .logo-top-line { margin: 3px 0 !important; }
@@ -4218,7 +4219,8 @@
             var el = document.getElementById('h-time'); if (!el) return; var n = new Date();
             function 줄(tz) {
                 var d = new Date(n.toLocaleString('en-US', { timeZone: tz }));
-                return String(d.getMonth() + 1).padStart(2, '0') + '/' + String(d.getDate()).padStart(2, '0') + ' ' +
+                return String(d.getMonth() + 1).padStart(2, '0') + '/' + String(d.getDate()).padStart(2, '0') +
+                    '<span class="tt-w">(' + '일월화수목금토'.charAt(d.getDay()) + ')</span> ' +
                     String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0') + ':' + String(d.getSeconds()).padStart(2, '0');
             }
             var 약어 = 'ET';
