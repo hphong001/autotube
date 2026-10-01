@@ -416,6 +416,16 @@
             gap: 8px;
         }
 
+        /* ── 슬림 스크롤바 (패널 사이 세로 스크롤 등 전체) ── */
+        * { scrollbar-width: thin; scrollbar-color: rgba(140, 150, 175, .28) transparent; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(140, 150, 175, .22); border-radius: 6px; border: 1px solid transparent; background-clip: padding-box; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(170, 180, 205, .5); background-clip: padding-box; }
+        ::-webkit-scrollbar-thumb:active { background: rgba(255, 223, 0, .55); background-clip: padding-box; }
+        ::-webkit-scrollbar-corner { background: transparent; }
+        ::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+
         .panel {
             flex: 1;
             display: flex;
@@ -2089,10 +2099,16 @@
             var 마감 = (장지금.type !== 'REG' && 일 && 일.마감 && 일.마감.확정 && 일.마감.종가 > 0 && 일.마감.VWAP > 0 && 일.대상날짜 === 구간_기대날짜()) ? 일.마감 : null;
             var 실시간가 = price;
             s.마감모드 = !!마감;
+            var 마감종가 = 0;
             if (마감) {
-                price = 마감.종가; vwap = 마감.VWAP; vwLabel = '정규장 VWAP';
+                // 종가: 공식 정규장 종가(Worker 종가 기록, 장 마감 단일가 반영) 우선, 없으면 1분봉 마지막 종가
+                var 공식 = sessionCache[s.ticker];
+                마감종가 = (공식 && 공식.regDate === 마감.날짜 && 공식.regClose > 0) ? 공식.regClose : 마감.종가;
+                price = 마감종가; vwap = 마감.VWAP; vwLabel = '정규장 VWAP';
                 vwDist = (price - vwap) / vwap * 100;
-                m1 = null; m3 = 마감.마감30분; m10 = 마감.당일; surge = null;
+                m1 = null; surge = null;
+                m3 = 마감.종가30 > 0 ? (마감종가 - 마감.종가30) / 마감.종가30 * 100 : 마감.마감30분;
+                m10 = 마감.시가 > 0 ? (마감종가 - 마감.시가) / 마감.시가 * 100 : 마감.당일;
             }
 
             var optState = score >= 8.5 ? '콜 과열' : score <= 1.5 ? '풋 과열' :
@@ -2314,7 +2330,7 @@
             // 마감 기준 모드: 실시간 가격을 상황 줄 앞에 표시
             if (마감) {
                 var 실시간글 = 장지금.type === 'WEEKEND' || 장지금.type === 'HOLIDAY' ? '휴장 · 마지막 ' : (장지금.label || '장외') + ' ';
-                line1 = 실시간글 + 실시간가.toFixed(2) + ' (마감가 대비 ' + fmtPct((실시간가 - 마감.종가) / 마감.종가 * 100) + ') · ' + line1.replace(/^[^\w가-힣$]+/, '');
+                line1 = 실시간글 + 실시간가.toFixed(2) + ' (마감가 대비 ' + fmtPct((실시간가 - 마감종가) / 마감종가 * 100) + ') · ' + line1.replace(/^[^\w가-힣$]+/, '');
             }
             // 상황 줄 보강: 구간 데이터 상태
             if (구간.상태 === '계산중') line1 += ' · 지지·저항 구간 계산 중';
@@ -2493,7 +2509,7 @@
             var 당일비 = d.volRatio > 0 ? d.volRatio : null;
             var 거래량HTML = '<div class="sg-vol"><span class="sg-rl">거래량</span><div class="sg-vlines">' +
                 '<div><span><b>당일</b> <em style="color:' + (당일비 ? (당일비 >= 1 ? 빨강 : '#c9cedb') : 흐림) + '">' + (당일비 ? 당일비.toFixed(1) + '배' : '—') + '</em></span><small>' + (당일비 ? '과거 같은 시각 평균 대비' : '윈폼(키움) 연결 · 고정 종목만 표시') + '</small></div>' +
-                '<div><span><b>순간</b> <em style="color:' + (surge != null ? (surge >= 1.3 ? 빨강 : '#c9cedb') : 흐림) + '">' + (surge != null ? surge.toFixed(1) + '배' : '—') + '</em></span><small>' + (surge != null ? '최근 1분 ÷ 직전 10분 평균' : '수집 중 (화면 연 뒤 11분부터)') + '</small></div>' +
+                '<div><span><b>순간</b> <em style="color:' + (surge != null ? (surge >= 1.3 ? 빨강 : '#c9cedb') : 흐림) + '">' + (surge != null ? surge.toFixed(1) + '배' : '—') + '</em></span><small>' + (마감 ? '마감 기준 모드에서는 사용 안 함' : surge != null ? '최근 1분 ÷ 직전 10분 평균' : '수집 중 (화면 연 뒤 11분부터)') + '</small></div>' +
                 '</div></div>';
             var 지표 = (마감
                     ? 막대('VWAP', vwDist, 0.5, '종가 ' + (vwDist >= 0 ? '위' : '아래')) + 막대('마감30분', m3, 0.5, '') + 막대('당일', m10, 2, '')
@@ -2509,7 +2525,7 @@
             var note = rtSessionNote();
             var 정규장VWAP = marketPhase().type !== 'REG' ? (d.vwapReg || s.정규장VWAP || 0) : 0;
             var stateTxt = 마감 ? [
-                마감.날짜.slice(5).replace('-', '/') + ' 정규장 마감 기준 (종가 ' + 마감.종가.toFixed(2) + ' · 정규장 VWAP ' + 마감.VWAP.toFixed(2) + ')',
+                마감.날짜.slice(5).replace('-', '/') + ' 정규장 마감 기준 (종가 ' + 마감종가.toFixed(2) + ' · 정규장 VWAP ' + 마감.VWAP.toFixed(2) + ')',
                 '시세 ' + (s.src === 'kiwoom' ? '키움' : s.src === 'yahoo' ? '야후' : '─'),
                 구간.상태 === '정상' ? '지지·저항 구간 ' + 구간.기준시각 + ' 기준 (' + 구간.출처 + ')' : ''
             ].filter(Boolean).join(' · ') : [
@@ -2551,7 +2567,7 @@
             }
             put('state', stateTxt, undefined, stateTxt);
 
-            VWAP막대표시(panelIdx, vwap, price, !(s.extVwap > 0) && !vwReal);
+            VWAP막대표시(panelIdx, vwap, 마감 ? 실시간가 : price, 마감 ? '정규장' : (!(s.extVwap > 0) && !vwReal));
         }
 
         // 결론이 매수/매도 고려로 바뀌는 순간 → 진입 고려 이벤트 (윈폼이 차트 표시·소리에 사용)
@@ -3961,15 +3977,17 @@
                                           글: mkEl({ position: 'absolute', zIndex: '13', transform: 'translateX(-50%)', fontSize: '9.5px', fontWeight: 'bold', whiteSpace: 'nowrap', color: '#c58bff' }) };
                 막대.appendChild(요소.점); 막대.appendChild(요소.글);
             }
+            막대._VWAP값 = { vwap: vwap, 현재가: 현재가, 추정: 추정 };   // 막대를 다시 그릴 때 그대로 복원
+            var 정규장값 = 추정 === '정규장'; if (정규장값) 추정 = false;   // 장 마감 기준 모드: 정규장 VWAP (확정값)
             요소.점.textContent = 추정 ? '◇' : '◆';
             요소.점.style.color = '#c58bff';
             요소.점.style.left = 위치 + '%';
             요소.점.style.top = (눈.막대Y - 3) + 'px';
-            요소.글.textContent = 'VWAP ' + vwap.toFixed(1) + (추정 ? '(추정)' : '') + ' (' + (차이 >= 0 ? '+' : '') + 차이.toFixed(2) + '%)';
+            요소.글.textContent = 'VWAP ' + vwap.toFixed(1) + (추정 ? '(추정)' : 정규장값 ? '(정규장)' : '') + ' (' + (차이 >= 0 ? '+' : '') + 차이.toFixed(2) + '%)';
             요소.글.style.top = (눈.막대Y + 눈.막대높이 + 2) + 'px';
             // 라벨이 좌우 끝에서 잘리지 않게 위치 보정
             요소.글.style.left = Math.max(12, Math.min(88, 위치)) + '%';
-            요소.글.title = 추정 ? 'VWAP 추정치 (고가+저가+현재가)/3 — 실시간 거래량 데이터 부족' : '거래량 가중 평균가';
+            요소.글.title = 추정 ? 'VWAP 추정치 (고가+저가+현재가)/3 — 실시간 거래량 데이터 부족' : 정규장값 ? '마지막 정규장 VWAP (괄호 = 지금 가격 대비)' : '거래량 가중 평균가';
         }
 
         function renderTimeline(prefix, d) {
@@ -4023,6 +4041,11 @@
             host._눈금 = { 최소: minV, 폭: span, 왼쪽여백: PAD_L, 막대폭: TRK_W, 막대Y: TOP_BASE_Y, 막대높이: TOP_TRACK_H,
                           막대시작: pctL + 1.2, 막대끝: pctH };
             host._VWAP요소 = null;
+            // 시세가 들어올 때마다 이 막대를 새로 그리므로, 마지막 VWAP 표시를 바로 다시 그림 (안 그러면 다음 1초 갱신까지 사라져 깜빡임)
+            if (host._VWAP값) {
+                var 패번 = parseInt(String(prefix).replace(/[^0-9]/g, ''), 10);
+                if (!isNaN(패번)) VWAP막대표시(패번, host._VWAP값.vwap, host._VWAP값.현재가, host._VWAP값.추정);
+            }
 
             var lEl = mkEl({
                 position: 'absolute', zIndex: '6', top: (TOP_BASE_Y - 4) + 'px', left: (pctL + 0.8) + '%', transform: 'translateX(-100%)',
