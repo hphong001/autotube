@@ -165,6 +165,18 @@
         .mk-sess.ext { color: #fda4af; border-color: rgba(251, 113, 133, .6); background: rgba(251, 113, 133, .13); }
         .mk-sess.off { color: #aab2c3; border-color: #3a4153; background: rgba(93, 101, 120, .15); }
         .mk-fg { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+        .mk-ai { font: inherit; font-size: 12px; font-weight: 700; color: #e9d5ff; background: rgba(168, 85, 247, .14); border: 1px solid rgba(168, 85, 247, .55); border-radius: 6px; padding: 5px 9px; cursor: pointer; white-space: nowrap; line-height: 1; }
+        .mk-ai:hover { background: rgba(168, 85, 247, .26); }
+        .ai-pop { position: fixed; z-index: 9999; width: 290px; background: #11131d; border: 1px solid #3a3150; border-radius: 10px; box-shadow: 0 12px 32px rgba(0,0,0,.6); padding: 12px; color: #cfd5e2; font-size: 12px; }
+        .ai-pop .ai-h { font-weight: 700; color: #e9d5ff; margin-bottom: 2px; }
+        .ai-pop .ai-sub { color: #8b93a7; font-size: 11px; margin-bottom: 10px; }
+        .ai-pop button.ai-c { display: block; width: 100%; text-align: left; font: inherit; font-size: 12.5px; font-weight: 700; color: #e7e9f0; background: #1a1d2b; border: 1px solid #2f3446; border-radius: 7px; padding: 9px 10px; margin-bottom: 6px; cursor: pointer; }
+        .ai-pop button.ai-c small { display: block; font-weight: 400; color: #8b93a7; font-size: 11px; margin-top: 2px; }
+        .ai-pop button.ai-c:hover { border-color: #a855f7; }
+        .ai-pop button.ai-c.done { border-color: #3ecf8e; }
+        .ai-pop .ai-note { color: #8b93a7; font-size: 11px; line-height: 1.5; margin-top: 4px; }
+        .ai-pop textarea { width: 100%; height: 160px; margin-top: 8px; background: #0b0c14; color: #cfd5e2; border: 1px solid #2f3446; border-radius: 6px; font-size: 11px; box-sizing: border-box; }
+        .ai-pop .ai-x { position: absolute; top: 6px; right: 8px; background: none; border: 0; color: #8b93a7; font-size: 16px; cursor: pointer; }
         .mk-fg .tit { font-size: 12px; font-weight: 600; color: #e3e7ef; }
         .mk-fg .val { font-size: 13px; font-weight: 700; color: #ccc; }
         .mk-tag { font-size: 10.5px; font-weight: 700; line-height: 1; padding: 3px 5px; border-radius: 4px; border: 1px solid; margin-left: 4px; vertical-align: 1px; }
@@ -1439,6 +1451,7 @@
             <div class="mk-left">
                 <div class="mk-sessrow"><span class="ws-dot dead" id="ws-dot-header"></span><span class="mk-sess" id="mk-sess">─</span></div>
                 <div class="mk-fg" id="neon-fg"><span class="tit">공포탐욕지수</span><span class="val neu">─</span></div>
+                <button type="button" class="mk-ai" id="ai-btn" title="지금 화면 상황을 AI 에게 물어볼 글로 정리해 복사">🤖 AI 분석</button>
             </div>
             <div class="mk-grid">
                 <div class="mk-cell" id="neon-qqq"><div class="mk-txt"><div class="mk-nm"><i class="mk-dot"></i><span class="tit">QQQ(나스닥)</span></div><div class="mk-vl"><span class="val neu">─</span><span class="mk-ch"></span></div></div><div class="mk-sp"></div></div>
@@ -2477,6 +2490,14 @@
                      : jd.상태 === '매도' ? { 글: 진입구간 ? '매도(숏) 진입 구간' : '매도(숏) 대기', 색: '#4d8dff', 모양: '▼' }
                      : { 글: '관망 중', 색: '#f2c14e', 모양: '관망' };
             var 대기글 = (진입거리 != null && !진입구간) ? jd.계획.entry.toFixed(2) + ' 도달 시 (' + fmtPct(진입거리) + ')' : '';
+            // ★ AI 분석용 요약 (화면 표시와 같은 값)
+            s.AI = { at: Date.now(), 모드: 마감 ? '마감 기준 (' + 마감.날짜 + ' 정규장)' : '실시간', 마감: 마감 || null, 판단가: price, 실시간가: 실시간가,
+                     vwap: vwap, VWAP확정: VWAP확정, vwLabel: vwLabel, vwDist: vwDist, m1: m1, m3: m3, m10: m10, 변동: 변동 ? 변동.값 : null,
+                     surge: surge, volRatio: d.volRatio || 0, bias: bias, 방향점수: { VWAP: 점수_VWAP, 흐름1: 점수_3분, 흐름2: 점수_10분, 옵션: 점수_옵션 },
+                     추세: s.추세 ? { 방향: s.추세.부호 > 0 ? '상승' : '하락', 시작: s.추세.시작 } : null,
+                     결론: 결론.글, 이유: jd.이유, 계획: jd.계획 ? { dir: jd.계획.dir, entry: jd.계획.entry, stop: jd.계획.stop, target: jd.계획.target, rr: jd.계획.rr } : null,
+                     진입거리: 진입거리, 점수: (jd.점수 && jd.점수.방향) ? jd.점수 : null, 구간: 구간,
+                     이벤트: s.events.slice(0, 3).map(function (e) { return { t: e.t, msg: e.msg }; }) };
 
             // ════ 카드 출력 (H 디자인: 게이지·상태 → 진입 점수 → 방향 띠 → 계획 → 예상 수익/손실 → 지표 → 최근·상태) ════
             var 빨강 = '#ff5d5d', 파랑 = '#4d8dff', 흐림 = '#5d6578', 주황 = '#f5a524', 녹색 = '#3ecf8e';
@@ -4911,6 +4932,178 @@
                 document.querySelectorAll('.mk-sp').forEach(function (e) { 시황_관찰.observe(e); });
             }
         } catch (e) { }
+
+        // ════════════════════════════════════════════════════════
+        // ★ AI 분석용 복사 (상단 시황 바 "🤖 AI 분석")
+        //   - 누르는 순간 3종목 상황을 스냅샷 1개로 고정 → ① 블라인드(시스템 판단 제외) / ② 전체(시스템 판단 포함) 두 글로 복사
+        //   - 각 글 = <스냅샷> 데이터 + <요청> (규칙·출력 형식). 어떤 AI 대화창에 붙여넣어도 됨 (각각 새 대화창 권장)
+        // ════════════════════════════════════════════════════════
+        var AI_현재 = null;
+        function AI_시각(ms, tz) { return new Date(ms).toLocaleString('sv-SE', { timeZone: tz, hour12: false }).replace('T', ' '); }
+        function AI_숫(v, 자리) { return (v != null && isFinite(v) && v > 0) ? Number(v).toFixed(자리 == null ? 2 : 자리) : '데이터 없음'; }
+        function AI_퍼(v) { return (v != null && isFinite(v)) ? fmtPct(Number(v)) : '데이터 없음'; }
+        function AI_천(v) { return v >= 1000 ? (v / 1000).toFixed(1) + 'K' : String(Math.round(v || 0)); }
+        function AI_거리(v, 기준) { return (v > 0 && 기준 > 0) ? ' (' + fmtPct((v - 기준) / 기준 * 100) + ')' : ''; }
+        function AI_월일(ymd) { return ymd ? (+ymd.slice(5, 7)) + '/' + (+ymd.slice(8, 10)) : ''; }
+
+        function AI_종목(i, 전체) {
+            var t = panelTickers[i]; if (!t) return '';
+            var d = panelDataStore[i] || {}, st = RT[i] && RT[i].ticker === t ? RT[i] : null, a = st && st.AI && Date.now() - st.AI.at < 5 * 60000 ? st.AI : null;
+            var pick = pickQuote(t), q = pick && pick.q, 장 = marketPhase(), 정규 = 장.type === 'REG';
+            var 현재 = q && q.price > 0 ? q.price : (d.price || 0), rc = getRegClose(t), L = [];
+            L.push('[종목 ' + (i + 1) + '] ' + t + ' (' + tickerName(t) + ')');
+            // 가격
+            if (정규) {
+                var 전일 = rc ? rc.regClose : 0;
+                L.push('- 가격: 정규장 현재가 ' + AI_숫(현재) + ' · 전일' + (rc && rc.regDate ? '(' + AI_월일(rc.regDate) + ')' : '') + ' 종가 ' + AI_숫(전일) +
+                       ' · 등락 ' + (전일 > 0 && 현재 > 0 ? (현재 - 전일 >= 0 ? '+' : '') + (현재 - 전일).toFixed(2) + ' (' + fmtPct((현재 - 전일) / 전일 * 100) + ')' : '데이터 없음'));
+            } else {
+                L.push('- 가격: ' + (rc ? AI_월일(rc.regDate) + ' 정규장 종가 ' + AI_숫(rc.regClose) + (rc.prevClose > 0 ? ' (전일 대비 ' + fmtPct((rc.regClose - rc.prevClose) / rc.prevClose * 100) + ')' : '') : '정규장 종가 데이터 없음') +
+                       ' · 시간외 현재가 ' + AI_숫(현재) + (rc && rc.regClose > 0 && 현재 > 0 ? ' (종가 대비 ' + fmtPct((현재 - rc.regClose) / rc.regClose * 100) + ', ' + (장.label || '') + ')' : ''));
+            }
+            var 거래 = !정규 && rc && rc.regVolume > 0 ? rc.regVolume : (q && q.volume > 0 ? q.volume : 0);
+            L.push('- 거래량: ' + (거래 > 0 ? numberWithCommas(거래) + (정규 ? ' (오늘 누적)' : ' (' + AI_월일(rc && rc.regDate) + ' 정규장)') : '데이터 없음'));
+            // 고가·저가, 시가·갭
+            var 고저 = 고저_가져오기(t, 현재), 일 = 일데이터[t], m = 일 && 일.마감;
+            var 고저글 = 고저 ? (고저.제목 === '당일변동' ? '오늘 정규장' : 고저.제목) + ' 고가 ' + 고저.H.toFixed(2) + ' · 저가 ' + 고저.L.toFixed(2) : '고가·저가 데이터 없음';
+            if (m && m.시가 > 0) {
+                var 갭기준 = 정규 ? (rc ? rc.regClose : 0) : (rc && rc.regDate === m.날짜 ? rc.prevClose : 0);
+                고저글 += ' · 시가 ' + m.시가.toFixed(2) + (갭기준 > 0 ? ' · 갭 ' + fmtPct((m.시가 - 갭기준) / 갭기준 * 100) : '');
+            }
+            L.push('- ' + 고저글);
+            if (a) {
+                L.push('- 판단 기준: ' + a.모드 + (a.마감 ? ' (판단 가격 = 정규장 종가 ' + a.판단가.toFixed(2) + ')' : ''));
+                L.push('- ' + (a.VWAP확정 ? a.vwLabel : 'VWAP(추정치 — 판단 제외)') + ' ' + AI_숫(a.vwap) + ' (판단 가격이 ' + AI_퍼(a.vwDist) + (a.vwDist >= 0 ? ' 위)' : ' 아래)'));
+                if (a.마감) L.push('- 흐름: 마감 30분 ' + AI_퍼(a.m3) + ' · 시가→종가 ' + AI_퍼(a.m10) + (a.변동 != null ? ' · 평균 3분 변동폭 ' + a.변동.toFixed(2) + '%' : ''));
+                else L.push('- 흐름: 1분 ' + AI_퍼(a.m1) + ' · 3분 ' + AI_퍼(a.m3) + ' · 10분 ' + AI_퍼(a.m10) + (a.변동 != null ? ' · 평균 3분 변동폭 ' + a.변동.toFixed(2) + '%' : ''));
+                L.push('- 거래량 배수: 하루(과거 같은 시각 대비) ' + (a.volRatio > 0 ? a.volRatio.toFixed(2) + '배' : '데이터 없음') + ' · 순간(최근 1분 ÷ 직전 10분 평균) ' + (a.surge != null ? a.surge.toFixed(2) + '배' : '데이터 없음'));
+                var 방 = a.방향점수;
+                L.push('- 방향 점수: ' + (a.bias > 0 ? '+' : '') + a.bias + ' (−4~+4; VWAP ' + 방.VWAP + ' · ' + (a.마감 ? '마감30분 ' : '3분 ') + 방.흐름1 + ' · ' + (a.마감 ? '시가→종가 ' : '10분 ') + 방.흐름2 + ' · 옵션 ' + 방.옵션 + ')' +
+                       ' · 추세: ' + (a.추세 ? a.추세.방향 + ' 추세 유지 중 (' + AI_시각(a.추세.시작, 'America/New_York').slice(11, 16) + ' ET 시작)' : '없음'));
+            } else L.push('- 실시간 지표: 데이터 없음 (판단 엔진 미가동)');
+            // 레벨
+            var 기준가 = a ? a.판단가 : 현재;
+            var 옵션레벨 = [['1차지지', d.support1], ['2차지지', d.support2], ['1차저항', d.resistance1], ['2차저항', d.resistance2], ['MaxPain', d.maxPain]]
+                .filter(function (x) { return x[1] > 0; }).map(function (x) { return x[0] + ' ' + Number(x[1]).toFixed(2) + AI_거리(x[1], 기준가); });
+            L.push('- 옵션 레벨: ' + (옵션레벨.length ? 옵션레벨.join(' · ') : '데이터 없음'));
+            var 구 = a ? a.구간 : 구간_가져오기(t);
+            if (구 && 구.상태 === '정상') {
+                L.push('- 가격 반응 구간 (3분봉, ' + (구.기준시각 || '') + ' 기준): 지지 ' + (구.지지.map(function (z) { return z.v.toFixed(2) + '×' + z.횟수 + '회' + AI_거리(z.v, 기준가); }).join(', ') || '없음') +
+                       ' / 저항 ' + (구.저항.map(function (z) { return z.v.toFixed(2) + '×' + z.횟수 + '회' + AI_거리(z.v, 기준가); }).join(', ') || '없음'));
+            } else L.push('- 가격 반응 구간: ' + (구 ? 구.상태 : '데이터 없음'));
+            // 옵션
+            var 출처 = d.옵션출처 === 'CBOE' ? 'CBOE 15분 지연, ' + (d.cboeET || '') + ' 기준' : d.updatedAt ? (d.옵션출처 === '야후' ? '야후 15분 지연' : '키움') + ', ' + d.updatedAt + ' KST 갱신' : '';
+            if (d.optionRows && d.optionRows.length) {
+                var 행 = d.optionRows.slice().sort(function (x, y) { return Math.abs(x.strike - 현재) - Math.abs(y.strike - 현재); }).slice(0, 6)
+                    .sort(function (x, y) { return y.strike - x.strike; })
+                    .map(function (r) { return r.strike + ' = ' + AI_천(r.callOI) + '/' + AI_천(r.putOI) + (r.callVol || r.putVol ? ' (거래 ' + AI_천(r.callVol) + '/' + AI_천(r.putVol) + ')' : ''); });
+                L.push('- 옵션 (' + 출처 + ', 만기 ' + (d.dteLabel || '데이터 없음') + '): PCR ' + (d.pcr > 0 ? Number(d.pcr).toFixed(2) : '데이터 없음') + ' · 옵션 점수 ' + (d.score != null ? Number(d.score).toFixed(1) : '데이터 없음') + '/10' +
+                       (d.callWall > 0 ? ' · 콜벽 ' + d.callWall : '') + (d.putWall > 0 ? ' · 풋벽 ' + d.putWall : ''));
+                L.push('  · 현재가 주변 OI (콜/풋): ' + 행.join(' · '));
+            } else L.push('- 옵션: 데이터 없음');
+            if (a && a.이벤트.length) L.push('- 최근 이벤트: ' + a.이벤트.map(function (e) { return AI_시각(e.t, 'America/New_York').slice(11, 16) + ' ET ' + e.msg; }).join(' / '));
+            var 가격출처 = pick ? (pick.src === 'kiwoom' ? '키움 실시간' : '야후') : st && st.src ? (st.src === 'kiwoom' ? '키움 실시간' : '야후') : '';
+            var 수신 = q && q.recvAt ? q.recvAt : (st && st.ticks && st.ticks.length ? st.ticks[st.ticks.length - 1].t : 0);
+            L.push('- 데이터: 가격 ' + (가격출처 ? 가격출처 + (수신 ? ' (' + AI_시각(수신, 'America/New_York').slice(11, 19) + ' ET 수신)' : '') : '데이터 없음'));
+            if (전체) {
+                L.push('- [시스템 판단] ' + (a ? a.결론 : '데이터 없음') + (a && a.계획 ? ' · ' + (a.계획.dir === 'long' ? '롱' : '숏') + ' 진입 ' + a.계획.entry.toFixed(2) + ' · 손절 ' + a.계획.stop.toFixed(2) + ' · 목표 ' + a.계획.target.toFixed(2) + ' · 손익비 1:' + a.계획.rr.toFixed(1) +
+                       (a.진입거리 != null ? ' · 진입가까지 ' + fmtPct(a.진입거리) : '') : ''));
+                if (a && a.이유) L.push('  · 사유: ' + paperPlain(a.이유));
+                if (a && a.점수) L.push('  · 진입 점수 ' + a.점수.점수 + '/100 (진입 기준 ' + 점수_진입기준 + ', ' + a.점수.방향 + ' 기준): ' +
+                       a.점수.항목.map(function (x) { return x.이름 + ' ' + (x.상태 === null ? '제외(' + x.설명 + ')' : x.점수 + '/' + x.만점); }).join(' · '));
+                var 가상 = document.getElementById('p' + i + '-paper');
+                if (가상 && 가상.innerText && 가상.innerText.trim() !== '─') L.push('  · 가상매매(윈폼): ' + 가상.innerText.replace(/\s+/g, ' ').trim());
+            }
+            return L.join('\n');
+        }
+
+        function AI_스냅샷만들기() {
+            var no = 0; try { no = (parseInt(localStorage.getItem('aiSnapNo') || '0', 10) || 0) + 1; localStorage.setItem('aiSnapNo', String(no)); } catch (e) { no = Math.floor(Math.random() * 9000) + 1000; }
+            var 번호 = '#' + ('000' + no).slice(-4), now = Date.now(), 장 = marketPhase(), t = etNowParts();
+            var 세션 = 장.type === 'REG' ? '정규장 (마감까지 ' + Math.floor((정규장마감분(t.date) - t.m) / 60) + ':' + ('0' + ((정규장마감분(t.date) - t.m) % 60)).slice(-2) + ')' : (장.label || 장.type);
+            var 시장 = [['neon-qqq', 'QQQ(나스닥)'], ['neon-spy', 'SPY(S&P 500)'], ['neon-nq', '나스닥선물'], ['neon-vix', 'VIX'], ['neon-tnx', '미국채10년'], ['neon-dxy', '달러인덱스'],
+                       ['neon-cl', 'WTI원유'], ['neon-gold', '금선물'], ['neon-btc', '비트코인'], ['neon-usdkrw', '원달러환율']].map(function (x) {
+                var v = 시황_값[x[0]], el = document.getElementById(x[0]);
+                if (!v || !(v.p > 0)) return x[1] + ' 데이터 없음';
+                return x[1] + ' ' + 시황_숫자(v.p) + ' (' + fmtPct(v.c) + ')' + (x[0] === 'neon-vix' && VIX단계(v.p) ? ' 단계: ' + VIX단계(v.p).글 : '') + (el && el.classList.contains('stale') ? ' [거래 멈춤]' : '');
+            });
+            var fg = ((document.getElementById('neon-fg') || {}).innerText || '').replace(/\s+/g, ' ').trim();
+            if (!/\d/.test(fg)) fg = '공포탐욕지수 데이터 없음';
+            var 머리 = '<스냅샷 번호="' + 번호 + '" 생성="' + AI_시각(now, 'America/New_York') + ' ET / ' + AI_시각(now, 'Asia/Seoul') + ' KST">\n\n' +
+                '[기준 정보]\n- 세션: ' + 세션 + '\n- 데이터 출처: 가격 = 키움 실시간(윈폼 켜짐) 또는 야후 · 옵션 = 키움 4460 / CBOE·야후(15분 지연) · 1분봉·구간 = 야후 1분봉(Worker) · 거래량 배수 = 윈폼(정규장 09:30 기준)\n\n' +
+                '[시장 환경]\n- ' + 시장.slice(0, 3).join(' · ') + '\n- ' + 시장.slice(3, 6).join(' · ') + '\n- ' + 시장.slice(6).join(' · ') + '\n- ' + (fg.replace(/\s+/g, ' ').trim() || '공포탐욕지수 데이터 없음') + '\n';
+            var 블라인드 = 머리, 전체 = 머리;
+            [0, 1, 2].forEach(function (i) {
+                블라인드 += '\n────────────────\n' + AI_종목(i, false) + '\n';
+                전체 += '\n────────────────\n' + AI_종목(i, true) + '\n';
+            });
+            var 공통규칙 = '- 숫자는 스냅샷에 있는 값만 쓰고, 없는 값은 추측하지 말고 "데이터 없음"이라고 써라.\n' +
+                '- 확신이 낮으면 분명하게 "관망"이라고 써라.\n' +
+                '- "지금 사라" 대신 "어디서 무엇을 확인하면 진입"하는 조건부 계획으로 써라.\n' +
+                '- 손익비 1:1.5 미만이면 진입 계획으로 제시하지 마라.\n' +
+                '- 스냅샷 시각 이후 가격이 달라질 수 있으니 계획마다 유효 시간을 적어라.\n' +
+                '- 정규장이 아니면(판단 기준 = 마감 기준) 다음 정규장 개장 이후 계획으로 써라.\n';
+            var 형식앞 = '① 지금 최선의 한 수 (1줄): 종목 · 행동 · 조건 · 확신도 · 유효 시간\n' +
+                '② 한눈 요약표\n   | 종목 | 판단(롱/숏/관망) | 진입 조건·가격 | 손절 | 목표1 / 목표2 | 손익비 | 확신도(상/중/하) | 무효 조건 |\n' +
+                '③ 시장 환경 (2줄 이내)\n' +
+                '④ 종목별 상세 (종목마다)\n   - 핵심 근거 3개 이내 (스냅샷 숫자 인용)\n   - 시나리오 A / B (예: "X 돌파 + 거래량 → 롱 / Y 이탈 → 숏 또는 관망")\n   - 무효화 조건, 주의할 위험\n';
+            블라인드 += '\n</스냅샷>\n\n<요청>\n너는 미국 주식 단타(보유 수 분~1시간) 분석가다. 위 스냅샷만 근거로 3종목을 분석해라.\n\n규칙\n' + 공통규칙 +
+                '- 한국어로, 아래 형식과 순서를 그대로 지켜라. 전체 분량은 A4 1장 이내.\n\n출력 형식\n' + 형식앞 +
+                '⑤ 데이터 부족·모순 지적 (없으면 "없음")\n' +
+                '⑥ 기록용 한 줄 (종목마다 1줄, 이 형식 그대로):\n   기록|스냅샷' + 번호 + '|종목|판단|진입|손절|목표1|확신도\n</요청>\n';
+            전체 += '\n</스냅샷>\n\n<요청>\n너는 미국 주식 단타(보유 수 분~1시간) 분석가다. 위 스냅샷만 근거로 3종목을 분석하고, 각 종목의 [시스템 판단]을 검증해라.\n\n규칙\n' +
+                '- 시스템 판단을 그대로 따르지 말고, 데이터로 먼저 독립적으로 판단한 뒤 비교해라.\n' + 공통규칙 +
+                '- 한국어로, 아래 형식과 순서를 그대로 지켜라. 전체 분량은 A4 1장 반 이내.\n\n출력 형식\n' + 형식앞 +
+                '⑤ 시스템 판단 검증 (종목마다): 동의 / 부분 동의 / 반대 + 이유 1~2줄, 진입·손절·목표 수정 제안\n   - 가상매매 보유 포지션이 있으면: 유지 / 일부 청산 / 청산 의견과 기준 가격\n' +
+                '⑥ 데이터 부족·모순 지적 (없으면 "없음")\n' +
+                '⑦ 기록용 한 줄 (종목마다 1줄, 이 형식 그대로):\n   기록|스냅샷' + 번호 + '|종목|판단|진입|손절|목표1|확신도|시스템동의여부\n</요청>\n';
+            return { 번호: 번호, et: AI_시각(now, 'America/New_York').slice(11, 19), 블라인드: 블라인드, 전체: 전체 };
+        }
+
+        function AI_복사(글, 단추, 창) {
+            function 수동() {
+                var ta = 창.querySelector('textarea');
+                if (!ta) { ta = document.createElement('textarea'); 창.appendChild(ta); }
+                ta.value = 글; ta.focus(); ta.select();
+                단추.querySelector('small').textContent = '자동 복사가 막혔습니다 → 아래 글을 Ctrl+C 로 복사';
+            }
+            function 완료() { 단추.classList.add('done'); 단추.querySelector('small').textContent = '복사됨 ✓ — 새 대화창에 붙여넣기'; }
+            function 예전방식() {
+                try {
+                    var ta = document.createElement('textarea'); ta.value = 글; ta.style.position = 'fixed'; ta.style.opacity = '0';
+                    document.body.appendChild(ta); ta.select(); var ok = document.execCommand('copy'); document.body.removeChild(ta);
+                    if (ok) 완료(); else 수동();
+                } catch (e) { 수동(); }
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(글).then(완료, 예전방식);
+            else 예전방식();
+        }
+
+        function AI_닫기() { var p = document.getElementById('ai-pop'); if (p) p.remove(); AI_현재 = null; }
+        function AI_열기(단추) {
+            if (document.getElementById('ai-pop')) { AI_닫기(); return; }
+            var 스냅;
+            try { 스냅 = AI_스냅샷만들기(); } catch (e) { console.warn('[AI 분석] 스냅샷 오류', e); alert('AI 분석용 정리 중 오류: ' + e.message); return; }
+            AI_현재 = 스냅;
+            var 창 = document.createElement('div'); 창.className = 'ai-pop'; 창.id = 'ai-pop';
+            창.innerHTML = '<button class="ai-x" title="닫기">×</button>' +
+                '<div class="ai-h">🤖 AI 분석 · 스냅샷 ' + 스냅.번호 + '</div><div class="ai-sub">' + 스냅.et + ' ET 기준 3종목 · 두 글 모두 같은 시점</div>' +
+                '<button class="ai-c" data-k="블라인드">① 블라인드 복사<small>시스템 판단 제외 · 먼저 물어보기 권장</small></button>' +
+                '<button class="ai-c" data-k="전체">② 전체 복사<small>시스템 판단·진입 점수·가상매매 포함</small></button>' +
+                '<div class="ai-note">각각 <b>새 대화창</b>에 붙여넣으세요. 같은 창에 넣으면 앞 답에 영향을 받습니다.</div>';
+            document.body.appendChild(창);
+            var r = 단추.getBoundingClientRect(), w = 290;
+            창.style.top = Math.min(window.innerHeight - 20, r.bottom + 6) + 'px';
+            창.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, r.left)) + 'px';
+            창.querySelector('.ai-x').onclick = AI_닫기;
+            Array.prototype.forEach.call(창.querySelectorAll('.ai-c'), function (b) { b.onclick = function () { AI_복사(스냅[b.getAttribute('data-k')], b, 창); }; });
+        }
+        (function () {
+            var b = document.getElementById('ai-btn');
+            if (b) b.addEventListener('click', function (e) { e.stopPropagation(); AI_열기(b); });
+            document.addEventListener('click', function (e) { var p = document.getElementById('ai-pop'); if (p && !p.contains(e.target)) AI_닫기(); });
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape') AI_닫기(); });
+        })();
 
         (function start() {
             initDashboard(); buildWatchlist(); refreshAllDropdowns(); initFirebase();
