@@ -664,6 +664,19 @@
         /* 가격 아래 수준 막대 섹션 (지지·저항·MaxPain·당일 변동) */
         .lv-box { border: 1px solid #22263a; border-radius: 8px; padding: 6px 8px 4px; background: #0b0c14; flex-shrink: 0; }
         .lv-box .timeline:empty { min-height: 0; }
+        .lv-sum { display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px; margin-top: 4px; padding-top: 6px; border-top: 1px solid #1a1e2c; }
+        .lvs-col { min-width: 0; }
+        .lvs-h { display: flex; justify-content: space-between; font-size: 10px; color: #6b7386; height: 16px; line-height: 16px; }
+        .lvs-r { display: grid; grid-template-columns: 20px 54px 24px minmax(0, 1fr) 46px; align-items: center; height: 19px; font-size: 10.5px; border-top: 1px solid #141824; column-gap: 3px; }
+        .lvs-k { color: #6b7386; font-size: 9.5px; }
+        .lvs-p { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .lvs-p.sup, .lvs-s.sup { color: #4da3ff; } .lvs-p.res, .lvs-s.res { color: #ff6b6b; }
+        .lvs-o { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: #f59e0b; margin-left: 3px; vertical-align: 2px; }
+        .lvs-s { font-size: 7.5px; letter-spacing: .5px; white-space: nowrap; } .lvs-s em { font-style: normal; opacity: .22; }
+        .lvs-w { color: #8b93a7; font-size: 9.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+        .lvs-d { text-align: right; color: #9aa3b5; font-size: 10px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .lvs-empty .lvs-p { color: #3a4153; font-weight: 400; }
+        @container (max-width: 420px) { .lvs-r { grid-template-columns: 18px 50px 22px 0 42px; } .lvs-w { display: none; } .lv-sum { column-gap: 8px; } }
 
         /* ★ 분석 문구 줄바꿈 정리: 단어·항목 단위로만 줄바꿈 */
         .strategy-box { word-break: keep-all; overflow-wrap: break-word; }
@@ -3148,7 +3161,7 @@
                 + '</div></div>'
                 + '</div>'
                 // 가격 바로 아래: 지지·저항·MaxPain·당일 변동 막대 (별도 섹션)
-                + '<div class="lv-box"><div class="timeline" id="p' + i + '-timeline"></div></div>'
+                + '<div class="lv-box"><div class="timeline" id="p' + i + '-timeline"></div><div class="lv-sum" id="p' + i + '-lvsum"></div></div>'
                 + '<div class="strategy-box">'
                 + '<div class="sg-card">'
                 + '<div class="sg-top">'
@@ -3280,6 +3293,7 @@
 
         function resetPanelUI(panelIdx, ticker) {
             var p = 'p' + panelIdx + '-';
+            try { 레벨요약표시(p, { ticker: ticker }); } catch (e) { }   // 종목 바꾸면 요약은 빈 틀로
             ['price', 'diff', 'chg', 'vol', 'c1px', 'c1df', 'c1cg', 'reg-label', 'ext-label'].forEach(function (f) { var el = document.getElementById(p + f); if (el) el.textContent = (f === 'price' || f === 'vol' || f === 'c1px') ? '─' : ''; });
             var 초기값 = { 'gauge': '', 'sigtitle': '<span>관망 중</span>', 'reason': '데이터 로딩 중', 'situ': '<b>가격</b><span>─</span><b>판단</b><span>─</span><b>목표</b><span>─</span>', 'score': '', 'band': '<div class="sg-band cand">방향 없음</div>',
                           'plan': '', 'pnl': '', 'ind': '', 'recent': '<span class="sg-dim">최근 이벤트 없음</span>', 'paper': '─', 'state': '─' };
@@ -4343,25 +4357,22 @@
             return 결과;
         }
 
-        function renderTimeline(prefix, d) {
+        function renderTimeline_막대(prefix, d) {
             var host = document.getElementById(prefix + 'timeline');
             if (!host) return;
 
             var price = d.price || 0;
-            if (price <= 0) { host.innerHTML = ''; return; }
-            var 패널번호 = parseInt(String(prefix).replace(/[^0-9]/g, ''), 10);
-            var 종목 = d.ticker || panelTickers[패널번호];
-            // 세분화 레벨 (전략 계산과 같은 근거): VWAP = 윈폼 값 → 1분봉 정규장 VWAP / 정규장 외 = 마지막 정규장 VWAP
-            var st = RT[패널번호] && RT[패널번호].ticker === 종목 ? RT[패널번호] : null, 정규지금 = marketPhase().type === 'REG';
-            var 일v = 일_오늘(종목), 일m = 일데이터[종목] && 일데이터[종목].마감;
-            var 표VWAP = 정규지금 ? (st && st.extVwap > 0 ? st.extVwap : (일v && 일v.마감.VWAP > 0 ? 일v.마감.VWAP : 0)) : (일m && 일m.확정 && 일m.VWAP > 0 ? 일m.VWAP : 0);
-            var 세분 = 레벨_세분(종목, price, d, { vwap: 표VWAP, 마감: !정규지금 });
-            host._세분 = 세분;
+            var r2 = d.resistance2 || 0, r1 = d.resistance1 || 0;
+            var mp = d.maxPain || 0;
+            var s1 = d.support1 || 0, s2 = d.support2 || 0;
+            if (!r2 || !s2 || !mp || price <= 0) { host.innerHTML = ''; return; }
+
+            var currentChgRate = Number(d.change) || 0;
 
             var PAD_L = 0.05, PAD_R = 0.05;
             var TRK_W = 1 - PAD_L - PAD_R;
 
-            var minV = price * (1 - 세분.범위 / 100), maxV = price * (1 + 세분.범위 / 100), span = maxV - minV || 1;
+            var minV = s2, maxV = r2, span = maxV - minV || 1;
             function pct(v) {
                 var r = Math.max(0, Math.min(1, (v - minV) / span));
                 return (PAD_L + r * TRK_W) * 100;
@@ -4463,57 +4474,106 @@
             });
             host.appendChild(botTrackBg);
 
-            // ── 세분화 레벨: 아래(지지) 3 · 위(저항) 3, 점 크기 = 강도, 주황 테두리 = 옵션 근거 포함 ──
-            var nodes = 세분.지지.slice().reverse().map(function (x) { return { x: x, 지지: true }; })
-                .concat(세분.저항.map(function (x) { return { x: x, 지지: false }; }));
-            var hostW = host.clientWidth || 300, 좁음 = hostW < 420;
-            var nodePcts = nodes.map(function (n) { return pct(n.x.v); });
+            var nodes = [
+                { key: 's2', val: s2, label: '2차지지', color: '#00aaff', glow: 'rgba(0,170,255,0.7)' },
+                { key: 's1', val: s1, label: '1차지지', color: '#3399ff', glow: 'rgba(51,153,255,0.7)' },
+                { key: 'mp', val: mp, label: 'MaxPain', color: '#ffcc00', glow: 'rgba(255,204,0,0.7)' },
+                { key: 'r1', val: r1, label: '1차저항', color: '#ff5555', glow: 'rgba(255,85,85,0.7)' },
+                { key: 'r2', val: r2, label: '2차저항', color: '#ff3333', glow: 'rgba(255,51,51,0.7)' },
+            ];
+
+            var nodePcts = nodes.map(function (n) { return pct(n.val); });
+
+            nodes.forEach(function (n) {
+                var lp = pct(n.val);
+                var dotSz = 10;
+                var dot = mkEl({
+                    position: 'absolute', zIndex: '5', top: (NODE_CY - dotSz / 2) + 'px', left: lp + '%', transform: 'translateX(-50%)',
+                    width: dotSz + 'px', height: dotSz + 'px', borderRadius: '50%',
+                    background: n.color, boxShadow: '0 0 5px ' + n.glow,
+                });
+                host.appendChild(dot);
+            });
+
+            // 라벨 겹침 방지: 실제 화면 폭 기준으로 라벨 폭(약 52px)보다 가까우면 아래 줄로 내림 (모바일 대응)
+            var hostW = host.clientWidth || 300;
+            var minGapPct = Math.max(9, 52 / hostW * 100);
+            var LBL_BLOCK_H = 36;                                  // 가격·이름·% 3줄 높이
+            var offsets = nodePcts.map(function () { return 0; });
+            for (var i = 0; i < nodePcts.length - 1; i++) {
+                if (nodePcts[i + 1] - nodePcts[i] < minGapPct) {
+                    offsets[i + 1] = offsets[i] === 0 ? LBL_BLOCK_H : 0;
+                }
+            }
+            if (offsets.some(function (o) { return o > 0; })) host.style.height = (TOTAL_H + LBL_BLOCK_H) + 'px';
+
             nodes.forEach(function (n, i) {
-                var 색 = n.지지 ? '#3399ff' : '#ff4d4d', sz = [0, 8, 11, 14][n.x.강도] || 8;
-                host.appendChild(mkEl({
-                    position: 'absolute', zIndex: '5', top: (NODE_CY - sz / 2) + 'px', left: nodePcts[i] + '%', transform: 'translateX(-50%)',
-                    width: sz + 'px', height: sz + 'px', borderRadius: '50%', background: 색,
-                    boxShadow: '0 0 6px ' + 색 + (n.x.옵션 ? ', 0 0 0 2px #f59e0b' : '')
-                }));
+                var lp = nodePcts[i];
+                var off = offsets[i];
+                var nodeClr = n.color;
+
+                var prEl = mkEl({
+                    position: 'absolute', zIndex: '7', top: (PRICE_Y + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
+                    fontSize: '9.5px', fontWeight: 'bold', color: nodeClr, whiteSpace: 'nowrap', textAlign: 'center'
+                });
+                prEl.textContent = n.val.toFixed(1);
+                host.appendChild(prEl);
+
+                var nmEl = mkEl({
+                    position: 'absolute', zIndex: '7', top: (LABEL_Y0 + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
+                    fontSize: '9px', fontWeight: 'bold', color: nodeClr, whiteSpace: 'nowrap', textAlign: 'center',
+                    textShadow: '0 0 3px rgba(0,0,0,0.8)'
+                });
+                nmEl.textContent = n.label;
+                host.appendChild(nmEl);
+
+                var diffPctFromCurrent = ((n.val - price) / price) * 100;
+                var totalTargetRate = ((1 + currentChgRate / 100) * (1 + diffPctFromCurrent / 100) - 1) * 100;   // 기준가 대비 (복리: 단순 합 아님)
+                var signStr = totalTargetRate > 0 ? '+' : '';
+
+                var pctEl = mkEl({
+                    position: 'absolute', zIndex: '7', top: (PCT_Y0 + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
+                    fontSize: '8.5px', fontWeight: 'bold', color: nodeClr, whiteSpace: 'nowrap', textAlign: 'center',
+                    textShadow: '0 0 3px rgba(0,0,0,0.8)'
+                });
+                pctEl.textContent = '(' + signStr + totalTargetRate.toFixed(2) + '%)';
+                host.appendChild(pctEl);
             });
-            // 라벨 (가격 · 차수 · 강도 · 근거(넓은 화면) · 현재가 대비 %) — 실제 글자 폭으로 겹침을 확인해 빈 줄에 배치
-            var 줄높이 = 11, 블록 = 줄높이 * (좁음 ? 4 : 5) + 5;
-            var 라벨들 = nodes.map(function (n, i) {
-                var 색 = n.지지 ? '#4da3ff' : '#ff5d5d', 거리 = (n.x.v - price) / price * 100;
-                var 근거 = n.x.근거[0] + (n.x.근거.length > 1 ? ' 외 ' + (n.x.근거.length - 1) : '');   // 전체 근거는 마우스를 올리면 표시
-                var 줄 = [['<b style="font-size:10px">' + n.x.v.toFixed(2) + '</b>', 색], [n.x.n, 색], ['●●●'.slice(0, n.x.강도) + '○○○'.slice(0, 3 - n.x.강도), 색]];
-                if (!좁음) 줄.push([근거, '#8b93a7']);
-                줄.push(['(' + (거리 > 0 ? '+' : '') + 거리.toFixed(2) + '%)', '#9aa3b5']);
-                var el = mkEl({ position: 'absolute', zIndex: '7', top: PRICE_Y + 'px', left: '0px', textAlign: 'center',
-                                fontSize: '8.5px', lineHeight: 줄높이 + 'px', whiteSpace: 'nowrap', textShadow: '0 0 3px rgba(0,0,0,0.8)', fontWeight: '600' });
-                el.innerHTML = 줄.map(function (z) { return '<div style="color:' + z[1] + '">' + z[0] + '</div>'; }).join('');
-                el.title = n.x.n + ' ' + n.x.v.toFixed(2) + ' · 근거: ' + n.x.근거.join(', ');
-                host.appendChild(el);
-                return { el: el, 중심: nodePcts[i] / 100 * hostW, 차수: +String(n.x.k || 'X9').slice(1) || 9 };
-            });
-            var 줄목록 = [];   // 줄마다 [왼쪽, 오른쪽] 구간 — 1차 레벨부터 윗줄에 배치
-            라벨들.slice().sort(function (a, b) { return a.차수 - b.차수 || a.중심 - b.중심; }).forEach(function (L) {
-                var w = L.el.offsetWidth || 50, 왼 = Math.max(0, Math.min(hostW - w, L.중심 - w / 2)), 오 = 왼 + w, r = 0;
-                while (줄목록[r] && 줄목록[r].some(function (q) { return 왼 < q[1] + 4 && 오 > q[0] - 4; })) r++;
-                (줄목록[r] = 줄목록[r] || []).push([왼, 오]);
-                L.el.style.left = 왼 + 'px'; L.el.style.top = (PRICE_Y + r * 블록) + 'px';
-            });
-            var 아래 = Math.max(0, 줄목록.length - 1) * 블록;
-            // 범위 밖 큰 벽 (막대 아래 양 끝)
-            var 벽Y = PRICE_Y + 블록 + 아래 + 2, 벽있음 = false;
-            function 벽(글, 왼) {
-                벽있음 = true;
-                var e = mkEl({ position: 'absolute', zIndex: '6', top: 벽Y + 'px', fontSize: '8.5px', color: '#9aa3b5', border: '1px dashed #4a5163', borderRadius: '4px', padding: '1px 4px', whiteSpace: 'nowrap' });
-                if (왼) e.style.left = '0'; else e.style.right = '0';
-                e.textContent = 글; e.title = '현재가 ±' + 세분.범위.toFixed(1) + '% 밖의 큰 옵션 벽'; host.appendChild(e);
+        }
+
+        // 막대 아래 요약 (세분화 지지·저항): 왼쪽 = 저항(콜 쪽), 오른쪽 = 지지(풋 쪽), 머리 1줄 + 3줄 고정 → 3개 패널 높이 동일
+        function 레벨요약표시(prefix, d) {
+            var el = document.getElementById(prefix + 'lvsum'); if (!el) return;
+            var price = d && d.price || 0;
+            var 패널번호 = parseInt(String(prefix).replace(/[^0-9]/g, ''), 10), 종목 = (d && d.ticker) || panelTickers[패널번호];
+            var 세분 = null;
+            if (price > 0) {
+                var st = RT[패널번호] && RT[패널번호].ticker === 종목 ? RT[패널번호] : null, 정규지금 = marketPhase().type === 'REG';
+                var 일v = 일_오늘(종목), 일m = 일데이터[종목] && 일데이터[종목].마감;
+                var 표VWAP = 정규지금 ? (st && st.extVwap > 0 ? st.extVwap : (일v && 일v.마감.VWAP > 0 ? 일v.마감.VWAP : 0)) : (일m && 일m.확정 && 일m.VWAP > 0 ? 일m.VWAP : 0);
+                세분 = 레벨_세분(종목, price, d, { vwap: 표VWAP, 마감: !정규지금 });
             }
-            if (세분.벽.풋) 벽('◀ 풋벽 ' + 세분.벽.풋, true);
-            if (세분.벽.콜) 벽('콜벽 ' + 세분.벽.콜 + ' ▶', false);
-            if (!nodes.length) {
-                var 없음 = mkEl({ position: 'absolute', top: PRICE_Y + 'px', left: '50%', transform: 'translateX(-50%)', fontSize: '9.5px', color: '#7d8596', whiteSpace: 'nowrap' });
-                없음.textContent = '현재가 ±' + 세분.범위.toFixed(1) + '% 안에 지지·저항 근거 없음'; host.appendChild(없음);
+            function 줄(x, i, 지지) {
+                if (!x) return '<div class="lvs-r lvs-empty"><span class="lvs-k">' + (i + 1) + '차</span><span class="lvs-p">—</span></div>';
+                var 거리 = (x.v - price) / price * 100;
+                var 근거 = x.근거.map(function (g) { return g.replace(/ /g, ''); }).join('·');
+                return '<div class="lvs-r" title="' + x.n + ' ' + x.v.toFixed(2) + ' · 근거: ' + x.근거.join(', ') + '">' +
+                    '<span class="lvs-k">' + (i + 1) + '차</span>' +
+                    '<span class="lvs-p ' + (지지 ? 'sup' : 'res') + '">' + x.v.toFixed(2) + (x.옵션 ? '<i class="lvs-o"></i>' : '') + '</span>' +
+                    '<span class="lvs-s ' + (지지 ? 'sup' : 'res') + '">' + '●●●'.slice(0, x.강도) + '<em>' + '●●●'.slice(0, 3 - x.강도) + '</em></span>' +
+                    '<span class="lvs-w">' + 근거 + '</span>' +
+                    '<span class="lvs-d">' + (거리 > 0 ? '+' : '') + 거리.toFixed(2) + '%</span></div>';
             }
-            host.style.height = (PRICE_Y + 블록 + 아래 + (벽있음 ? 18 : 0) + 4) + 'px';
+            var 저 = 세분 ? 세분.저항 : [], 지 = 세분 ? 세분.지지 : [];
+            var 열 = function (목록, 지지) { var h = ''; for (var i = 0; i < 3; i++) h += 줄(목록[i], i, 지지); return h; };
+            var 범위 = 세분 ? ' · ±' + 세분.범위.toFixed(1) + '%' : '';
+            el.innerHTML = '<div class="lvs-col"><div class="lvs-h"><span>저항 (콜 쪽)</span><span>현재가 대비</span></div>' + 열(저, false) + '</div>' +
+                           '<div class="lvs-col"><div class="lvs-h"><span>지지 (풋 쪽)' + 범위 + '</span><span>현재가 대비</span></div>' + 열(지, true) + '</div>';
+        }
+
+        function renderTimeline(prefix, d) {
+            renderTimeline_막대(prefix, d);
+            try { 레벨요약표시(prefix, d); } catch (e) { console.warn('[레벨 요약]', e); }
         }
 
         function mkEl(styles) {
@@ -5186,29 +5246,37 @@
                 블라인드 += '\n────────────────\n' + AI_종목(i, false) + '\n';
                 전체 += '\n────────────────\n' + AI_종목(i, true) + '\n';
             });
-            var 공통규칙 = '- 숫자는 스냅샷에 있는 값만 쓰고, 없는 값은 추측하지 말고 "데이터 없음"이라고 써라.\n' +
-                '- 확신이 낮으면 분명하게 "관망"이라고 써라.\n' +
+            // 속보·SNS 조사 기간: 정규장(및 같은 날 장 마감 뒤) = 오늘 09:30 ET 이후 / 그 외 = 직전 정규장 개장(09:30 ET) 이후
+            var 뉴스날 = (장.type === 'REG' || 장.type === 'POST') ? t.date : expectedSessionDate();
+            var 뉴스기간 = AI_월일(뉴스날) + ' 09:30 ET(정규장 개장) 이후 ~ 스냅샷 시각(' + AI_월일(t.date) + ' ' + AI_시각(now, 'America/New_York').slice(11, 16) + ' ET)';
+            var 공통규칙 = '- 가격·레벨·거래량 판단은 스냅샷 숫자만 근거로 써라. 스냅샷에 없는 시세 숫자는 추측하지 말고 "데이터 없음"이라고 써라.\n' +
+                '- 확신이 낮으면 분명하게 "관망"이라고 써라. 관망 종목은 요약표의 진입·손절·목표·손익비·무효 조건 칸을 "—"로 채워라.\n' +
                 '- "지금 사라" 대신 "어디서 무엇을 확인하면 진입"하는 조건부 계획으로 써라.\n' +
                 '- 손익비 1:1.5 미만이면 진입 계획으로 제시하지 마라.\n' +
+                '- 목표1·목표2와 손절 기준은 스냅샷의 지지·저항 레벨(또는 그 바로 앞·뒤)로 정하라. 레벨과 무관한 임의의 가격을 만들지 마라.\n' +
                 '- 스냅샷 시각 이후 가격이 달라질 수 있으니 계획마다 유효 시간을 적어라.\n' +
                 '- 정규장이 아니면(판단 기준 = 마감 기준) 다음 정규장 개장 이후 계획으로 써라.\n' +
                 '- 손절폭(진입가와 손절가 차이)은 그 종목 "평균 3분 변동폭"의 1.5배 이상으로 잡아라. 더 좁으면 보통 흔들림에 손절된다.\n' +
                 '- 무효 조건 가격은 손절 가격과 같게 써라 (무효 조건이 손절보다 먼저 걸리면 안 된다).\n' +
-                '- "추정치" 표시가 있는 값은 근거로 쓰지 마라. 지지·저항은 ●가 많을수록(근거가 겹칠수록) 강한 레벨이다.\n';
+                '- "추정치" 표시가 있는 값은 근거로 쓰지 마라. 지지·저항은 ●가 많을수록(근거가 겹칠수록) 강한 레벨이다.\n' +
+                '- 확신도 기준: 상 = ①방향 점수 ±2 이상 ②거래량 배수(누적 또는 순간) 1.0배 이상 ③진입 근거 레벨이 ●●● — 셋 모두 충족 / 중 = 둘 충족 / 하 = 하나 이하. 장중 속보가 계획과 반대 방향이면 한 단계 낮춰라.\n' +
+                '- 속보·SNS: 웹 검색을 써서 ' + 뉴스기간 + ' 사이에 새로 나온 것만 골라라. 그 전에 나온 뉴스, 이미 알려진 재료, 날짜·시각을 확인할 수 없는 글은 빼라.\n' +
+                '  각 항목에 발표 시각(ET)·출처·관련 종목·주가 영향(호재/악재/중립)을 적고, 확인된 것이 없으면 "확인된 신규 속보 없음"이라고 써라. 웹 검색을 할 수 없으면 "검색 불가"라고만 쓰고 지어내지 마라.\n';
             var 형식앞 = '① 지금 최선의 한 수 (1줄): 종목 · 행동 · 조건 · 확신도 · 유효 시간\n' +
                 '② 한눈 요약표\n   | 종목 | 판단(롱/숏/관망) | 진입 조건·가격 | 손절 | 목표1 / 목표2 | 손익비 | 확신도(상/중/하) | 무효 조건 |\n' +
                 '③ 시장 환경 (2줄 이내)\n' +
-                '④ 종목별 상세 (종목마다)\n   - 핵심 근거 3개 이내 (스냅샷 숫자 인용)\n   - 시나리오 A / B (예: "X 돌파 + 거래량 → 롱 / Y 이탈 → 숏 또는 관망")\n   - 무효화 조건, 주의할 위험\n';
-            블라인드 += '\n</스냅샷>\n\n<요청>\n너는 미국 주식 단타(보유 수 분~1시간) 분석가다. 위 스냅샷만 근거로 3종목을 분석해라.\n\n규칙\n' + 공통규칙 +
-                '- 한국어로, 아래 형식과 순서를 그대로 지켜라. 전체 분량은 A4 1장 이내.\n\n출력 형식\n' + 형식앞 +
-                '⑤ 데이터 부족·모순 지적 (없으면 "없음")\n' +
-                '⑥ 기록용 한 줄 (종목마다 1줄, 이 형식 그대로):\n   기록|스냅샷' + 번호 + '|종목|판단|진입|손절|목표1|확신도\n</요청>\n';
-            전체 += '\n</스냅샷>\n\n<요청>\n너는 미국 주식 단타(보유 수 분~1시간) 분석가다. 위 스냅샷만 근거로 3종목을 분석하고, 각 종목의 [시스템 판단]을 검증해라.\n\n규칙\n' +
-                '- 시스템 판단을 그대로 따르지 말고, 데이터로 먼저 독립적으로 판단한 뒤 비교해라.\n' + 공통규칙 +
+                '④ 장중 속보·SNS 화제 (' + 뉴스기간 + ', 종목·시장 관련 최대 5개, 중요한 순)\n   - [시각 ET] 내용 1줄 — 출처 · 관련 종목 · 호재/악재/중립\n' +
+                '⑤ 종목별 상세 (종목마다)\n   - 핵심 근거 3개 이내 (스냅샷 숫자 인용, 관련 속보가 있으면 함께)\n   - 시나리오 A / B (예: "X 돌파 + 거래량 → 롱 / Y 이탈 → 숏 또는 관망")\n   - 무효화 조건, 주의할 위험\n';
+            블라인드 += '\n</스냅샷>\n\n<요청>\n너는 미국 주식 단타(보유 수 분~1시간) 분석가다. 위 스냅샷과 장중 속보를 근거로 3종목을 분석해라.\n\n규칙\n' + 공통규칙 +
                 '- 한국어로, 아래 형식과 순서를 그대로 지켜라. 전체 분량은 A4 1장 반 이내.\n\n출력 형식\n' + 형식앞 +
-                '⑤ 시스템 판단 검증 (종목마다): 동의 / 부분 동의 / 반대 + 이유 1~2줄, 진입·손절·목표 수정 제안\n   - 가상매매 보유 포지션이 있으면: 유지 / 일부 청산 / 청산 의견과 기준 가격\n' +
                 '⑥ 데이터 부족·모순 지적 (없으면 "없음")\n' +
-                '⑦ 기록용 한 줄 (종목마다 1줄, 이 형식 그대로):\n   기록|스냅샷' + 번호 + '|종목|판단|진입|손절|목표1|확신도|시스템동의여부\n</요청>\n';
+                '⑦ 기록용 한 줄 (종목마다 1줄, 이 형식 그대로):\n   기록|스냅샷' + 번호 + '|종목|판단|진입|손절|목표1|확신도\n</요청>\n';
+            전체 += '\n</스냅샷>\n\n<요청>\n너는 미국 주식 단타(보유 수 분~1시간) 분석가다. 위 스냅샷과 장중 속보를 근거로 3종목을 분석하고, 각 종목의 [시스템 판단]을 검증해라.\n\n규칙\n' +
+                '- 시스템 판단을 그대로 따르지 말고, 데이터로 먼저 독립적으로 판단한 뒤 비교해라.\n' + 공통규칙 +
+                '- 한국어로, 아래 형식과 순서를 그대로 지켜라. 전체 분량은 A4 2장 이내.\n\n출력 형식\n' + 형식앞 +
+                '⑥ 시스템 판단 검증 (종목마다): 동의 / 부분 동의 / 반대 + 이유 1~2줄, 진입·손절·목표 수정 제안\n   - 가상매매 보유 포지션이 있으면: 유지 / 일부 청산 / 청산 의견과 기준 가격\n' +
+                '⑦ 데이터 부족·모순 지적 (없으면 "없음")\n' +
+                '⑧ 기록용 한 줄 (종목마다 1줄, 이 형식 그대로):\n   기록|스냅샷' + 번호 + '|종목|판단|진입|손절|목표1|확신도|시스템동의여부\n</요청>\n';
             return { 번호: 번호, et: AI_시각(now, 'America/New_York').slice(11, 19), 블라인드: 블라인드, 전체: 전체 };
         }
 
@@ -5259,6 +5327,7 @@
 
         (function start() {
             initDashboard(); buildWatchlist(); refreshAllDropdowns(); initFirebase();
+            [0, 1, 2].forEach(function (i) { try { 레벨요약표시('p' + i + '-', { ticker: panelTickers[i] }); } catch (e) { } });   // 요약 틀(빈 줄) 먼저 → 3개 패널 높이 동일
             try {
                 firebase.database().ref('system/closeUpdate').on('value', function (snap) {
                     closeStatus = snap.val();
