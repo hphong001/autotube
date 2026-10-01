@@ -684,7 +684,13 @@
         .sg-ico { width: 18px; height: 18px; flex-shrink: 0; }
         .sg-reason { font-size: 16px; font-weight: 600; line-height: 1.45; height: 2.9em; overflow: hidden;
                      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-        .sg-situ { font-size: 13.5px; color: #9aa3b5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        /* 상황 박스: 가격 / 판단 / 목표 3줄 고정 (패널끼리 높이·줄 위치 동일) */
+        .sg-situ { display: grid; grid-template-columns: 40px minmax(0, 1fr); grid-auto-rows: 21px; column-gap: 8px; align-items: center;
+                   background: #0d1018; border: 1px solid #1f2533; border-radius: 10px; padding: 6px 12px; font-size: 13.5px; color: #d5d9e3; }
+        .sg-situ b { font-size: 12px; font-weight: 600; color: #7d8596; }
+        .sg-situ span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sg-situ .up { color: #ff7a7a; } .sg-situ .dn { color: #7aa8ff; } .sg-situ .dim { color: #8b93a7; }
+        .sg-lv { color: #f5c542; }
         .sg-plan { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: #242a38; border-radius: 10px; overflow: hidden; min-height: 62px; }
         .sg-cell { background: #151925; padding: 10px 12px; min-width: 0; }
         .sg-cl { font-size: 12.5px; color: #8b93a7; white-space: nowrap; }
@@ -765,7 +771,7 @@
             .sg-glabel { font-size: 13px; } .sg-gsub { font-size: 10.5px; }
             .sg-state { font-size: 20px; }
             .sg-reason { font-size: 15px; }
-            .sg-situ { font-size: 13px; }
+            .sg-situ { font-size: 12.5px; padding: 5px 10px; }
             .sg-cell { padding: 8px 8px; }
             .sg-cl { font-size: 11.5px; }
             .sg-cv { font-size: 15.5px; }
@@ -794,7 +800,7 @@
             .sg-glabel { font-size: 13px; } .sg-gsub { font-size: 10.5px; }
             .sg-state { font-size: 20px; }
             .sg-reason { font-size: 15px; }
-            .sg-situ { font-size: 13px; }
+            .sg-situ { font-size: 12.5px; padding: 5px 10px; }
             .sg-cell { padding: 8px 8px; }
             .sg-cl { font-size: 11.5px; }
             .sg-cv { font-size: 15.5px; }
@@ -834,6 +840,16 @@
 
         /* ★ 시세 영역: 가격 묶음 / 거래량·종가시각 묶음 단위로만 줄바꿈 */
         .px-group { display: inline-flex; align-items: baseline; gap: 8px; white-space: nowrap; }
+        /* 가격 3줄: 라벨 오른쪽 정렬 + 값 줄 맞춤 */
+        .px-grid { display: grid; grid-template-columns: max-content max-content; column-gap: 10px; row-gap: 3px; align-items: baseline; margin: 0 auto; }
+        .px-l { justify-self: end; font-size: 12px; font-weight: 600; color: #8b93a7; white-space: nowrap; }
+        .px-l::after { content: ' :'; color: #5d6578; }
+        .px-v { display: flex; align-items: baseline; flex-wrap: wrap; column-gap: 7px; row-gap: 1px; min-width: 0; }
+        .px-v .price-now { font-size: 19px; } .px-v .price-diff, .px-v .price-chg { font-size: 14.5px; }
+        .vol-num { font-size: 14px; font-weight: 700; color: #9cc0f5; }
+        .px-v .reg-label, .px-v .ext-label { font-size: 11px; color: #7d8596; white-space: nowrap; }
+        .px-note { grid-column: 2; margin-top: -2px; font-size: 11px; color: #7d8596; white-space: nowrap; }
+        .px-note:empty { display: none; }
         .meta-group { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
         .meta-group .vol-badge { margin-left: 0; }
 
@@ -2242,7 +2258,7 @@
             var below = 전체레벨.filter(function (x) { return x.v < price * 0.999; }).sort(function (a, b) { return b.v - a.v; });
             var 눌림결과 = null, 박스 = 구간.상태 === '정상' ? 박스찾기(price, 구간) : null;
 
-            var line1 = '', line3 = '', color = '#ddbb00', plan = null, planLevel = '', planLevelID = '', 근접후보 = null;
+            var line1 = '', line3 = '', color = '#ddbb00', plan = null, planLevel = '', planLevelID = '', 근접후보 = null, 겹침글 = '';
 
             // ── 추세 눌림(롱)/반등(숏) 계획 먼저 계산 ──
             //   시작: 방향 점수 ±2 이상 / 유지: 같은 방향 ±1 이상 (눌림으로 VWAP 에 가까워지면 점수가 1 줄어드는 것을 흡수)
@@ -2312,8 +2328,8 @@
                 color = 롱눌림 ? '#ff6666' : '#66bbff';
                 plan = 눌림결과.plan;
                 line3 = (롱눌림 ? '눌림 매수 — ' : '반등 매도 — ') + 기준.n + ' $' + 기준.v.toFixed(2) +
-                        (눌림결과.겹침.length ? ' (' + 눌림결과.겹침.map(function (x) { return x.n; }).join('·') + ' 겹침)' : '') +
                         ' 부근 ' + (롱눌림 ? '지지' : '저항') + ' 확인 시 진입';
+                겹침글 = 눌림결과.겹침.length ? 눌림결과.겹침.map(function (x) { return x.n; }).join('·') + ' 겹침' : '';
             }
             else if (near && Math.abs(near.dist) <= RT_AWAY) {
                 // 🎯 레벨 근접 공방
@@ -2393,10 +2409,7 @@
                 }
             }
             // 마감 기준 모드: 실시간 가격을 상황 줄 앞에 표시
-            if (마감) {
-                var 실시간글 = 장지금.type === 'WEEKEND' || 장지금.type === 'HOLIDAY' ? '휴장 · 마지막 ' : (장지금.label || '장외') + ' ';
-                line1 = 실시간글 + 실시간가.toFixed(2) + ' (마감가 대비 ' + fmtPct((실시간가 - 마감종가) / 마감종가 * 100) + ') · ' + line1.replace(/^[^\w가-힣$]+/, '');
-            }
+            // (실시간 가격은 상황 박스 "가격" 줄에 표시)
             // 상황 줄 보강: 구간 데이터 상태
             if (구간.상태 === '계산중') line1 += ' · 지지·저항 구간 계산 중';
             else if (구간.상태 === '없음') line1 += ' · 지지·저항 구간 데이터 없음';
@@ -2632,8 +2645,37 @@
                      : { 글: 장.label + ' · 참고용', 종류: 'ext' };
             put('sigtitle', 상태아이콘 + '<span>' + 결론.글 + '</span>' + (대기글 ? '<small class="sg-waitd">' + 대기글 + '</small>' : '') + '<em class="sg-sess sg-sess-' + 배지.종류 + '">' + 배지.글 + '</em>', 결론.색,
                 결론.글 + ' (' + 배지.글 + (배지.종류 === 'reg' ? '' : ' — 정규장 외 시간이라 가상매매 진입 없음') + ')');
-            put('reason', jd.이유, undefined, jd.이유);
-            put('situ', paperPlain(line1).replace(/^[^\w가-힣$]+/, ''), undefined, paperPlain(line1));
+            // 이유: 핵심 레벨(이름 + 가격)을 노란색으로
+            var 이유글 = String(jd.이유 || '');
+            var 이유HTML = 이유글.replace(/((\d+번 (지지 반등|막힌 저항))|[12]차(지지|저항)|MaxPain|VWAP|박스(상단|하단)) \$[\d.]+/, function (m) { return '<span class="sg-lv">' + m + '</span>'; });
+            put('reason', 이유HTML, undefined, 이유글);
+
+            // 상황 박스: 가격 / 판단 / 목표
+            function 색(v) { return v > 0 ? 'up' : v < 0 ? 'dn' : 'dim'; }
+            var 가격줄;
+            if (마감) {
+                var 실시간이름 = 장지금.type === 'WEEKEND' || 장지금.type === 'HOLIDAY' ? '휴장 · 마지막' : (장지금.label || '장외');
+                var 대비 = (실시간가 - 마감종가) / 마감종가 * 100;
+                가격줄 = 실시간이름 + ' ' + 실시간가.toFixed(2) + ' <span class="' + 색(대비) + '">(마감가 대비 ' + fmtPct(대비) + ')</span>';
+            } else if (장지금.type === 'REG') {
+                가격줄 = '현재가 ' + price.toFixed(2) + (VWAP확정 ? ' · VWAP ' + vwap.toFixed(2) + ' <span class="' + 색(vwDist) + '">(' + fmtPct(vwDist) + ')</span>' : '');
+            } else {
+                가격줄 = (장지금.type === 'WEEKEND' || 장지금.type === 'HOLIDAY' ? '휴장 · 마지막' : (장지금.label || '장외')) + ' ' + price.toFixed(2);
+            }
+            var 판단줄 = paperPlain(line1).replace(/^[^\w가-힣$]+/, '').replace(/ · 목표 [^·]*/, '').replace(/ → 다음 [^·]*/, '') + (겹침글 ? ' · ' + 겹침글 : '');
+            var 목표줄;
+            var 계획 = jd.계획;
+            if (계획 && 계획.target > 0) {
+                var 목표레벨 = 전체레벨.filter(function (l) { return Math.abs(l.v - 계획.target) / 계획.target <= 0.001; })[0];
+                var 목표비 = (계획.target - 계획.entry) / 계획.entry * 100;
+                목표줄 = (목표레벨 ? 목표레벨.n + ' ' : '') + '$' + 계획.target.toFixed(2) + ' <span class="' + 색(목표비) + '">(진입가 대비 ' + fmtPct(목표비) + ')</span>';
+            } else {
+                var 다음 = bias >= 0 ? above[0] : below[0];
+                목표줄 = 다음 ? '<span class="dim">다음 레벨</span> ' + 다음.n + ' $' + 다음.v.toFixed(2) + ' <span class="' + 색(다음.v - price) + '">(' + fmtPct((다음.v - price) / price * 100) + ')</span>' : '<span class="dim">─</span>';
+            }
+            put('situ', '<b>가격</b><span title="' + paperPlain(가격줄) + '">' + 가격줄 + '</span>' +
+                        '<b>판단</b><span title="' + 판단줄.replace(/"/g, '') + '">' + 판단줄 + '</span>' +
+                        '<b>목표</b><span title="' + paperPlain(목표줄) + '">' + 목표줄 + '</span>');
             put('score', 점수HTML);
             put('band', 띠);
             put('plan', 계획칸);
@@ -3024,27 +3066,20 @@
                 + '<span id="p' + i + '-market-badge" style="display:none; background-color:rgba(231,76,60,0.15); color:#e74c3c; border:1px solid rgba(231,76,60,0.4); font-size:10px; font-weight:bold; padding:2px 6px; border-radius:4px;">장마감</span>'
                 + '</div>'
                 + '</div>'
-                + '<div class="price-container">'
-                + '<div class="price-block" id="p' + i + '-reg-block">'
-                + '<span class="px-group">'
-                + '<span class="price-now" id="p' + i + '-price">─</span>'
-                + '<span class="price-diff" id="p' + i + '-diff">─</span>'
-                + '<span class="price-chg"  id="p' + i + '-chg">─</span>'
+                + '<div class="price-container"><div class="px-grid" id="p' + i + '-reg-block">'
+                // 1줄: 종가 (정규장 외 = 마지막 정규장 종가·전일 대비 / 정규장 = 전일 종가)
+                + '<span class="px-l" id="p' + i + '-l1">종가</span><span class="px-v">'
+                + '<span class="price-now" id="p' + i + '-c1px">─</span><span class="price-diff" id="p' + i + '-c1df"></span><span class="price-chg" id="p' + i + '-c1cg"></span>'
+                + '<span class="reg-label" id="p' + i + '-reg-label"></span></span>'
+                // 2줄: 현재가 (정규장 외 = 시간외 현재가·종가 대비 / 정규장 = 정규장 현재가·전일 대비)
+                + '<span class="px-l" id="p' + i + '-l2">현재가</span><span class="px-v">'
+                + '<span class="price-now" id="p' + i + '-price">─</span><span class="price-diff" id="p' + i + '-diff"></span><span class="price-chg" id="p' + i + '-chg"></span>'
                 + '</span>'
-                + '<span class="meta-group">'
-                + '<span class="vol-badge"  id="p' + i + '-vol">거래량: ─</span>'
-                + '<span class="reg-label" id="p' + i + '-reg-label"></span>'
-                + '</span>'
-                + '</div>'
-                + '<div class="price-ext" id="p' + i + '-ext" style="display:none">'
-                + '<span class="px-group">'
-                + '<span class="ext-px" id="p' + i + '-ext-px">─</span>'
-                + '<span class="ext-diff" id="p' + i + '-ext-diff"></span>'
-                + '<span class="ext-chg" id="p' + i + '-ext-chg"></span>'
-                + '</span>'
-                + '<span class="ext-label nw" id="p' + i + '-ext-label"></span>'
-                + '</div>'
-                + '</div>'
+                // 2줄 보조: 세션·시각 (작은 글씨, 값 열 아래 별도 줄 → 좁은 화면에서도 3줄이 각각 한 줄 유지)
+                + '<span class="px-note" id="p' + i + '-ext-label"></span>'
+                // 3줄: 거래량
+                + '<span class="px-l">거래량</span><span class="px-v"><span class="vol-num" id="p' + i + '-vol">─</span></span>'
+                + '</div></div>'
                 + '</div>'
                 + '<div class="strategy-box">'
                 + '<div class="sg-card">'
@@ -3053,8 +3088,8 @@
                 + '<div class="sg-head">'
                 + '<div class="sg-state" id="p' + i + '-sigtitle"><span>관망 중</span></div>'
                 + '<div class="sg-reason" id="p' + i + '-reason">데이터 로딩 중</div>'
-                + '<div class="sg-situ" id="p' + i + '-situ">─</div>'
                 + '</div></div>'
+                + '<div class="sg-situ" id="p' + i + '-situ">' + '<b>가격</b><span>─</span><b>판단</b><span>─</span><b>목표</b><span>─</span>' + '</div>'
                 + '<div class="sg-score" id="p' + i + '-score"></div>'
                 + '<div id="p' + i + '-band"><div class="sg-band cand">방향 없음</div></div>'
                 + '<div class="sg-plan" id="p' + i + '-plan"></div>'
@@ -3178,8 +3213,8 @@
 
         function resetPanelUI(panelIdx, ticker) {
             var p = 'p' + panelIdx + '-';
-            ['price', 'diff', 'chg', 'vol'].forEach(function (f) { var el = document.getElementById(p + f); if (el) el.textContent = '─'; });
-            var 초기값 = { 'gauge': '', 'sigtitle': '<span>관망 중</span>', 'reason': '데이터 로딩 중', 'situ': '─', 'score': '', 'band': '<div class="sg-band cand">방향 없음</div>',
+            ['price', 'diff', 'chg', 'vol', 'c1px', 'c1df', 'c1cg', 'reg-label', 'ext-label'].forEach(function (f) { var el = document.getElementById(p + f); if (el) el.textContent = (f === 'price' || f === 'vol' || f === 'c1px') ? '─' : ''; });
+            var 초기값 = { 'gauge': '', 'sigtitle': '<span>관망 중</span>', 'reason': '데이터 로딩 중', 'situ': '<b>가격</b><span>─</span><b>판단</b><span>─</span><b>목표</b><span>─</span>', 'score': '', 'band': '<div class="sg-band cand">방향 없음</div>',
                           'plan': '', 'pnl': '', 'ind': '', 'recent': '<span class="sg-dim">최근 이벤트 없음</span>', 'paper': '─', 'state': '─' };
             if (RT[panelIdx]) { RT[panelIdx].판단 = null; RT[panelIdx].띠키 = null; }
             Object.keys(초기값).forEach(function (k) {
@@ -3583,7 +3618,7 @@
                     var isIndex = (d.ticker === 'QQQ' || d.ticker === 'SPY' || d.ticker === 'IWM' || d.ticker === 'SPX');
                     var targetVol = isIndex ? 2.5 : 6.0;
                     var domRate = 0;
-                    var cgEl = document.getElementById('p' + panel + '-chg');
+                    var cgEl = document.getElementById('p' + panel + (marketPhase().type === 'REG' ? '-chg' : '-c1cg'));   // 당일 등락률 (정규장 외 = 마지막 정규장 등락률)
                     if (cgEl && cgEl.textContent !== '─') {
                         var matches = cgEl.textContent.match(/-?\d+(\.\d+)?/g);
                         if (matches) domRate = Number(matches[matches.length - 1]) || 0;
@@ -3877,77 +3912,66 @@
         function fmtSigned(v, dig) { return (v > 0 ? '+' : '') + v.toFixed(dig); }
         function clsOf(v) { return v > 0 ? 'up' : v < 0 ? 'dn' : 'neu'; }
 
+        // 가격 3줄: ① M/D 종가  ② 시간외 현재가(정규장 외) / 정규장 현재가(정규장)  ③ 거래량
         function updatePanelPrice(idx, price, changeRate, changeAmt, volume) {
             var p = 'p' + idx + '-';
             var numPrice = Number(String(price).replace(/[^0-9.-]+/g, "")) || 0;
             var numAmt = Number(String(changeAmt).replace(/[^0-9.-]+/g, "")) || 0;
             var numRate = Number(String(changeRate || '0').replace('%', '').trim()) || 0;
-            var pxEl = document.getElementById(p + 'price'),
-                dfEl = document.getElementById(p + 'diff'),
-                cgEl = document.getElementById(p + 'chg'),
-                volEl = document.getElementById(p + 'vol'),
-                regLbl = document.getElementById(p + 'reg-label'),
-                extEl = document.getElementById(p + 'ext');
-
+            function el(id) { return document.getElementById(p + id); }
+            function 칸(px, df, cg, 값, 대비, 비율, 기본cls) {
+                var c = 대비 == null ? (기본cls || 'neu') : clsOf(대비);
+                if (px) { px.textContent = 값 > 0 ? 값.toFixed(2) : '⋯'; px.className = 'price-now ' + c; }
+                if (df) { df.textContent = 값 > 0 && 대비 != null ? fmtSigned(대비, 2) : ''; df.className = 'price-diff ' + c; }
+                if (cg) { cg.textContent = 값 > 0 && 비율 != null ? '(' + fmtSigned(비율, 2) + '%)' : ''; cg.className = 'price-chg ' + c; }
+            }
+            var l1 = el('l1'), l2 = el('l2'), regLbl = el('reg-label'), extLbl = el('ext-label'), volEl = el('vol');
             var phase = marketPhase();
-            var rc = phase.type !== 'REG' ? getRegClose(panelTickers[idx]) : null;
+            var 정규장 = phase.type === 'REG';
+            var rc = getRegClose(panelTickers[idx]);     // 정규장 외 = 마지막 정규장 종가 / 정규장 = 전일 종가(16:10 ET 전까지는 직전 거래일)
+            function 월일(d) { return d ? (+d.substring(5, 7)) + '/' + (+d.substring(8, 10)) : ''; }
 
-            if (rc) {
-                // ── 1줄: 마지막 정규장 종가 ──
-                var regAmt = rc.prevClose > 0 ? rc.regClose - rc.prevClose : null;
-                var regPct = rc.prevClose > 0 ? regAmt / rc.prevClose * 100 : null;
-                var rcls = regAmt === null ? 'neu' : clsOf(regAmt);
-                if (pxEl) { pxEl.textContent = rc.regClose.toFixed(2); pxEl.className = 'price-now ' + rcls; }
-                if (dfEl) { dfEl.textContent = regAmt === null ? '' : fmtSigned(regAmt, 2); dfEl.className = 'price-diff ' + rcls; }
-                if (cgEl) { cgEl.textContent = regPct === null ? '' : '(' + fmtSigned(regPct, 2) + '%)'; cgEl.className = 'price-chg ' + rcls; }
-                if (regLbl) {
-                    regLbl.textContent = '종가' + (rc.regDate ? ' ' + rc.regDate.substring(5).replace('-', '/') : '') + ' 16:00 ET' +
-                        (rc.src === 'yahoo' ? ' ✓' : '');
-                    regLbl.title = rc.src === 'yahoo' ? '자동 기록된 공식 종가 (Worker)' : '야후 장외 시세에서 계산한 종가';
-                }
-
-                // ── 2줄: 장외 현재가 (종가 대비) ──
-                var extAmt = numPrice - rc.regClose, extPct = extAmt / rc.regClose * 100, ecls = clsOf(extAmt);
-                var t = etNowParts().et;
-                var hh = t.getHours(), mm = t.getMinutes();
+            if (!정규장) {
+                // ① 마지막 정규장 종가 (전일 대비)
+                if (rc) {
+                    var regAmt = rc.prevClose > 0 ? rc.regClose - rc.prevClose : null;
+                    칸(el('c1px'), el('c1df'), el('c1cg'), rc.regClose, regAmt, regAmt === null ? null : regAmt / rc.prevClose * 100);
+                    if (l1) l1.textContent = (rc.regDate ? 월일(rc.regDate) + ' ' : '') + '종가';
+                    if (regLbl) { regLbl.textContent = rc.src === 'yahoo' ? '✓' : ''; regLbl.title = rc.src === 'yahoo' ? '자동 기록된 공식 종가 (Worker)' : '야후 장외 시세에서 계산한 종가'; }
+                } else { 칸(el('c1px'), el('c1df'), el('c1cg'), 0, null, null); if (l1) l1.textContent = '종가'; if (regLbl) regLbl.textContent = ''; }
+                // ② 시간외 현재가 (종가 대비)
+                if (l2) l2.textContent = '시간외 현재가';
+                var 기준 = rc ? rc.regClose : 0;
+                var extAmt = 기준 > 0 && numPrice > 0 ? numPrice - 기준 : null;
+                칸(el('price'), el('diff'), el('chg'), numPrice, extAmt, extAmt === null ? null : extAmt / 기준 * 100);
+                var t = etNowParts().et, hh = t.getHours(), mm = t.getMinutes();
                 var clock = (hh % 12 === 0 ? 12 : hh % 12) + ':' + (mm < 10 ? '0' : '') + mm + (hh < 12 ? ' AM' : ' PM') + ' ET';
-                var ePx = document.getElementById(p + 'ext-px'), eDf = document.getElementById(p + 'ext-diff'),
-                    eCg = document.getElementById(p + 'ext-chg'), eLb = document.getElementById(p + 'ext-label');
-                if (numPrice > 0) {
-                    if (ePx) { ePx.textContent = numPrice.toFixed(2); ePx.className = 'ext-px ' + ecls; }
-                    if (eDf) { eDf.textContent = fmtSigned(extAmt, 2); eDf.className = 'ext-diff ' + ecls; }
-                    if (eCg) { eCg.textContent = '(' + fmtSigned(extPct, 2) + '%)'; eCg.className = 'ext-chg ' + ecls; }
-                    if (eLb) eLb.textContent = phase.icon + ' ' + phase.label + ' · ' + clock;
-                } else {
-                    // 실시간 값이 아직 없음 → 지난 값 대신 연결 중 표시
-                    if (ePx) { ePx.textContent = '⋯'; ePx.className = 'ext-px neu'; }
-                    if (eDf) eDf.textContent = '';
-                    if (eCg) eCg.textContent = '';
-                    if (eLb) eLb.textContent = phase.icon + ' ' + phase.label + ' · 실시간 연결 중';
-                }
-                if (extEl) extEl.style.display = '';
+                if (extLbl) extLbl.textContent = numPrice > 0 ? phase.icon + ' ' + phase.label + ' · ' + clock : phase.icon + ' ' + phase.label + ' · 실시간 연결 중';
             } else {
-                // ── 정규장 (또는 종가 정보 없음): 기존 1줄 ──
-                var cls = numRate > 0 ? 'up' : numRate < 0 ? 'dn' : 'neu';
-                if (pxEl) { pxEl.textContent = numPrice > 0 ? numPrice.toFixed(2) : '⋯ 연결 중'; pxEl.className = 'price-now ' + cls; }
-                if (dfEl) { dfEl.textContent = numPrice > 0 ? (numAmt > 0 ? '+' : '') + numAmt.toFixed(2) : ''; dfEl.className = 'price-diff ' + cls; }
-                if (cgEl) { cgEl.textContent = numPrice > 0 ? '(' + (numRate > 0 ? '+' : '') + numRate.toFixed(2) + '%)' : ''; cgEl.className = 'price-chg ' + cls; }
+                // ① 전일 종가  ② 정규장 현재가 (전일 대비)
+                var 전일 = rc && rc.regClose > 0 ? rc.regClose : (numPrice > 0 && numAmt ? numPrice - numAmt : 0);
+                칸(el('c1px'), el('c1df'), el('c1cg'), 전일, null, null);
+                if (l1) l1.textContent = (rc && rc.regDate ? 월일(rc.regDate) + ' ' : '전일 ') + '종가';
                 if (regLbl) regLbl.textContent = '';
-                if (extEl) extEl.style.display = 'none';
+                if (l2) l2.textContent = '정규장 현재가';
+                var 대비 = numPrice > 0 ? (전일 > 0 ? numPrice - 전일 : numAmt) : null;
+                var 비율 = numPrice > 0 ? (전일 > 0 ? (numPrice - 전일) / 전일 * 100 : numRate) : null;
+                칸(el('price'), el('diff'), el('chg'), numPrice, 대비, 비율);
+                if (extLbl) extLbl.textContent = numPrice > 0 ? '' : '실시간 연결 중';
             }
             // 정확한 값(확정 종가 또는 실시간 현재가)이 하나라도 표시되면 전체 로딩 화면을 바로 걷어냄
-            if (rc || numPrice > 0) { try { hideInitialLoading(); } catch (e) { } }
+            if ((rc && !정규장) || numPrice > 0) { try { hideInitialLoading(); } catch (e) { } }
 
-            // 거래량: 장외 시간에는 확정된 정규장 거래량(Worker 저장값) 표시 / 정규장에는 실시간 거래량
+            // ③ 거래량: 정규장 외에는 확정된 정규장 거래량(Worker 저장값) / 정규장에는 실시간 거래량
             if (volEl) {
-                if (rc && rc.regVolume > 0) {
-                    volEl.textContent = '거래량: ' + numberWithCommas(rc.regVolume);
+                if (!정규장 && rc && rc.regVolume > 0) {
+                    volEl.textContent = numberWithCommas(rc.regVolume);
                     volEl.title = '정규장 거래량 (' + (rc.regDate || '') + ')';
                 } else if (volume !== null && volume !== undefined && Number(String(volume).replace(/,/g, '')) > 0) {
-                    volEl.textContent = '거래량: ' + numberWithCommas(volume);
+                    volEl.textContent = numberWithCommas(volume);
                     volEl.title = '';
-                } else if (phase.type === 'REG' && numPrice === 0) {
-                    volEl.textContent = '거래량: ─';
+                } else if (정규장 && numPrice === 0) {
+                    volEl.textContent = '─';
                 }
             }
         }
