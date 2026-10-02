@@ -692,6 +692,44 @@
         .al-pop .al-row { display: flex; align-items: center; justify-content: space-between; height: 24px; font-size: 12px; }
         .al-pop .al-row .hit { color: #8b93a7; }
         .al-pop .al-row button { background: none; border: 0; color: #8b93a7; cursor: pointer; font-size: 13px; }
+        .al-pop .al-dirs { display: flex; gap: 6px; margin: 2px 0 4px; }
+        .al-pop .al-dirs button { flex: 1; font: inherit; font-size: 12px; font-weight: 700; background: #1a1d2b; color: #8b93a7; border: 1px solid #2f3446; border-radius: 6px; padding: 5px 6px; cursor: pointer; }
+        .al-pop .al-dirs button.sel.up { color: #ff6b6b; border-color: #ff6b6b; background: rgba(255, 107, 107, .12); }
+        .al-pop .al-dirs button.sel.dn { color: #4da3ff; border-color: #4da3ff; background: rgba(77, 163, 255, .12); }
+        .al-pop .al-hint { font-size: 11px; color: #8b93a7; min-height: 15px; margin-bottom: 4px; }
+        .al-pop .al-hint.wait { color: #f5c542; }
+        .al-pop .al-opt small { color: #6b7386; font-size: 10.5px; }
+        .al-pop .al-opt { flex-wrap: wrap; row-gap: 4px; }
+        .al-pop .al-keepn { color: #6b7386; font-size: 10.5px; white-space: nowrap; }
+        .al-pop #al-keep { flex: 0 0 auto; }
+        .al-pop .al-row { gap: 6px; }
+        .al-pop .al-row .al-rdir { font-weight: 700; font-size: 12px; padding: 0; white-space: nowrap; }
+        .al-pop .al-row .al-rdir.up { color: #ff6b6b; } .al-pop .al-row .al-rdir.dn { color: #4da3ff; }
+        .al-pop .al-row .al-rdir:hover { text-decoration: underline; }
+        .al-pop .al-row .al-rst { flex: 1; text-align: right; color: #9aa3b5; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .al-pop .al-row .al-rst.hit { color: #8b93a7; }
+        .al-ban .al-stop { font: inherit; font-size: 12.5px; font-weight: 800; margin-left: 8px; background: #f5c542; color: #1a1400; border: 0; border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+        .al-ban .al-cls { color: #c9b26a; font-weight: 400; margin-left: 6px; font-size: 12px; }
+        .al-ban .al-mute { display: block; color: #fda4af; font-weight: 400; font-size: 11.5px; }
+        /* 좁은 패널(모바일 등): 🔔 를 종목 선택 옆으로 */
+        .px-bell-h { display: none; }
+        @container (max-width: 420px) {
+            .px-bell-h { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; padding: 0 6px; font-size: 14px; }
+            .px-v .px-bell { display: none; }
+        }
+        /* 모바일 알람 창: 화면 맨 위 전체 폭 · 창 안 스크롤 · 뒤 어둡게 */
+        .al-dim { position: fixed; inset: 0; z-index: 9998; background: rgba(0, 0, 0, .55); }
+        .al-pop.mob { left: 6px; right: 6px; top: 6px; width: auto; overflow-y: auto; overscroll-behavior: contain; padding: 14px 12px; font-size: 13px; box-sizing: border-box; }
+        .al-pop.mob .al-x { font-size: 22px; width: 40px; height: 40px; top: 2px; right: 2px; }
+        .al-pop.mob input[type=number] { flex: 1; width: auto; min-width: 0; font-size: 16px; height: 40px; box-sizing: border-box; }
+        .al-pop.mob .al-add, .al-pop.mob .al-dirs button, .al-pop.mob #al-play { min-height: 38px; font-size: 13.5px; }
+        .al-pop.mob .al-q button { min-height: 36px; font-size: 12.5px; padding: 4px 9px; }
+        .al-pop.mob .al-snd select { min-height: 36px; font-size: 14px; }
+        .al-pop.mob .al-opt label { display: flex; align-items: center; gap: 4px; min-height: 32px; }
+        .al-pop.mob .al-opt input[type=checkbox] { width: 18px; height: 18px; }
+        .al-pop.mob .al-row { height: auto; min-height: 40px; }
+        .al-pop.mob .al-row button { min-height: 36px; min-width: 36px; font-size: 13px; }
+        .al-pop.mob .al-list { max-height: none; }
         .lvs-r { position: relative; }
         .lvs-bell { position: absolute; right: -2px; top: 1px; display: none; background: #1a1d2b; border: 1px solid #4a4020; border-radius: 4px; font-size: 10px; padding: 1px 3px; cursor: pointer; }
         .lvs-r:hover .lvs-bell { display: block; }
@@ -741,6 +779,8 @@
         .sg-sess-reg { color: #6ee7b7; border-color: rgba(62, 207, 142, .55); background: rgba(62, 207, 142, .12); }
         .sg-sess-off { color: #aab2c3; border-color: #3a4153; background: rgba(93, 101, 120, .15); }
         .sg-ico { width: 18px; height: 18px; flex-shrink: 0; }
+        .sg-chg { font-size: 11px; color: #7d8596; text-align: center; margin: 2px 0 6px; min-height: 14px; }
+        .sg-chg b { color: #aab2c3; font-weight: 600; }
         .sg-reason { font-size: 16px; font-weight: 600; line-height: 1.45; height: 2.9em; overflow: hidden;
                      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
         /* 상황 박스: 가격 / 판단 / 목표 3줄 고정 (패널끼리 높이·줄 위치 동일) */
@@ -1441,7 +1481,8 @@
         @media screen and (max-width: 900px) {
             /* 좁은 화면 상단 시황: 시간대·공포탐욕지수 한 줄 → 2칸 × 5줄 */
             .mk-bar { flex-direction: column; gap: 6px; }
-            .mk-left { width: auto; flex-direction: row; justify-content: space-between; border-right: none; border-bottom: 1px solid #1d2230; padding: 0 2px 6px; }
+            .mk-left { width: auto; flex-direction: row; flex-wrap: wrap; justify-content: center; column-gap: 10px; row-gap: 6px; border-right: none; border-bottom: 1px solid #1d2230; padding: 0 2px 6px; }
+            .mk-left > * { flex-shrink: 0; }
             .mk-grid { width: 100%; max-width: 720px; margin: 0 auto; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; grid-template-rows: none; grid-auto-rows: auto; grid-auto-flow: row; column-gap: 10px; row-gap: 6px; }
             /* 칸 안 3줄: ① 이름  ② 가격·등락률(·VIX 단계)  ③ 미니차트 (칸 전체 폭) */
             .mk-cell { flex-direction: column; align-items: stretch; gap: 3px; padding: 6px 8px 5px !important; }
@@ -2218,6 +2259,34 @@
             return { 값: 폭.reduce(function (a, x) { return a + x; }, 0) / 폭.length, 출처: '(최근 체결)' };
         }
 
+        // ── 결론 안정화 설정 ──
+        var 판단_확인ms = 20000, 판단_최소유지ms = 60000, 판단_즉시확인ms = 2000, 판단_유지손익비 = 1.0;
+        // 최근 ms 동안 받은 가격의 중간값 (순간 체결 몇 번에 흔들리지 않게)
+        function 판단_중간값(s, ms) {
+            var 기준 = Date.now() - ms, a = [];
+            for (var i = s.ticks.length - 1; i >= 0 && s.ticks[i].t >= 기준; i--) a.push(s.ticks[i].p);
+            if (!a.length) return 0;
+            a.sort(function (x, y) { return x - y; });
+            var k = a.length >> 1; return a.length % 2 ? a[k] : (a[k - 1] + a[k]) / 2;
+        }
+        // 유지 시간과 상관없이 바로 다시 판정할 이유 (없으면 '')
+        function 판단_즉시사유(s, jd, price, bias, lvList, 변동, 거래량돌파) {
+            if (!jd || !(price > 0)) return '';
+            var 폭 = Math.max(0.15, 변동 && 변동.값 > 0 ? 변동.값 : 0);
+            if (jd.기준가 > 0 && Math.abs(price - jd.기준가) / jd.기준가 * 100 >= 폭)
+                return '가격 ' + fmtPct((price - jd.기준가) / jd.기준가 * 100) + ' 이동 (기준 ±' + 폭.toFixed(2) + '%)';
+            var 전 = s.직전판정가;
+            if (전 > 0) {
+                var 선 = [];
+                if (jd.계획) 선.push(['진입가', jd.계획.entry], ['손절가', jd.계획.stop], ['목표가', jd.계획.target]);
+                (lvList || []).forEach(function (l) { if (l.k === 'S1' || l.k === 'R1') 선.push([l.n, l.v]); });
+                for (var i = 0; i < 선.length; i++) { var v = 선[i][1]; if (v > 0 && (전 - v) * (price - v) < 0) return 선[i][0] + ' $' + v.toFixed(2) + (price > v ? ' 돌파' : ' 이탈'); }
+            }
+            if (jd.bias != null && Math.abs(bias - jd.bias) >= 2) return '방향 점수 ' + (jd.bias > 0 ? '+' : '') + jd.bias + ' → ' + (bias > 0 ? '+' : '') + bias;
+            if (거래량돌파) return '거래량 실린 돌파·이탈';
+            return '';
+        }
+
         // ── Worker /day (야후 1분봉) 로 윈폼 없이 쓰는 값 ──
         //   정규장 중 오늘 데이터면: 정규장 VWAP(1분봉 기준) / 3·10분 흐름(체결 기록이 아직 짧을 때) / 거래량 배수
         function 일_오늘(종목) {
@@ -2297,8 +2366,15 @@
             var 기준3분 = 변동 ? Math.max(0.15, 변동.값 * 0.5) : 0.15, 기준10분 = 변동 ? Math.max(0.3, 변동.값) : 0.3;
             if (마감) { 기준3분 = 기준10분; 기준10분 = 변동 ? Math.max(0.5, 변동.값 * 2) : 0.5; }   // 마감 30분 = 평균 폭 × 1, 당일 = 평균 폭 × 2 (최소 0.5%)
             var 점수_VWAP = (s.extVwap > 0 || 일VWAP > 0 || 마감) ? (vwDist > 0.1 ? 1 : vwDist < -0.1 ? -1 : 0) : 0;
-            var 점수_3분 = m3 == null ? 0 : m3 > 기준3분 ? 1 : m3 < -기준3분 ? -1 : 0;
-            var 점수_10분 = m10 == null ? 0 : m10 > 기준10분 ? 1 : m10 < -기준10분 ? -1 : 0;
+            // 경계선 여유: 한 번 ±1 이 되면 기준의 60% 아래로 내려가야 0 으로 돌아감 (기준선 근처에서 0 ↔ ±1 반복 방지)
+            function 여유점수(값, 기준, 이전) {
+                if (값 == null) return 0;
+                if (이전 === 1 && 값 > 기준 * 0.6) return 1;
+                if (이전 === -1 && 값 < -기준 * 0.6) return -1;
+                return 값 > 기준 ? 1 : 값 < -기준 ? -1 : 0;
+            }
+            var 점수_3분 = 여유점수(m3, 기준3분, s.이전3분), 점수_10분 = 여유점수(m10, 기준10분, s.이전10분);
+            s.이전3분 = 점수_3분; s.이전10분 = 점수_10분;
             var 점수_옵션 = score >= 6 ? 1 : score <= 4 ? -1 : 0;
             var bias = 점수_VWAP + 점수_3분 + 점수_10분 + 점수_옵션;
             // ±2 이상(추세)은 가격 항목(VWAP·3분·10분) 중 하나 이상이 같은 방향일 때만 인정 → 옵션만으로는 추세가 되지 않음
@@ -2516,9 +2592,15 @@
 
             if (plan) { plan.레벨 = plan.레벨 || planLevel || '기타'; plan.레벨ID = plan.레벨ID || planLevelID || plan.레벨; plan.방식 = plan.방식 || '기타'; }
 
-            // ── ① 결론: 매수 고려 / 매도 고려 / 관망 (3초 이상 유지된 판단만 반영, 바뀐 뒤 최소 10초 유지) ──
+            // ── ① 결론: 매수 / 매도 / 관망 ──
+            //   평소: 새 판단이 20초 이어져야 바꾸고, 바꾼 뒤 최소 60초 유지 (몇 센트 흔들림에 결론이 바뀌지 않게)
+            //   즉시 다시 판정(2초 확인): 마지막 판정 가격에서 평소 3분 변동폭(최소 0.15%) 이상 움직임 / 진입·손절·목표·1차 지지·저항을 넘음
+            //                           방향 점수가 2 이상 바뀜 / 거래량 실린 돌파·이탈
+            //   손익비: 1.2 이상이면 계획 성립, 이미 같은 방향 판단 중이면 1.0 아래로 떨어질 때까지 유지
             var now = Date.now();
-            var okPlan = plan && plan.rr >= 가상_최소손익비;
+            var 기존판단 = s.판단;
+            var 같은방향유지 = 기존판단 && plan && ((기존판단.상태 === '매수' && plan.dir === 'long') || (기존판단.상태 === '매도' && plan.dir === 'short'));
+            var okPlan = plan && (plan.rr >= 가상_최소손익비 || (같은방향유지 && plan.rr >= 판단_유지손익비));
             var cand = okPlan ? (plan.dir === 'long' ? '매수' : '매도') : '관망';
             var candReason = okPlan ? paperPlain(line3)
                            : plan ? '손익비 부족 (1:' + plan.rr.toFixed(1) + ', 기준 1:' + 가상_최소손익비.toFixed(1) + ') — 진입하지 않음'
@@ -2539,17 +2621,22 @@
 
             var jd = s.판단;
             // 처음(페이지 로드·종목 변경)에는 관망에서 시작 → 첫 판단도 3초 유지 확인을 거침 (최소 유지 10초는 이미 지난 것으로 둠)
-            if (!jd) { jd = s.판단 = { 상태: '관망', 시작: now - 10000, 후보: cand, 후보시작: now, 이유: '판단 확인 중', 계획: null, 점수: 지금점수 }; }
+            if (!jd) { jd = s.판단 = { 상태: '관망', 시작: now - 판단_최소유지ms, 후보: cand, 후보시작: now, 이유: '판단 확인 중', 계획: null, 점수: 지금점수, 기준가: price, bias: bias, 첫판단: true, 생성: now }; }
             if (cand !== jd.후보) { jd.후보 = cand; jd.후보시작 = now; }
-            if (jd.상태 !== cand && now - jd.후보시작 >= 3000 && now - jd.시작 >= 10000) {
-                jd.상태 = cand; jd.시작 = now; jd.이유 = candReason; jd.계획 = plan; jd.점수 = 지금점수;
+            var 즉시 = 판단_즉시사유(s, jd, price, bias, lvList, 변동, volStrong && fresh && ev && ev.t > jd.시작 && (ev.dir === 'up' || ev.dir === 'down'));
+            s.직전판정가 = price;
+            var 확인ms = 즉시 ? 판단_즉시확인ms : (jd.첫판단 && now - jd.생성 < 30000) ? 3000 : 판단_확인ms;   // 화면을 연 직후(30초 안) 첫 판단은 3초 확인
+            if (jd.상태 !== cand && now - jd.후보시작 >= 확인ms && (즉시 || now - jd.시작 >= 판단_최소유지ms)) {
+                var 이전상태 = jd.상태;
+                jd.상태 = cand; jd.시작 = now; jd.이유 = candReason; jd.계획 = plan; jd.점수 = 지금점수; jd.기준가 = price; jd.bias = bias; jd.첫판단 = false;
+                jd.변경 = { 시각: now, 전: 이전상태, 후: cand, 사유: 즉시 || (cand === '관망' ? (plan ? '손익비 ' + plan.rr.toFixed(1) + ' (유지 기준 ' + 판단_유지손익비.toFixed(1) + ' 미만)' : '진입 계획 없음') : '손익비 1:' + plan.rr.toFixed(1) + ' 충족') + (즉시 ? '' : ' · ' + Math.round(확인ms / 1000) + '초 유지 확인') };
                 판단전환(s, jd, price);
             } else if (jd.상태 === cand) {
                 jd.이유 = candReason; jd.계획 = plan; jd.점수 = 지금점수;   // 같은 판단이면 이유·계획·점수는 최신값으로
             }
             // ★ 가상매매: 카드에 표시된(안정화된) 결론이 지금 계획과 같을 때만 대기주문으로 반영
             //   결론과 다른 후보가 3초 미만으로 잠깐 나온 경우('유지')는 기존 대기주문을 그대로 둠 (깜빡임으로 주문이 지워졌다 다시 걸리는 것 방지)
-            var 가상계획 = jd.상태 === '관망' ? null : cand === jd.상태 ? plan : (now - jd.후보시작 < 3000 ? '유지' : null);
+            var 가상계획 = jd.상태 === '관망' ? null : cand === jd.상태 ? plan : (now - jd.후보시작 < 확인ms ? '유지' : null);
             가상_계획반영(s.ticker, 가상계획, {
                 가격: price, VWAP: vwap, 옵션점수: score, 시세출처: s.src,
                 신호: paperPlain(line1) + ' / ' + paperPlain(line3),
@@ -2562,12 +2649,13 @@
                 (눌림결과.plan ? ' · 진입 ' + 눌림결과.plan.entry.toFixed(2) + ' 손절 ' + 눌림결과.plan.stop.toFixed(2) + ' 목표 ' + 눌림결과.plan.target.toFixed(2) + ' 1:' + 눌림결과.plan.rr.toFixed(1) : ''));
 
             // 결론 3단계: 관망 / 대기(계획은 있고 진입가까지 거리가 남음) / 진입 구간(진입가 0.1% 이내)
-            //   깜빡임 방지: 진입 구간이 된 뒤에는 0.15% 를 벗어나야 대기로 돌아감 (가상매매 주문·체결과는 무관한 표시)
+            //   깜빡임 방지: 최근 12초 가격의 중간값으로 판정, 진입 구간이 된 뒤에는 0.25% 를 벗어나야 대기로 돌아감 (가상매매 주문·체결과는 무관한 표시)
             var 진입거리 = null, 진입구간 = false;
             if ((jd.상태 === '매수' || jd.상태 === '매도') && jd.계획 && price > 0) {
-                진입거리 = (jd.계획.entry - price) / price * 100;
+                var 판정가 = 판단_중간값(s, 12000) || price;
+                진입거리 = (jd.계획.entry - 판정가) / 판정가 * 100;
                 var 이전구간 = s.진입구간키 === jd.상태 + jd.계획.entry.toFixed(4);
-                진입구간 = Math.abs(진입거리) <= (이전구간 ? 0.15 : 0.1);
+                진입구간 = Math.abs(진입거리) <= (이전구간 ? 0.25 : 0.1);
                 s.진입구간키 = 진입구간 ? jd.상태 + jd.계획.entry.toFixed(4) : null;
             } else s.진입구간키 = null;
             var 결론 = jd.상태 === '매수' ? { 글: 진입구간 ? '매수(롱) 진입 구간' : '매수(롱) 대기', 색: '#ff5d5d', 모양: '▲' }
@@ -2601,7 +2689,7 @@
                 '<line x1="70" y1="70" x2="' + 바늘x.toFixed(1) + '" y2="' + 바늘y.toFixed(1) + '" stroke="#e7e9f0" stroke-width="3.5" stroke-linecap="round"></line>' +
                 '<circle cx="70" cy="70" r="5.5" fill="#e7e9f0"></circle></svg>' +
                 '<div class="sg-glabel">' + 점수이름 + ' <span class="sg-mono">' + (점수 > 0 ? '+' : '') + 점수 + '</span></div>' +
-                '<div class="sg-gsub">방향 점수 (−4 ~ +4)</div>';
+                '<div class="sg-gsub">단기 방향 · 최근 10분 (−4 ~ +4)</div>';
             var 상태아이콘 = 결론.모양 === '관망'
                 ? '<svg viewBox="0 0 16 16" class="sg-ico"><rect x="3.5" y="3" width="3" height="10" rx="1" fill="currentColor"></rect><rect x="9.5" y="3" width="3" height="10" rx="1" fill="currentColor"></rect></svg>'
                 : 결론.모양 === '▲' ? '<svg viewBox="0 0 16 16" class="sg-ico"><path d="M8 3 L13.5 12 H2.5 Z" fill="currentColor"></path></svg>'
@@ -2759,6 +2847,15 @@
             var 이유글 = String(jd.이유 || '');
             var 이유HTML = 이유글.replace(/((\d+번 (지지 반등|막힌 저항))|[12]차(지지|저항)|MaxPain|VWAP|박스(상단|하단)) \$[\d.]+/, function (m) { return '<span class="sg-lv">' + m + '</span>'; });
             put('reason', 이유HTML, undefined, 이유글);
+            // 마지막 결론 변경: 시각 · 전 → 후 · 이유
+            var 변경칸 = document.getElementById('p' + panelIdx + '-jchg');
+            if (변경칸) {
+                var 변 = jd.변경, 변글 = '';
+                if (변) { var 변et = new Date(new Date(변.시각).toLocaleString('en-US', { timeZone: 'America/New_York' }));
+                    변글 = '↻ ' + ('0' + 변et.getHours()).slice(-2) + ':' + ('0' + 변et.getMinutes()).slice(-2) + ':' + ('0' + 변et.getSeconds()).slice(-2) + ' ET · <b>' + 변.전 + ' → ' + 변.후 + '</b> · ' + 변.사유; }
+                else 변글 = '결론 유지 기준: 20초 확인 · 최소 60초 유지 (큰 가격 변화·레벨 돌파 시 즉시)';
+                if (변경칸._html !== 변글) { 변경칸.innerHTML = 변글; 변경칸._html = 변글; }
+            }
 
             // 상황 박스: 가격 / 판단 / 목표
             function 색(v) { return v > 0 ? 'up' : v < 0 ? 'dn' : 'dim'; }
@@ -3171,6 +3268,7 @@
                 + '<div class="ticker-select-wrap">'
                 + '<span class="ws-dot dead" id="p' + i + '-status-dot"></span>'
                 + '<select class="ticker-select" id="ticker-select-' + i + '" onchange="onTickerSelectChange(' + i + ',this.value)">' + opts + '</select>'
+                + '<button type="button" class="px-bell px-bell-h" id="p' + i + '-bellh" data-i="' + i + '" title="가격 알람">🔔</button>'
                 + '</div>'
                 + '<div style="position:absolute; right:0; top:50%; transform:translateY(-50%); display:flex; align-items:center; z-index:5;">'
                 + '<span id="p' + i + '-market-badge" style="display:none; background-color:rgba(231,76,60,0.15); color:#e74c3c; border:1px solid rgba(231,76,60,0.4); font-size:10px; font-weight:bold; padding:2px 6px; border-radius:4px;">장마감</span>'
@@ -3185,7 +3283,7 @@
                 // 2줄: 현재가 (정규장 외 = 시간외 현재가·종가 대비 / 정규장 = 정규장 현재가·전일 대비)
                 + '<span class="px-l" id="p' + i + '-l2">현재가</span><span class="px-v">'
                 + '<span class="price-now" id="p' + i + '-price">─</span><span class="price-diff" id="p' + i + '-diff"></span><span class="price-chg" id="p' + i + '-chg"></span>'
-                + '<button type="button" class="px-bell" id="p' + i + '-bell" title="가격 알람">🔔</button>'
+                + '<button type="button" class="px-bell" id="p' + i + '-bell" data-i="' + i + '" title="가격 알람">🔔</button>'
                 + '</span>'
                 // 2줄 보조: 세션·시각 (작은 글씨, 값 열 아래 별도 줄 → 좁은 화면에서도 3줄이 각각 한 줄 유지)
                 + '<span class="px-note" id="p' + i + '-ext-label"></span>'
@@ -3203,12 +3301,13 @@
                 + '<div class="sg-state" id="p' + i + '-sigtitle"><span>관망 중</span></div>'
                 + '<div class="sg-reason" id="p' + i + '-reason">데이터 로딩 중</div>'
                 + '</div></div>'
+                + '<div class="sg-chg" id="p' + i + '-jchg"></div>'
                 + '<div class="sg-situ" id="p' + i + '-situ">' + '<b>가격</b><span>─</span><b>판단</b><span>─</span><b>목표</b><span>─</span>' + '</div>'
-                + '<div class="sg-score" id="p' + i + '-score"></div>'
                 + '<div id="p' + i + '-band"><div class="sg-band cand">방향 없음</div></div>'
                 + '<div class="sg-plan" id="p' + i + '-plan"></div>'
                 + '<div class="sg-pnls" id="p' + i + '-pnl"></div>'
                 + '<div class="sg-bars" id="p' + i + '-ind"></div>'
+                + '<div class="sg-score" id="p' + i + '-score"></div>'     // 진입 점수: 계획·지표 아래, 최근 이벤트 위
                 + '<div class="sg-foot">'
                 + '<div class="sg-fl" id="p' + i + '-recent"><span class="sg-dim">최근 이벤트 없음</span></div>'
                 + (가상_기록가능 ? '<div class="sg-fl sg-paper" id="p' + i + '-paper">─</div>' : '')
@@ -3327,7 +3426,7 @@
         function resetPanelUI(panelIdx, ticker) {
             var p = 'p' + panelIdx + '-';
             try { 레벨요약표시(p, { ticker: ticker }); } catch (e) { }   // 종목 바꾸면 요약은 빈 틀로
-            setTimeout(function () { try { 알람_화면갱신(); var 띠 = document.getElementById(p + 'alban'); if (띠) 띠.className = 'al-ban'; } catch (e) { } }, 0);
+            setTimeout(function () { try { 알람_화면갱신(); 알람_띠닫기(panelIdx); } catch (e) { } }, 0);
             ['price', 'diff', 'chg', 'vol', 'c1px', 'c1df', 'c1cg', 'reg-label', 'ext-label'].forEach(function (f) { var el = document.getElementById(p + f); if (el) el.textContent = (f === 'price' || f === 'vol' || f === 'c1px') ? '─' : ''; });
             var 초기값 = { 'gauge': '', 'sigtitle': '<span>관망 중</span>', 'reason': '데이터 로딩 중', 'situ': '<b>가격</b><span>─</span><b>판단</b><span>─</span><b>목표</b><span>─</span>', 'score': '', 'band': '<div class="sg-band cand">방향 없음</div>',
                           'plan': '', 'pnl': '', 'ind': '', 'recent': '<span class="sg-dim">최근 이벤트 없음</span>', 'paper': '─', 'state': '─' };
@@ -5369,9 +5468,10 @@
 
         // ════════════════════════════════════════════════════════
         // ★ 가격 알람 (패널 "정규장 현재가" 옆 🔔)
-        //   - 등록 시 지금가보다 높으면 "이상 도달", 낮으면 "이하 도달" 로 방향 자동
+        //   - 방향: ▲ 상향 돌파(아래→위로 지나갈 때) / ▼ 하향 이탈(위→아래로 지나갈 때). 기본은 지금가 기준 자동, 창·목록에서 바꿀 수 있음
         //   - 체결 필터를 통과한 실시간 가격으로만 판정 (튄 시세에 울리지 않음)
-        //   - 기본 한 번 울리고 꺼짐 / 반복: 반대쪽으로 0.1% 이상 되돌아간 뒤 다시 도달하면 다시 울림 (최소 60초 간격)
+        //   - 기본 한 번 울리고 꺼짐 / 반복: 0.1% 이상 되돌아간 뒤 다시 지나가면 다시 울림 (최소 60초 간격)
+        //   - 계속 울림(끄기·1·3·5·10분): 띠의 [해제] 를 누르거나 시간이 끝날 때까지 4초마다 다시 울림
         //   - 이 브라우저에 저장 (localStorage). 대시보드가 열려 있을 때만 동작
         //   - 윈폼 대시보드 창 안에서는 윈폼 알림음 + "최근 알림" 줄로도 전달
         // ════════════════════════════════════════════════════════
@@ -5382,14 +5482,35 @@
         function 알람_현재가(종목) { var i = panelTickers.indexOf(종목), d = i >= 0 ? panelDataStore[i] : null; if (d && d.price > 0) return d.price; var pk = pickQuote(종목); return pk && pk.q && pk.q.price > 0 ? pk.q.price : 0; }
         function 알람_시각() { var e = etNowParts().et; return ('0' + e.getHours()).slice(-2) + ':' + ('0' + e.getMinutes()).slice(-2) + ':' + ('0' + e.getSeconds()).slice(-2); }
 
+        // 방향: '상향' = 아래에서 위로 지나갈 때(돌파) / '하향' = 위에서 아래로 지나갈 때(이탈)
+        //   무장 = 가격이 "지나가기 전 쪽"에 있음. 이미 반대쪽이면 한 번 되돌아올 때까지 기다림
+        //   (이전 저장분 '이상'/'이하' 는 '상향'/'하향' 으로 바꿔 읽음)
+        var 알람_계속선택 = [[0, '끄기'], [1, '1분'], [3, '3분'], [5, '5분'], [10, '10분']];
+        function 알람_정리(a) {
+            if (a.방향 === '이상') a.방향 = '상향'; else if (a.방향 === '이하') a.방향 = '하향';
+            if (a.방향 !== '상향' && a.방향 !== '하향') a.방향 = '상향';
+            if (a.무장 == null) a.무장 = a.재무장 !== false;
+            delete a.재무장;
+            a.계속분 = Number(a.계속분) || 0;
+            return a;
+        }
+        Object.keys(알람_모음).forEach(function (k) { if (Array.isArray(알람_모음[k])) 알람_모음[k].forEach(알람_정리); else delete 알람_모음[k]; });
+        // 가격이 "지나가기 전 쪽"에 있는가 (울린 뒤 다시 준비할 때는 0.1% 이상 되돌아가야 함)
+        function 알람_준비쪽(a, 가격, 되돌림) {
+            var 폭 = 되돌림 ? a.가격 * 0.001 : 0;
+            return a.방향 === '상향' ? 가격 < a.가격 - 폭 : 가격 > a.가격 + 폭;
+        }
+        function 알람_방향이름(방향) { return 방향 === '상향' ? '▲ 상향 돌파' : '▼ 하향 이탈'; }
+
         function 알람_추가(종목, 가격, 옵션) {
             가격 = Math.round(Number(가격) * 100) / 100;
             var 지금 = 알람_현재가(종목);
             if (!(가격 > 0) || !(지금 > 0)) { alert('가격 또는 현재가가 없어 알람을 등록할 수 없습니다.'); return false; }
-            if (Math.abs(가격 - 지금) < 0.005) { alert('현재가와 같은 가격입니다. 위나 아래 가격을 입력하세요.'); return false; }
             옵션 = 옵션 || {};
-            var a = { id: Date.now() + '' + Math.floor(Math.random() * 1000), 가격: 가격, 방향: 가격 > 지금 ? '이상' : '이하', 반복: !!옵션.반복, 정규장만: !!옵션.정규장만,
-                      상태: '대기', 등록가: 지금, 도달: '', 마지막울림: 0, 재무장: true };
+            var 방향 = 옵션.방향 === '상향' || 옵션.방향 === '하향' ? 옵션.방향 : (가격 >= 지금 ? '상향' : '하향');
+            var a = { id: Date.now() + '' + Math.floor(Math.random() * 1000), 가격: 가격, 방향: 방향, 반복: !!옵션.반복, 정규장만: !!옵션.정규장만,
+                      계속분: Number(옵션.계속분) || 0, 상태: '대기', 등록가: 지금, 도달: '', 마지막울림: 0, 무장: false };
+            a.무장 = 알람_준비쪽(a, 지금, false);
             (알람_모음[종목] = 알람_모음[종목] || []).push(a);
             알람_저장(); 알람_화면갱신(종목);
             try { if (window.Notification && Notification.permission === 'default') Notification.requestPermission(); } catch (e) { }
@@ -5400,23 +5521,32 @@
             if (!알람_모음[종목].length) delete 알람_모음[종목];
             알람_저장(); 알람_화면갱신(종목);
         }
+        // 목록에서 방향 바꾸기 → 다시 대기 상태로 (지금 가격 기준으로 준비 여부 다시 판단)
+        function 알람_방향바꾸기(종목, id) {
+            var a = 알람_목록(종목).filter(function (x) { return x.id === id; })[0]; if (!a) return;
+            a.방향 = a.방향 === '상향' ? '하향' : '상향';
+            a.상태 = '대기'; a.마지막울림 = 0; a.도달 = '';
+            var 지금 = 알람_현재가(종목); a.무장 = 지금 > 0 && 알람_준비쪽(a, 지금, false);
+            알람_저장(); 알람_화면갱신(종목);
+        }
 
-        // 체결 가격이 들어올 때마다 확인
+        // 체결 가격이 들어올 때마다 확인 (지나가는 순간에만 울림)
         function 알람_확인(종목, 가격) {
             var 목록 = 알람_목록(종목); if (!목록.length || !(가격 > 0)) return;
             var 정규 = marketPhase().type === 'REG', 바뀜 = false, 지금 = Date.now();
             목록.forEach(function (a) {
                 if (a.상태 !== '대기') return;
                 if (a.정규장만 && !정규) return;
-                var 도달 = a.방향 === '이상' ? 가격 >= a.가격 : 가격 <= a.가격;
-                if (!도달) {   // 반복 알람: 반대쪽으로 0.1% 이상 되돌아가면 다시 울릴 준비
-                    if (!a.재무장 && Math.abs(가격 - a.가격) / a.가격 >= 0.001) { a.재무장 = true; 바뀜 = true; }
+                if (!a.무장) {   // 지나가기 전 쪽으로 돌아오면 준비 (울린 적 있으면 0.1% 이상 되돌아가야 함)
+                    if (알람_준비쪽(a, 가격, !!a.마지막울림)) { a.무장 = true; 바뀜 = true; }
                     return;
                 }
-                if (!a.재무장 || 지금 - (a.마지막울림 || 0) < 60000) return;
-                a.마지막울림 = 지금; a.재무장 = false; a.도달 = 알람_시각();
+                var 지남 = a.방향 === '상향' ? 가격 >= a.가격 : 가격 <= a.가격;
+                if (!지남) return;
+                a.무장 = false; 바뀜 = true;
+                if (지금 - (a.마지막울림 || 0) < 60000) return;   // 반복 울림 최소 간격 60초 (그 안에 지나간 것은 무시)
+                a.마지막울림 = 지금; a.도달 = 알람_시각();
                 if (!a.반복) a.상태 = '도달';
-                바뀜 = true;
                 알람_울림(종목, a, 가격);
             });
             if (바뀜) { 알람_저장(); 알람_화면갱신(종목); }
@@ -5475,88 +5605,173 @@
             return c.state !== 'suspended';
         }
 
+        // ── 계속 울림: [해제] 를 누르거나 정한 시간이 지날 때까지 4초마다 다시 울림 (패널별 1개) ──
+        var 알람_계속중 = {};
+        function 알람_계속시작(i, 분) {
+            알람_계속멈춤(i, true);
+            var 상 = { 끝: Date.now() + 분 * 60000, 다음: Date.now() + 4000 };
+            상.타이머 = setInterval(function () { 알람_계속틱(i); }, 1000);
+            알람_계속중[i] = 상;
+        }
+        function 알람_계속틱(i) {
+            var 상 = 알람_계속중[i]; if (!상) return;
+            var t = Date.now();
+            if (t >= 상.끝) { 알람_계속멈춤(i); return; }
+            if (t >= 상.다음) { 알람_소리(); 상.다음 = t + 4000; }
+            알람_띠갱신(i);
+        }
+        function 알람_계속멈춤(i, 조용히) {
+            var 상 = 알람_계속중[i];
+            if (상) { clearInterval(상.타이머); delete 알람_계속중[i]; }
+            if (!조용히) 알람_띠갱신(i);
+        }
+        function 알람_띠닫기(i) {
+            알람_계속멈춤(i, true);
+            var 띠 = document.getElementById('p' + i + '-alban'); if (띠) 띠.className = 'al-ban';
+        }
+        // 띠 글 (계속 울림 중이면 [해제 · 남은 시간] 단추)
+        function 알람_띠갱신(i) {
+            var 띠 = document.getElementById('p' + i + '-alban'); if (!띠 || !띠._글) return;
+            var 상 = 알람_계속중[i], 막힘 = !알람_소리문맥 || 알람_소리문맥.state === 'suspended';
+            var 남 = 상 ? Math.max(0, Math.ceil((상.끝 - Date.now()) / 1000)) : 0;
+            var 꼬리 = 상 ? '<button type="button" class="al-stop">🔕 해제 · ' + Math.floor(남 / 60) + ':' + ('0' + 남 % 60).slice(-2) + '</button>'
+                          : '<span class="al-cls">· 누르면 닫기</span>';
+            var 글 = '<span>' + 띠._글.replace(/</g, '&lt;') + '</span>' + (막힘 && 알람_소리설정.종류 !== '끔' ? '<span class="al-mute">🔇 화면을 한 번 누르면 소리가 켜집니다</span>' : '') + 꼬리;
+            if (띠._마지막 !== 글) { 띠.innerHTML = 글; 띠._마지막 = 글; }
+        }
+
         function 알람_울림(종목, a, 가격) {
-            var 글 = '🔔 ' + 종목 + ' ' + a.가격.toFixed(2) + ' ' + a.방향 + ' 도달 · 현재 ' + 가격.toFixed(2) + ' (' + a.도달 + ' ET)';
+            var 글 = '🔔 ' + 종목 + ' ' + a.가격.toFixed(2) + ' ' + 알람_방향이름(a.방향) + ' · 현재 ' + 가격.toFixed(2) + ' (' + a.도달 + ' ET)';
             var i = panelTickers.indexOf(종목), 띠 = i >= 0 ? document.getElementById('p' + i + '-alban') : null;
-            var 소리됨 = 알람_소리();
+            알람_소리();
             if (띠) {
-                띠.textContent = 글 + (소리됨 ? '' : '  🔇 화면을 한 번 클릭하면 소리가 켜집니다') + '  · 클릭하면 닫기'; 띠.className = 'al-ban show';
-                void 띠.offsetWidth; 띠.className = 'al-ban show flash';
-                띠.onclick = function () { 띠.className = 'al-ban'; };
-                clearTimeout(띠._닫기); 띠._닫기 = setTimeout(function () { 띠.className = 'al-ban'; }, 60000);
+                띠._글 = 글;
+                if (a.계속분 > 0) 알람_계속시작(i, a.계속분); else 알람_계속멈춤(i, true);
+                알람_띠갱신(i);
+                띠.className = 'al-ban show'; void 띠.offsetWidth; 띠.className = 'al-ban show flash';
+                띠.onclick = function () { 알람_띠닫기(i); };   // 띠 어디를 눌러도 해제 + 닫기
+                clearTimeout(띠._닫기); 띠._닫기 = setTimeout(function () { 알람_띠닫기(i); }, (a.계속분 || 0) * 60000 + 60000);
             }
-            try { if (document.hidden && window.Notification && Notification.permission === 'granted') new Notification('🔔 ' + 종목 + ' 가격 알람', { body: a.가격.toFixed(2) + ' ' + a.방향 + ' 도달 · 현재 ' + 가격.toFixed(2) }); } catch (e) { }
-            if (가상_기록가능) 가상매매.전송대기열.push({ 종류: '알람', 알람: { 종목: 종목, 가격: a.가격, 방향: a.방향, 현재가: 가격, 시각: a.도달, 반복: a.반복, 웹소리: 알람_소리설정.종류 !== '끔' } });
+            try { if (document.hidden && window.Notification && Notification.permission === 'granted') new Notification('🔔 ' + 종목 + ' 가격 알람', { body: a.가격.toFixed(2) + ' ' + 알람_방향이름(a.방향) + ' · 현재 ' + 가격.toFixed(2) }); } catch (e) { }
+            if (가상_기록가능) 가상매매.전송대기열.push({ 종류: '알람', 알람: { 종목: 종목, 가격: a.가격, 방향: a.방향 === '상향' ? '상향 돌파' : '하향 이탈', 현재가: 가격, 시각: a.도달, 반복: a.반복, 계속분: a.계속분 || 0, 웹소리: 알람_소리설정.종류 !== '끔' } });
             console.info('[가격 알람]', 글);
         }
 
-        // 🔔 버튼 숫자 · 막대 표시 갱신
+        // 🔔 버튼 숫자 · 막대 표시 갱신 (값 줄 🔔 + 좁은 패널용 머리 🔔)
         function 알람_화면갱신(종목) {
             [0, 1, 2].forEach(function (i) {
-                var t = panelTickers[i], b = document.getElementById('p' + i + '-bell'); if (!b) return;
+                var t = panelTickers[i];
                 var n = 알람_목록(t).filter(function (a) { return a.상태 === '대기'; }).length;
-                b.innerHTML = '🔔' + (n ? '<b>' + n + '</b>' : '');
-                b.classList.toggle('on', n > 0);
+                Array.prototype.forEach.call(document.querySelectorAll('.px-bell[data-i="' + i + '"]'), function (b) {
+                    b.innerHTML = '🔔' + (n ? '<b>' + n + '</b>' : '');
+                    b.classList.toggle('on', n > 0);
+                });
                 if (!종목 || t === 종목) { try { if (panelDataStore[i] && panelDataStore[i].price > 0) renderTimeline('p' + i + '-', panelDataStore[i]); } catch (e) { } }
             });
             var p = document.getElementById('al-pop'); if (p && (!종목 || p._종목 === 종목)) 알람_창그리기(p);
         }
 
-        function 알람_닫기() { var p = document.getElementById('al-pop'); if (p) p.remove(); }
+        function 알람_닫기() {
+            var p = document.getElementById('al-pop'); if (p) p.remove();
+            var d = document.getElementById('al-dim'); if (d) d.remove();
+        }
         function 알람_창그리기(창) {
-            var 종목 = 창._종목, 지금 = 알람_현재가(종목), 입력 = 창.querySelector('input[type=number]'), 값 = 입력 ? 입력.value : (지금 > 0 ? 지금.toFixed(2) : '');
+            var 종목 = 창._종목, 지금 = 알람_현재가(종목), 입력 = 창.querySelector('.al-price'), 값 = 입력 ? 입력.value : (지금 > 0 ? 지금.toFixed(2) : '');
             var 반복 = 창.querySelector('#al-rep'), 정규 = 창.querySelector('#al-reg');
             var 반복값 = 반복 ? 반복.checked : false, 정규값 = 정규 ? 정규.checked : false;
+            var 계속값 = Number(알람_소리설정.계속분) || 0;
             var i = panelTickers.indexOf(종목), st = RT[i] && RT[i].ticker === 종목 ? RT[i] : null, 세 = st && st.레벨세분;
             var 빠른 = [];
             if (세) { if (세.저항[0]) 빠른.push(['1차저항', 세.저항[0].v]); if (세.저항[1]) 빠른.push(['2차저항', 세.저항[1].v]); if (세.지지[0]) 빠른.push(['1차지지', 세.지지[0].v]); if (세.지지[1]) 빠른.push(['2차지지', 세.지지[1].v]); }
             var 목록 = 알람_목록(종목);
-            창.innerHTML = '<button class="al-x" title="닫기">×</button>' +
+            창.innerHTML = '<button type="button" class="al-x" title="닫기">×</button>' +
                 '<div class="al-h">🔔 ' + 종목 + ' 가격 알람 <span style="color:#8b93a7;font-weight:400">· 현재 ' + (지금 > 0 ? 지금.toFixed(2) : '─') + '</span></div>' +
-                '<div class="al-in">가격 <input type="number" step="0.01" value="' + 값 + '"><span class="al-dir"></span><button class="al-add">등록</button></div>' +
-                (빠른.length ? '<div class="al-q">' + 빠른.map(function (q) { return '<button data-v="' + q[1] + '">' + q[0] + ' ' + q[1].toFixed(2) + '</button>'; }).join('') + '</div>' : '') +
-                '<div class="al-opt"><label><input type="checkbox" id="al-rep"' + (반복값 ? ' checked' : '') + '> 반복 울림</label><label><input type="checkbox" id="al-reg"' + (정규값 ? ' checked' : '') + '> 정규장에만</label></div>' +
+                '<div class="al-in">가격 <input type="number" class="al-price" inputmode="decimal" step="0.01" value="' + 값 + '"><button type="button" class="al-add">등록</button></div>' +
+                '<div class="al-dirs"><button type="button" data-dir="상향">▲ 상향 돌파</button><button type="button" data-dir="하향">▼ 하향 이탈</button></div>' +
+                '<div class="al-hint"></div>' +
+                (빠른.length ? '<div class="al-q">' + 빠른.map(function (q) { return '<button type="button" data-v="' + q[1] + '">' + q[0] + ' ' + q[1].toFixed(2) + '</button>'; }).join('') + '</div>' : '') +
+                '<div class="al-opt"><label><input type="checkbox" id="al-rep"' + (반복값 ? ' checked' : '') + '> 반복 울림 <small>(되돌아갔다 다시 닿으면)</small></label>' +
+                '<label><input type="checkbox" id="al-reg"' + (정규값 ? ' checked' : '') + '> 정규장에만</label></div>' +
+                '<div class="al-snd">계속 울림 <select id="al-keep">' + 알람_계속선택.map(function (x) { return '<option value="' + x[0] + '"' + (x[0] === 계속값 ? ' selected' : '') + '>' + x[1] + '</option>'; }).join('') + '</select>' +
+                '<small class="al-keepn">[해제] 누를 때까지 4초마다</small></div>' +
                 '<div class="al-snd">알림음 <select id="al-snd">' + 알람_소리목록.map(function (x) { return '<option value="' + x[0] + '"' + (x[0] === 알람_소리설정.종류 ? ' selected' : '') + '>' + x[1] + '</option>'; }).join('') + '</select>' +
                 '<button type="button" id="al-play" title="미리 듣기">▶</button></div>' +
                 '<div class="al-snd">음량 <input type="range" id="al-vol" min="0" max="1" step="0.05" value="' + 알람_소리설정.음량 + '"><span id="al-volv">' + Math.round(알람_소리설정.음량 * 100) + '%</span></div>' +
                 '<div class="al-list">' + (목록.length ? 목록.slice().sort(function (a, b) { return b.가격 - a.가격; }).map(function (a) {
-                    return '<div class="al-row"><span style="color:' + (a.방향 === '이상' ? '#ff6b6b' : '#4da3ff') + '">' + (a.방향 === '이상' ? '▲ ' : '▼ ') + a.가격.toFixed(2) + ' ' + a.방향 + '</span>' +
-                        '<span class="' + (a.상태 === '도달' ? 'hit' : '') + '">' + (a.상태 === '도달' ? '도달 ' + a.도달 : (a.반복 ? '반복 · ' : '') + (a.정규장만 ? '정규장 · ' : '') + (a.도달 ? '최근 ' + a.도달 : '대기 중')) + '</span>' +
-                        '<button data-id="' + a.id + '" title="삭제">✕</button></div>';
+                    var 상태글 = a.상태 === '도달' ? '도달 ' + a.도달
+                        : [a.반복 ? '반복' : '', a.계속분 ? '계속 ' + a.계속분 + '분' : '', a.정규장만 ? '정규장' : '', a.도달 ? '최근 ' + a.도달 : (a.무장 ? '대기 중' : '되돌아오길 기다림')].filter(Boolean).join(' · ');
+                    return '<div class="al-row"><button type="button" class="al-rdir ' + (a.방향 === '상향' ? 'up' : 'dn') + '" data-flip="' + a.id + '" title="눌러서 방향 바꾸기">' +
+                        (a.방향 === '상향' ? '▲ ' : '▼ ') + a.가격.toFixed(2) + ' ' + (a.방향 === '상향' ? '상향' : '하향') + ' ⇅</button>' +
+                        '<span class="al-rst' + (a.상태 === '도달' ? ' hit' : '') + '">' + 상태글 + '</span>' +
+                        '<button type="button" class="al-del" data-id="' + a.id + '" title="삭제">✕</button></div>';
                 }).join('') : '<div style="color:#6b7386">등록된 알람 없음</div>') + '</div>';
-            var inp = 창.querySelector('input[type=number]'), 방향칸 = 창.querySelector('.al-dir');
-            function 방향표시() { var v = Number(inp.value); 방향칸.textContent = !(v > 0) || !(지금 > 0) ? '' : v > 지금 ? '▲ 이상 도달 시' : v < 지금 ? '▼ 이하 도달 시' : '현재가와 같음'; 방향칸.style.color = v > 지금 ? '#ff6b6b' : '#4da3ff'; }
+            var inp = 창.querySelector('.al-price'), 힌트 = 창.querySelector('.al-hint');
+            // 방향: 직접 고르기 전에는 입력 가격이 현재가보다 높으면 상향, 낮으면 하향
+            function 고른방향() { var v = Number(inp.value); return 창._방향 || (v > 0 && 지금 > 0 && v < 지금 ? '하향' : '상향'); }
+            function 방향표시() {
+                var v = Number(inp.value), d = 고른방향();
+                Array.prototype.forEach.call(창.querySelectorAll('.al-dirs button'), function (b) { b.className = b.getAttribute('data-dir') === d ? 'sel ' + (d === '상향' ? 'up' : 'dn') : ''; });
+                if (!(v > 0) || !(지금 > 0)) { 힌트.textContent = ''; return; }
+                if (!창._방향 && Math.abs(v - 지금) < 0.005) { 힌트.textContent = '현재가와 같음 · 위나 아래 가격을 입력하세요'; 힌트.className = 'al-hint'; return; }
+                var 이미 = d === '상향' ? 지금 >= v : 지금 <= v;
+                힌트.textContent = 이미
+                    ? '지금 ' + 지금.toFixed(2) + ' 은 이미 ' + (d === '상향' ? '위' : '아래') + ' → ' + (d === '상향' ? '아래로 내려갔다 다시 올라오면' : '위로 올라갔다 다시 내려오면') + ' 울림'
+                    : '지금 ' + 지금.toFixed(2) + ' → ' + v.toFixed(2) + ' ' + (d === '상향' ? '위로 올라가면' : '아래로 내려가면') + ' 울림';
+                힌트.className = 'al-hint' + (이미 ? ' wait' : '');
+            }
             inp.oninput = 방향표시; 방향표시();
+            Array.prototype.forEach.call(창.querySelectorAll('.al-dirs button'), function (b) { b.onclick = function () { 창._방향 = b.getAttribute('data-dir'); 방향표시(); }; });
             function 등록() {
-                if (알람_추가(종목, inp.value, { 반복: 창.querySelector('#al-rep').checked, 정규장만: 창.querySelector('#al-reg').checked })) {
-                    var 새 = 창.querySelector('input[type=number]'); if (새) 새.value = '';   // 등록 뒤 입력칸 비움 (창은 이미 새로 그려짐)
+                if (알람_추가(종목, inp.value, { 방향: 고른방향(), 반복: 창.querySelector('#al-rep').checked, 정규장만: 창.querySelector('#al-reg').checked, 계속분: Number(창.querySelector('#al-keep').value) })) {
+                    창._방향 = null;
+                    var 새 = 창.querySelector('.al-price'); if (새) 새.value = '';   // 등록 뒤 입력칸 비움 (창은 이미 새로 그려짐)
                     알람_창그리기(창);
                 }
             }
             창.querySelector('.al-add').onclick = 등록;
             inp.onkeydown = function (e) { if (e.key === 'Enter') 등록(); };
             창.querySelector('.al-x').onclick = 알람_닫기;
+            창.querySelector('#al-keep').onchange = function () { 알람_소리설정.계속분 = Number(this.value); 알람_소리설정저장(); };
             var 소리칸 = 창.querySelector('#al-snd'), 음량칸 = 창.querySelector('#al-vol');
             소리칸.onchange = function () { 알람_소리설정.종류 = 소리칸.value; 알람_소리설정저장(); 알람_소리(); };   // 고르면 바로 한 번 들려줌
             창.querySelector('#al-play').onclick = function () { 알람_소리(소리칸.value, Number(음량칸.value)); };
             음량칸.oninput = function () { 창.querySelector('#al-volv').textContent = Math.round(음량칸.value * 100) + '%'; };
             음량칸.onchange = function () { 알람_소리설정.음량 = Number(음량칸.value); 알람_소리설정저장(); 알람_소리(); };
             Array.prototype.forEach.call(창.querySelectorAll('.al-q button'), function (b) { b.onclick = function () { inp.value = Number(b.getAttribute('data-v')).toFixed(2); 방향표시(); }; });
-            Array.prototype.forEach.call(창.querySelectorAll('.al-row button'), function (b) { b.onclick = function () { 알람_삭제(종목, b.getAttribute('data-id')); }; });
+            Array.prototype.forEach.call(창.querySelectorAll('.al-del'), function (b) { b.onclick = function () { 알람_삭제(종목, b.getAttribute('data-id')); }; });
+            Array.prototype.forEach.call(창.querySelectorAll('.al-rdir'), function (b) { b.onclick = function () { 알람_방향바꾸기(종목, b.getAttribute('data-flip')); }; });
         }
+        function 알람_모바일() { return window.innerWidth <= 600; }
+        // 모바일: 화면 맨 위 전체 폭 + 키보드가 올라오면 보이는 높이에 맞춰 줄이고 창 안에서 스크롤
+        function 알람_모바일맞춤() {
+            var p = document.getElementById('al-pop'); if (!p || !p.classList.contains('mob')) return;
+            var vv = window.visualViewport, h = vv ? vv.height : window.innerHeight, top = vv ? vv.offsetTop : 0;
+            p.style.top = (top + 6) + 'px';
+            p.style.maxHeight = Math.max(160, h - 12) + 'px';
+        }
+        if (window.visualViewport) { window.visualViewport.addEventListener('resize', 알람_모바일맞춤); window.visualViewport.addEventListener('scroll', 알람_모바일맞춤); }
         function 알람_창열기(i, 단추) {
             var 종목 = panelTickers[i]; if (!종목) return;
-            var 기존 = document.getElementById('al-pop'); if (기존) { var 같음 = 기존._종목 === 종목; 기존.remove(); if (같음) return; }
+            var 기존 = document.getElementById('al-pop'); if (기존) { var 같음 = 기존._종목 === 종목; 알람_닫기(); if (같음) return; }
             var 창 = document.createElement('div'); 창.className = 'al-pop'; 창.id = 'al-pop'; 창._종목 = 종목;
+            // 창 안 클릭 표시: 창 안 단추(✕ 삭제 등)가 다시 그려져 문서에서 떨어져도 "바깥 클릭"으로 보지 않음
+            창.addEventListener('click', function (e) { e.알람창안 = true; });
+            var 모바일 = 알람_모바일();
+            if (모바일) {
+                var 어둠 = document.createElement('div'); 어둠.id = 'al-dim'; 어둠.className = 'al-dim'; document.body.appendChild(어둠);
+                창.classList.add('mob');
+            }
             document.body.appendChild(창); 알람_창그리기(창);
+            if (모바일) { 알람_모바일맞춤(); return; }   // 모바일은 키보드가 바로 뜨지 않게 입력칸 자동 선택 안 함
             var r = 단추.getBoundingClientRect();
-            창.style.top = Math.min(window.innerHeight - 260, r.bottom + 6) + 'px';
+            창.style.top = Math.max(8, Math.min(window.innerHeight - 창.offsetHeight - 8, r.bottom + 6)) + 'px';
             창.style.left = Math.max(8, Math.min(window.innerWidth - 308, r.right - 300)) + 'px';
-            var inp = 창.querySelector('input[type=number]'); if (inp) { inp.focus(); inp.select(); }
+            var inp = 창.querySelector('.al-price'); if (inp) { inp.focus(); inp.select(); }
         }
         document.addEventListener('click', function (e) {
+            if (e.알람창안) return;
             var b = e.target.closest && e.target.closest('.px-bell');
-            if (b) { e.stopPropagation(); 알람_창열기(parseInt(b.id.replace(/[^0-9]/g, ''), 10), b); return; }
+            if (b) { e.stopPropagation(); 알람_창열기(parseInt(b.getAttribute('data-i'), 10), b); return; }
             var p = document.getElementById('al-pop'); if (p && !p.contains(e.target) && !(e.target.closest && e.target.closest('.lvs-bell'))) 알람_닫기();
         });
         document.addEventListener('keydown', function (e) { if (e.key === 'Escape') 알람_닫기(); });
