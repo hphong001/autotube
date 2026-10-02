@@ -753,6 +753,42 @@
         .lvs-r { position: relative; }
         .lvs-bell { position: absolute; right: -2px; top: 1px; display: none; background: #1a1d2b; border: 1px solid #4a4020; border-radius: 4px; font-size: 10px; padding: 1px 3px; cursor: pointer; }
         .lvs-r:hover .lvs-bell { display: block; }
+        /* 당일 매물대 섹션 (막대 바로 아래, 높이 고정) */
+        .vp { height: 116px; box-sizing: border-box; margin-top: 4px; padding-top: 6px; border-top: 1px solid #1a1e2c; display: flex; flex-direction: column; gap: 3px; }
+        .vp-h { display: flex; align-items: center; gap: 6px; height: 17px; font-size: 10.5px; color: #8b93a7; white-space: nowrap; overflow: hidden; }
+        .vp-t { font-size: 12px; font-weight: 800; color: #ffffff; letter-spacing: .2px; }
+        .vp-chip { font-size: 10px; font-weight: 700; color: #f5c542; border: 1px solid rgba(245,197,66,.45); background: rgba(245,197,66,.08); border-radius: 4px; padding: 0 5px; line-height: 15px; }
+        .vp-src { color: #6b7386; overflow: hidden; text-overflow: ellipsis; }
+        .vp-help { margin-left: auto; flex-shrink: 0; width: 15px; height: 15px; line-height: 15px; text-align: center; border-radius: 50%; border: 1px solid #3a4153; color: #8b93a7; font-size: 10px; font-weight: 700; cursor: help; }
+        .vp-g { position: relative; height: 44px; flex-shrink: 0; }
+        .vp-g svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+        .vp-now { position: absolute; top: -9px; transform: translateX(-50%); font-size: 9px; line-height: 9px; color: #22d3ee; text-shadow: 0 0 3px rgba(0,0,0,.9); pointer-events: none; }
+        .vp-out { position: absolute; bottom: 1px; font-size: 9.5px; color: #8b93a7; background: rgba(11,12,20,.8); padding: 0 2px; border-radius: 3px; }
+        .vp-out.l { left: 0; } .vp-out.r { right: 0; }
+        .vp-s { display: flex; align-items: center; gap: 7px; height: 17px; font-size: 11px; color: #9aa3b5; white-space: nowrap; overflow: hidden; }
+        .vp-s b { color: #e7e9f0; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .vp-s small { color: #f5c542; font-size: 10px; font-weight: 700; }
+        .vp-s i { display: inline-block; width: 7px; height: 7px; border-radius: 2px; margin-right: 4px; vertical-align: 0; }
+        .vp-poc i { background: #f5c542; } .vp-pk i { background: #e6e9f2; } .vp-va i { background: rgba(245,197,66,.25); border: 1px dashed rgba(245,197,66,.7); box-sizing: border-box; }
+        .vp-poc b { color: #f5c542; }
+        .vp-sep { width: 1px; height: 10px; background: #2a3042; flex-shrink: 0; }
+        .vp-i { display: flex; align-items: center; gap: 6px; height: 18px; font-size: 11px; color: #c9cedb; white-space: nowrap; overflow: hidden; }
+        .vp-i > span:last-child { overflow: hidden; text-overflow: ellipsis; }
+        .vp-i b { color: #ffffff; font-variant-numeric: tabular-nums; }
+        .vp-b { flex-shrink: 0; font-size: 10.5px; font-weight: 800; padding: 1px 6px; border-radius: 4px; line-height: 14px; }
+        .vp-b.up { color: #ff6b6b; background: rgba(255,107,107,.12); border: 1px solid rgba(255,107,107,.5); }
+        .vp-b.dn { color: #4da3ff; background: rgba(77,163,255,.12); border: 1px solid rgba(77,163,255,.5); }
+        .vp-b.mid { color: #f5c542; background: rgba(245,197,66,.1); border: 1px solid rgba(245,197,66,.45); }
+        .vp-dim { color: #5d6578; }
+        .vp-empty { flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px; color: #5d6578; font-size: 11.5px; border: 1px dashed #22263a; border-radius: 6px; margin-bottom: 2px; }
+        .vp-empty small { font-size: 10px; color: #4a5163; }
+        @container (max-width: 420px) {
+            .vp { height: 116px; }
+            .vp-g { height: 34px; }
+            .vp-s { gap: 5px; font-size: 10.5px; } .vp-s .vp-pk, .vp-s .vp-sep.pk { display: none; }
+            .vp-i { font-size: 10.5px; height: 30px; align-items: flex-start; white-space: normal; line-height: 15px; }
+            .vp-i > span:last-child { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        }
         .lv-sum { display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px; margin-top: 4px; padding-top: 6px; border-top: 1px solid #1a1e2c; }
         .lvs-col { min-width: 0; }
         .lvs-h { display: flex; justify-content: space-between; font-size: 10px; color: #6b7386; height: 16px; line-height: 16px; }
@@ -2138,9 +2174,9 @@
         function 매물대_가져오기(종목) {
             var 일 = 일데이터[종목], 기대 = 일 && 일.마감 ? 일.마감.날짜 : '';
             var f = 체결_가져오기(종목), fm = f && f.매물대;
-            if (fm && fm.완전 && fm.최대 && (!기대 || fm.날짜 === 기대)) return { 출처: '체결', 날짜: fm.날짜, 최대: fm.최대, 봉우리: fm.봉우리 || [], 집중: fm.집중 || {}, 관측시작: fm.관측시작 };
+            if (fm && fm.완전 && fm.최대 && (!기대 || fm.날짜 === 기대)) return { 출처: '체결', 날짜: fm.날짜, 최대: fm.최대, 봉우리: fm.봉우리 || [], 집중: fm.집중 || {}, 관측시작: fm.관측시작, 칸: fm.칸 || null, 시드까지: fm.시드까지 || '' };
             var wm = 일 && 일.매물대;
-            if (wm && wm.최대 && (!기대 || wm.날짜 === 기대)) return { 출처: '1분봉', 날짜: wm.날짜, 최대: wm.최대, 봉우리: wm.봉우리 || [], 집중: wm.집중 || {}, 관측시작: wm.관측시작 };
+            if (wm && wm.최대 && (!기대 || wm.날짜 === 기대)) return { 출처: '1분봉', 날짜: wm.날짜, 최대: wm.최대, 봉우리: wm.봉우리 || [], 집중: wm.집중 || {}, 관측시작: wm.관측시작, 칸: wm.칸 || null, 기준시각: wm.기준시각 || '' };
             return null;
         }
 
@@ -3461,7 +3497,7 @@
                 + '</div></div>'
                 + '</div>'
                 // 가격 바로 아래: 지지·저항·MaxPain·당일 변동 막대 (별도 섹션)
-                + '<div class="lv-box"><div class="timeline" id="p' + i + '-timeline"></div><div class="lv-sum" id="p' + i + '-lvsum"></div></div>'
+                + '<div class="lv-box"><div class="timeline" id="p' + i + '-timeline"></div><div class="vp" id="p' + i + '-vp"></div><div class="lv-sum" id="p' + i + '-lvsum"></div></div>'
                 + '<div class="strategy-box">'
                 + '<div class="sg-card">'
                 + '<div class="sg-top">'
@@ -3594,7 +3630,7 @@
 
         function resetPanelUI(panelIdx, ticker) {
             var p = 'p' + panelIdx + '-';
-            try { 레벨요약표시(p, { ticker: ticker }); } catch (e) { }   // 종목 바꾸면 요약은 빈 틀로
+            try { 레벨요약표시(p, { ticker: ticker }); 매물대표시(p, { ticker: ticker }); } catch (e) { }   // 종목 바꾸면 요약·매물대는 빈 틀로
             setTimeout(function () { try { 알람_화면갱신(); 알람_띠닫기(panelIdx); } catch (e) { } }, 0);
             ['price', 'diff', 'chg', 'vol', 'c1px', 'c1df', 'c1cg', 'reg-label', 'ext-label'].forEach(function (f) { var el = document.getElementById(p + f); if (el) el.textContent = (f === 'price' || f === 'vol' || f === 'c1px') ? '─' : ''; });
             var 초기값 = { 'gauge': '', 'sigtitle': '<span>관망 중</span>', 'reason': '데이터 로딩 중', 'situ': '<b>가격</b><span>─</span><b>판단</b><span>─</span><b>목표</b><span>─</span>', 'score': '', 'band': '<div class="sg-band cand">방향 없음</div>',
@@ -4905,8 +4941,86 @@
                            '<div class="lvs-col"><div class="lvs-h"><span>지지 (풋 쪽)' + 범위 + '</span><span>현재가 대비</span></div>' + 열(지, true) + '</div>';
         }
 
+        // ════════════════════════════════════════════════════════
+        // ★ 당일 매물대 섹션 (지지·저항 막대 바로 아래, 같은 가격 눈금)
+        //   가격대별 거래량 막대 · 거래 70% 집중 구간 · 최대 매물대 · 현재가 위치와 해석
+        //   높이 고정 (데이터가 없어도 같은 높이) → 3개 패널 높이 동일
+        // ════════════════════════════════════════════════════════
+        function 매물대표시(prefix, d) {
+            var el = document.getElementById(prefix + 'vp'); if (!el) return;
+            var 패널번호 = parseInt(String(prefix).replace(/[^0-9]/g, ''), 10), 종목 = (d && d.ticker) || panelTickers[패널번호];
+            var 물 = 종목 ? 매물대_가져오기(종목) : null, price = (d && d.price) || 0;
+            var 칸 = 물 && 물.칸, 량 = 칸 && Array.isArray(칸.량) ? 칸.량 : (칸 && 칸.량 ? Object.keys(칸.량).map(function (k) { return 칸.량[k]; }) : null);
+            var 도움 = '<span class="vp-help" title="매물대 = 오늘 정규장에서 가격대별로 거래가 얼마나 일어났는지.&#10;거래가 많았던 가격은 다시 오면 멈추거나 튕기기 쉬움 (그 가격에 산 사람·판 사람이 많음).&#10;● 최대 = 가장 많이 거래된 가격 / 노란 띠 = 거래의 70%가 몰린 집중 구간&#10;현재가가 집중 구간 위 = 매수 우위 · 안 = 박스권 · 아래 = 매도 우위">?</span>';
+            if (!물 || !량 || !량.length || !(칸.단위 > 0)) {
+                var 빈 = '<div class="vp-h"><span class="vp-t">매물대</span>' + 도움 + '</div><div class="vp-empty">매물대 데이터 없음 <small>(정규장 1분봉 수신 대기)</small></div>';
+                if (el._html !== 빈) { el.innerHTML = 빈; el._html = 빈; }
+                return;
+            }
+            var u = 칸.단위, 시작 = 칸.시작, n = 량.length;
+            var 최대량 = 0, 총 = 0; 량.forEach(function (v) { v = Number(v) || 0; if (v > 최대량) 최대량 = v; 총 += v; });
+            // 가격 눈금: 위 지지·저항 막대와 같은 범위(2차 지지 ~ 2차 저항)·같은 여백(5%)
+            var minV = Number(d && d.support2) || 0, maxV = Number(d && d.resistance2) || 0;
+            var 끝가 = 시작 + (n - 1) * u;
+            if (!(minV > 0 && maxV > minV)) {   // 막대가 없으면 매물대 범위 + 현재가
+                minV = Math.min(시작, price > 0 ? price : 시작); maxV = Math.max(끝가, price > 0 ? price : 끝가);
+                var 여 = (maxV - minV) * 0.06 || u * 3; minV -= 여; maxV += 여;
+            }
+            var span = maxV - minV, PAD = 0.05, TRK = 0.9;
+            function X(v) { return (PAD + Math.max(0, Math.min(1, (v - minV) / span)) * TRK) * 1000; }
+            var 폭 = Math.max(2, u / span * TRK * 1000 * 0.78), H = 100;
+            var 하 = Number(물.집중.하단) || 0, 상 = Number(물.집중.상단) || 0, poc = 물.최대.가격;
+            var 봉 = (물.봉우리 || []).map(function (b) { return Math.round(b.가격 / u); });
+            var 밖왼 = 0, 밖오 = 0, 막대 = '';
+            for (var k = 0; k < n; k++) {
+                var v = Number(량[k]) || 0; if (!(v > 0)) continue;
+                var p = 시작 + k * u;
+                if (p < minV) { 밖왼 += v; continue; }
+                if (p > maxV) { 밖오 += v; continue; }
+                var h = Math.max(2, v / 최대량 * (H - 8)), 색;
+                var i = Math.round(p / u);
+                if (Math.abs(p - poc) < u / 2) 색 = '#f5c542';
+                else if (봉.indexOf(i) >= 0) 색 = '#e6e9f2';
+                else if (p >= 하 - u / 2 && p <= 상 + u / 2) 색 = '#7b88a8';
+                else 색 = '#3b4256';
+                막대 += '<rect x="' + (X(p) - 폭 / 2).toFixed(1) + '" y="' + (H - h).toFixed(1) + '" width="' + 폭.toFixed(1) + '" height="' + h.toFixed(1) + '" fill="' + 색 + '" rx="1"/>';
+            }
+            var 띠 = 하 > 0 && 상 >= 하 ? '<rect x="' + (X(하 - u / 2)).toFixed(1) + '" y="0" width="' + Math.max(1, X(상 + u / 2) - X(하 - u / 2)).toFixed(1) + '" height="' + H + '" fill="rgba(245,197,66,.08)"/>' +
+                '<line x1="' + X(하 - u / 2).toFixed(1) + '" x2="' + X(하 - u / 2).toFixed(1) + '" y1="0" y2="' + H + '" stroke="rgba(245,197,66,.45)" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/>' +
+                '<line x1="' + X(상 + u / 2).toFixed(1) + '" x2="' + X(상 + u / 2).toFixed(1) + '" y1="0" y2="' + H + '" stroke="rgba(245,197,66,.45)" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/>' : '';
+            var 바닥 = '<line x1="' + (PAD * 1000) + '" x2="' + ((PAD + TRK) * 1000) + '" y1="' + (H - 0.5) + '" y2="' + (H - 0.5) + '" stroke="#2a3042" vector-effect="non-scaling-stroke"/>';
+            var 현 = price > 0 && price >= minV && price <= maxV ? '<line x1="' + X(price).toFixed(1) + '" x2="' + X(price).toFixed(1) + '" y1="0" y2="' + H + '" stroke="#22d3ee" stroke-width="2" vector-effect="non-scaling-stroke"/>' : '';
+            var 그래프 = '<svg viewBox="0 0 1000 ' + H + '" preserveAspectRatio="none" aria-hidden="true">' + 띠 + 바닥 + 막대 + 현 + '</svg>' +
+                (price > 0 && price >= minV && price <= maxV ? '<span class="vp-now" style="left:' + (X(price) / 10).toFixed(2) + '%">▼</span>' : '') +
+                (밖왼 / 총 >= 0.03 ? '<span class="vp-out l" title="2차 지지보다 아래에서 거래된 비중">◀ ' + Math.round(밖왼 / 총 * 100) + '%</span>' : '') +
+                (밖오 / 총 >= 0.03 ? '<span class="vp-out r" title="2차 저항보다 위에서 거래된 비중">' + Math.round(밖오 / 총 * 100) + '% ▶</span>' : '');
+            // 머리: 날짜 · 출처
+            var 날 = 물.날짜 ? (+물.날짜.slice(5, 7)) + '/' + (+물.날짜.slice(8, 10)) : '';
+            var 출처 = 물.출처 === '체결' ? '체결 기준' + (물.시드까지 ? ' · ' + 물.시드까지 + ' 전 1분봉' : '') : '1분봉 기준' + (물.기준시각 ? ' · ' + 물.기준시각 : '');
+            var 머리 = '<div class="vp-h"><span class="vp-t">매물대</span><span class="vp-chip">' + 날 + ' 정규장</span><span class="vp-src">' + 출처 + '</span>' + 도움 + '</div>';
+            // 요약: 최대 · 봉우리 · 집중
+            var 다른 = (물.봉우리 || []).filter(function (b) { return Math.abs(b.가격 - poc) > 1e-9; });
+            var 요약 = '<div class="vp-s"><span class="vp-poc"><i></i>최대 <b>' + poc.toFixed(2) + '</b> <small>' + 물.최대.비중 + '%</small></span>' +
+                (다른.length ? '<span class="vp-sep pk"></span><span class="vp-pk"><i></i>봉우리 ' + 다른.map(function (b) { return '<b>' + b.가격.toFixed(2) + '</b>'; }).join(' · ') + '</span>' : '') +
+                (하 > 0 ? '<span class="vp-sep"></span><span class="vp-va"><i></i>집중 <b>' + 하.toFixed(2) + '~' + 상.toFixed(2) + '</b></span>' : '') + '</div>';
+            // 해석: 현재가가 집중 구간 위·안·아래
+            var 해석 = '';
+            if (price > 0 && 하 > 0) {
+                var 여유 = price * 0.0005, 대최대 = (price - poc) / poc * 100;
+                var 배지, 글;
+                if (price > 상 + 여유) { 배지 = '<span class="vp-b up">매수 우위</span>'; 글 = '집중 구간 위 · 위쪽 매물 적어 오르기 쉬움 · 되돌리면 <b>' + 상.toFixed(2) + '</b> 지지 확인'; }
+                else if (price < 하 - 여유) { 배지 = '<span class="vp-b dn">매도 우위</span>'; 글 = '집중 구간 아래 · 위에 물린 매물 · 반등하면 <b>' + 하.toFixed(2) + '</b> 저항 확인'; }
+                else if (Math.abs(대최대) <= 0.15) { 배지 = '<span class="vp-b mid">공방</span>'; 글 = '최대 매물대 <b>' + poc.toFixed(2) + '</b>에 위치 · 위·아래 어느 쪽으로 벗어나는지 확인'; }
+                else { 배지 = '<span class="vp-b mid">박스권</span>'; 글 = '집중 구간 안 · 최대 매물대보다 ' + fmtPct(대최대) + ' ' + (대최대 < 0 ? '아래 → 위 <b>' + poc.toFixed(2) + '</b> 저항' : '위 → 아래 <b>' + poc.toFixed(2) + '</b> 지지') + ' · 그쪽으로 끌리기 쉬움'; }
+                해석 = '<div class="vp-i">' + 배지 + '<span>' + 글 + '</span></div>';
+            } else 해석 = '<div class="vp-i"><span class="vp-dim">현재가 수신 대기</span></div>';
+            var html = 머리 + '<div class="vp-g" title="가격대별 거래량 (위 지지·저항 막대와 같은 가격 눈금) · 노란 막대 = 최대 · 흰 막대 = 봉우리 · 노란 띠 = 거래 70% 집중 구간 · 하늘색 선 = 현재가">' + 그래프 + '</div>' + 요약 + 해석;
+            if (el._html !== html) { el.innerHTML = html; el._html = html; }
+        }
+
         function renderTimeline(prefix, d) {
             renderTimeline_막대(prefix, d);
+            try { 매물대표시(prefix, d); } catch (e) { console.warn('[매물대]', e); }
             try { 레벨요약표시(prefix, d); } catch (e) { console.warn('[레벨 요약]', e); }
         }
 
@@ -6048,7 +6162,7 @@
 
         (function start() {
             initDashboard(); buildWatchlist(); refreshAllDropdowns(); initFirebase();
-            [0, 1, 2].forEach(function (i) { try { 레벨요약표시('p' + i + '-', { ticker: panelTickers[i] }); } catch (e) { } });
+            [0, 1, 2].forEach(function (i) { try { 레벨요약표시('p' + i + '-', { ticker: panelTickers[i] }); 매물대표시('p' + i + '-', { ticker: panelTickers[i] }); } catch (e) { } });
             try { 알람_화면갱신(); } catch (e) { }   // 요약 틀(빈 줄) 먼저 → 3개 패널 높이 동일
             try {
                 firebase.database().ref('system/closeUpdate').on('value', function (snap) {
