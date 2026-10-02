@@ -1385,8 +1385,11 @@
             }
 
         /* 관심종목: [1][2][3] 패널 단추 + 가격 (정규장 1줄 / 정규장 외 종가·시외 2줄) */
-        .ticker-item.wl-row { align-items: flex-start; gap: 7px; padding: 6px 4px 6px 4px; border-left: 2px solid transparent; }
-        .ticker-item.wl-row[data-p="0"] { border-left-color: #ff6666; } .ticker-item.wl-row[data-p="1"] { border-left-color: #66cc66; } .ticker-item.wl-row[data-p="2"] { border-left-color: #6688ff; }
+        .ticker-item.wl-row { align-items: flex-start; gap: 7px; padding: 6px 5px; border: 1.5px solid transparent; border-bottom-color: #1a1a28; border-radius: 6px; margin-bottom: 2px; }
+        /* 패널에 떠 있는 종목: 4면 테두리 + 옅은 바탕 (패널 배지 색) */
+        .ticker-item.wl-row[data-p="0"] { border-color: #ff6666; background: rgba(255, 102, 102, .07); }
+        .ticker-item.wl-row[data-p="1"] { border-color: #66cc66; background: rgba(102, 204, 102, .07); }
+        .ticker-item.wl-row[data-p="2"] { border-color: #6688ff; background: rgba(102, 136, 255, .08); }
         .wl-pn { display: inline-flex; gap: 2px; flex-shrink: 0; align-self: center; margin-right: 1px; }
         .wl-pb { font: inherit; width: 16px; height: 16px; padding: 0; line-height: 13px; font-size: 9.5px; font-weight: 800; border-radius: 3px; cursor: pointer; background: transparent; color: #4a5163; border: 1px solid #2a2f40; }
         .wl-pb.p0:hover, .wl-pb.p0.on { color: #ff8080; border-color: #ff6666; } .wl-pb.p0.on { background: #ff6666; color: #1a0808; }
@@ -1398,12 +1401,26 @@
         .ticker-item.active-panel .wl-t { color: #ffcc00; }
         .wl-n { font-size: 10px; color: #6b7386; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .wl-px { display: flex; flex-direction: column; gap: 1px; }
-        .wl-ln { display: flex; align-items: baseline; gap: 6px; font-variant-numeric: tabular-nums; }
-        .wl-l { font-size: 9.5px; color: #6b7386; width: 22px; flex-shrink: 0; }
-        .wl-px { padding-left: 2px; }
+        .wl-ln { display: flex; align-items: baseline; font-variant-numeric: tabular-nums; }
+        /* 가격 줄: 첫 칸 폭 = [1][2][3] 단추 폭(52px) + 여백(1px) + 간격(6px) → 현재가가 위 줄 티커 첫 글자와 같은 위치에서 시작 */
+        .wl-l { font-size: 9.5px; color: #6b7386; width: 59px; flex-shrink: 0; box-sizing: border-box; padding-right: 7px; text-align: right; }
         .wl-v { font-size: 12.5px; font-weight: 700; color: #c9cedb; }
-        .wl-c { font-size: 11px; font-weight: 600; color: #8b93a7; margin-left: auto; }
+        .wl-c { font-size: 11px; font-weight: 600; color: #8b93a7; margin-left: 12px; }
         .wl-v.up, .wl-c.up { color: #ff6b6b; } .wl-v.dn, .wl-c.dn { color: #4d8dff; }
+        .wl-rk { font-style: normal; font-size: 9.5px; font-weight: 700; }
+        .wl-rk:empty { display: none; }
+        .wl-top .wl-rk { order: 3; margin-left: auto; flex-shrink: 0; color: #8b93a7; background: #1a1d2b; border-radius: 3px; padding: 0 4px; line-height: 14px; }
+        .wl-sort { flex-shrink: 0; margin: -2px 0 8px; display: flex; flex-direction: column; gap: 5px; }
+        .wl-sb { display: flex; gap: 3px; }
+        .wl-sb button { flex: 1; font: inherit; font-size: 10.5px; font-weight: 700; padding: 3px 0; border-radius: 4px; cursor: pointer; background: #141826; color: #8b93a7; border: 1px solid #262c3e; white-space: nowrap; }
+        .wl-sb button:hover { color: #e3e7ef; border-color: #3a4153; }
+        .wl-sb button.on { background: #f5c542; color: #1a1400; border-color: #f5c542; }
+        .wl-sb button[data-m="상승"].on { background: #ff6666; border-color: #ff6666; color: #1a0808; }
+        .wl-sb button[data-m="하락"].on { background: #4d8dff; border-color: #4d8dff; color: #08101f; }
+        .wl-so { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 10.5px; color: #8b93a7; }
+        .wl-so button { font: inherit; font-size: 10.5px; background: transparent; border: 1px solid #262c3e; border-radius: 4px; color: #8b93a7; padding: 1px 6px; cursor: pointer; }
+        .wl-so button b { color: #e3e7ef; }
+        .wl-so label { display: flex; align-items: center; gap: 3px; cursor: pointer; margin-left: auto; }
 
         .sidebar-ad {
             background: #0d0d1a;
@@ -1649,6 +1666,7 @@
             <div class="sidebar-menu">[메뉴] 알림 · 설정 · 포트폴리오</div>
             <div class="sidebar-watchlist">
                 <h3 class="watchlist-title">⭐ 관심 종목</h3>
+                <div class="wl-sort" id="wl-sort"></div>
                 <div class="ticker-list" id="ticker-list"></div>
             </div>
             <div class="sidebar-ad">광고 영역 (300×250)</div>
@@ -3583,12 +3601,68 @@
             list.innerHTML = WATCH_LIST.map(function (w) {
                 var 단추 = [0, 1, 2].map(function (i) { return '<button type="button" class="wl-pb p' + i + '" data-t="' + w.ticker + '" data-i="' + i + '" title="패널 ' + (i + 1) + '에 ' + w.ticker + ' 불러오기">' + (i + 1) + '</button>'; }).join('');
                 return '<div class="ticker-item wl-row" id="wl-' + w.ticker + '">' +
-                    '<div class="wl-main"><div class="wl-top"><span class="wl-pn">' + 단추 + '</span><b class="wl-t">' + w.ticker + '</b><span class="wl-n">' + w.name + '</span></div>' +
+                    '<div class="wl-main"><div class="wl-top"><span class="wl-pn">' + 단추 + '</span><b class="wl-t">' + w.ticker + '</b><i class="wl-rk"></i><span class="wl-n">' + w.name + '</span></div>' +
                     '<div class="wl-px" id="wl-px-' + w.ticker + '"><div class="wl-ln"><span class="wl-v">─</span></div></div></div></div>';
             }).join('');
             refreshWatchlistBadges();
             관심_가격표시();
+            관심_정렬();
         }
+
+        // ── 정렬: 단추를 누를 때만 다시 정렬 (가격은 계속 갱신, 순서는 그대로 → 목록이 출렁이지 않음) ──
+        //   정규장 외: 기준 = 시외(종가 대비) 또는 종가(전일 대비)
+        var 관심정렬 = { 모드: '기본', 기준: '시외', 고정: false };
+        (function () { try { var v = JSON.parse(localStorage.getItem('sz_wl_sort') || 'null'); if (v && v.모드) 관심정렬 = Object.assign(관심정렬, v); } catch (e) { } })();
+        var 관심_정렬종류 = [['기본', '기본', '등록 순서'], ['상승', '▲상승', '등락률 높은 순'], ['하락', '▼하락', '등락률 낮은 순'], ['변동', '⇅변동', '오르든 내리든 많이 움직인 순'], ['가나', '가나', '티커 알파벳 순']];
+        function 관심_정렬단추() {
+            var el = document.getElementById('wl-sort'); if (!el) return;
+            var 정규 = marketPhase().type === 'REG';
+            var html = '<div class="wl-sb">' + 관심_정렬종류.map(function (x) { return '<button type="button" data-m="' + x[0] + '" class="' + (관심정렬.모드 === x[0] ? 'on' : '') + '" title="' + x[2] + ' (누를 때마다 지금 값으로 다시 정렬)">' + x[1] + '</button>'; }).join('') + '</div>' +
+                '<div class="wl-so">' + (정규 ? '' : '<button type="button" data-k="기준" title="정규장 외 정렬 기준 (누르면 전환)">기준: <b>' + (관심정렬.기준 === '종가' ? '종가 등락' : '시외 등락') + '</b> ⇄</button>') +
+                '<label title="패널 1·2·3 종목은 정렬과 관계없이 맨 위"><input type="checkbox" data-k="고정"' + (관심정렬.고정 ? ' checked' : '') + '> 패널 종목 위로</label></div>';
+            if (el._html !== html) { el.innerHTML = html; el._html = html; }
+        }
+        function 관심_정렬값(t) {
+            var x = null; try { x = 관심_값(t); } catch (e) { }
+            if (!x) return null;
+            if (x.정규) return x.등락;
+            return 관심정렬.기준 === '종가' ? x.종가등락 : x.등락;
+        }
+        function 관심_정렬() {
+            관심_정렬단추();
+            var list = document.getElementById('ticker-list'); if (!list) return;
+            var 모드 = 관심정렬.모드, 원순서 = WATCH_LIST.map(function (w) { return w.ticker; });
+            var 값 = {}; 원순서.forEach(function (t) { 값[t] = 관심_정렬값(t); });
+            var 목록 = 원순서.slice().sort(function (a, b) {
+                if (관심정렬.고정) { var pa = panelTickers.indexOf(a), pb = panelTickers.indexOf(b); if ((pa >= 0) !== (pb >= 0)) return pa >= 0 ? -1 : 1; if (pa >= 0 && pb >= 0) return pa - pb; }
+                if (모드 === '가나') return a < b ? -1 : a > b ? 1 : 0;
+                if (모드 === '기본') return 원순서.indexOf(a) - 원순서.indexOf(b);
+                var va = 값[a], vb = 값[b];
+                if (va == null && vb == null) return 원순서.indexOf(a) - 원순서.indexOf(b);
+                if (va == null) return 1; if (vb == null) return -1;             // 값 없는 종목은 맨 아래
+                var d = 모드 === '상승' ? vb - va : 모드 === '하락' ? va - vb : Math.abs(vb) - Math.abs(va);
+                return d || 원순서.indexOf(a) - 원순서.indexOf(b);
+            });
+            목록.forEach(function (t, i) {
+                var row = document.getElementById('wl-' + t); if (!row) return;
+                list.appendChild(row);
+                var r = row.querySelector('.wl-rk'); if (r) r.textContent = 모드 === '기본' || 모드 === '가나' ? '' : String(i + 1);
+            });
+            list.scrollTop = 0;
+        }
+        document.addEventListener('click', function (e) {
+            var b = e.target.closest && e.target.closest('#wl-sort button'); if (!b) return;
+            if (b.getAttribute('data-m')) 관심정렬.모드 = b.getAttribute('data-m');
+            else if (b.getAttribute('data-k') === '기준') 관심정렬.기준 = 관심정렬.기준 === '종가' ? '시외' : '종가';
+            try { localStorage.setItem('sz_wl_sort', JSON.stringify(관심정렬)); } catch (e2) { }
+            관심_가격표시(); 관심_정렬();
+        });
+        document.addEventListener('change', function (e) {
+            var c = e.target; if (!c || c.getAttribute('data-k') !== '고정') return;
+            관심정렬.고정 = c.checked;
+            try { localStorage.setItem('sz_wl_sort', JSON.stringify(관심정렬)); } catch (e2) { }
+            관심_정렬();
+        });
 
         function refreshWatchlistBadges() {
             WATCH_LIST.forEach(function (w) {
@@ -3645,7 +3719,7 @@
             }).catch(function (e) { console.warn('[관심종목] 시세 조회 실패', e); })
               .then(function () { 관심_조회중 = false; 관심_가격표시(); });
         }
-        setInterval(function () { if (Date.now() - 관심_조회시각 >= 15000) 관심_조회(); 관심_가격표시(); }, 2000);
+        setInterval(function () { if (Date.now() - 관심_조회시각 >= 15000) 관심_조회(); 관심_가격표시(); 관심_정렬단추(); }, 2000);
         document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && Date.now() - 관심_조회시각 >= 15000) 관심_조회(); });
 
         function 관심_값(t) {
@@ -3666,7 +3740,7 @@
         function 관심_가격표시() {
             function 칸(v, c, 라벨) {
                 var cls = c == null ? '' : c > 0 ? ' up' : c < 0 ? ' dn' : '';
-                return '<div class="wl-ln">' + (라벨 ? '<span class="wl-l">' + 라벨 + '</span>' : '') + '<span class="wl-v' + cls + '">' + (v > 0 ? v.toFixed(2) : '─') + '</span>' +
+                return '<div class="wl-ln"><span class="wl-l">' + (라벨 || '') + '</span><span class="wl-v' + cls + '">' + (v > 0 ? v.toFixed(2) : '─') + '</span>' +
                        '<span class="wl-c' + cls + '">' + (c == null || !(v > 0) ? '' : (c > 0 ? '+' : '') + c.toFixed(2) + '%') + '</span></div>';
             }
             WATCH_LIST.forEach(function (w) {
