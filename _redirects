@@ -1,0 +1,33 @@
+# Cloudflare Pages 주소 이동 규칙 (예전 주소 → 새 주소, 301 영구 이동)
+# 오토튜브 페이지 이전
+/manual.html              /autotube/manual          301
+/terms.html               /autotube/terms           301
+/thankyou.html            /autotube/thankyou        301
+/paddle.html              /autotube/paddle          301
+/en                       /autotube/en/                  301
+/en/                      /autotube/en/                  301
+/en/index.html            /autotube/en/                  301
+/en/manual.html           /autotube/en/manual       301
+/en/privacy.html          /autotube/en/privacy      301
+/en/terms.html            /autotube/en/terms        301
+/index_bak.html           /autotube/                     301
+/manual_bak.html          /autotube/manual          301
+/autotube                 /autotube/                     301
+# 확장자 없는 예전 주소
+/manual                   /autotube/manual               301
+/terms                    /autotube/terms                301
+/thankyou                 /autotube/thankyou             301
+/paddle                   /autotube/paddle               301
+/en/manual                /autotube/en/manual            301
+/en/privacy               /autotube/en/privacy           301
+/en/terms                 /autotube/en/terms             301
+# 회사 사이트 임시 주소(/aibaselab/) 정리
+/aibaselab                /                              301
+/aibaselab/               /                              301
+/aibaselab/index.html     /                              301
+/aibaselab/autotube.html  /autotube-case            301
+/aibaselab/infrastructure.html  /technology         301
+/aibaselab/*              /:splat                        301
+# 이름이 바뀐 페이지
+/autotube.html            /autotube-case            301
+/infrastructure.html      /technology               301
