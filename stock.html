@@ -826,10 +826,15 @@
         .sg-svg { width: 150px; height: 84px; display: block; }
         .sg-glabel { font-size: 14px; font-weight: 700; color: #e7e9f0; white-space: nowrap; }
         .sg-glabel .sg-mono { color: #8b93a7; }
-        .sg-gsub { font-size: 11.5px; color: #8b93a7; white-space: nowrap; }
+        .sg-gsub { font-size: 11.5px; color: #8b93a7; white-space: nowrap; text-align: center; line-height: 1.45; }
         .sg-gsub em { font-style: normal; font-weight: 700; }
+        .sg-gapc { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+        .sg-gapsub { font-size: 11px; color: #8b93a7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sg-gapsub b { font-weight: 700; }
+        .sg-gaprow { align-items: start; } .sg-gaprow .sg-rl, .sg-gaprow .sg-rv { line-height: 10px; }
         .sg-gstd { display: flex; flex-direction: column; align-items: center; font-size: 10px; line-height: 13px; color: #6b7386; white-space: nowrap; margin-top: 1px; }
-        .sg-gtitle { font-size: 13.5px; font-weight: 800; color: #ffffff; white-space: nowrap; margin-bottom: 2px; }
+        .sg-gtitle { font-size: 13.5px; font-weight: 800; color: #ffffff; white-space: normal; text-align: center; line-height: 1.35; margin-bottom: 2px; }
+        .sg-gtitle small { white-space: nowrap; }
         .sg-gtitle small { font-size: 10.5px; font-weight: 500; color: #6b7386; margin-left: 3px; }
         .sg-gtxt { display: flex; flex-direction: column; align-items: center; gap: 2px; }
         .sg-head { flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
@@ -986,7 +991,7 @@
         @container (max-width: 400px) {
             .sg-top { flex-direction: column; align-items: stretch; }
             .sg-gauge { flex-direction: row; width: auto; min-height: 0; gap: 10px; justify-content: flex-start; }
-            .sg-gauge { flex-wrap: wrap; row-gap: 2px; } .sg-gtitle { width: 100%; } .sg-gtxt { align-items: flex-start; } .sg-gstd { align-items: flex-start; }
+            .sg-gauge { flex-wrap: wrap; row-gap: 2px; } .sg-gtitle { width: 100%; } .sg-gtxt { align-items: flex-start; } .sg-gstd { align-items: flex-start; } .sg-gsub { text-align: left; }
             .sg-sc-title small { display: block; margin-top: 2px; }
         }
 
@@ -2589,7 +2594,12 @@
                 vwDist = (price - vwap) / vwap * 100;
                 m1 = null; surge = null;
                 m3 = 마감.종가30 > 0 ? (마감종가 - 마감.종가30) / 마감.종가30 * 100 : 마감.마감30분;
-                m10 = 마감.시가 > 0 ? (마감종가 - 마감.시가) / 마감.시가 * 100 : 마감.당일;
+                m10 = 마감.시가 > 0 ? (마감종가 - 마감.시가) / 마감.시가 * 100 : 마감.당일;   // 방향 점수 = 장중(시가→종가)
+                // 화면 대표값 = 전일 대비 (전일 종가 → 종가) = 갭(전일 종가 → 시가) + 장중
+                var 전일종가 = (공식 && 공식.regDate === 마감.날짜 && 공식.prevClose > 0) ? 공식.prevClose
+                             : (일.레벨 && 일.레벨.전일 && 일.레벨.전일.날짜 < 마감.날짜 && 일.레벨.전일.종가 > 0) ? 일.레벨.전일.종가 : 0;
+                마감.전일정보 = 전일종가 > 0 ? { 전일: 전일종가, 시가: 마감.시가, 종가: 마감종가,
+                    전일대비: (마감종가 - 전일종가) / 전일종가 * 100, 갭: 마감.시가 > 0 ? (마감.시가 - 전일종가) / 전일종가 * 100 : null, 장중: m10 } : null;
             }
 
             // 거래량 배수: 정규장 = 윈폼(키움) 값 → 없으면 Worker 1분봉 값 / 마감 기준 = 그 정규장 하루 전체 거래량 배수
@@ -2626,7 +2636,7 @@
             var 가격근거 = bias > 0 ? (점수_VWAP > 0 || 점수_3분 > 0 || 점수_10분 > 0) : bias < 0 ? (점수_VWAP < 0 || 점수_3분 < 0 || 점수_10분 < 0) : false;
             if (Math.abs(bias) >= 2 && !가격근거) bias = bias > 0 ? 1 : -1;
             디버그('방향' + s.ticker, '[' + s.ticker + '] ' + (마감 ? '마감 기준(' + 마감.날짜 + ') ' : '') + '방향 점수 ' + (bias > 0 ? '+' : '') + bias + ' = VWAP ' + ((s.extVwap > 0 || 마감) ? 점수_VWAP : '0(실제 VWAP 없음)') +
-                (마감 ? ' · 마감30분 ' + 점수_3분 + ' · 당일 ' + 점수_10분 : ' · 3분 ' + 점수_3분 + ' · 10분 ' + 점수_10분) + ' · 옵션 ' + 점수_옵션 +
+                (마감 ? ' · 마감30분 ' + 점수_3분 + ' · 장중 ' + 점수_10분 : ' · 3분 ' + 점수_3분 + ' · 10분 ' + 점수_10분) + ' · 옵션 ' + 점수_옵션 +
                 ' (' + 방기.묶음 + ' 기준 3분 ±' + 기준3분.toFixed(2) + '% · 10분 ±' + 기준10분.toFixed(2) + '% · VWAP ±' + 기준VWAP.toFixed(2) + '%)');
 
             // 속도 표현
@@ -2947,16 +2957,16 @@
             // 제목(흰색) → 반원 → "상승 +3점" → 실제 등락률 (10분·3분 / 마감 기준이면 당일·마감30분)
             function 퍼색(v) { return v == null ? '<em style="color:' + 흐림 + '">—</em>' : '<em style="color:' + (v > 0 ? 빨강 : v < 0 ? 파랑 : '#8b93a7') + '">' + fmtPct(v) + '</em>'; }
             var 점수글 = (점수 > 0 ? '+' : '') + 점수 + '점';
-            var 등락줄 = 마감 ? '당일 ' + 퍼색(m10) + ' · 마감30분 ' + 퍼색(m3) : '10분 ' + 퍼색(m10) + ' · 3분 ' + 퍼색(m3);
+            var 등락줄 = 마감 ? (마감.전일정보 ? '전일 대비 ' + 퍼색(마감.전일정보.전일대비) + '<br>' : '') + '장중 ' + 퍼색(m10) + '<br>마감30분 ' + 퍼색(m3) : '10분 ' + 퍼색(m10) + ' · 3분 ' + 퍼색(m3);
             function 표(v) { return (v > 0 ? '+' : '') + v; }
-            var 근거글 = '방향 점수 ' + 점수글 + ' = VWAP ' + 표(점수_VWAP) + ' · ' + (마감 ? '마감30분 ' : '3분 ') + 표(점수_3분) + ' · ' + (마감 ? '당일 ' : '10분 ') + 표(점수_10분) + ' · 옵션 ' + 표(점수_옵션) +
+            var 근거글 = '방향 점수 ' + 점수글 + ' = VWAP ' + 표(점수_VWAP) + ' · ' + (마감 ? '마감30분 ' : '3분 ') + 표(점수_3분) + ' · ' + (마감 ? '장중 ' : '10분 ') + 표(점수_10분) + ' · 옵션 ' + 표(점수_옵션) +
                 (Math.abs(점수_VWAP + 점수_3분 + 점수_10분 + 점수_옵션) !== Math.abs(bias) ? ' (옵션만으로는 ±2점 이상 안 됨 → ' + 표(bias) + '점)' : '') +
-                '\n기준 (' + 방기.묶음 + '): ' + (마감 ? '마감30분' : '3분') + ' ±' + 기준3분.toFixed(2) + '% · ' + (마감 ? '당일' : '10분') + ' ±' + 기준10분.toFixed(2) + '% · VWAP ±' + 기준VWAP.toFixed(2) + '% · 옵션 6 이상 콜 / 4 이하 풋' +
+                '\n기준 (' + 방기.묶음 + '): ' + (마감 ? '마감30분' : '3분') + ' ±' + 기준3분.toFixed(2) + '% · ' + (마감 ? '장중(시가→종가)' : '10분') + ' ±' + 기준10분.toFixed(2) + '% · VWAP ±' + 기준VWAP.toFixed(2) + '% · 옵션 6 이상 콜 / 4 이하 풋' +
                 '\n바늘 위치 ' + (바늘값 > 0 ? '+' : '') + 바늘값.toFixed(1) + ' (항목마다 기준까지 온 정도를 더한 값, 4초에 걸쳐 따라감)';
             게이지 = '<div class="sg-gtitle">단기 방향' + (마감 ? ' · 마감 기준' : '') + ' <small>−4 ~ +4점</small></div>' + 게이지 +
                 '<div class="sg-gtxt"><div class="sg-glabel">' + 점수이름 + ' <span class="sg-mono">' + 점수글 + '</span></div>' +
                 '<div class="sg-gsub">' + 등락줄 + '</div>' +
-                '<div class="sg-gstd"><span>' + s.ticker + ' 기준 (' + 방기.묶음 + ')</span><span>' + (마감 ? '마감30분 ±' + 기준3분.toFixed(2) + '% · 당일 ±' + 기준10분.toFixed(2) + '%' : '3분 ±' + 기준3분.toFixed(2) + '% · 10분 ±' + 기준10분.toFixed(2) + '%') + '</span></div></div>';
+                '<div class="sg-gstd"><span>' + s.ticker + ' 기준 (' + 방기.묶음 + ')</span><span>' + (마감 ? '마감30분 ±' + 기준3분.toFixed(2) + '%</span><span>장중 ±' + 기준10분.toFixed(2) + '%' : '3분 ±' + 기준3분.toFixed(2) + '% · 10분 ±' + 기준10분.toFixed(2) + '%') + '</span></div></div>';
             s.방향근거 = 근거글;
             var 상태아이콘 = 결론.모양 === '관망'
                 ? '<svg viewBox="0 0 16 16" class="sg-ico"><rect x="3.5" y="3" width="3" height="10" rx="1" fill="currentColor"></rect><rect x="9.5" y="3" width="3" height="10" rx="1" fill="currentColor"></rect></svg>'
@@ -3074,6 +3084,28 @@
                            (f.강도5 != null ? ' · 5분 강도 ' + Math.round(f.강도5) : '') + (배 >= 0 ? ' · 속도 평소의 ' + 배.toFixed(2) + '배 (' + (f.기준 || '') + ')' : '') + ' · 1분 델타 ' + (f.델타60 > 0 ? '+' : '') + numberWithCommas(f.델타60 || 0);
                 return '<div class="sg-row sg-wide" title="' + 설명 + '"><span class="sg-rl">체결</span><div class="sg-split">' + 막 + '</div><span class="sg-rv" style="color:' + 색 + '">' + 글 + '</span></div>';
             }
+            // 마감 기준: 전일 대비 막대 (옅은 색 = 갭, 진한 색 = 전일 대비 전체) + 아래 줄 "갭 · 장중"
+            function 전일대비HTML(g, 장중) {
+                if (!g) return 막대('장중', 장중, 2, '시가→종가');
+                var 한도 = 4, 순 = g.전일대비, 갭 = g.갭;
+                function 폭(v) { return Math.min(1, Math.abs(v) / 한도) * 50; }
+                var 순색 = 순 > 0 ? 빨강 : 순 < 0 ? 파랑 : '#8b93a7', 갭색 = 갭 > 0 ? 빨강 : 파랑;
+                // 같은 방향이고 갭이 더 작으면: [중앙 → 갭 끝] 옅은 색(갭) + [갭 끝 → 전체 끝] 진한 색(장중) 으로 이어 그림
+                //   그 외(방향이 반대·갭이 더 큼): 갭은 옅은 색, 전일 대비 전체는 진한 색으로 겹쳐 그림
+                var 쪽 = function (v) { return v >= 0 ? 'left' : 'right'; }, 채움 = '';
+                if (갭 != null && Math.abs(갭) > 0.005 && 갭 * 순 > 0 && Math.abs(갭) < Math.abs(순)) {
+                    채움 = '<div class="sg-fill" style="' + 쪽(순) + ':50%;width:' + 폭(갭).toFixed(1) + '%;background:' + 순색 + ';opacity:.35"></div>' +
+                           '<div class="sg-fill" style="' + 쪽(순) + ':' + (50 + 폭(갭)).toFixed(1) + '%;width:' + Math.max(0, 폭(순) - 폭(갭)).toFixed(1) + '%;background:' + 순색 + ';opacity:.9"></div>';
+                } else {
+                    채움 = (갭 != null && Math.abs(갭) > 0.005 ? '<div class="sg-fill" style="' + 쪽(갭) + ':50%;width:' + 폭(갭).toFixed(1) + '%;background:' + 갭색 + ';opacity:.35"></div>' : '') +
+                           '<div class="sg-fill" style="' + 쪽(순) + ':50%;width:' + 폭(순).toFixed(1) + '%;background:' + 순색 + ';opacity:.9"></div>';
+                }
+                function 퍼(v, c) { return v == null ? '—' : '<b style="color:' + (v > 0 ? 빨강 : v < 0 ? 파랑 : '#8b93a7') + '">' + fmtPct(v) + '</b>'; }
+                return '<div class="sg-row sg-gaprow" title="전일 종가 ' + g.전일.toFixed(2) + ' → 시가 ' + (g.시가 > 0 ? g.시가.toFixed(2) : '—') + ' → 종가 ' + g.종가.toFixed(2) + '&#10;갭 = 전일 종가→시가 · 장중 = 시가→종가 · 방향 점수는 장중 기준">' +
+                       '<span class="sg-rl">전일 대비</span><div class="sg-gapc"><div class="sg-track"><div class="sg-mid"></div>' + 채움 + '</div>' +
+                       '<div class="sg-gapsub">갭 ' + 퍼(갭) + ' · 장중 ' + 퍼(장중) + '</div></div>' +
+                       '<span class="sg-rv" style="color:' + 순색 + '">' + fmtPct(순) + '</span></div>';
+            }
             function 막대(이름, 값, 한도, 설명) {
                 var 있음 = 값 != null, 비 = 있음 ? Math.max(-1, Math.min(1, 값 / 한도)) : 0;
                 var 색 = !있음 ? 흐림 : 값 > 0 ? 빨강 : 값 < 0 ? 파랑 : '#8b93a7';
@@ -3090,7 +3122,7 @@
                 '<div><span><b>순간</b> <em style="color:' + (surge != null ? (surge >= 1.3 ? 빨강 : '#c9cedb') : 흐림) + '">' + (surge != null ? surge.toFixed(1) + '배' : '—') + '</em></span><small>' + (마감 ? '마감 기준 모드에서는 사용 안 함' : surge != null ? (rtVolSurge(s) != null ? '최근 1분 ÷ 직전 10분 평균' : '최근 3분 · 과거 같은 시각 대비') : '수집 중 (화면 연 뒤 11분부터)') + '</small></div>' +
                 '</div></div>';
             var 지표 = (마감
-                    ? 막대('VWAP', vwDist, 0.5, '종가 ' + (vwDist >= 0 ? '위' : '아래')) + 막대('마감30분', m3, 0.5, '') + 막대('당일', m10, 2, '')
+                    ? 막대('VWAP', vwDist, 0.5, '종가 ' + (vwDist >= 0 ? '위' : '아래')) + 막대('마감30분', m3, 0.5, '') + 전일대비HTML(마감.전일정보, m10)
                     : 막대('VWAP', vwDist, 0.5, vwDist >= 0 ? '위' : '아래') + 막대('1분', m1, 0.3, m1 != null ? speed : '') + 막대('3분', m3, 0.5, '') + 막대('10분', m10, 1.0, '')) +
                        체결줄HTML(체결_가져오기(s.ticker)) +
                        '<div class="sg-row"><span class="sg-rl">옵션</span><div class="sg-meter">' + 옵션눈금 + '</div><span class="sg-rv" style="color:' + 옵션색 + '">' + optState + ' ' + score.toFixed(1) + '</span></div>' +
@@ -5911,7 +5943,7 @@
             if (a) {
                 L.push('- 판단 기준: ' + a.모드 + (a.마감 ? ' (판단 가격 = 정규장 종가 ' + a.판단가.toFixed(2) + ')' : ''));
                 L.push('- ' + (a.VWAP확정 ? a.vwLabel : 'VWAP(추정치 — 판단 제외)') + ' ' + AI_숫(a.vwap) + ' (판단 가격이 ' + AI_퍼(a.vwDist) + (a.vwDist >= 0 ? ' 위)' : ' 아래)'));
-                if (a.마감) L.push('- 흐름: 마감 30분 ' + AI_퍼(a.m3) + ' · 시가→종가 ' + AI_퍼(a.m10) + (a.변동 != null ? ' · 평균 3분 변동폭 ' + a.변동.toFixed(2) + '%' : ''));
+                if (a.마감) L.push('- 흐름: ' + (a.마감.전일정보 ? '전일 대비 ' + AI_퍼(a.마감.전일정보.전일대비) + ' (갭 ' + AI_퍼(a.마감.전일정보.갭) + ' + 장중 ' + AI_퍼(a.m10) + ') · ' : '장중(시가→종가) ' + AI_퍼(a.m10) + ' · ') + '마감 30분 ' + AI_퍼(a.m3) + (a.변동 != null ? ' · 평균 3분 변동폭 ' + a.변동.toFixed(2) + '%' : ''));
                 else L.push('- 흐름: 1분 ' + AI_퍼(a.m1) + ' · 3분 ' + AI_퍼(a.m3) + ' · 10분 ' + AI_퍼(a.m10) + (a.변동 != null ? ' · 평균 3분 변동폭 ' + a.변동.toFixed(2) + '%' : ''));
                 L.push('- 거래량 배수: ' + (a.마감 ? '하루 전체' : '누적') + ' ' + (a.volRatio > 0 ? a.volRatio.toFixed(2) + '배 (' + a.배수출처 + ')' : '데이터 없음') +
                        (a.마감 ? '' : ' · 순간 ' + (a.surge != null ? a.surge.toFixed(2) + '배 (' + a.순간출처 + ')' : '데이터 없음')));
@@ -5921,7 +5953,7 @@
                     L.push('- 최근 30분 (1분봉 종가): ' + 고른.map(function (b) { return ('0' + Math.floor(b[0] / 60)).slice(-2) + ':' + ('0' + b[0] % 60).slice(-2) + ' ' + b[1].toFixed(2); }).join(' → '));
                 }
                 var 방 = a.방향점수;
-                L.push('- 방향 점수: ' + (a.bias > 0 ? '+' : '') + a.bias + ' (−4~+4; VWAP ' + 방.VWAP + ' · ' + (a.마감 ? '마감30분 ' : '3분 ') + 방.흐름1 + ' · ' + (a.마감 ? '시가→종가 ' : '10분 ') + 방.흐름2 + ' · 옵션 ' + 방.옵션 + ')' +
+                L.push('- 방향 점수: ' + (a.bias > 0 ? '+' : '') + a.bias + ' (−4~+4; VWAP ' + 방.VWAP + ' · ' + (a.마감 ? '마감30분 ' : '3분 ') + 방.흐름1 + ' · ' + (a.마감 ? '장중(시가→종가) ' : '10분 ') + 방.흐름2 + ' · 옵션 ' + 방.옵션 + ')' +
                        ' · 추세: ' + (a.추세 ? a.추세.방향 + ' 추세 유지 중 (' + AI_시각(a.추세.시작, 'America/New_York').slice(11, 16) + ' ET 시작)' : '없음'));
             } else L.push('- 실시간 지표: 데이터 없음 (판단 엔진 미가동)');
             // 체결 수급 (윈폼 키움 체결) · 당일 매물대
