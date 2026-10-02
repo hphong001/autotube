@@ -191,6 +191,10 @@
         .mk-vl .val { font-size: 14px; font-weight: 700; color: #ccc; }
         .mk-vl .val.up { color: #ff4d4d; } .mk-vl .val.dn { color: #4d8dff; } .mk-vl .val.warn { color: #ffcc00; }
         .mk-ch { font-size: 11.5px; font-weight: 600; color: #8b949e; }
+        .mk-lbl { font-size: 10px; font-weight: 700; color: #8b93a7; border: 1px solid #3a4153; border-radius: 3px; padding: 1px 3px; line-height: 1; align-self: center; }
+        .mk-ext { font-size: 11px; font-weight: 600; color: #9aa3b5; white-space: nowrap; }
+        .mk-ext b { color: #e3e7ef; font-weight: 700; } .mk-ext i { font-style: normal; } .mk-ext i.up { color: #ff6b6b; } .mk-ext i.dn { color: #6aa0ff; }
+        .mk-ext-pc { margin-left: 4px; } .mk-ext-mo { display: none !important; }
         .mk-ch.up { color: #ff6b6b; } .mk-ch.dn { color: #6aa0ff; }
         .mk-cell.stale .val, .mk-cell.stale .mk-ch { color: #aab2c3 !important; }
         .mk-sp { flex: 1 1 auto; min-width: 60px; max-width: 220px; height: 30px; }
@@ -770,7 +774,11 @@
         .sg-svg { width: 150px; height: 84px; display: block; }
         .sg-glabel { font-size: 14px; font-weight: 700; color: #e7e9f0; white-space: nowrap; }
         .sg-glabel .sg-mono { color: #8b93a7; }
-        .sg-gsub { font-size: 11.5px; color: #5d6578; white-space: nowrap; }
+        .sg-gsub { font-size: 11.5px; color: #8b93a7; white-space: nowrap; }
+        .sg-gsub em { font-style: normal; font-weight: 700; }
+        .sg-gtitle { font-size: 13.5px; font-weight: 800; color: #ffffff; white-space: nowrap; margin-bottom: 2px; }
+        .sg-gtitle small { font-size: 10.5px; font-weight: 500; color: #6b7386; margin-left: 3px; }
+        .sg-gtxt { display: flex; flex-direction: column; align-items: center; gap: 2px; }
         .sg-head { flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
         .sg-state { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; font-size: 23px; font-weight: 800; line-height: 1.2; white-space: nowrap; }
         /* 시간대 배지 (진입 점수 태그와 같은 모서리 둥근 사각형) */
@@ -921,6 +929,7 @@
         @container (max-width: 400px) {
             .sg-top { flex-direction: column; align-items: stretch; }
             .sg-gauge { flex-direction: row; width: auto; min-height: 0; gap: 10px; justify-content: flex-start; }
+            .sg-gauge { flex-wrap: wrap; row-gap: 2px; } .sg-gtitle { width: 100%; } .sg-gtxt { align-items: flex-start; }
             .sg-sc-title small { display: block; margin-top: 2px; }
         }
 
@@ -1488,6 +1497,7 @@
             .mk-cell { flex-direction: column; align-items: stretch; gap: 3px; padding: 6px 8px 5px !important; }
             .mk-txt { flex: 0 0 auto; min-width: 0 !important; gap: 2px; }
             .mk-sp { flex: 0 0 38px !important; width: 100%; min-width: 0 !important; max-width: none; height: 38px; }
+            .mk-ext-pc { display: none !important; } .mk-ext-mo:not(:empty) { display: block !important; }
         }
 
         @media screen and (max-width: 700px) {
@@ -2688,8 +2698,19 @@
                 호(Math.PI, Math.PI * 0.62, 파랑) + 호(Math.PI * 0.60, Math.PI * 0.40, '#3a4153') + 호(Math.PI * 0.38, 0.0001, 빨강) +
                 '<line x1="70" y1="70" x2="' + 바늘x.toFixed(1) + '" y2="' + 바늘y.toFixed(1) + '" stroke="#e7e9f0" stroke-width="3.5" stroke-linecap="round"></line>' +
                 '<circle cx="70" cy="70" r="5.5" fill="#e7e9f0"></circle></svg>' +
-                '<div class="sg-glabel">' + 점수이름 + ' <span class="sg-mono">' + (점수 > 0 ? '+' : '') + 점수 + '</span></div>' +
-                '<div class="sg-gsub">단기 방향 · 최근 10분 (−4 ~ +4)</div>';
+                '';
+            // 제목(흰색) → 반원 → "상승 +3점" → 실제 등락률 (10분·3분 / 마감 기준이면 당일·마감30분)
+            function 퍼색(v) { return v == null ? '<em style="color:' + 흐림 + '">—</em>' : '<em style="color:' + (v > 0 ? 빨강 : v < 0 ? 파랑 : '#8b93a7') + '">' + fmtPct(v) + '</em>'; }
+            var 점수글 = (점수 > 0 ? '+' : '') + 점수 + '점';
+            var 등락줄 = 마감 ? '당일 ' + 퍼색(m10) + ' · 마감30분 ' + 퍼색(m3) : '10분 ' + 퍼색(m10) + ' · 3분 ' + 퍼색(m3);
+            function 표(v) { return (v > 0 ? '+' : '') + v; }
+            var 근거글 = '방향 점수 ' + 점수글 + ' = VWAP ' + 표(점수_VWAP) + ' · ' + (마감 ? '마감30분 ' : '3분 ') + 표(점수_3분) + ' · ' + (마감 ? '당일 ' : '10분 ') + 표(점수_10분) + ' · 옵션 ' + 표(점수_옵션) +
+                (Math.abs(점수_VWAP + 점수_3분 + 점수_10분 + 점수_옵션) !== Math.abs(bias) ? ' (옵션만으로는 ±2점 이상 안 됨 → ' + 표(bias) + '점)' : '') +
+                '\n기준: ' + (마감 ? '마감30분' : '3분') + ' ±' + 기준3분.toFixed(2) + '% · ' + (마감 ? '당일' : '10분') + ' ±' + 기준10분.toFixed(2) + '% · VWAP ±0.10% · 옵션 6 이상 콜 / 4 이하 풋';
+            게이지 = '<div class="sg-gtitle">단기 방향' + (마감 ? ' · 마감 기준' : '') + ' <small>−4 ~ +4점</small></div>' + 게이지 +
+                '<div class="sg-gtxt"><div class="sg-glabel">' + 점수이름 + ' <span class="sg-mono">' + 점수글 + '</span></div>' +
+                '<div class="sg-gsub">' + 등락줄 + '</div></div>';
+            s.방향근거 = 근거글;
             var 상태아이콘 = 결론.모양 === '관망'
                 ? '<svg viewBox="0 0 16 16" class="sg-ico"><rect x="3.5" y="3" width="3" height="10" rx="1" fill="currentColor"></rect><rect x="9.5" y="3" width="3" height="10" rx="1" fill="currentColor"></rect></svg>'
                 : 결론.모양 === '▲' ? '<svg viewBox="0 0 16 16" class="sg-ico"><path d="M8 3 L13.5 12 H2.5 Z" fill="currentColor"></path></svg>'
@@ -2803,7 +2824,7 @@
                 '</div></div>';
             var 지표 = (마감
                     ? 막대('VWAP', vwDist, 0.5, '종가 ' + (vwDist >= 0 ? '위' : '아래')) + 막대('마감30분', m3, 0.5, '') + 막대('당일', m10, 2, '')
-                    : 막대('VWAP', vwDist, 0.5, vwDist >= 0 ? '위' : '아래') + 막대('1분', m1, 0.3, m1 != null ? speed : '') + 막대('3분', m3, 0.5, '')) +
+                    : 막대('VWAP', vwDist, 0.5, vwDist >= 0 ? '위' : '아래') + 막대('1분', m1, 0.3, m1 != null ? speed : '') + 막대('3분', m3, 0.5, '') + 막대('10분', m10, 1.0, '')) +
                        '<div class="sg-row"><span class="sg-rl">옵션</span><div class="sg-meter">' + 옵션눈금 + '</div><span class="sg-rv" style="color:' + 옵션색 + '">' + optState + ' ' + score.toFixed(1) + '</span></div>' +
                        거래량HTML;
 
@@ -2834,7 +2855,7 @@
                 if (color !== undefined) el.style.color = color;
                 if (title !== undefined) el.title = title;
             }
-            put('gauge', 게이지);
+            put('gauge', 게이지, undefined, s.방향근거 || '');
             // 시간대 배지: 정규장 = 실시간 / 그 외 = 참고용 (가상매매는 정규장에만 진입)
             var 장 = marketPhase();
             var 배지 = 마감 ? { 글: 마감.날짜.slice(5).replace('-', '/') + ' 마감 기준 · 참고용', 종류: 'ext' }
@@ -4968,13 +4989,62 @@
         // ════════════════════════════════════════════════════════
         // ★ 헤더 QQQ / SPY : 패널과 같은 규칙 (키움 우선, 꺼지면 야후)
         // ════════════════════════════════════════════════════════
+        //   정규장 외(프리·애프터·오버나이트·주말): 큰 숫자 = 마지막 정규장 종가(전일 대비) / 작은 줄 = 시외 현재가(종가 대비) — 패널과 같은 규칙
+        var 시황_시외 = {};          // 'neon-qqq' → { p: 시외 현재가, c: 종가 대비 %, 종가: 정규장 종가 } (정규장 중에는 없음)
+        var 헤더종가_조회시각 = {};
+        // 전일 종가(등락률 기준)가 없으면 Worker /quote 로 한 번 채움 (10분에 최대 1번)
+        function 헤더종가_채우기(t) {
+            if (!CLOSE_WORKER_URL || CLOSE_WORKER_URL.indexOf('YOUR-ACCOUNT') >= 0) return;
+            if (Date.now() - (헤더종가_조회시각[t] || 0) < 600000) return;
+            헤더종가_조회시각[t] = Date.now();
+            fetch(CLOSE_WORKER_URL.replace(/\/+$/, '') + '/quote?s=' + encodeURIComponent(t), { cache: 'no-store' })
+                .then(function (r) { return r.json(); })
+                .then(function (j) {
+                    var q = j && j.quotes && j.quotes[t];
+                    if (q && q.regPrice > 0 && marketPhase().type !== 'REG') { yahooRegCache[t] = { regClose: q.regPrice, prevClose: q.regPrevClose || 0 }; renderHeaderQuotes(); }
+                })
+                .catch(function () { });
+        }
+        function 헤더시외표시(id, 정보) {
+            var el = document.getElementById(id); if (!el) return;
+            var 칸들 = el.querySelectorAll('.mk-ext'), 표 = el.querySelector('.mk-lbl');
+            if (!칸들.length) {
+                var a = document.createElement('span'); a.className = 'mk-ext mk-ext-pc'; var nm = el.querySelector('.mk-nm'); if (nm) nm.appendChild(a);
+                var b = document.createElement('div'); b.className = 'mk-ext mk-ext-mo'; var tx = el.querySelector('.mk-txt'); if (tx) tx.appendChild(b);
+                칸들 = el.querySelectorAll('.mk-ext');
+            }
+            if (!표) { 표 = document.createElement('span'); 표.className = 'mk-lbl'; var vl = el.querySelector('.mk-vl'); if (vl) vl.insertBefore(표, vl.firstChild); }
+            var html = '';
+            if (정보 && 정보.p > 0) {
+                var cls = 정보.c > 0 ? 'up' : 정보.c < 0 ? 'dn' : '';
+                html = '시외 <b>' + 시황_숫자(정보.p) + '</b> <i class="' + cls + '">' + (정보.c > 0 ? '+' : 정보.c < 0 ? '−' : '') + Math.abs(정보.c).toFixed(2) + '%</i>';
+            }
+            Array.prototype.forEach.call(칸들, function (c) { c.innerHTML = html; c.style.display = html ? '' : 'none'; });
+            표.textContent = 정보 ? '종가' : ''; 표.style.display = 정보 ? '' : 'none';
+            if (정보) el.title = '종가 ' + 정보.종가.toFixed(2) + (정보.전일 > 0 ? ' (전일 ' + 정보.전일.toFixed(2) + ' 대비)' : ' (전일 종가 확인 중)') + ' · 시외 현재가 ' + 정보.p.toFixed(2) + ' (종가 대비)';
+            else el.removeAttribute('title');
+        }
         function renderHeaderQuotes() {
+            var 정규 = marketPhase().type === 'REG';
             HEADER_TICKERS.forEach(function (ticker) {
                 var pick = pickQuote(ticker);
                 if (!pick) return;
                 var chg = Number(String(pick.q.changeRate || '0').replace('%', '').trim()) || 0;
-                if (ticker === 'QQQ') { globQqq = chg; updateNeonItem('neon-qqq', 'QQQ(나스닥)', pick.q.price, chg); }
-                else if (ticker === 'SPY') { globSpy = chg; updateNeonItem('neon-spy', 'SPY(S&P 500)', pick.q.price, chg); }
+                var id = ticker === 'QQQ' ? 'neon-qqq' : ticker === 'SPY' ? 'neon-spy' : '', 이름 = ticker === 'QQQ' ? 'QQQ(나스닥)' : 'SPY(S&P 500)';
+                if (ticker === 'QQQ') globQqq = chg; else if (ticker === 'SPY') globSpy = chg;
+                if (!id) return;
+                var rc = 정규 ? null : getRegClose(ticker), px = Number(pick.q.price) || 0;
+                if (rc && rc.regClose > 0 && px > 0) {
+                    if (!(rc.prevClose > 0)) 헤더종가_채우기(ticker);
+                    var 종가등락 = rc.prevClose > 0 ? (rc.regClose - rc.prevClose) / rc.prevClose * 100 : null;   // 전일 종가 확인 전 = '—'
+                    시황_시외[id] = { p: px, c: (px - rc.regClose) / rc.regClose * 100, 종가: rc.regClose, 전일: rc.prevClose || 0 };
+                    updateNeonItem(id, 이름, rc.regClose, 종가등락);
+                    헤더시외표시(id, 시황_시외[id]);
+                } else {
+                    delete 시황_시외[id];
+                    updateNeonItem(id, 이름, px, chg);
+                    헤더시외표시(id, null);
+                }
             });
             updateHeaderDot();
             [0, 1, 2].forEach(function (i) { updateEnvSummary(i); });
@@ -4982,6 +5052,12 @@
 
         function initGlobalTickersListener() {
             HEADER_TICKERS.forEach(function (ticker) {
+                // 정규장 종가·전일 종가 (정규장 외 시간 상단 표시용)
+                firebase.database().ref('tickers/' + ticker + '/session').on('value', function (snap) {
+                    var v = snap.val(); if (!v) return;
+                    sessionCache[ticker] = { regClose: toNum(v.regClose), prevClose: toNum(v.prevClose), regDate: v.regDate || '', regVolume: toNum(v.regVolume), source: v.source || '' };
+                    renderHeaderQuotes();
+                });
                 var rtRef = firebase.database().ref('tickers/' + ticker + '/realtime');
                 var pRef = firebase.database().ref('tickers/' + ticker + '/panel');
                 var rtFirst = true;
@@ -5114,7 +5190,7 @@
             if (vEl) { vEl.className = 'val ' + cls; vEl.textContent = 시황_숫자(numP) + (단위 || ''); }
             if (cEl) {
                 cEl.className = 'mk-ch ' + (numC > 0 ? 'up' : numC < 0 ? 'dn' : '');
-                cEl.innerHTML = (numC > 0 ? '+' : numC < 0 ? '−' : '') + Math.abs(numC).toFixed(2) + '%' +
+                cEl.innerHTML = (chg === null ? '—' : (numC > 0 ? '+' : numC < 0 ? '−' : '') + Math.abs(numC).toFixed(2) + '%') +
                     (태그 ? '<span class="mk-tag" style="color:' + 태그.색 + ';border-color:' + 태그.색 + '88;background:' + 태그.색 + '1f">' + 태그.글 + '</span>' : '');
             }
             var 이전 = 시황_값[id];
@@ -5375,6 +5451,8 @@
                        ['neon-cl', 'WTI원유'], ['neon-gold', '금선물'], ['neon-btc', '비트코인'], ['neon-usdkrw', '원달러환율']].map(function (x) {
                 var v = 시황_값[x[0]], el = document.getElementById(x[0]);
                 if (!v || !(v.p > 0)) return x[1] + ' 데이터 없음';
+                var 외 = 시황_시외[x[0]];
+                if (외) return x[1] + ' 종가 ' + 시황_숫자(v.p) + (외.전일 > 0 ? ' (' + fmtPct(v.c) + ')' : '') + ' · 시외 ' + 시황_숫자(외.p) + ' (종가 대비 ' + fmtPct(외.c) + ')';
                 return x[1] + ' ' + 시황_숫자(v.p) + ' (' + fmtPct(v.c) + ')' + (x[0] === 'neon-vix' && VIX단계(v.p) ? ' 단계: ' + VIX단계(v.p).글 : '') + (el && el.classList.contains('stale') ? ' [거래 멈춤]' : '');
             });
             var fg = ((document.getElementById('neon-fg') || {}).innerText || '').replace(/\s+/g, ' ').trim();
