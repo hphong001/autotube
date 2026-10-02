@@ -1325,7 +1325,7 @@
         .ticker-list {
             overflow-y: auto;
             flex: 1;
-            max-height: 340px;
+            max-height: none;   /* 관심종목은 사이드바 남은 높이를 모두 쓰고 넘치면 스크롤 */
         }
 
             .ticker-list::-webkit-scrollbar {
@@ -1383,6 +1383,27 @@
                 background: #1a1a2a;
                 color: #6688ff;
             }
+
+        /* 관심종목: [1][2][3] 패널 단추 + 가격 (정규장 1줄 / 정규장 외 종가·시외 2줄) */
+        .ticker-item.wl-row { align-items: flex-start; gap: 7px; padding: 6px 4px 6px 4px; border-left: 2px solid transparent; }
+        .ticker-item.wl-row[data-p="0"] { border-left-color: #ff6666; } .ticker-item.wl-row[data-p="1"] { border-left-color: #66cc66; } .ticker-item.wl-row[data-p="2"] { border-left-color: #6688ff; }
+        .wl-pn { display: inline-flex; gap: 2px; flex-shrink: 0; align-self: center; margin-right: 1px; }
+        .wl-pb { font: inherit; width: 16px; height: 16px; padding: 0; line-height: 13px; font-size: 9.5px; font-weight: 800; border-radius: 3px; cursor: pointer; background: transparent; color: #4a5163; border: 1px solid #2a2f40; }
+        .wl-pb.p0:hover, .wl-pb.p0.on { color: #ff8080; border-color: #ff6666; } .wl-pb.p0.on { background: #ff6666; color: #1a0808; }
+        .wl-pb.p1:hover, .wl-pb.p1.on { color: #80dd80; border-color: #66cc66; } .wl-pb.p1.on { background: #66cc66; color: #081a08; }
+        .wl-pb.p2:hover, .wl-pb.p2.on { color: #8aa4ff; border-color: #6688ff; } .wl-pb.p2.on { background: #6688ff; color: #080c1a; }
+        .wl-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+        .wl-top { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
+        .wl-t { font-weight: 800; color: #e3e7ef; font-size: 12.5px; }
+        .ticker-item.active-panel .wl-t { color: #ffcc00; }
+        .wl-n { font-size: 10px; color: #6b7386; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .wl-px { display: flex; flex-direction: column; gap: 1px; }
+        .wl-ln { display: flex; align-items: baseline; gap: 6px; font-variant-numeric: tabular-nums; }
+        .wl-l { font-size: 9.5px; color: #6b7386; width: 22px; flex-shrink: 0; }
+        .wl-px { padding-left: 2px; }
+        .wl-v { font-size: 12.5px; font-weight: 700; color: #c9cedb; }
+        .wl-c { font-size: 11px; font-weight: 600; color: #8b93a7; margin-left: auto; }
+        .wl-v.up, .wl-c.up { color: #ff6b6b; } .wl-v.dn, .wl-c.dn { color: #4d8dff; }
 
         .sidebar-ad {
             background: #0d0d1a;
@@ -3550,18 +3571,109 @@
             });
         }
 
+        // ════════════════════════════════════════════════════════
+        // ★ 관심종목: 종목 앞 [1][2][3] = 그 패널로 불러오기 (이미 다른 패널에 있으면 두 패널을 서로 바꿈)
+        //   가격: 정규장 = 현재가·전일 대비 / 정규장 외 = 종가(전일 대비) + 시외 현재가(종가 대비)
+        //   데이터: 실시간(키움·야후 WebSocket)이 있으면 그 값, 없으면 Worker /quote 전 종목 묶음(15초마다) · 주말·휴장일 = 장 마감 스냅샷
+        // ════════════════════════════════════════════════════════
+        var 관심Cache = {};          // 종목 → Worker /quote 값 { price, changePct, regPrice, regPrevClose, at }
+        var 관심_조회중 = false, 관심_조회시각 = 0;
         function buildWatchlist() {
             var list = document.getElementById('ticker-list');
-            list.innerHTML = WATCH_LIST.map(function (w) { return '<div class="ticker-item" id="wl-' + w.ticker + '"><span style="font-weight:bold;min-width:44px;">' + w.ticker + '</span><span style="font-size:10px;color:#666;">' + w.name + '</span><span class="panel-badge" id="wl-badge-' + w.ticker + '" style="display:none;"></span></div>'; }).join('');
+            list.innerHTML = WATCH_LIST.map(function (w) {
+                var 단추 = [0, 1, 2].map(function (i) { return '<button type="button" class="wl-pb p' + i + '" data-t="' + w.ticker + '" data-i="' + i + '" title="패널 ' + (i + 1) + '에 ' + w.ticker + ' 불러오기">' + (i + 1) + '</button>'; }).join('');
+                return '<div class="ticker-item wl-row" id="wl-' + w.ticker + '">' +
+                    '<div class="wl-main"><div class="wl-top"><span class="wl-pn">' + 단추 + '</span><b class="wl-t">' + w.ticker + '</b><span class="wl-n">' + w.name + '</span></div>' +
+                    '<div class="wl-px" id="wl-px-' + w.ticker + '"><div class="wl-ln"><span class="wl-v">─</span></div></div></div></div>';
+            }).join('');
             refreshWatchlistBadges();
+            관심_가격표시();
         }
 
         function refreshWatchlistBadges() {
             WATCH_LIST.forEach(function (w) {
-                var badge = document.getElementById('wl-badge-' + w.ticker); var item = document.getElementById('wl-' + w.ticker);
-                if (!badge || !item) return; var idx = panelTickers.indexOf(w.ticker);
-                if (idx >= 0) { badge.textContent = '패널' + (idx + 1); badge.className = 'panel-badge p' + idx; badge.style.display = ''; item.classList.add('active-panel'); }
-                else { badge.style.display = 'none'; item.classList.remove('active-panel'); }
+                var item = document.getElementById('wl-' + w.ticker); if (!item) return;
+                var idx = panelTickers.indexOf(w.ticker);
+                Array.prototype.forEach.call(item.querySelectorAll('.wl-pb'), function (b) { b.classList.toggle('on', Number(b.getAttribute('data-i')) === idx); });
+                item.classList.toggle('active-panel', idx >= 0);
+                item.setAttribute('data-p', idx >= 0 ? String(idx) : '');
+            });
+        }
+
+        // 관심종목 [1][2][3] 단추: 패널 지정 (다른 패널에 이미 있으면 두 패널 교환)
+        function 관심_패널지정(idx, ticker) {
+            if (!ticker || !(idx >= 0 && idx <= 2)) return;
+            var 현재 = panelTickers.indexOf(ticker);
+            if (현재 === idx) return;
+            if (현재 >= 0) {
+                var 다른 = panelTickers[idx];
+                panelTickers[현재] = 다른; panelTickers[idx] = ticker;   // 먼저 바꿔 둠 → 잠깐이라도 같은 종목이 두 패널에 있지 않게
+                [[idx, ticker], [현재, 다른]].forEach(function (x) {
+                    var sel = document.getElementById('ticker-select-' + x[0]); if (sel) sel.value = x[1];
+                    패널전환예약(x[0], x[1]);
+                });
+                refreshWatchlistBadges();
+                return;
+            }
+            var sel = document.getElementById('ticker-select-' + idx); if (sel) sel.value = ticker;
+            패널전환예약(idx, ticker);
+        }
+        document.addEventListener('click', function (e) {
+            var b = e.target.closest && e.target.closest('.wl-pb'); if (!b) return;
+            e.stopPropagation();
+            관심_패널지정(Number(b.getAttribute('data-i')), b.getAttribute('data-t'));
+        });
+
+        // ── 가격 ──
+        function 관심_조회() {
+            if (관심_조회중 || !CLOSE_WORKER_URL || CLOSE_WORKER_URL.indexOf('YOUR-ACCOUNT') >= 0) return;
+            if (document.visibilityState === 'hidden' || snapFor(WATCH_LIST[0] && WATCH_LIST[0].ticker)) return;   // 숨김 탭 · 주말·휴장일(스냅샷 사용) 은 조회 안 함
+            관심_조회중 = true; 관심_조회시각 = Date.now();
+            var 기본 = CLOSE_WORKER_URL.replace(/\/+$/, '') + '/quote';
+            function 받기(j) {
+                var qs = (j && j.quotes) || {}, n = 0, now = Date.now();
+                Object.keys(qs).forEach(function (t) { var q = qs[t]; if (q && q.price > 0) { 관심Cache[t] = { price: q.price, changePct: q.changePct, regPrice: q.regPrice || 0, regPrevClose: q.regPrevClose || 0, at: now }; n++; } });
+                return n;
+            }
+            fetch(기본, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+                var n = 받기(j);
+                // 묶음 조회 실패(개별 조회로 대체)로 일부만 왔으면 12개씩 나눠 요청
+                var 빠진 = WATCH_LIST.map(function (w) { return w.ticker; }).filter(function (t) { return !관심Cache[t] || Date.now() - 관심Cache[t].at > 60000; });
+                if (n > 0 && 빠진.length === 0) return;
+                var 묶음 = []; for (var i = 0; i < 빠진.length; i += 12) 묶음.push(빠진.slice(i, i + 12));
+                return Promise.all(묶음.map(function (m) { return fetch(기본 + '?s=' + encodeURIComponent(m.join(',')), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(받기).catch(function () { }); }));
+            }).catch(function (e) { console.warn('[관심종목] 시세 조회 실패', e); })
+              .then(function () { 관심_조회중 = false; 관심_가격표시(); });
+        }
+        setInterval(function () { if (Date.now() - 관심_조회시각 >= 15000) 관심_조회(); 관심_가격표시(); }, 2000);
+        document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && Date.now() - 관심_조회시각 >= 15000) 관심_조회(); });
+
+        function 관심_값(t) {
+            var 장 = marketPhase(), 정규 = 장.type === 'REG', w = 관심Cache[t], sn = snapFor(t);
+            var pk = pickQuote(t), 실시간 = pk && pk.q && pk.q.price > 0 && pk.q.recvAt && Date.now() - pk.q.recvAt <= 120000 ? pk.q : null;
+            var 현재 = 실시간 ? 실시간.price : w ? w.price : sn ? sn.price : 0;
+            if (!(현재 > 0)) return null;
+            var rc = getRegClose(t);
+            if (정규) {
+                var 기준 = rc && rc.regClose > 0 ? rc.regClose : w && w.regPrevClose > 0 ? w.regPrevClose : 0;
+                var 등락 = 기준 > 0 ? (현재 - 기준) / 기준 * 100 : (실시간 && 실시간.changeRate != null ? Number(String(실시간.changeRate).replace('%', '')) : w ? w.changePct : null);
+                return { 정규: true, 현재: 현재, 등락: 등락 };
+            }
+            var 종가 = rc && rc.regClose > 0 ? rc.regClose : w && w.regPrice > 0 ? w.regPrice : sn && sn.regPrice > 0 ? sn.regPrice : 0;
+            var 전일 = rc && rc.prevClose > 0 && rc.regClose === 종가 ? rc.prevClose : w && w.regPrevClose > 0 && Math.abs(w.regPrice - 종가) < 0.005 ? w.regPrevClose : sn && sn.regPrevClose > 0 && Math.abs(sn.regPrice - 종가) < 0.005 ? sn.regPrevClose : 0;
+            return { 정규: false, 종가: 종가, 종가등락: 종가 > 0 && 전일 > 0 ? (종가 - 전일) / 전일 * 100 : null, 현재: 현재, 등락: 종가 > 0 ? (현재 - 종가) / 종가 * 100 : null, 장: 장 };
+        }
+        function 관심_가격표시() {
+            function 칸(v, c, 라벨) {
+                var cls = c == null ? '' : c > 0 ? ' up' : c < 0 ? ' dn' : '';
+                return '<div class="wl-ln">' + (라벨 ? '<span class="wl-l">' + 라벨 + '</span>' : '') + '<span class="wl-v' + cls + '">' + (v > 0 ? v.toFixed(2) : '─') + '</span>' +
+                       '<span class="wl-c' + cls + '">' + (c == null || !(v > 0) ? '' : (c > 0 ? '+' : '') + c.toFixed(2) + '%') + '</span></div>';
+            }
+            WATCH_LIST.forEach(function (w) {
+                var el = document.getElementById('wl-px-' + w.ticker); if (!el) return;
+                var x = null; try { x = 관심_값(w.ticker); } catch (e) { }
+                var html = !x ? 칸(0, null, '') : x.정규 ? 칸(x.현재, x.등락, '') : 칸(x.종가, x.종가등락, '종가') + 칸(x.현재, x.등락, '시외');
+                if (el._html !== html) { el.innerHTML = html; el._html = html; }
             });
         }
 
@@ -3572,6 +3684,10 @@
                 if (sel) sel.value = panelTickers[panelIdx];
                 return;
             }
+            패널전환예약(panelIdx, newTicker);
+        }
+        // 패널 종목 바꾸기 (콤보박스·관심종목 단추 공통): 0.8초 뒤 전환 · 3.5초 안전 시간
+        function 패널전환예약(panelIdx, newTicker) {
             clearTimeout(switchTimers[panelIdx]);
             showPanelOverlay(panelIdx, newTicker + ' 데이터 수신 중...');
 
