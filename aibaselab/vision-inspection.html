@@ -30,7 +30,7 @@
 <link rel="apple-touch-icon" href="image/apple-touch-icon.png">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=20261002b">
 <!-- Google Analytics 4: 측정 ID 발급 후 G-XXXXXXXXXX 교체하고 주석 해제
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script>
@@ -143,25 +143,25 @@
   </div>
 </header>
 <main id="main">
-<section class="page-hero has-summary">
+<section class="page-hero">
   <div class="container container-narrow">
     <nav class="breadcrumb" aria-label="현재 위치"><ol><li><a href="index.html">홈</a></li><li><a href="cases.html">솔루션 사례</a></li><li aria-current="page">출하 검수 자동화 (바코드·중량·비전)</li></ol></nav>
     <span class="eyebrow eyebrow-dark">CASE 04 · 출하 검수 · 비전 · MES 연동</span>
     <h1>바코드·중량·카메라로 오출고를 출하 전에 막는 검수 시스템</h1>
     <p class="lead">주문서와 제품 바코드를 대조하고, 산업용 전자저울로 중량을, 카메라로 라벨·부품 유무를 확인합니다.<br class="br-pc"> 모든 결과는 사진과 함께 기록되고, 생산 수량과 진행 상황은 MES 서버로 실시간 전송됩니다.</p>
-  </div>
-</section>
-
-<section class="section" style="padding-top:0">
-  <div class="container container-narrow">
     <dl class="summary">
       <div><dt>고객사</dt><dd>D사 (제조사 출하 라인)</dd></div>
       <div><dt>적용 범위</dt><dd>출하 검수 스테이션</dd></div>
       <div><dt>연동 장비</dt><dd>바코드 스캐너 · 산업용 전자저울 · 산업용 카메라 · 경광등</dd></div>
       <div><dt>연동 시스템</dt><dd>MES 서버 (REST API · DB)</dd></div>
     </dl>
+  </div>
+</section>
 
-    <div class="prose" style="margin-top:48px">
+<section class="section">
+  <div class="container container-narrow">
+
+    <div class="prose">
       <h2><span class="h-num">01</span>이런 문제가 있었습니다</h2>
       <ul class="pain-list">
         <li><strong>오출고</strong>다른 제품이나 수량이 잘못 포장돼 나가는 일이 있었습니다.</li>
@@ -205,10 +205,10 @@
 
       <div class="related">
         <h2>다른 구축 사례</h2>
-        <div class="grid grid-3">
-          <a class="case-card" href="autotube.html"><div class="case-body"><div class="tags"><span class="tag">#콘텐츠자동화</span></div><h3>교육 콘텐츠 채널 운영사 — 영상 제작 자동화(오토튜브)</h3><span class="link-arrow">보기 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></div></a>
-          <a class="case-card" href="hardware-control.html"><div class="case-body"><div class="tags"><span class="tag">#장비연동</span></div><h3>음향기기 제조사 — 계측 장비 연동 검사 · 실시간 모니터링</h3><span class="link-arrow">보기 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></div></a>
-          <a class="case-card" href="finance-ai.html"><div class="case-body"><div class="tags"><span class="tag">#자동매매</span></div><h3>투자법인 — 키움증권 국내·미국 주식 자동매매</h3><span class="link-arrow">보기 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></div></a>
+        <div class="rel-grid">
+          <a class="rel-card" href="autotube.html"><span class="rel-tag">#콘텐츠자동화</span><span class="rel-title">교육 콘텐츠 채널 운영사 — 영상 제작 자동화(오토튜브)</span><span class="rel-arrow" aria-hidden="true">→</span></a>
+          <a class="rel-card" href="hardware-control.html"><span class="rel-tag">#장비연동</span><span class="rel-title">음향기기 제조사 — 계측 장비 연동 검사 · 실시간 모니터링</span><span class="rel-arrow" aria-hidden="true">→</span></a>
+          <a class="rel-card" href="finance-ai.html"><span class="rel-tag">#자동매매</span><span class="rel-title">투자법인 — 키움증권 국내·미국 주식 자동매매</span><span class="rel-arrow" aria-hidden="true">→</span></a>
         </div>
       </div>
     </div>
@@ -259,6 +259,6 @@
     </div>
   </div>
 </footer>
-<script src="js/main.js" defer></script>
+<script src="js/main.js?v=20261002b" defer></script>
 </body>
 </html>

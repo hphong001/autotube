@@ -6,7 +6,7 @@
      [설정] 문의 폼 전송 주소
      Google Apps Script 웹앱 배포 후 받은 URL을 아래에 붙여넣으세요.
      예: 'https://script.google.com/macros/s/AKfycb.../exec'
-     비워두면 메일 앱(mailto)으로 대신 연결됩니다.
+     비워두면 '받는 주소·작성 내용 복사' 안내가 표시됩니다.
      ------------------------------------------------------------ */
   var FORM_ENDPOINT = '';
   var CONTACT_EMAIL = 'contact@aibaselab.com';
@@ -88,6 +88,39 @@
     var btn = form.querySelector('.submit-btn');
     function setStatus(msg, ok) { status.textContent = msg; status.className = 'form-status ' + (ok ? 'ok' : 'err'); }
 
+    var LABELS = { company: '회사명', name: '성함', position: '직함', email: '이메일', phone: '연락처', category: '문의 분야', message: '문의 내용', page: '접수 페이지' };
+    function buildMailText(data) {
+      var out = [];
+      Object.keys(LABELS).forEach(function (k) { var v = data.get(k); if (v) out.push(k === 'message' ? '\n[' + LABELS[k] + ']\n' + v : LABELS[k] + ': ' + v); });
+      return out.join('\n');
+    }
+    function copyText(t, done) {
+      function fallback() {
+        var ta = document.createElement('textarea'); ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (err) {} document.body.removeChild(ta); done();
+      }
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t).then(done, fallback); else fallback();
+    }
+    function showCopyPanel(text) {
+      var old = form.querySelector('.copy-panel'); if (old) old.remove();
+      var subject = '[홈페이지 문의] ' + (form.querySelector('[name="company"]').value || '');
+      var p = document.createElement('div'); p.className = 'copy-panel'; p.setAttribute('role', 'status');
+      p.innerHTML = '<p class="copy-title">아래 두 가지를 복사해 사용하시는 메일(Gmail, 네이버 등)로 보내 주세요.</p>' +
+        '<div class="copy-btns"><button type="button" class="btn btn-outline btn-sm" data-copy="mail">① 받는 주소 복사<span>' + CONTACT_EMAIL + '</span></button>' +
+        '<button type="button" class="btn btn-primary btn-sm" data-copy="body">② 작성 내용 복사</button></div>' +
+        '<p class="copy-sub">메일 프로그램이 설치되어 있다면 <a href="#" data-copy="app">메일 앱으로 바로 열기</a></p>';
+      btn.insertAdjacentElement('afterend', p);
+      p.addEventListener('click', function (ev) {
+        var t = ev.target.closest('[data-copy]'); if (!t) return; ev.preventDefault();
+        var k = t.getAttribute('data-copy');
+        if (k === 'app') { location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text); return; }
+        copyText(k === 'mail' ? CONTACT_EMAIL : '제목: ' + subject + '\n\n' + text, function () {
+          t.classList.add('copied'); setStatus(k === 'mail' ? '받는 주소를 복사했습니다.' : '작성 내용을 복사했습니다. 메일 본문에 붙여넣어 주세요.', true);
+        });
+      });
+      p.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       // TEMPLATE_CHECK: 안내 문구만 있고 내용을 하나도 적지 않은 경우
@@ -101,9 +134,7 @@
       data.append('page', location.href);
 
       if (!FORM_ENDPOINT) {
-        var lines = [];
-        data.forEach(function (v, k) { if (k.charAt(0) !== '_' && k !== 'website' && k !== 'consent') lines.push(k + ': ' + v); });
-        location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent('[홈페이지 문의] ' + (data.get('company') || '')) + '&body=' + encodeURIComponent(lines.join('\n'));
+        showCopyPanel(buildMailText(data));
         return;
       }
 
@@ -117,7 +148,7 @@
           if (res && res.result === 'success') {
             form.reset();
             if (msg) msg.setCustomValidity('');
-            setStatus('문의가 접수되었습니다. 영업일 기준 1일 이내에 회신드리겠습니다.', true);
+            setStatus('문의가 접수되었습니다. 대표 엔지니어가 검토 후 회신드리겠습니다.', true);
             if (typeof gtag === 'function') gtag('event', 'generate_lead', { form: 'contact' });
           } else {
             throw new Error((res && res.message) || 'error');
