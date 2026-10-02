@@ -900,7 +900,11 @@
         .sg-band.cand span { font-weight: 500; }
         .sg-band.flash { animation: sgFlash 0.5s ease-in-out 4; }
         @keyframes sgFlash { 50% { filter: brightness(1.6); box-shadow: 0 0 0 3px rgba(255,255,255,0.35); } }
-        .sg-cell.warn { box-shadow: inset 0 0 0 1.5px #f5a524; background: rgba(245,165,36,0.08); }
+        .sg-cell.warn { box-shadow: inset 0 0 0 1px rgba(245,165,36,.45); background: rgba(245,165,36,0.06); }
+        .sg-rrh { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+        .sg-rrb { font-size: 10.5px; font-weight: 800; line-height: 1; padding: 3px 6px; border-radius: 4px; letter-spacing: .3px; }
+        .sg-rrb.bad { color: #f5a524; background: rgba(245,165,36,.14); border: 1px solid rgba(245,165,36,.55); }
+        .sg-rrb.ok { color: #3ecf8e; background: rgba(62,207,142,.12); border: 1px solid rgba(62,207,142,.5); }
         /* 예상 수익 / 손실 */
         .sg-pnls { display: flex; flex-direction: column; gap: 7px; font-size: 13px; min-height: 68px; }
         .sg-pnl { display: grid; grid-template-columns: 124px minmax(0, 1fr) auto; gap: 10px; align-items: center; }
@@ -2386,7 +2390,7 @@
             if (!p) 추가('손익비', '손익비 — 계획 없음', 0, 25, false);
             else {
                 var rr = p.rr, pt = rr >= 3 ? 25 : rr >= 2 ? 20 : rr >= 1.5 ? 15 : rr >= 가상_최소손익비 ? 10 : 0;
-                추가('손익비', '손익비 1:' + rr.toFixed(1) + (pt ? '' : ' (기준 1:' + 가상_최소손익비.toFixed(1) + ')'), pt, 25, pt > 0);
+                추가('손익비', '손익비 1 : ' + rr.toFixed(1) + (pt ? '' : ' (기준 1 : ' + 가상_최소손익비.toFixed(1) + ')'), pt, 25, pt > 0);
             }
 
             // 3) 진입 위치
@@ -2821,7 +2825,7 @@
             var okPlan = plan && (plan.rr >= 가상_최소손익비 || (같은방향유지 && plan.rr >= 판단_유지손익비));
             var cand = okPlan ? (plan.dir === 'long' ? '매수' : '매도') : '관망';
             var candReason = okPlan ? paperPlain(line3)
-                           : plan ? '손익비 부족 (1:' + plan.rr.toFixed(1) + ', 기준 1:' + 가상_최소손익비.toFixed(1) + ') — 진입하지 않음'
+                           : plan ? '손익비 부족 (1 : ' + plan.rr.toFixed(1) + ', 기준 1 : ' + 가상_최소손익비.toFixed(1) + ') — 진입하지 않음'
                            : paperPlain(line3);
 
             // ── 진입 점수 (표시·기록용) ──
@@ -2847,7 +2851,7 @@
             if (jd.상태 !== cand && now - jd.후보시작 >= 확인ms && (즉시 || now - jd.시작 >= 판단_최소유지ms)) {
                 var 이전상태 = jd.상태;
                 jd.상태 = cand; jd.시작 = now; jd.이유 = candReason; jd.계획 = plan; jd.점수 = 지금점수; jd.기준가 = price; jd.bias = bias; jd.첫판단 = false;
-                jd.변경 = { 시각: now, 전: 이전상태, 후: cand, 사유: 즉시 || (cand === '관망' ? (plan ? '손익비 ' + plan.rr.toFixed(1) + ' (유지 기준 ' + 판단_유지손익비.toFixed(1) + ' 미만)' : '진입 계획 없음') : '손익비 1:' + plan.rr.toFixed(1) + ' 충족') + (즉시 ? '' : ' · ' + Math.round(확인ms / 1000) + '초 유지 확인') };
+                jd.변경 = { 시각: now, 전: 이전상태, 후: cand, 사유: 즉시 || (cand === '관망' ? (plan ? '손익비 1 : ' + plan.rr.toFixed(1) + ' (유지 기준 1 : ' + 판단_유지손익비.toFixed(1) + ' 미만)' : '진입 계획 없음') : '손익비 1 : ' + plan.rr.toFixed(1) + ' 충족') + (즉시 ? '' : ' · ' + Math.round(확인ms / 1000) + '초 유지 확인') };
                 판단전환(s, jd, price);
             } else if (jd.상태 === cand) {
                 jd.이유 = candReason; jd.계획 = plan; jd.점수 = 지금점수;   // 같은 판단이면 이유·계획·점수는 최신값으로
@@ -2976,7 +2980,7 @@
             else if (jd.상태 === '매수') { 띠 = '<div class="sg-band long-wait">' + 위삼각 + '롱 대기 <span>· 가격이 ' + jd.계획.entry.toFixed(2) + (진입거리 < 0 ? '까지 내려오면' : '을 넘으면') + ' 진입</span></div>'; 띠키 = '롱대기'; }
             else if (jd.상태 === '매도') { 띠 = '<div class="sg-band short-wait">' + 아래삼각 + '숏 대기 <span>· 가격이 ' + jd.계획.entry.toFixed(2) + (진입거리 > 0 ? '까지 올라오면' : '아래로 내려가면') + ' 진입</span></div>'; 띠키 = '숏대기'; }
             else {
-                var 후보사유 = pl ? (pl.rr < 가상_최소손익비 ? '손익비 부족 (1:' + pl.rr.toFixed(1) + ')' : '확인 대기') : (paperPlain(line3).split(' — ')[0] || '진입 조건 미충족');
+                var 후보사유 = pl ? (pl.rr < 가상_최소손익비 ? '손익비 부족 (1 : ' + pl.rr.toFixed(1) + ')' : '확인 대기') : (paperPlain(line3).split(' — ')[0] || '진입 조건 미충족');
                 띠 = '<div class="sg-band cand">' + (후보방향 ? (후보방향 === '롱' ? '<svg viewBox="0 0 16 16" class="sg-ico"><path d="M8 3 L13.5 12 H2.5 Z" fill="currentColor"></path></svg>' : '<svg viewBox="0 0 16 16" class="sg-ico"><path d="M8 13 L13.5 4 H2.5 Z" fill="currentColor"></path></svg>') + '후보: ' + 후보방향 : '방향 없음') +
                      ' <span>· ' + 후보사유 + '</span></div>';
                 띠키 = '관망';
@@ -2989,13 +2993,20 @@
             // ④ 계획 4칸 (진입가보다 위 = 빨강, 아래 = 파랑 / 관망이면 회색 / 손익비 부족이면 주황 강조)
             function 칸(이름, 값, 색, 추가) { return '<div class="sg-cell' + (추가 || '') + '"><div class="sg-cl">' + 이름 + '</div><div class="sg-cv" style="color:' + 색 + '">' + 값 + '</div></div>'; }
             var 계획칸, 손익HTML;
+            // 손익비 칸: "1 : 0.9" + 기준(1 : 1.2) 미달·충족 배지 (✕ 대신)
+            function 손익비칸(rr, 부족) {
+                var 기준글 = '기준 1 : ' + 가상_최소손익비.toFixed(1);
+                var 배지 = '<span class="sg-rrb ' + (부족 ? 'bad' : 'ok') + '" title="' + 기준글 + (부족 ? ' 미달 — 진입하지 않음' : ' 충족') + '">' + (부족 ? '미달' : '충족') + '</span>';
+                return '<div class="sg-cell' + (부족 ? ' warn' : '') + '" title="손익비 = 목표까지 이익 ÷ 손절까지 손실 · ' + 기준글 + ' 이상이면 진입"><div class="sg-cl sg-rrh">손익비' + 배지 + '</div>' +
+                       '<div class="sg-cv" style="color:' + (부족 ? 주황 : 흐린계획 ? '#8b93a7' : '#e7e9f0') + '">1 : ' + rr.toFixed(1) + '</div></div>';
+            }
             if (pl) {
                 function 위아래색(v) { return 흐린계획 ? '#8b93a7' : v > pl.entry ? 빨강 : 파랑; }
                 var 부족 = pl.rr < 가상_최소손익비;
                 계획칸 = 칸(pl.dir === 'long' ? '롱 진입' : '숏 진입', pl.entry.toFixed(2), 흐린계획 ? '#8b93a7' : (pl.dir === 'long' ? 빨강 : 파랑)) +
                          칸('손절', pl.stop.toFixed(2), 위아래색(pl.stop)) +
                          칸('목표', pl.target.toFixed(2), 위아래색(pl.target)) +
-                         (부족 ? 칸('손익비', '1:' + pl.rr.toFixed(1) + ' ✕', 주황, ' warn') : 칸('손익비', '1:' + pl.rr.toFixed(1), 흐린계획 ? '#8b93a7' : '#e7e9f0'));
+                         손익비칸(pl.rr, 부족);
                 // ⑤ 예상 수익 / 손실 (롱: 상승 시 수익·하락 시 손실 / 숏: 하락 시 수익·상승 시 손실, 색 = 가격 방향)
                 var 롱 = pl.dir === 'long', 최대 = Math.max(pl.rewardPct, pl.riskPct);
                 function 줄(글, 값, 색, 부호, 기준) {
