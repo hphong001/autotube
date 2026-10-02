@@ -160,4 +160,30 @@
         .finally(function () { btn.disabled = false; btn.textContent = old; if (tsField) tsField.value = String(Date.now()); });
     });
   }
+
+  /* M_CTA: 모바일 하단 고정 문의 버튼 (문의 폼이 보이면 숨김) */
+  (function () {
+    var onIndex = !!document.getElementById('contact');
+    var a = document.createElement('a');
+    a.className = 'm-cta'; a.href = onIndex ? '#contact' : '/#contact'; a.textContent = '도입 문의하기 →';
+    document.body.appendChild(a); document.body.classList.add('has-m-cta');
+    var targets = [document.getElementById('contact'), document.querySelector('.site-footer')].filter(Boolean);
+    if ('IntersectionObserver' in window && targets.length) {
+      var seen = new Set();
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (en) { if (en.isIntersecting) seen.add(en.target); else seen.delete(en.target); });
+        a.classList.toggle('hide', seen.size > 0);
+      }, { threshold: 0.05 });
+      targets.forEach(function (t) { io.observe(t); });
+    }
+  })();
+
+  /* 기술 칩 더보기 (모바일) */
+  document.querySelectorAll('.m-fold').forEach(function (ul) {
+    if (ul.children.length <= 10) return;
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'fold-btn'; b.textContent = '기술 ' + (ul.children.length - 10) + '개 더보기';
+    b.addEventListener('click', function () { ul.classList.add('open'); b.remove(); });
+    ul.insertAdjacentElement('afterend', b);
+  });
 })();

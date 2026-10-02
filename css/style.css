@@ -409,3 +409,47 @@ textarea.form-control { min-height: 130px; resize: vertical; line-height: 1.6; }
 .btn-navy { background: var(--navy-900); color: #fff !important; border: 1px solid var(--navy-900); text-decoration: none !important; }
 .btn-navy:hover { background: var(--cyan); border-color: var(--cyan); color: #00131a !important; }
 .prose .extend-note { font-size: 14.5px; font-weight: 500; color: var(--text-3); }
+
+/* ===== 2026-10 모바일 최적화 (PC 화면은 변경 없음) ===== */
+.swipe-hint, .m-tech, .m-only, .m-cta, .fold-btn { display: none; }
+@media (max-width: 680px) {
+  :root { --section-y: 56px; }
+  .section-title { font-size: 25px; line-height: 1.32; }
+  .section-lead { font-size: 15px; margin-bottom: 22px; }
+  /* 가로로 넘기는 카드 묶음 */
+  .m-swipe { display: flex !important; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-left: var(--gutter); -webkit-overflow-scrolling: touch;
+    margin-left: calc(-1 * var(--gutter)); margin-right: calc(-1 * var(--gutter)); padding: 4px var(--gutter) 14px; scrollbar-width: none; }
+  .m-swipe::-webkit-scrollbar { display: none; }
+  .m-swipe > * { flex: 0 0 84%; scroll-snap-align: start; }
+  .rel-grid.m-swipe > *, .process.m-swipe > li { flex-basis: 78%; }
+  .process.m-swipe li:not(:last-child)::after { display: none; }
+  .swipe-hint { display: block; font-size: 12.5px; font-weight: 700; color: var(--cyan-ink); margin: -6px 0 10px; text-align: right; }
+  .section-dark .swipe-hint, .page-hero .swipe-hint { color: var(--cyan); }
+  /* 메인: 기술 섹션 대신 사례 카드에 기술 표시 */
+  .m-hide { display: none !important; }
+  .m-only { display: block; }
+  .m-tech { display: block; font-size: 12px; font-weight: 700; color: var(--cyan-ink); margin-bottom: 8px; letter-spacing: .01em; }
+  .m-tech-link { margin-top: 6px; text-align: center; }
+  .m-tech-link a { font-weight: 700; font-size: 14.5px; color: var(--text); text-decoration: underline; text-underline-offset: 4px; }
+  /* 첫 화면: 이미지를 위로, 수치는 한 줄로 */
+  .hero { padding-top: calc(var(--header-h) + 20px); }
+  .hero-visual { order: -1; margin-bottom: 26px; aspect-ratio: 16 / 9; }
+  .hero h1 { font-size: 29px; }
+  .hero-stats { margin-top: 26px; padding-top: 18px; gap: 8px; }
+  .hero-stats dt { font-size: 19px; }
+  .hero-stats dd { font-size: 11.5px; line-height: 1.45; }
+  /* 기술 칩 접기 */
+  .m-fold:not(.open) li:nth-child(n+11) { display: none; }
+  .fold-btn { display: inline-block; margin-top: 14px; font-size: 14px; font-weight: 700; background: none; border: 0; color: var(--text); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; padding: 0; }
+  /* 카드 여백 */
+  .service-card, .why-card, .case-body { padding: 22px 20px; }
+  .feature { padding: 18px; }
+  /* 문의 폼 */
+  #f-message { min-height: 240px; font-size: 14px; }
+  /* 하단 고정 문의 버튼 */
+  .m-cta { display: flex; position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 90;
+    height: 52px; align-items: center; justify-content: center; gap: 6px; border-radius: 12px; background: var(--cyan); color: #00131a;
+    font-weight: 800; font-size: 15.5px; text-decoration: none; box-shadow: 0 10px 28px rgba(0,0,0,.35); transition: transform .25s, opacity .25s; }
+  .m-cta.hide { transform: translateY(140%); opacity: 0; pointer-events: none; }
+  body.has-m-cta .site-footer { padding-bottom: 84px; }
+}
