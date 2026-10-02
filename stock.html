@@ -828,6 +828,7 @@
         .sg-glabel .sg-mono { color: #8b93a7; }
         .sg-gsub { font-size: 11.5px; color: #8b93a7; white-space: nowrap; }
         .sg-gsub em { font-style: normal; font-weight: 700; }
+        .sg-gstd { display: flex; flex-direction: column; align-items: center; font-size: 10px; line-height: 13px; color: #6b7386; white-space: nowrap; margin-top: 1px; }
         .sg-gtitle { font-size: 13.5px; font-weight: 800; color: #ffffff; white-space: nowrap; margin-bottom: 2px; }
         .sg-gtitle small { font-size: 10.5px; font-weight: 500; color: #6b7386; margin-left: 3px; }
         .sg-gtxt { display: flex; flex-direction: column; align-items: center; gap: 2px; }
@@ -985,7 +986,7 @@
         @container (max-width: 400px) {
             .sg-top { flex-direction: column; align-items: stretch; }
             .sg-gauge { flex-direction: row; width: auto; min-height: 0; gap: 10px; justify-content: flex-start; }
-            .sg-gauge { flex-wrap: wrap; row-gap: 2px; } .sg-gtitle { width: 100%; } .sg-gtxt { align-items: flex-start; }
+            .sg-gauge { flex-wrap: wrap; row-gap: 2px; } .sg-gtitle { width: 100%; } .sg-gtxt { align-items: flex-start; } .sg-gstd { align-items: flex-start; }
             .sg-sc-title small { display: block; margin-top: 2px; }
         }
 
@@ -2477,6 +2478,26 @@
             return { 값: 폭.reduce(function (a, x) { return a + x; }, 0) / 폭.length, 출처: '(최근 체결)' };
         }
 
+        // ── 단기 방향 기준 (종목 묶음별 고정 · 화면에 표시) ──
+        //   ±1 = 이 기준 이상 움직였을 때. 날마다 바뀌지 않음 → "TSLA 는 3분에 0.35% 오르면 상승으로 친다"
+        var 방향기준_묶음 = {
+            '지수 ETF': { 분3: 0.15, 분10: 0.30, vwap: 0.15, 종목: ['SPY', 'QQQ', 'IWM', 'DIA', 'SPX', 'VOO', 'TQQQ', 'SQQQ'] },
+            '대형주': { 분3: 0.25, 분10: 0.50, vwap: 0.25, 종목: ['AAPL', 'MSFT', 'AMZN', 'META', 'NVDA', 'GOOGL', 'GOOG', 'AVGO', 'NFLX', 'ORCL'] },
+            '고변동': { 분3: 0.35, 분10: 0.70, vwap: 0.35, 종목: ['TSLA', 'PLTR', 'AMD', 'MU', 'SMCI', 'ARM', 'HOOD', 'SOFI', 'IONQ'] },
+            '초고변동': { 분3: 0.50, 분10: 1.00, vwap: 0.50, 종목: ['MSTR', 'COIN', 'RGTI', 'QBTS', 'SOXL', 'TSLL'] }
+        };
+        // 목록에 없는 종목: 최근 4거래일 평균 하루 변동폭(Worker /day)으로 묶음 선택 (없으면 대형주)
+        function 방향기준_가져오기(종목) {
+            var 묶음 = null;
+            Object.keys(방향기준_묶음).forEach(function (k) { if (!묶음 && 방향기준_묶음[k].종목.indexOf(종목) >= 0) 묶음 = k; });
+            if (!묶음) {
+                var 폭 = 일데이터[종목] && 일데이터[종목].레벨 && 일데이터[종목].레벨.일평균폭;
+                묶음 = 폭 > 0 ? (폭 < 1.5 ? '지수 ETF' : 폭 < 3 ? '대형주' : 폭 < 5.5 ? '고변동' : '초고변동') : '대형주';
+            }
+            var b = 방향기준_묶음[묶음];
+            return { 묶음: 묶음, 분3: b.분3, 분10: b.분10, vwap: b.vwap };
+        }
+
         // ── 결론 안정화 설정 ──
         var 판단_확인ms = 20000, 판단_최소유지ms = 60000, 판단_즉시확인ms = 2000, 판단_유지손익비 = 1.0;
         // 최근 ms 동안 받은 가격의 중간값 (순간 체결 몇 번에 흔들리지 않게)
@@ -2581,13 +2602,14 @@
 
             // ── 방향 점수 (-4 ~ +4): VWAP 위치 + 3분 모멘텀 + 10분 추세 + 옵션수급 ──
             //   VWAP 위치는 윈폼이 계산한 실제 VWAP 일 때만 반영 (추정·페이지 수집 VWAP 은 0점 — 진입 점수와 같은 기준)
-            //   3분·10분 기준은 종목 변동성(3분봉 평균 폭)에 맞춤: 3분 = 평균 폭 × 0.5 (최소 0.15%), 10분 = 평균 폭 × 1.0 (최소 0.3%)
-            //     → TSLA 처럼 출렁임이 큰 종목이 몇 초 만에 기준을 넘나들며 방향이 뒤집히는 것을 막음
+            //   3분·10분·VWAP 기준 = 종목 묶음별 고정값 (날마다 바뀌지 않음 · 화면에 표시) → 방향기준_가져오기
+            //   마감 기준 모드: 마감30분 = 10분 기준, 당일 = 10분 기준 × 2
             var 구간 = 구간_가져오기(s.ticker);
             var 변동 = 변동폭계산(s, 구간, price);
-            var 기준3분 = 변동 ? Math.max(0.15, 변동.값 * 0.5) : 0.15, 기준10분 = 변동 ? Math.max(0.3, 변동.값) : 0.3;
-            if (마감) { 기준3분 = 기준10분; 기준10분 = 변동 ? Math.max(0.5, 변동.값 * 2) : 0.5; }   // 마감 30분 = 평균 폭 × 1, 당일 = 평균 폭 × 2 (최소 0.5%)
-            var 점수_VWAP = (s.extVwap > 0 || 일VWAP > 0 || 마감) ? (vwDist > 0.1 ? 1 : vwDist < -0.1 ? -1 : 0) : 0;
+            var 방기 = 방향기준_가져오기(s.ticker);
+            var 기준3분 = 방기.분3, 기준10분 = 방기.분10, 기준VWAP = 방기.vwap;
+            if (마감) { 기준3분 = 방기.분10; 기준10분 = 방기.분10 * 2; }
+            var VWAP있음 = (s.extVwap > 0 || 일VWAP > 0 || 마감);
             // 경계선 여유: 한 번 ±1 이 되면 기준의 60% 아래로 내려가야 0 으로 돌아감 (기준선 근처에서 0 ↔ ±1 반복 방지)
             function 여유점수(값, 기준, 이전) {
                 if (값 == null) return 0;
@@ -2595,8 +2617,9 @@
                 if (이전 === -1 && 값 < -기준 * 0.6) return -1;
                 return 값 > 기준 ? 1 : 값 < -기준 ? -1 : 0;
             }
+            var 점수_VWAP = VWAP있음 ? 여유점수(vwDist, 기준VWAP, s.이전VWAP) : 0;
             var 점수_3분 = 여유점수(m3, 기준3분, s.이전3분), 점수_10분 = 여유점수(m10, 기준10분, s.이전10분);
-            s.이전3분 = 점수_3분; s.이전10분 = 점수_10분;
+            s.이전VWAP = 점수_VWAP; s.이전3분 = 점수_3분; s.이전10분 = 점수_10분;
             var 점수_옵션 = score >= 6 ? 1 : score <= 4 ? -1 : 0;
             var bias = 점수_VWAP + 점수_3분 + 점수_10분 + 점수_옵션;
             // ±2 이상(추세)은 가격 항목(VWAP·3분·10분) 중 하나 이상이 같은 방향일 때만 인정 → 옵션만으로는 추세가 되지 않음
@@ -2604,7 +2627,7 @@
             if (Math.abs(bias) >= 2 && !가격근거) bias = bias > 0 ? 1 : -1;
             디버그('방향' + s.ticker, '[' + s.ticker + '] ' + (마감 ? '마감 기준(' + 마감.날짜 + ') ' : '') + '방향 점수 ' + (bias > 0 ? '+' : '') + bias + ' = VWAP ' + ((s.extVwap > 0 || 마감) ? 점수_VWAP : '0(실제 VWAP 없음)') +
                 (마감 ? ' · 마감30분 ' + 점수_3분 + ' · 당일 ' + 점수_10분 : ' · 3분 ' + 점수_3분 + ' · 10분 ' + 점수_10분) + ' · 옵션 ' + 점수_옵션 +
-                ' (기준 3분 ±' + 기준3분.toFixed(2) + '% · 10분 ±' + 기준10분.toFixed(2) + '%' + (변동 ? ', 3분봉 평균 폭 ' + 변동.값.toFixed(2) + '% ' + 변동.출처 : ', 기본값') + ')');
+                ' (' + 방기.묶음 + ' 기준 3분 ±' + 기준3분.toFixed(2) + '% · 10분 ±' + 기준10분.toFixed(2) + '% · VWAP ±' + 기준VWAP.toFixed(2) + '%)');
 
             // 속도 표현
             var speed = '';
@@ -2901,7 +2924,17 @@
             // ① 방향 게이지 (−4 ~ +4)
             var 점수 = Math.max(-4, Math.min(4, bias));
             var 점수이름 = { '-4': '강한 하락', '-3': '하락', '-2': '하락 우위', '-1': '약한 하락', '0': '중립', '1': '약한 상승', '2': '상승 우위', '3': '상승', '4': '강한 상승' }[String(점수)];
-            var 각 = Math.PI * (1 - (점수 + 4) / 8), 바늘x = 70 + 46 * Math.cos(각), 바늘y = 70 - 46 * Math.sin(각);
+            // 바늘 = 연속값: 항목마다 "기준까지 얼마나 왔나" (기준 도달 = ±1, 넘어도 ±1) 를 더함 → 작은 변화엔 조금만 움직임
+            //   4초 정도에 걸쳐 따라가게 평활 (순간 출렁임에 튀지 않음). 점수 이름(상승 우위 +2점)은 판단에 쓰는 정수 점수 그대로
+            function 비(v, k) { return v == null || !(k > 0) ? 0 : Math.max(-1, Math.min(1, v / k)); }
+            var 연속 = (VWAP있음 ? 비(vwDist, 기준VWAP) : 0) + 비(m3, 기준3분) + 비(m10, 기준10분) + Math.max(-1, Math.min(1, score - 5));
+            if (Math.abs(bias) <= 1 && Math.abs(연속) > 1.99) 연속 = 연속 > 0 ? 1.99 : -1.99;   // ±2 제한(옵션만으로는 추세 아님)과 맞춤
+            var 바늘지금 = Date.now();
+            if (s.바늘 == null || s.바늘티커 !== s.ticker || !isFinite(s.바늘)) { s.바늘 = 연속; s.바늘티커 = s.ticker; }
+            else { var 경과 = Math.min(10, Math.max(0, (바늘지금 - (s.바늘시각 || 바늘지금)) / 1000)); s.바늘 += (연속 - s.바늘) * (1 - Math.exp(-경과 / 4)); }
+            s.바늘시각 = 바늘지금;
+            var 바늘값 = Math.max(-4, Math.min(4, s.바늘));
+            var 각 = Math.PI * (1 - (바늘값 + 4) / 8), 바늘x = 70 + 46 * Math.cos(각), 바늘y = 70 - 46 * Math.sin(각);
             function 호(a0, a1, 색) {
                 var x0 = 70 + 56 * Math.cos(a0), y0 = 70 - 56 * Math.sin(a0), x1 = 70 + 56 * Math.cos(a1), y1 = 70 - 56 * Math.sin(a1);
                 return '<path d="M ' + x0.toFixed(1) + ' ' + y0.toFixed(1) + ' A 56 56 0 0 1 ' + x1.toFixed(1) + ' ' + y1.toFixed(1) + '" stroke="' + 색 + '" stroke-width="11" fill="none"></path>';
@@ -2918,10 +2951,12 @@
             function 표(v) { return (v > 0 ? '+' : '') + v; }
             var 근거글 = '방향 점수 ' + 점수글 + ' = VWAP ' + 표(점수_VWAP) + ' · ' + (마감 ? '마감30분 ' : '3분 ') + 표(점수_3분) + ' · ' + (마감 ? '당일 ' : '10분 ') + 표(점수_10분) + ' · 옵션 ' + 표(점수_옵션) +
                 (Math.abs(점수_VWAP + 점수_3분 + 점수_10분 + 점수_옵션) !== Math.abs(bias) ? ' (옵션만으로는 ±2점 이상 안 됨 → ' + 표(bias) + '점)' : '') +
-                '\n기준: ' + (마감 ? '마감30분' : '3분') + ' ±' + 기준3분.toFixed(2) + '% · ' + (마감 ? '당일' : '10분') + ' ±' + 기준10분.toFixed(2) + '% · VWAP ±0.10% · 옵션 6 이상 콜 / 4 이하 풋';
+                '\n기준 (' + 방기.묶음 + '): ' + (마감 ? '마감30분' : '3분') + ' ±' + 기준3분.toFixed(2) + '% · ' + (마감 ? '당일' : '10분') + ' ±' + 기준10분.toFixed(2) + '% · VWAP ±' + 기준VWAP.toFixed(2) + '% · 옵션 6 이상 콜 / 4 이하 풋' +
+                '\n바늘 위치 ' + (바늘값 > 0 ? '+' : '') + 바늘값.toFixed(1) + ' (항목마다 기준까지 온 정도를 더한 값, 4초에 걸쳐 따라감)';
             게이지 = '<div class="sg-gtitle">단기 방향' + (마감 ? ' · 마감 기준' : '') + ' <small>−4 ~ +4점</small></div>' + 게이지 +
                 '<div class="sg-gtxt"><div class="sg-glabel">' + 점수이름 + ' <span class="sg-mono">' + 점수글 + '</span></div>' +
-                '<div class="sg-gsub">' + 등락줄 + '</div></div>';
+                '<div class="sg-gsub">' + 등락줄 + '</div>' +
+                '<div class="sg-gstd"><span>' + s.ticker + ' 기준 (' + 방기.묶음 + ')</span><span>' + (마감 ? '마감30분 ±' + 기준3분.toFixed(2) + '% · 당일 ±' + 기준10분.toFixed(2) + '%' : '3분 ±' + 기준3분.toFixed(2) + '% · 10분 ±' + 기준10분.toFixed(2) + '%') + '</span></div></div>';
             s.방향근거 = 근거글;
             var 상태아이콘 = 결론.모양 === '관망'
                 ? '<svg viewBox="0 0 16 16" class="sg-ico"><rect x="3.5" y="3" width="3" height="10" rx="1" fill="currentColor"></rect><rect x="9.5" y="3" width="3" height="10" rx="1" fill="currentColor"></rect></svg>'
