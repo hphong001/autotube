@@ -33,7 +33,11 @@
     });
   }
   fitLogos();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitLogos);
+  if (document.fonts) {
+    if (document.fonts.ready) document.fonts.ready.then(fitLogos);
+    if (document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', fitLogos);
+  }
+  setTimeout(fitLogos, 300); setTimeout(fitLogos, 1200);
   window.addEventListener('resize', fitLogos);
   window.addEventListener('load', fitLogos);
 
