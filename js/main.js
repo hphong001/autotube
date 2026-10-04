@@ -8,7 +8,7 @@
      예: 'https://script.google.com/macros/s/AKfycb.../exec'
      비워두면 '받는 주소·작성 내용 복사' 안내가 표시됩니다.
      ------------------------------------------------------------ */
-  var FORM_ENDPOINT = '';
+  var FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxX0sveKMe_j1_JfIm-OKC2BrUBWDXgcQGqjNq5gyF6CCE6UdeYZIkdxeNZWN2yjGu9/exec';
   var CONTACT_EMAIL = 'contact@aibaselab.com';
 
   var body = document.body;
