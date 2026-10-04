@@ -1,12 +1,9 @@
 # Cloudflare Pages 주소 이동 규칙 (예전 주소 → 새 주소, 301 영구 이동)
-# 오토튜브 페이지 이전
+# 오토튜브 페이지 이전 (/en/ 은 회사 영어 메인으로 사용)
 /manual.html              /autotube/manual          301
 /terms.html               /autotube/terms           301
 /thankyou.html            /autotube/thankyou        301
 /paddle.html              /autotube/paddle          301
-/en                       /autotube/en/                  301
-/en/                      /autotube/en/                  301
-/en/index.html            /autotube/en/                  301
 /en/manual.html           /autotube/en/manual       301
 /en/privacy.html          /autotube/en/privacy      301
 /en/terms.html            /autotube/en/terms        301

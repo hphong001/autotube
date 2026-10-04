@@ -12,6 +12,30 @@
   var CONTACT_EMAIL = 'contact@aibaselab.com';
 
   var body = document.body;
+  var EN = (document.documentElement.lang || '').indexOf('en') === 0;
+  var T = EN ? {
+    open: 'Open menu', close: 'Close menu', slide: 'Show image ', empty: 'Please fill in at least one item.',
+    sending: 'Sending...', ok: 'Thank you. Your inquiry has been received. Our lead engineer will review it and reply by email.',
+    fail: 'Sending failed. Please email us directly at ', cta: 'Contact us →', ctaHref: '/en/#contact', more: ' more'
+  } : {
+    open: '메뉴 열기', close: '메뉴 닫기', slide: '번 이미지 보기', empty: '문의 내용을 한 가지 이상 적어 주세요.',
+    sending: '전송 중...', ok: '문의가 접수되었습니다. 대표 엔지니어가 검토 후 회신드리겠습니다.',
+    fail: '전송에 실패했습니다. ', cta: '도입 문의하기 →', ctaHref: '/#contact', more: '개 더보기'
+  };
+
+  /* 0. 로고 아랫줄(AUTOMATION ENGINEERING)을 로고 글자 폭에 맞춤 */
+  function fitLogos() {
+    document.querySelectorAll('.logo').forEach(function (l) {
+      var w = l.querySelector('.logo-word'), s = l.querySelector('.logo-sub'); if (!w || !s) return;
+      s.style.letterSpacing = '0px'; s.style.marginRight = '0px';
+      var n = s.textContent.length, diff = w.getBoundingClientRect().width - s.getBoundingClientRect().width;
+      if (n > 1 && diff > 0) { var ls = diff / (n - 1); s.style.letterSpacing = ls + 'px'; s.style.marginRight = (-ls) + 'px'; }
+    });
+  }
+  fitLogos();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitLogos);
+  window.addEventListener('resize', fitLogos);
+  window.addEventListener('load', fitLogos);
 
   /* 1. 헤더 그림자 */
   var header = document.querySelector('.site-header');
@@ -24,14 +48,14 @@
   var menu = document.getElementById('site-menu');
   function closeMenu() {
     body.classList.remove('nav-open');
-    if (toggle) { toggle.setAttribute('aria-expanded', 'false'); toggle.setAttribute('aria-label', '메뉴 열기'); }
+    if (toggle) { toggle.setAttribute('aria-expanded', 'false'); toggle.setAttribute('aria-label', T.open); }
   }
   if (toggle && menu) {
     toggle.addEventListener('click', function () {
       var open = !body.classList.contains('nav-open');
       body.classList.toggle('nav-open', open);
       toggle.setAttribute('aria-expanded', String(open));
-      toggle.setAttribute('aria-label', open ? '메뉴 닫기' : '메뉴 열기');
+      toggle.setAttribute('aria-label', open ? T.close : T.open);
     });
     menu.addEventListener('click', function (e) { if (e.target.closest('a')) closeMenu(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
@@ -60,7 +84,7 @@
       slides.forEach(function (s, i) {
         var b = document.createElement('button');
         b.type = 'button';
-        b.setAttribute('aria-label', (i + 1) + '번 이미지 보기');
+        b.setAttribute('aria-label', EN ? T.slide + (i + 1) : (i + 1) + T.slide);
         if (i === 0) b.setAttribute('aria-current', 'true');
         b.addEventListener('click', function () { show(i); start(); });
         dotsWrap.appendChild(b);
@@ -88,7 +112,7 @@
     var btn = form.querySelector('.submit-btn');
     function setStatus(msg, ok) { status.textContent = msg; status.className = 'form-status ' + (ok ? 'ok' : 'err'); }
 
-    var LABELS = { company: '회사명', name: '성함', position: '직함', email: '이메일', phone: '연락처', category: '문의 분야', message: '문의 내용', page: '접수 페이지' };
+    var LABELS = { company: '회사명', name: '성함', position: '직함', email: '이메일', phone: '연락처', country: '국가', category: '문의 분야', message: '문의 내용', page: '접수 페이지' };
     function buildMailText(data) {
       var out = [];
       Object.keys(LABELS).forEach(function (k) { var v = data.get(k); if (v) out.push(k === 'message' ? '\n[' + LABELS[k] + ']\n' + v : LABELS[k] + ': ' + v); });
@@ -126,7 +150,7 @@
       // TEMPLATE_CHECK: 안내 문구만 있고 내용을 하나도 적지 않은 경우
       var msg = form.querySelector('[name="message"]');
       if (msg && msg.defaultValue && msg.value.replace(/\s/g, '') === msg.defaultValue.replace(/\s/g, '')) {
-        msg.setCustomValidity('문의 내용을 한 가지 이상 적어 주세요.');
+        msg.setCustomValidity(T.empty);
       } else if (msg) { msg.setCustomValidity(''); }
       if (!form.checkValidity()) { form.reportValidity(); return; }
       if (form.querySelector('[name="website"]').value) return; // 스팸 봇
@@ -140,7 +164,7 @@
 
       btn.disabled = true;
       var old = btn.textContent;
-      btn.textContent = '전송 중...';
+      btn.textContent = T.sending;
       setStatus('', true);
       fetch(FORM_ENDPOINT, { method: 'POST', body: new URLSearchParams(data) })
         .then(function (r) { return r.json(); })
@@ -148,14 +172,14 @@
           if (res && res.result === 'success') {
             form.reset();
             if (msg) msg.setCustomValidity('');
-            setStatus('문의가 접수되었습니다. 대표 엔지니어가 검토 후 회신드리겠습니다.', true);
+            setStatus(T.ok, true);
             if (typeof gtag === 'function') gtag('event', 'generate_lead', { form: 'contact' });
           } else {
             throw new Error((res && res.message) || 'error');
           }
         })
         .catch(function () {
-          setStatus('전송에 실패했습니다. ' + CONTACT_EMAIL + ' 로 직접 메일을 보내주세요.', false);
+          setStatus(EN ? T.fail + CONTACT_EMAIL + '.' : T.fail + CONTACT_EMAIL + ' 로 직접 메일을 보내주세요.', false);
         })
         .finally(function () { btn.disabled = false; btn.textContent = old; if (tsField) tsField.value = String(Date.now()); });
     });
@@ -165,7 +189,7 @@
   (function () {
     var onIndex = !!document.getElementById('contact');
     var a = document.createElement('a');
-    a.className = 'm-cta'; a.href = onIndex ? '#contact' : '/#contact'; a.textContent = '도입 문의하기 →';
+    a.className = 'm-cta'; a.href = onIndex ? '#contact' : T.ctaHref; a.textContent = T.cta;
     document.body.appendChild(a); document.body.classList.add('has-m-cta');
     var targets = [document.getElementById('contact'), document.querySelector('.site-footer')].filter(Boolean);
     if ('IntersectionObserver' in window && targets.length) {

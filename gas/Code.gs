@@ -5,7 +5,7 @@
  * - 문의자에게 접수 확인 자동 회신 (선택)
  * - 스팸 방지: 숨김 필드(허니팟), 최소 작성 시간, 같은 이메일 반복 전송 제한
  *
- * 설치 방법은 같은 폴더의 README_문의폼_설정.md 를 참고하세요.
+ * 설치: script.google.com 새 프로젝트에 이 코드를 붙여넣고 → testSubmit 실행(권한 승인) → 웹 앱으로 배포
  */
 
 const CONFIG = {
@@ -22,6 +22,8 @@ const FIELDS = [
   ['company', '회사명'], ['name', '성함'], ['position', '직함'], ['email', '이메일'], ['phone', '연락처'],
   ['category', '문의 분야'], ['message', '문의 내용'], ['page', '접수 페이지'],
 ];
+// 영어 페이지용 추가 항목 (시트에서는 '처리상태' 뒤 열에 기록 → 기존 시트 열 순서 유지)
+const EXTRA = [['country', '국가'], ['lang', '언어']];
 
 function doPost(e) {
   const lock = LockService.getScriptLock();
@@ -36,12 +38,13 @@ function doPost(e) {
 
     // 2) 입력값 검증
     const d = {};
-    FIELDS.forEach(([k]) => { d[k] = String(p[k] || '').trim().slice(0, k === 'message' ? 5000 : 300); });
+    FIELDS.concat(EXTRA).forEach(([k]) => { d[k] = String(p[k] || '').trim().slice(0, k === 'message' ? 5000 : 300); });
+    const en = d.lang === 'en';
     for (const k of ['company', 'name', 'email', 'category', 'message']) {
       if (!d[k]) return json_({ result: 'error', message: '필수 항목 누락: ' + k });
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) return json_({ result: 'error', message: '이메일 형식 오류' });
-    if (p.consent !== '동의') return json_({ result: 'error', message: '개인정보 수집 동의 필요' });
+    if (p.consent !== '동의' && p.consent !== 'agree') return json_({ result: 'error', message: '개인정보 수집 동의 필요' });
 
     // 3) 같은 이메일 반복 전송 제한
     const cache = CacheService.getScriptCache();
@@ -52,15 +55,16 @@ function doPost(e) {
 
     // 4) 시트 기록
     const received = new Date();
-    sheet_().appendRow([received].concat(FIELDS.map(([k]) => safeCell_(d[k]))).concat(['신규']));
+    sheet_().appendRow([received].concat(FIELDS.map(([k]) => safeCell_(d[k]))).concat(['신규']).concat(EXTRA.map(([k]) => safeCell_(d[k]))));
 
     // 5) 알림 메일
     const when = Utilities.formatDate(received, 'Asia/Seoul', 'yyyy-MM-dd HH:mm');
-    const rows = FIELDS.map(([k, label]) =>
+    const show = FIELDS.slice(0, 6).concat(d.country ? [['country', '국가']] : []).concat(FIELDS.slice(6));
+    const rows = show.map(([k, label]) =>
       `<tr><th style="text-align:left;padding:8px 12px;background:#f1f5f9;width:110px;vertical-align:top">${label}</th>` +
-      `<td style="padding:8px 12px;white-space:pre-wrap">${esc_(d[k]) || '-'}</td></tr>`).join('');
+      `<td style="padding:8px 12px;line-height:1.7">${multiline_(d[k]) || '-'}</td></tr>`).join('');
     send_(CONFIG.NOTIFY_TO,
-      `[홈페이지 문의] ${d.company} / ${d.category}`,
+      `${en ? '[EN 문의]' : '[홈페이지 문의]'} ${d.company}${d.country ? ' (' + d.country + ')' : ''} / ${d.category}`,
       `<div style="font-family:sans-serif;font-size:14px;color:#1e293b">
          <p><b>새 프로젝트 문의가 접수되었습니다.</b> (${when})</p>
          <table style="border-collapse:collapse;border:1px solid #e2e8f0;min-width:420px">${rows}</table>
@@ -69,13 +73,27 @@ function doPost(e) {
       d.email);
 
     // 6) 문의자 자동 회신
-    if (CONFIG.SEND_AUTO_REPLY) {
+    if (CONFIG.SEND_AUTO_REPLY && en) {
+      send_(d.email,
+        '[AI BASE LAB] We have received your inquiry',
+        `<div style="font-family:sans-serif;font-size:14px;color:#1e293b;line-height:1.7">
+           <p>Dear ${esc_(d.name)},</p>
+           <p>Thank you for contacting AI BASE LAB. We have received your inquiry.<br>
+           Our lead engineer will review it personally and reply to you by email.</p>
+           <div style="background:#f8fafc;border:1px solid #e2e8f0;padding:12px 16px;margin:16px 0">
+             <b>Inquiry type:</b> ${esc_(d.category)}<br><b>Received:</b> ${when} (KST)
+           </div>
+           <p>If you have any materials (product information, equipment list, photos or documents), feel free to reply to this email with them.</p>
+           <p>Best regards,<br>AI BASE LAB<br><a href="https://aibaselab.com/en/">aibaselab.com/en</a></p>
+         </div>`,
+        CONFIG.NOTIFY_TO);
+    } else if (CONFIG.SEND_AUTO_REPLY) {
       send_(d.email,
         '[AI BASE LAB] 프로젝트 문의가 접수되었습니다',
         `<div style="font-family:sans-serif;font-size:14px;color:#1e293b;line-height:1.7">
            <p>${esc_(d.name)}님, 안녕하세요. AI BASE LAB입니다.</p>
            <p>보내주신 문의가 정상적으로 접수되었습니다.<br>
-           대표 엔지니어가 내용을 검토한 뒤 <b>영업일 기준 1일 이내</b>에 회신드리겠습니다.</p>
+           대표 엔지니어가 내용을 직접 검토한 뒤 회신드리겠습니다.</p>
            <div style="background:#f8fafc;border:1px solid #e2e8f0;padding:12px 16px;margin:16px 0">
              <b>문의 분야:</b> ${esc_(d.category)}<br><b>접수 일시:</b> ${when}
            </div>
@@ -106,14 +124,33 @@ function testSubmit() {
   console.log(r.getContent());
 }
 
+/** 영어 문의 테스트 (영어 자동 회신 확인용) */
+function testSubmitEn() {
+  const r = doPost({ parameter: {
+    company: 'Test Corp', name: 'John Smith', email: CONFIG.NOTIFY_TO, country: 'Germany',
+    category: 'Korea Partner — support for our Korean customers', message: '■ Your product or system : test\n\n■ What you need : on-site support',
+    page: 'test', consent: 'agree', lang: 'en', _ts: '0',
+  }});
+  console.log(r.getContent());
+}
+
 function send_(to, subject, html, replyTo) {
   const opt = { htmlBody: html, name: CONFIG.SENDER_NAME, replyTo: replyTo };
   if (CONFIG.FROM_ALIAS) opt.from = CONFIG.FROM_ALIAS;
-  GmailApp.sendEmail(to, subject, html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim(), opt);
+  const text = html.replace(/<br\s*\/?>/gi, '\n').replace(/<\/(tr|p|div)>/gi, '\n').replace(/<[^>]+>/g, ' ')
+    .replace(/[ \t]+/g, ' ').replace(/ *\n */g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+  GmailApp.sendEmail(to, subject, text, opt);
 }
 
 function sheet_() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  // 시트에서 '확장 프로그램 > Apps Script'로 만든 경우 그 시트를, 아니면 '문의내역' 시트를 새로 만들어 사용
+  let ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) {
+    const props = PropertiesService.getScriptProperties();
+    const id = props.getProperty('SHEET_ID');
+    if (id) ss = SpreadsheetApp.openById(id);
+    else { ss = SpreadsheetApp.create('AI BASE LAB 문의내역'); props.setProperty('SHEET_ID', ss.getId()); }
+  }
   let sh = ss.getSheetByName(CONFIG.SHEET_NAME);
   if (!sh) {
     sh = ss.insertSheet(CONFIG.SHEET_NAME);
@@ -121,9 +158,23 @@ function sheet_() {
     sh.setFrozenRows(1);
     sh.getRange(1, 1, 1, FIELDS.length + 2).setFontWeight('bold').setBackground('#0b1121').setFontColor('#ffffff');
   }
+  // 추가 항목(국가·언어) 머리글이 없으면 '처리상태' 뒤에 추가
+  const c = FIELDS.length + 3;
+  if (!sh.getRange(1, c).getValue()) {
+    sh.getRange(1, c, 1, EXTRA.length).setValues([EXTRA.map(f => f[1])]).setFontWeight('bold').setBackground('#0b1121').setFontColor('#ffffff');
+  }
   return sh;
 }
 
 function safeCell_(v) { return /^[=+\-@]/.test(v) ? "'" + v : v; } // 수식 삽입 방지
+/** 메일용: 줄바꿈을 <br>로 바꾸고, 빈 줄은 하나로 줄이고, ■ 항목 제목은 굵게 표시 */
+function multiline_(s) {
+  return String(s || '').replace(/\r\n?/g, '\n').replace(/\n{3,}/g, '\n\n').trim()
+    .split('\n').map(line => {
+      const e = esc_(line);
+      const m = e.match(/^(■[^:]*:)(.*)$/);
+      return m ? `<b>${m[1]}</b>${m[2]}` : e;
+    }).join('<br>');
+}
 function esc_(s) { return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 function json_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }

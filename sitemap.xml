@@ -1,70 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <!-- AI BASE LAB 회사 사이트 -->
-  <url><loc>https://aibaselab.com/</loc><lastmod>2026-10-02</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://aibaselab.com/cases</loc><lastmod>2026-10-02</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://aibaselab.com/technology</loc><lastmod>2026-10-02</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aibaselab.com/autotube-case</loc><lastmod>2026-10-02</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aibaselab.com/hardware-control</loc><lastmod>2026-10-02</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aibaselab.com/finance-ai</loc><lastmod>2026-10-02</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aibaselab.com/vision-inspection</loc><lastmod>2026-10-02</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aibaselab.com/about</loc><lastmod>2026-10-02</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://aibaselab.com/privacy</loc><lastmod>2026-10-02</lastmod><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url>
+    <loc>https://aibaselab.com/</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://aibaselab.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aibaselab.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aibaselab.com/"/>
+    <lastmod>2026-10-04</lastmod><changefreq>weekly</changefreq><priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://aibaselab.com/cases</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://aibaselab.com/cases"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aibaselab.com/en/cases"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aibaselab.com/cases"/>
+    <lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.9</priority>
+  </url>
+  <url><loc>https://aibaselab.com/technology</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aibaselab.com/autotube-case</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aibaselab.com/hardware-control</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aibaselab.com/finance-ai</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aibaselab.com/vision-inspection</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url>
+    <loc>https://aibaselab.com/about</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://aibaselab.com/about"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aibaselab.com/en/about"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aibaselab.com/about"/>
+    <lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://aibaselab.com/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://aibaselab.com/privacy"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aibaselab.com/en/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aibaselab.com/privacy"/>
+    <lastmod>2026-10-04</lastmod><changefreq>yearly</changefreq><priority>0.2</priority>
+  </url>
+  <!-- 영어 페이지 -->
+  <url>
+    <loc>https://aibaselab.com/en/</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://aibaselab.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aibaselab.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aibaselab.com/"/>
+    <lastmod>2026-10-04</lastmod><changefreq>weekly</changefreq><priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://aibaselab.com/en/cases</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://aibaselab.com/cases"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aibaselab.com/en/cases"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aibaselab.com/cases"/>
+    <lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aibaselab.com/en/about</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://aibaselab.com/about"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aibaselab.com/en/about"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aibaselab.com/about"/>
+    <lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://aibaselab.com/en/privacy-policy</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://aibaselab.com/privacy"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aibaselab.com/en/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aibaselab.com/privacy"/>
+    <lastmod>2026-10-04</lastmod><changefreq>yearly</changefreq><priority>0.2</priority>
+  </url>
   <!-- 오토튜브 (유튜브 영상제작 자동화 프로그램) -->
   <url>
     <loc>https://aibaselab.com/autotube/</loc>
     <xhtml:link rel="alternate" hreflang="ko" href="https://aibaselab.com/autotube/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://aibaselab.com/autotube/en/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://aibaselab.com/autotube/"/>
-    <lastmod>2026-10-02</lastmod><changefreq>weekly</changefreq><priority>0.9</priority>
+    <lastmod>2026-10-04</lastmod><changefreq>weekly</changefreq><priority>0.9</priority>
   </url>
   <url>
     <loc>https://aibaselab.com/autotube/en/</loc>
     <xhtml:link rel="alternate" hreflang="ko" href="https://aibaselab.com/autotube/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://aibaselab.com/autotube/en/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://aibaselab.com/autotube/"/>
-    <lastmod>2026-10-02</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
+    <lastmod>2026-10-04</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
   </url>
   <url>
     <loc>https://aibaselab.com/autotube/manual</loc>
     <xhtml:link rel="alternate" hreflang="ko" href="https://aibaselab.com/autotube/manual"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://aibaselab.com/autotube/en/manual"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://aibaselab.com/autotube/manual"/>
-    <lastmod>2026-10-02</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
+    <lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
   </url>
   <url>
     <loc>https://aibaselab.com/autotube/en/manual</loc>
     <xhtml:link rel="alternate" hreflang="ko" href="https://aibaselab.com/autotube/manual"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://aibaselab.com/autotube/en/manual"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://aibaselab.com/autotube/manual"/>
-    <lastmod>2026-10-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority>
+    <lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.7</priority>
   </url>
   <url>
     <loc>https://aibaselab.com/autotube/terms</loc>
     <xhtml:link rel="alternate" hreflang="ko" href="https://aibaselab.com/autotube/terms"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://aibaselab.com/autotube/en/terms"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://aibaselab.com/autotube/terms"/>
-    <lastmod>2026-10-02</lastmod><changefreq>yearly</changefreq><priority>0.3</priority>
+    <lastmod>2026-10-04</lastmod><changefreq>yearly</changefreq><priority>0.3</priority>
   </url>
   <url>
     <loc>https://aibaselab.com/autotube/en/terms</loc>
     <xhtml:link rel="alternate" hreflang="ko" href="https://aibaselab.com/autotube/terms"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://aibaselab.com/autotube/en/terms"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://aibaselab.com/autotube/terms"/>
-    <lastmod>2026-10-02</lastmod><changefreq>yearly</changefreq><priority>0.2</priority>
+    <lastmod>2026-10-04</lastmod><changefreq>yearly</changefreq><priority>0.2</priority>
   </url>
   <url>
     <loc>https://aibaselab.com/autotube/privacy</loc>
     <xhtml:link rel="alternate" hreflang="ko" href="https://aibaselab.com/autotube/privacy"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://aibaselab.com/autotube/en/privacy"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://aibaselab.com/autotube/privacy"/>
-    <lastmod>2026-10-02</lastmod><changefreq>yearly</changefreq><priority>0.3</priority>
+    <lastmod>2026-10-04</lastmod><changefreq>yearly</changefreq><priority>0.3</priority>
   </url>
   <url>
     <loc>https://aibaselab.com/autotube/en/privacy</loc>
     <xhtml:link rel="alternate" hreflang="ko" href="https://aibaselab.com/autotube/privacy"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://aibaselab.com/autotube/en/privacy"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://aibaselab.com/autotube/privacy"/>
-    <lastmod>2026-10-02</lastmod><changefreq>yearly</changefreq><priority>0.2</priority>
+    <lastmod>2026-10-04</lastmod><changefreq>yearly</changefreq><priority>0.2</priority>
   </url>
 </urlset>
