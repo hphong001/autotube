@@ -469,3 +469,6 @@ textarea.form-control { min-height: 130px; resize: vertical; line-height: 1.6; }
   #main > .hero { order: 0; }
 }
 @media (max-width: 680px) { #portfolio { background: var(--bg-soft); } }
+
+/* 문의 내용 입력 안내 */
+.form-guide { font-size: 13.5px; color: var(--cyan); margin: -2px 0 8px; }
