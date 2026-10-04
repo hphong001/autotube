@@ -23,7 +23,7 @@ const FIELDS = [
   ['category', '문의 분야'], ['message', '문의 내용'], ['page', '접수 페이지'],
 ];
 // 영어 페이지용 추가 항목 (시트에서는 '처리상태' 뒤 열에 기록 → 기존 시트 열 순서 유지)
-const EXTRA = [['country', '국가'], ['lang', '언어']];
+const EXTRA = [['country', '국가'], ['lang', '언어'], ['city', '지역·도시'], ['website_url', '홈페이지'], ['messenger', '메신저'], ['source', '알게 된 경로']];
 
 function doPost(e) {
   const lock = LockService.getScriptLock();
@@ -59,12 +59,17 @@ function doPost(e) {
 
     // 5) 알림 메일
     const when = Utilities.formatDate(received, 'Asia/Seoul', 'yyyy-MM-dd HH:mm');
-    const show = FIELDS.slice(0, 6).concat(d.country ? [['country', '국가']] : []).concat(FIELDS.slice(6));
+    const E = Object.fromEntries(EXTRA);
+    const opt = k => (d[k] ? [[k, E[k]]] : []);
+    const show = FIELDS.slice(0, 5)
+      .concat(opt('website_url'), opt('country'), opt('city'), opt('messenger'))
+      .concat(FIELDS.slice(5, 7), opt('source'), FIELDS.slice(7));
+    const where = [d.country, d.city].filter(Boolean).join(', ');
     const rows = show.map(([k, label]) =>
       `<tr><th style="text-align:left;padding:8px 12px;background:#f1f5f9;width:110px;vertical-align:top">${label}</th>` +
       `<td style="padding:8px 12px;line-height:1.7">${multiline_(d[k]) || '-'}</td></tr>`).join('');
     send_(CONFIG.NOTIFY_TO,
-      `${en ? '[EN 문의]' : '[홈페이지 문의]'} ${d.company}${d.country ? ' (' + d.country + ')' : ''} / ${d.category}`,
+      `${en ? '[EN 문의]' : '[홈페이지 문의]'} ${d.company}${where ? ' (' + where + ')' : ''} / ${d.category}`,
       `<div style="font-family:sans-serif;font-size:14px;color:#1e293b">
          <p><b>새 프로젝트 문의가 접수되었습니다.</b> (${when})</p>
          <table style="border-collapse:collapse;border:1px solid #e2e8f0;min-width:420px">${rows}</table>
@@ -127,8 +132,8 @@ function testSubmit() {
 /** 영어 문의 테스트 (영어 자동 회신 확인용) */
 function testSubmitEn() {
   const r = doPost({ parameter: {
-    company: 'Test Corp', name: 'John Smith', email: CONFIG.NOTIFY_TO, country: 'Germany',
-    category: 'Korea Partner — support for our Korean customers', message: '■ Your product or system : test\n\n■ What you need : on-site support',
+    company: 'Test Corp', name: 'John Smith', email: CONFIG.NOTIFY_TO, country: 'Germany', city: 'Munich', website_url: 'https://example.com', messenger: 'WhatsApp +49 000', source: 'LinkedIn',
+    category: 'On-site support, Maintenance', message: '■ Product / system : Test equipment\n■ Customer in Korea : Automotive, Ulsan\n\n■ Details :\nThis is a test.',
     page: 'test', consent: 'agree', lang: 'en', _ts: '0',
   }});
   console.log(r.getContent());
@@ -159,10 +164,10 @@ function sheet_() {
     sh.getRange(1, 1, 1, FIELDS.length + 2).setFontWeight('bold').setBackground('#0b1121').setFontColor('#ffffff');
   }
   // 추가 항목(국가·언어) 머리글이 없으면 '처리상태' 뒤에 추가
-  const c = FIELDS.length + 3;
-  if (!sh.getRange(1, c).getValue()) {
-    sh.getRange(1, c, 1, EXTRA.length).setValues([EXTRA.map(f => f[1])]).setFontWeight('bold').setBackground('#0b1121').setFontColor('#ffffff');
-  }
+  EXTRA.forEach((f, i) => {
+    const cell = sh.getRange(1, FIELDS.length + 3 + i);
+    if (!cell.getValue()) cell.setValue(f[1]).setFontWeight('bold').setBackground('#0b1121').setFontColor('#ffffff');
+  });
   return sh;
 }
 

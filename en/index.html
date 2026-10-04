@@ -29,7 +29,7 @@
 <link rel="apple-touch-icon" href="/image/apple-touch-icon.png">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="/css/style.css?v=20261004d">
+<link rel="stylesheet" href="/css/style.css?v=20261004e">
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -377,49 +377,47 @@
       <p class="contact-direct">Email us directly: <a href="mailto:contact@aibaselab.com">contact@aibaselab.com</a></p>
     </div>
     <form class="contact-form" id="contact-form" novalidate>
+      <p class="form-section">About you</p>
       <div class="form-row">
         <div class="form-group"><label for="f-company">Company<span class="req">*</span></label><input class="form-control" id="f-company" name="company" type="text" autocomplete="organization" required></div>
-        <div class="form-group"><label for="f-name">Your name<span class="req">*</span></label><input class="form-control" id="f-name" name="name" type="text" autocomplete="name" required></div>
+        <div class="form-group"><label for="f-website-url">Company website</label><input class="form-control" id="f-website-url" name="website_url" type="url" inputmode="url" placeholder="https://"></div>
       </div>
       <div class="form-row">
+        <div class="form-group"><label for="f-name">Your name<span class="req">*</span></label><input class="form-control" id="f-name" name="name" type="text" autocomplete="name" required></div>
         <div class="form-group"><label for="f-position">Job title</label><input class="form-control" id="f-position" name="position" type="text" autocomplete="organization-title"></div>
-        <div class="form-group"><label for="f-country">Country<span class="req">*</span></label><input class="form-control" id="f-country" name="country" type="text" autocomplete="country-name" required></div>
       </div>
       <div class="form-row">
         <div class="form-group"><label for="f-email">Email<span class="req">*</span></label><input class="form-control" id="f-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@company.com" required></div>
-        <div class="form-group"><label for="f-phone">Phone</label><input class="form-control" id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel"></div>
+        <div class="form-group"><label for="f-phone">Phone</label><input class="form-control" id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+49 30 1234 5678"></div>
       </div>
-      <div class="form-group">
-        <label for="f-category">Inquiry type<span class="req">*</span></label>
-        <select class="form-control" id="f-category" name="category" required>
-          <option value="">Please select</option>
-          <option data-key="partner" value="Korea Partner — support for our Korean customers">Korea Partner — support for our Korean customers</option>
-          <option data-key="maintenance" value="Maintenance of existing software in Korea">Maintenance of existing software in Korea</option>
-          <option data-key="development" value="New development / project in Korea">New development / project in Korea</option>
-          <option data-key="etc" value="Other">Other</option>
-        </select>
+      <div class="form-row">
+        <div class="form-group"><label for="f-country">Country<span class="req">*</span></label><select class="form-control" id="f-country" name="country" autocomplete="country-name" required><option value="">Please select</option><option>Australia</option><option>Austria</option><option>Belgium</option><option>Brazil</option><option>Canada</option><option>China</option><option>Czech Republic</option><option>Denmark</option><option>Finland</option><option>France</option><option>Germany</option><option>Hong Kong</option><option>India</option><option>Indonesia</option><option>Israel</option><option>Italy</option><option>Japan</option><option>Malaysia</option><option>Mexico</option><option>Netherlands</option><option>Philippines</option><option>Poland</option><option>Saudi Arabia</option><option>Singapore</option><option>South Korea</option><option>Spain</option><option>Sweden</option><option>Switzerland</option><option>Taiwan</option><option>Thailand</option><option>Turkey</option><option>United Arab Emirates</option><option>United Kingdom</option><option>United States</option><option>Vietnam</option><option>Other</option></select></div>
+        <div class="form-group"><label for="f-city">City</label><input class="form-control" id="f-city" name="city" type="text" autocomplete="address-level2"></div>
       </div>
-      <div class="form-group">
-        <label for="f-message">Your inquiry<span class="req">*</span></label>
-        <p class="form-guide">※ Please fill in the items that apply.</p>
-        <textarea class="form-control" id="f-message" name="message" rows="13" required>■ Your product or system :
+      <div class="form-group"><label for="f-messenger">Messenger</label><input class="form-control" id="f-messenger" name="messenger" type="text" placeholder="WhatsApp / WeChat / LINE / Teams ID (optional)"></div>
 
-■ Your customer in Korea (industry, location) :
-
-■ What you need (on-site support, integration, maintenance, development) :
-
-■ Equipment / software involved :
-
-■ Preferred timeline :
-
-■ Preferred way to talk (email / video call) :
-</textarea>
-        <p class="form-hint">Leave blank anything you are not sure about.</p>
-      </div>
+      <p class="form-section">About your project</p>
+      <fieldset class="form-group check-group">
+        <legend>What do you need?<span class="req">*</span> <span class="legend-hint">(select all that apply)</span></legend>
+        <div class="check-grid">
+          <label class="check"><input type="checkbox" name="need" data-key="partner" value="On-site support"><span>On-site support</span></label>
+          <label class="check"><input type="checkbox" name="need" data-key="integration" value="System integration"><span>System integration</span></label>
+          <label class="check"><input type="checkbox" name="need" data-key="localization" value="Localization"><span>Localization</span></label>
+          <label class="check"><input type="checkbox" name="need" data-key="maintenance" value="Maintenance"><span>Maintenance</span></label>
+          <label class="check"><input type="checkbox" name="need" data-key="development" value="New development"><span>New development</span></label>
+          <label class="check"><input type="checkbox" name="need" data-key="etc" value="Other"><span>Other</span></label>
+        </div>
+      </fieldset>
+      <div class="form-group"><label for="q-product">Your product or system<span class="req">*</span></label><input class="form-control" id="q-product" name="q_product" data-q="Product / system" type="text" placeholder="e.g. Battery test equipment, MES software" required></div>
+      <div class="form-group"><label for="q-customer">Your customer in Korea</label><input class="form-control" id="q-customer" name="q_customer" data-q="Customer in Korea" type="text" placeholder="Industry and city / region, e.g. Automotive parts, Ulsan"></div>
+      <div class="form-group"><label for="q-equip">Equipment / software involved</label><input class="form-control" id="q-equip" name="q_equip" data-q="Equipment / software" type="text" placeholder="Models, PLC, MES, protocols if known"></div>
+      <div class="form-group"><label for="q-when">Expected start</label><select class="form-control" id="q-when" name="q_when" data-q="Expected start"><option value="">Please select</option><option>As soon as possible</option><option>Within 1 month</option><option>1–3 months</option><option>Just exploring</option></select></div>
+      <div class="form-group"><label for="q-detail">Details</label><textarea class="form-control" id="q-detail" name="q_detail" data-q="Details" data-long rows="5" placeholder="Anything else we should know — current situation, issues, links to documents"></textarea></div>
+      <div class="form-group"><label for="f-source">How did you find us?</label><select class="form-control" id="f-source" name="source"><option value="">Please select</option><option>Google search</option><option>LinkedIn</option><option>Referral</option><option>YouTube</option><option>Other</option></select></div>
       <div class="hp-field" aria-hidden="true"><label for="f-website">Website</label><input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
       <input type="hidden" name="_ts" value="">
       <input type="hidden" name="lang" value="en">
-      <label class="consent"><input type="checkbox" name="consent" value="agree" required><span>[Required] I agree to the collection and use of my information to answer this inquiry, as described in the <a href="/en/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a>. (Company, name, job title, country, email, phone / kept for 3 years)</span></label>
+      <label class="consent"><input type="checkbox" name="consent" value="agree" required><span>[Required] I agree to the collection and use of my information to answer this inquiry, as described in the <a href="/en/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a>. (Company, website, name, job title, email, phone, country, city, messenger / kept for 3 years)</span></label>
       <button type="submit" class="submit-btn">Send inquiry</button>
       <p class="form-status" role="status" aria-live="polite"></p>
     </form>
@@ -465,6 +463,6 @@
     </div>
   </div>
 </footer>
-<script src="/js/main.js?v=20261004d" defer></script>
+<script src="/js/main.js?v=20261004e" defer></script>
 </body>
 </html>

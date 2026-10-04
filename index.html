@@ -34,7 +34,7 @@
 <link rel="apple-touch-icon" href="image/apple-touch-icon.png">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="css/style.css?v=20261004d">
+<link rel="stylesheet" href="css/style.css?v=20261004e">
 <link rel="preload" as="image" href="image/hero-slide-1.webp" fetchpriority="high">
 <!-- Google Analytics 4: 측정 ID 발급 후 G-XXXXXXXXXX 교체하고 주석 해제
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
@@ -272,6 +272,7 @@
       <p class="contact-direct">메일로 직접 문의: <a href="mailto:contact@aibaselab.com">contact@aibaselab.com</a></p>
     </div>
     <form class="contact-form" id="contact-form" novalidate>
+      <p class="form-section">기본 정보</p>
       <div class="form-row">
         <div class="form-group"><label for="f-company">회사명<span class="req">*</span></label><input class="form-control" id="f-company" name="company" type="text" autocomplete="organization" placeholder="예) ○○전자" required></div>
         <div class="form-group"><label for="f-name">문의자 성함<span class="req">*</span></label><input class="form-control" id="f-name" name="name" type="text" autocomplete="name" placeholder="홍길동" required></div>
@@ -280,41 +281,37 @@
         <div class="form-group"><label for="f-position">직함</label><input class="form-control" id="f-position" name="position" type="text" autocomplete="organization-title" placeholder="예) 생산팀 과장"></div>
         <div class="form-group"><label for="f-phone">연락처</label><input class="form-control" id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="010-0000-0000"></div>
       </div>
-      <div class="form-group"><label for="f-email">이메일<span class="req">*</span></label><input class="form-control" id="f-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@company.com" required></div>
-      <div class="form-group">
-        <label for="f-category">문의 분야<span class="req">*</span></label>
-        <select class="form-control" id="f-category" name="category" required>
-          <option value="">선택해 주세요</option>
-          <option data-key="autotube" value="콘텐츠 제작 자동화 / 오토튜브">콘텐츠 제작 자동화 / 오토튜브</option>
-          <option data-key="hardware" value="장비 연동 · 검사 · 모니터링">장비 연동 · 검사 · 모니터링</option>
-          <option data-key="finance" value="금융 데이터 · 자동매매">금융 데이터 · 자동매매</option>
-          <option data-key="vision" value="출하 검수 · 비전 검사 · MES 연동">출하 검수 · 비전 검사 · MES 연동</option>
-          <option data-key="small" value="소규모 개발 · 간단한 프로그램">소규모 개발 · 간단한 프로그램</option>
-          <option data-key="etc" value="기타 맞춤 개발">기타 맞춤 개발</option>
-        </select>
+      <div class="form-row">
+        <div class="form-group"><label for="f-email">이메일<span class="req">*</span></label><input class="form-control" id="f-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@company.com" required></div>
+        <div class="form-group"><label for="f-city">지역 (현장 위치)</label><input class="form-control" id="f-city" name="city" type="text" placeholder="예) 경기 화성"></div>
       </div>
-      <div class="form-group">
-        <label for="f-message">문의 · 개발 의뢰 내용<span class="req">*</span></label>
-        <p class="form-guide">※ 해당되는 항목 옆에 내용을 입력해 주세요.</p>
-        <textarea class="form-control" id="f-message" name="message" rows="14" required>■ 현재 작업 방식 (지금 어떻게 하고 계신가요?) :
+      <div class="form-group"><label for="f-website-url">회사 홈페이지</label><input class="form-control" id="f-website-url" name="website_url" type="url" inputmode="url" placeholder="https://"></div>
 
-■ 사용 중인 장비·프로그램 (모델명 등) :
-
-■ 원하는 결과 (자동화하고 싶은 부분) :
-
-■ 희망 일정 :
-
-■ 예산 범위 (선택) :
-
-■ 희망 상담 방식 (전화 / 화상 / 현장 방문) :
-
-■ 참고 자료 (링크, 파일 설명 등) :
-</textarea>
-        <p class="form-hint">모르는 항목은 비워 두셔도 됩니다.</p>
+      <p class="form-section">의뢰 내용</p>
+      <fieldset class="form-group check-group">
+        <legend>문의 분야<span class="req">*</span> <span class="legend-hint">(여러 개 선택 가능)</span></legend>
+        <div class="check-grid">
+          <label class="check"><input type="checkbox" name="need" data-key="hardware" value="장비 연동 · 검사 · 모니터링"><span>장비 연동 · 검사 · 모니터링</span></label>
+          <label class="check"><input type="checkbox" name="need" data-key="vision" value="출하 검수 · 비전 검사 · MES 연동"><span>출하 검수 · 비전 검사 · MES 연동</span></label>
+          <label class="check"><input type="checkbox" name="need" data-key="autotube" value="영상 제작 자동화 / 오토튜브"><span>영상 제작 자동화 / 오토튜브</span></label>
+          <label class="check"><input type="checkbox" name="need" data-key="finance" value="금융 데이터 · 자동매매"><span>금융 데이터 · 자동매매</span></label>
+          <label class="check"><input type="checkbox" name="need" data-key="small" value="소규모 개발 · 간단한 프로그램"><span>소규모 개발 · 간단한 프로그램</span></label>
+          <label class="check"><input type="checkbox" name="need" data-key="etc" value="기타 맞춤 개발"><span>기타 맞춤 개발</span></label>
+        </div>
+      </fieldset>
+      <div class="form-group"><label for="q-goal">자동화하고 싶은 업무 · 원하는 결과<span class="req">*</span></label><textarea class="form-control form-short" id="q-goal" name="q_goal" data-q="원하는 결과" rows="3" placeholder="예) 측정값을 자동으로 엑셀에 기록하고 싶습니다" required></textarea></div>
+      <div class="form-group"><label for="q-now">현재 작업 방식</label><input class="form-control" id="q-now" name="q_now" data-q="현재 작업 방식" type="text" placeholder="예) 측정값을 종이에 적고 엑셀로 옮기고 있습니다"></div>
+      <div class="form-group"><label for="q-equip">사용 중인 장비 · 프로그램</label><input class="form-control" id="q-equip" name="q_equip" data-q="사용 중인 장비·프로그램" type="text" placeholder="모델명을 알면 함께 적어 주세요"></div>
+      <div class="form-row">
+        <div class="form-group"><label for="q-when">희망 일정</label><select class="form-control" id="q-when" name="q_when" data-q="희망 일정"><option value="">선택해 주세요</option><option>가능한 빨리</option><option>1개월 이내</option><option>1~3개월 이내</option><option>검토 단계</option></select></div>
+        <div class="form-group"><label for="q-meet">희망 상담 방식</label><select class="form-control" id="q-meet" name="q_meet" data-q="희망 상담 방식"><option value="">선택해 주세요</option><option>전화</option><option>화상 회의</option><option>현장 방문</option><option>이메일</option></select></div>
       </div>
+      <div class="form-group"><label for="q-budget">예산 범위</label><input class="form-control" id="q-budget" name="q_budget" data-q="예산 범위" type="text" placeholder="정해진 예산이 있다면 적어 주세요"></div>
+      <div class="form-group"><label for="q-detail">상세 내용</label><textarea class="form-control" id="q-detail" name="q_detail" data-q="상세 내용" data-long rows="5" placeholder="추가로 전하고 싶은 내용, 참고 자료 링크 등을 자유롭게 적어 주세요"></textarea></div>
+      <div class="form-group"><label for="f-source">AI BASE LAB을 알게 된 경로</label><select class="form-control" id="f-source" name="source"><option value="">선택해 주세요</option><option>구글 검색</option><option>네이버 검색</option><option>유튜브</option><option>지인 · 거래처 소개</option><option>기타</option></select></div>
       <div class="hp-field" aria-hidden="true"><label for="f-website">웹사이트</label><input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
       <input type="hidden" name="_ts" value="">
-      <label class="consent"><input type="checkbox" name="consent" value="동의" required><span>[필수] 문의 답변을 위한 <a href="privacy.html" target="_blank" rel="noopener">개인정보 수집·이용</a>에 동의합니다. (수집 항목: 회사명, 성함, 직함, 이메일, 연락처 / 보유 기간: 3년)</span></label>
+      <label class="consent"><input type="checkbox" name="consent" value="동의" required><span>[필수] 문의 답변을 위한 <a href="privacy.html" target="_blank" rel="noopener">개인정보 수집·이용</a>에 동의합니다. (수집 항목: 회사명, 성함, 직함, 연락처, 이메일, 지역, 회사 홈페이지 / 보유 기간: 3년)</span></label>
       <button type="submit" class="submit-btn">프로젝트 문의 보내기</button>
       <p class="form-status" role="status" aria-live="polite"></p>
     </form>
@@ -364,6 +361,6 @@
     </div>
   </div>
 </footer>
-<script src="js/main.js?v=20261004d" defer></script>
+<script src="js/main.js?v=20261004e" defer></script>
 </body>
 </html>

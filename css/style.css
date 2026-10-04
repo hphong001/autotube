@@ -529,3 +529,18 @@ textarea.form-control { min-height: 130px; resize: vertical; line-height: 1.6; }
 .section-dark .partner-cards .why-card h3 { color: #fff; }
 .section-dark .partner-cards .why-card p { color: var(--on-dark-2); }
 .section-dark .partner-cards .service-icon { background: rgba(0,229,255,.1); color: var(--cyan); }
+/* 문의 양식: 항목별 입력 */
+.form-section { font-size: 12.5px; font-weight: 800; letter-spacing: .08em; color: var(--cyan); text-transform: uppercase; margin: 6px 0 14px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.form-section:not(:first-child) { margin-top: 26px; }
+.check-group { border: 0; padding: 0; min-width: 0; }
+.check-group legend { font-size: 14px; color: var(--on-dark); font-weight: 600; margin-bottom: 9px; padding: 0; }
+.check-group legend .req { color: var(--red); margin-left: 2px; }
+.legend-hint { font-weight: 400; color: var(--on-dark-2); font-size: 12.5px; }
+.check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.check { display: flex; align-items: center; gap: 10px; min-height: 46px; padding: 10px 12px; border: 1px solid rgba(255,255,255,.12); border-radius: 6px; background: rgba(0,0,0,.25); color: var(--on-dark); font-size: 14.5px; cursor: pointer; transition: border-color .2s, background .2s; }
+.check input { width: 18px; height: 18px; flex: 0 0 18px; accent-color: var(--cyan); }
+.check:has(input:checked) { border-color: var(--cyan); background: rgba(0,229,255,.08); }
+.form-short { min-height: 0; }
+textarea.form-control { resize: vertical; line-height: 1.6; }
+@media (max-width: 680px) { .check-grid { grid-template-columns: 1fr; } }
+.form-group.check-group label.check { display: flex; margin-bottom: 0; font-weight: 500; font-size: 14.5px; }

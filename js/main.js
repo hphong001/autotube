@@ -14,11 +14,11 @@
   var body = document.body;
   var EN = (document.documentElement.lang || '').indexOf('en') === 0;
   var T = EN ? {
-    open: 'Open menu', close: 'Close menu', slide: 'Show image ', empty: 'Please fill in at least one item.',
+    open: 'Open menu', close: 'Close menu', slide: 'Show image ', empty: 'Please fill in at least one item.', need: 'Please select at least one option.',
     sending: 'Sending...', ok: 'Thank you. Your inquiry has been received. Our lead engineer will review it and reply by email.',
     fail: 'Sending failed. Please email us directly at ', cta: 'Contact us →', ctaHref: '/en/#contact', more: ' more'
   } : {
-    open: '메뉴 열기', close: '메뉴 닫기', slide: '번 이미지 보기', empty: '문의 내용을 한 가지 이상 적어 주세요.',
+    open: '메뉴 열기', close: '메뉴 닫기', slide: '번 이미지 보기', empty: '문의 내용을 한 가지 이상 적어 주세요.', need: '문의 분야를 한 가지 이상 선택해 주세요.',
     sending: '전송 중...', ok: '문의가 접수되었습니다. 대표 엔지니어가 검토 후 회신드리겠습니다.',
     fail: '전송에 실패했습니다. ', cta: '도입 문의하기 →', ctaHref: '/#contact', more: '개 더보기'
   };
@@ -101,10 +101,14 @@
     // 사례 페이지에서 ?type=xxx 로 들어오면 문의 분야 자동 선택
     var params = new URLSearchParams(location.search);
     var type = params.get('type');
-    var sel = form.querySelector('[name="category"]');
-    if (type && sel) {
-      Array.prototype.forEach.call(sel.options, function (o) { if (o.getAttribute('data-key') === type) sel.value = o.value; });
+    if (type) preselect(type);
+    var needs = form.querySelectorAll('input[name="need"]');
+    function checkNeeds() {
+      if (!needs.length) return;
+      var any = Array.prototype.some.call(needs, function (c) { return c.checked; });
+      needs[0].setCustomValidity(any ? '' : T.need);
     }
+    Array.prototype.forEach.call(needs, function (c) { c.addEventListener('change', checkNeeds); });
     var tsField = form.querySelector('[name="_ts"]');
     if (tsField) tsField.value = String(Date.now());
 
@@ -112,7 +116,7 @@
     var btn = form.querySelector('.submit-btn');
     function setStatus(msg, ok) { status.textContent = msg; status.className = 'form-status ' + (ok ? 'ok' : 'err'); }
 
-    var LABELS = { company: '회사명', name: '성함', position: '직함', email: '이메일', phone: '연락처', country: '국가', category: '문의 분야', message: '문의 내용', page: '접수 페이지' };
+    var LABELS = { company: '회사명', name: '성함', position: '직함', email: '이메일', phone: '연락처', country: '국가', city: '지역', website_url: '홈페이지', category: '문의 분야', message: '의뢰 내용', page: '접수 페이지' };
     function buildMailText(data) {
       var out = [];
       Object.keys(LABELS).forEach(function (k) { var v = data.get(k); if (v) out.push(k === 'message' ? '\n[' + LABELS[k] + ']\n' + v : LABELS[k] + ': ' + v); });
@@ -152,10 +156,26 @@
       if (msg && msg.defaultValue && msg.value.replace(/\s/g, '') === msg.defaultValue.replace(/\s/g, '')) {
         msg.setCustomValidity(T.empty);
       } else if (msg) { msg.setCustomValidity(''); }
+      checkNeeds();
       if (!form.checkValidity()) { form.reportValidity(); return; }
       if (form.querySelector('[name="website"]').value) return; // 스팸 봇
       var data = new FormData(form);
       data.append('page', location.href);
+      // 항목별 입력 → 문의 분야(category) · 의뢰 내용(message)으로 합침
+      if (needs.length) {
+        data.delete('need');
+        data.set('category', Array.prototype.filter.call(needs, function (c) { return c.checked; }).map(function (c) { return c.value; }).join(', '));
+      }
+      var qs = form.querySelectorAll('[data-q]');
+      if (qs.length) {
+        var lines = [];
+        Array.prototype.forEach.call(qs, function (el) {
+          var v = (el.value || '').trim(); data.delete(el.name); if (!v) return;
+          var label = el.getAttribute('data-q');
+          lines.push(el.hasAttribute('data-long') ? '\n■ ' + label + ' :\n' + v : '■ ' + label + ' : ' + v);
+        });
+        data.set('message', lines.join('\n').trim());
+      }
 
       if (!FORM_ENDPOINT) {
         showCopyPanel(buildMailText(data));
@@ -172,6 +192,7 @@
           if (res && res.result === 'success') {
             form.reset();
             if (msg) msg.setCustomValidity('');
+            checkNeeds(); if (needs.length) needs[0].setCustomValidity('');
             setStatus(T.ok, true);
             if (typeof gtag === 'function') gtag('event', 'generate_lead', { form: 'contact' });
           } else {
@@ -213,10 +234,12 @@
 
   /* 버튼의 data-type 으로 문의 분야 자동 선택 */
   document.querySelectorAll('a[data-type]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      var sel = document.querySelector('#contact-form [name="category"]'); if (!sel) return;
-      var key = a.getAttribute('data-type');
-      Array.prototype.forEach.call(sel.options, function (o) { if (o.getAttribute('data-key') === key) sel.value = o.value; });
-    });
+    a.addEventListener('click', function () { preselect(a.getAttribute('data-type')); });
   });
+  function preselect(key) {
+    var cb = document.querySelector('#contact-form input[name="need"][data-key="' + key + '"]');
+    if (cb) { cb.checked = true; cb.setCustomValidity(''); return; }
+    var sel = document.querySelector('#contact-form [name="category"]'); if (!sel || !sel.options) return;
+    Array.prototype.forEach.call(sel.options, function (o) { if (o.getAttribute('data-key') === key) sel.value = o.value; });
+  }
 })();
