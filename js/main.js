@@ -186,4 +186,13 @@
     b.addEventListener('click', function () { ul.classList.add('open'); b.remove(); });
     ul.insertAdjacentElement('afterend', b);
   });
+
+  /* 버튼의 data-type 으로 문의 분야 자동 선택 */
+  document.querySelectorAll('a[data-type]').forEach(function (a) {
+    a.addEventListener('click', function () {
+      var sel = document.querySelector('#contact-form [name="category"]'); if (!sel) return;
+      var key = a.getAttribute('data-type');
+      Array.prototype.forEach.call(sel.options, function (o) { if (o.getAttribute('data-key') === key) sel.value = o.value; });
+    });
+  });
 })();

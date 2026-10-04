@@ -30,7 +30,7 @@
 <link rel="apple-touch-icon" href="image/apple-touch-icon.png">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="css/style.css?v=20261002e">
+<link rel="stylesheet" href="css/style.css?v=20261004a">
 <!-- Google Analytics 4: 측정 ID 발급 후 G-XXXXXXXXXX 교체하고 주석 해제
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script>
@@ -122,12 +122,15 @@
     <p>생산 현장에는 제조사도, 통신 방식도 다른 장비가 섞여 있습니다. 장비마다 전용 프로그램을 따로 쓰면 작업자는 화면을 오가야 하고 데이터는 어디에도 남지 않습니다. 기존 장비를 그대로 두고, 하나의 프로그램에서 제어·측정·판정·기록까지 처리하도록 연결합니다.</p>
     <div class="table-wrap">
       <table class="spec-table">
-        <thead><tr><th>분류</th><th>지원 통신 · 프로토콜</th><th>주요 장비 예시</th></tr></thead>
+        <thead><tr><th>분류</th><th>지원 통신 · 프로토콜 (유선 · 무선)</th><th>주요 장비 예시</th></tr></thead>
         <tbody>
           <tr><td>시리얼</td><td>RS-232, RS-485, USB 가상 시리얼</td><td>전원공급기, 바코드 스캐너, 저울, 컨트롤러</td></tr>
           <tr><td>산업용 네트워크</td><td>Modbus RTU/TCP, Mitsubishi MC Protocol</td><td>PLC, 인버터, 온습도 로거, 센서</td></tr>
           <tr><td>계측기</td><td>SCPI (VISA · LAN · USB · GPIB)</td><td>오디오 분석기, 멀티미터, 오실로스코프</td></tr>
           <tr><td>네트워크 장비</td><td>TCP/UDP 소켓, HTTP REST, ZPL</td><td>라벨 프린터, 산업용 카메라, 서버</td></tr>
+          <tr><td>무선 (근거리)</td><td>Wi-Fi, 블루투스(BLE), 무선 시리얼 모듈(RS-232/485 무선화)</td><td>휴대형 측정기, 이동 설비, 배선이 어려운 장비</td></tr>
+          <tr><td>무선 (원거리)</td><td>LTE(이동통신) 모뎀 통신, LoRa, MQTT 기반 IoT</td><td>원격지 설비, 야외 장비, 분산된 현장</td></tr>
+          <tr><td>스마트폰 연동</td><td>스마트폰 원격 모니터링·제어 (웹 대시보드, 텔레그램)</td><td>외부에서 상태 확인, 알림 수신, 원격 명령</td></tr>
         </tbody>
       </table>
     </div>
@@ -249,6 +252,6 @@
     </div>
   </div>
 </footer>
-<script src="js/main.js?v=20261002e" defer></script>
+<script src="js/main.js?v=20261004a" defer></script>
 </body>
 </html>
