@@ -4126,6 +4126,23 @@
         var KIWOOM_DEAD_MS = 6000;          // 하트비트 2초 × 3회 누락
         var kiwoomAlive = false;            // 시작 시에는 야후로 표시, 하트비트 확인 즉시 키움으로 전환
         var kiwoomLastHbRecv = 0;           // 브라우저 시계 기준 마지막 하트비트 수신 시각
+        // ★ 시작 직후 키움 판정 대기: 하트비트로 키움 켜짐/꺼짐이 정해지기 전(최대 2.5초)에는 야후 값을 화면에 내지 않음
+        //   (새로고침 직후 야후의 옛 시간외 가격이 먼저 떴다가 키움 현재가로 바뀌는 문제 · 가짜 가격 점프로 알람·방향이 흔들리는 문제 방지)
+        var 키움_판정중 = true, 키움_판정시작 = 0;
+        function 키움_판정끝(사유) {
+            if (!키움_판정중) return;
+            키움_판정중 = false;
+            console.log('[소스] 시작 판정 끝 → ' + (kiwoomAlive ? '키움' : '야후') + ' (' + 사유 + ')');
+            [0, 1, 2].forEach(renderPanelQuote);
+            try { renderHeaderQuotes(); } catch (e) { }
+        }
+        setTimeout(function () { 키움_판정끝('시작 4초 경과'); }, 4000);
+        // 이 종목의 키움 첫 스냅샷을 아직 못 받았으면(구독 후 2.5초까지) 야후 값을 내지 않음
+        var 키움_구독시작 = {}, 키움_첫수신 = {};
+        function 야후_보류(ticker) {
+            if (키움_판정중) return true;
+            return kiwoomAlive && !키움_첫수신[ticker] && 키움_구독시작[ticker] > 0 && Date.now() - 키움_구독시작[ticker] < 2500;
+        }   // Firebase 를 못 쓰는 경우의 안전장치
         var fbServerOffset = 0;             // Firebase 서버 시각 - 브라우저 시각
 
         var kiwoomCache = {};               // ticker → { price, changeRate, change, volume, dayHigh, dayLow }
@@ -4152,7 +4169,7 @@
                     var isFirst = firstSnap; firstSnap = false;
 
                     // 노드 없음 또는 명시적 꺼짐 신호 → 즉시 야후 전환
-                    if (!v || v.status === 'off') { setKiwoomAlive(false, v ? '키움 종료 신호 수신' : '하트비트 없음'); return; }
+                    if (!v || v.status === 'off') { setKiwoomAlive(false, v ? '키움 종료 신호 수신' : '하트비트 없음'); 키움_판정끝('키움 꺼짐'); return; }
 
                     if (isFirst) {
                         // 구독 직후 최초 스냅샷은 "과거 값"일 수 있음
@@ -4163,6 +4180,7 @@
                             if (age >= 0 && age < KIWOOM_DEAD_MS) {
                                 kiwoomLastHbRecv = Date.now() - age;
                                 setKiwoomAlive(true, '하트비트 확인');
+                                키움_판정끝('하트비트 확인');
                             }
                         }
                         return; // ts가 없거나 오래됐으면 다음 변경 이벤트(최대 2초)를 기다림
@@ -4172,6 +4190,10 @@
                     noteKiwoomActivity();
                 });
             } catch (e) { }
+
+            // 하트비트가 오래됐으면 다음 기록(2초 간격)을 기다리되 2.5초가 지나면 야후로 표시
+            키움_판정시작 = Date.now();
+            setTimeout(function () { 키움_판정끝('2.5초 안에 하트비트 없음'); }, 2500);
 
             // 감시 타이머: 하트비트가 6초 이상 끊기면 야후 전환
             setInterval(function () {
@@ -4185,6 +4207,7 @@
         function noteKiwoomActivity() {
             kiwoomLastHbRecv = Date.now();
             if (!kiwoomAlive) setKiwoomAlive(true, '키움 기록 수신');
+            키움_판정끝('키움 기록 수신');
         }
 
         function setKiwoomAlive(alive, reason) {
@@ -4211,7 +4234,8 @@
             var yOk = y && y.price > 0, rOk = r && r.price > 0;
             // 키움 우선. 단, 야후가 키움보다 2분 넘게 최신 체결을 받고 있으면(이 종목 키움 시세가 멈춤) 야후 사용
             if (kiwoomAlive && k && k.price > 0) {
-                var 야후최신 = Math.max(yOk ? (y.recvAt || 0) : 0, rOk ? (r.recvAt || 0) : 0);
+                // 야후는 "받은 시각"이 아니라 "체결 시각"으로 비교 (REST 는 금요일 애프터 마지막 가격도 방금 받은 것처럼 보이므로)
+                var 야후최신 = Math.max(yOk ? (y.tradeAt || y.recvAt || 0) : 0, rOk ? (r.tradeAt || 0) : 0);
                 if (!(야후최신 > (k.recvAt || 0) + 120000)) return { q: k, src: 'kiwoom' };
             }
             // 야후 WebSocket 과 REST(Worker) 중 더 최근에 받은 값
@@ -4301,7 +4325,8 @@
                         restCache[t] = {
                             price: q.price, change: q.change, changeRate: q.changePct,
                             volume: reg ? (q.regVolume || 0) : 0,
-                            dayHigh: 0, dayLow: 0, recvAt: now
+                            dayHigh: 0, dayLow: 0, recvAt: now,
+                            tradeAt: q.time > 0 ? Math.min(now, q.time * 1000) : 0     // 야후 체결 시각 (초 → ms)
                         };
                         // 장외 시간: 정규장 종가·전일 종가를 대체 정보로 보관 (Worker 종가 기록이 없을 때 사용)
                         if (!reg && q.regPrice > 0) yahooRegCache[t] = { regClose: q.regPrice, prevClose: q.regPrevClose || 0 };
@@ -4319,6 +4344,7 @@
             var ticker = panelTickers[idx];
             if (!ticker) return;
             var pick = pickQuote(ticker);
+            if (pick && pick.src === 'yahoo' && 야후_보류(ticker)) pick = null;   // 키움 판정 전·키움 첫 시세 대기(최대 2.5초): "연결 중"으로 대기
             if (!pick) {
                 // 아직 실시간 값이 없음 → 확정된 종가 줄만 표시하고 현재가는 "연결 중"
                 setDotState(idx, null);
@@ -4337,6 +4363,7 @@
         function updatePanelDot(idx) {
             var ticker = panelTickers[idx];
             var pick = ticker ? pickQuote(ticker) : null;
+            if (pick && pick.src === 'yahoo' && 야후_보류(ticker)) pick = null;
             if (!pick) { setDotState(idx, null); return; }
             setDotState(idx, (pick.src === 'kiwoom' ? 'red' : 'blue') + (isFresh(pick.q) ? '' : '-stale'));
         }
@@ -4399,11 +4426,16 @@
             try {
                 var rtRef = firebase.database().ref('tickers/' + ticker + '/realtime');
                 var rtFirst = true;
+                if (!키움_첫수신[ticker]) {
+                    키움_구독시작[ticker] = Date.now();
+                    setTimeout(function () { if (panelTickers[panelIdx] === ticker) renderPanelQuote(panelIdx); }, 2600);   // 2.5초 안에 키움 값이 없으면 야후로
+                }
                 rtRef.on('value', function (snap) {
                     if (fbGen[panelIdx] !== myGen || panelTickers[panelIdx] !== ticker) return;
                     var isFirst = rtFirst; rtFirst = false;
 
                     var rtData = snap.val();
+                    if (isFirst && !키움_첫수신[ticker]) { 키움_첫수신[ticker] = true; if (!rtData) renderPanelQuote(panelIdx); }
                     if (!rtData) return; // ★ 빈 경로는 키움 수신으로 치지 않음
 
                     if (!window._lastVolMap) window._lastVolMap = {};
@@ -5623,6 +5655,13 @@
 
         // ── 야후 WebSocket 메시지 디코딩 (3가지 형식 모두 대응) ──
         //   1) 바이너리 protobuf  2) base64 문자열  3) {"type":"pricing","message":"<base64>"}
+        // 야후 WebSocket 체결 시각(ms) · 없거나 이상하면 받은 시각
+        function 야후_체결시각(msg) {
+            var t = msg && msg.time, n = t && typeof t.toNumber === 'function' ? t.toNumber() : Number(t);
+            if (!(n > 0)) return Date.now();
+            if (n < 1e12) n *= 1000;
+            return Math.min(Date.now(), n);
+        }
         function decodeYahooMsg(data) {
             if (data instanceof ArrayBuffer) return PricingData.decode(new Uint8Array(data));
             var s = String(data);
@@ -5688,7 +5727,7 @@
                         volume: Number(msg.dayVolume) > 0 ? Number(msg.dayVolume) : (prev.volume || 0),
                         dayHigh: Number(msg.dayHigh) > 0 ? Number(msg.dayHigh) : (prev.dayHigh || 0),
                         dayLow: Number(msg.dayLow) > 0 ? Number(msg.dayLow) : (prev.dayLow || 0),
-                        recvAt: Date.now()
+                        recvAt: Date.now(), tradeAt: 야후_체결시각(msg)
                     };
 
                     // 헤더(QQQ/SPY)
@@ -5768,7 +5807,7 @@
             var 정규 = marketPhase().type === 'REG';
             HEADER_TICKERS.forEach(function (ticker) {
                 var pick = pickQuote(ticker);
-                if (!pick) return;
+                if (!pick || (pick.src === 'yahoo' && 키움_판정중)) return;
                 var chg = Number(String(pick.q.changeRate || '0').replace('%', '').trim()) || 0;
                 var id = ticker === 'QQQ' ? 'neon-qqq' : ticker === 'SPY' ? 'neon-spy' : '', 이름 = ticker === 'QQQ' ? 'QQQ(나스닥)' : 'SPY(S&P 500)';
                 if (ticker === 'QQQ') globQqq = chg; else if (ticker === 'SPY') globSpy = chg;
