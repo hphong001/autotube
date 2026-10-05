@@ -6886,7 +6886,8 @@
                 '<label class="ns-chk"><input type="checkbox" id="ns-ext"' + (알림설정.장외무음 ? ' checked' : '') + '> 정규장 외에는 소리·음성 끄기 <small>(알림창·기록은 남음)</small></label>' +
                 '<div class="ns-c">체결 급증 기준 <select id="fl-k">' + [2, 2.5, 3, 4].map(function (k) { return '<option value="' + k + '"' + (Number(체결알림설정.기준) === k ? ' selected' : '') + '>' + k + '배</option>'; }).join('') + '</select>' +
                 '<span class="al-flst' + (체결_윈폼켜짐() ? ' on' : '') + '">' + (체결_윈폼켜짐() ? '윈폼 켜짐 · 동작 중' : '윈폼 꺼짐 → 대기 중') + '</span></div>' +
-                '<div class="ns-note al-flnote">평소(과거 5일 같은 시각) 대비 최근 1분 체결량. 급증 = 기준 이상 10초 유지 · 폭주 = ' + 체결_폭주기준().toFixed(1) + '배 이상. 체결 급증·대형 체결은 윈폼(키움 체결)이 켜져 있을 때만 동작</div>';
+                '<div class="ns-note al-flnote">평소(과거 5일 같은 시각) 대비 최근 1분 체결량. 급증 = 기준 이상 10초 유지 · 폭주 = ' + 체결_폭주기준().toFixed(1) + '배 이상. 체결 급증·대형 체결은 윈폼(키움 체결)이 켜져 있을 때만 동작</div>' +
+                (통계_본인() ? '<div class="ns-note ns-me">📊 이 기기는 접속 통계에서 본인으로 표시됨</div>' : '');
         }
         function 알림설정_연결(창, 다시) {
             Array.prototype.forEach.call(창.querySelectorAll('.ns-sw'), function (b) {
@@ -7034,6 +7035,78 @@
         if (window.visualViewport) window.visualViewport.addEventListener('resize', 이동_그리기);
         document.addEventListener('click', function (e) { if (!(e.target.closest && e.target.closest('#qnav'))) 이동_접기(); });
         setInterval(이동_그리기, 700);   // 창 열림·닫힘, 종목 변경 반영
+
+        // ════════════════════════════════════════════════════════
+        // ★ 접속 통계 (익명): 방문 기록을 Firebase stats/visits/{방문ID} 에 기록 → Worker 가 10분마다 구글 시트로 옮김
+        //   - 방문자ID: 이 브라우저에 저장된 무작위 ID (같은 기기·같은 브라우저 = 같은 방문자)
+        //   - 방문: 30분 넘게 안 보다가 다시 오면 새 방문 · 머문 시간 = 화면에 보인 동안 1분마다 +1
+        //   - 지역: 방문 시작 때 Worker /visit 1번 (국가·도시·통신사·가린 IP, 원래 IP 는 저장 안 함)
+        //   - 본인: 주소?me=비밀단어 를 기기마다 한 번 (Worker 가 확인) · 윈폼 창은 자동 · 기록은 하되 "본인"으로 표시
+        // ════════════════════════════════════════════════════════
+        var 통계_방문간격 = 30 * 60000, 통계_신호간격 = 60000;
+        function 통계_저장소(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } }
+        function 통계_본인() { return 통계_저장소('sz_me') === '1' || 윈폼창(); }
+        function 통계_무작위() { return (Date.now().toString(36) + Math.random().toString(36).slice(2, 8)).slice(-12); }
+        function 통계_방문자ID() { var v = 통계_저장소('sz_vid'); if (!v) { v = 'v' + 통계_무작위(); 통계_저장소('sz_vid', v); } return v; }
+        function 통계_기기() {
+            var ua = navigator.userAgent || '';
+            var 기기 = /iPad|Tablet/i.test(ua) || (/Android/i.test(ua) && !/Mobile/i.test(ua)) ? '태블릿' : /Mobi|iPhone|Android/i.test(ua) ? '휴대폰' : 'PC';
+            var os = /Windows/i.test(ua) ? 'Windows' : /iPhone|iPad|iPod/i.test(ua) ? 'iOS' : /Android/i.test(ua) ? 'Android' : /Mac OS/i.test(ua) ? 'macOS' : /Linux/i.test(ua) ? 'Linux' : '기타';
+            var br = 윈폼창() ? '윈폼(WebView2)' : /Edg\//.test(ua) ? 'Edge' : /SamsungBrowser/.test(ua) ? '삼성 인터넷' : /KAKAOTALK/i.test(ua) ? '카카오톡' : /NAVER/.test(ua) ? '네이버' : /CriOS|Chrome\//.test(ua) ? 'Chrome' : /FxiOS|Firefox\//.test(ua) ? 'Firefox' : /Safari\//.test(ua) ? 'Safari' : '기타';
+            return { dv: 기기, os: os, br: br, sc: (screen.width || 0) + 'x' + (screen.height || 0) };
+        }
+        function 통계_유입() { try { if (!document.referrer) return '직접'; var h = new URL(document.referrer).hostname; return h === location.hostname ? '직접' : h; } catch (e) { return ''; } }
+        var 통계_방문 = null, 통계_실패알림 = false;
+        function 통계_기록(값) {
+            try {
+                if (!통계_방문 || !window.firebase || !firebase.database) return;
+                firebase.database().ref('stats/visits/' + 통계_방문.id).update(값).catch(function (e) { if (!통계_실패알림) { 통계_실패알림 = true; console.warn('[통계] 기록 실패 (Firebase 규칙 확인)', e && e.message); } });
+            } catch (e) { }
+        }
+        function 통계_서버시각() { try { return firebase.database.ServerValue.TIMESTAMP || Date.now(); } catch (e) { return Date.now(); } }
+        // 방문 시작 또는 이어가기 (30분 안에 돌아오면 같은 방문)
+        function 통계_방문확인() {
+            var 지금 = Date.now(), 저장 = null;
+            try { 저장 = JSON.parse(통계_저장소('sz_visit') || 'null'); } catch (e) { }
+            if (저장 && 저장.id && 지금 - (저장.l || 0) < 통계_방문간격) { 통계_방문 = 저장; return false; }
+            var n = (Number(통계_저장소('sz_vn')) || 0) + 1; 통계_저장소('sz_vn', String(n));
+            var vid = 통계_방문자ID();
+            통계_방문 = { id: vid + '-' + 지금.toString(36), n: n, m: 0, l: 지금 };
+            통계_저장소('sz_visit', JSON.stringify(통계_방문));
+            var 기 = 통계_기기();
+            통계_기록({ v: vid, n: n, s: 통계_서버시각(), l: 통계_서버시각(), m: 0, dv: 기.dv, os: 기.os, br: 기.br, sc: 기.sc, wf: 윈폼창(), me: 통계_본인(), rf: 통계_유입(), t: panelTickers.filter(Boolean).join(',') });
+            // 지역 (Worker 1번)
+            if (CLOSE_WORKER_URL && CLOSE_WORKER_URL.indexOf('YOUR-ACCOUNT') < 0) {
+                fetch(CLOSE_WORKER_URL.replace(/\/+$/, '') + '/visit', { cache: 'no-store' }).then(function (r) { return r.json(); })
+                    .then(function (g) { if (g && typeof g === 'object' && !g.error) 통계_기록({ g: g }); }).catch(function () { });
+            }
+            return true;
+        }
+        // 1분마다 (화면에 보일 때만): 마지막 신호 · 본 시간 +1
+        function 통계_신호() {
+            if (document.visibilityState !== 'visible') return;
+            if (!통계_방문 || Date.now() - (통계_방문.l || 0) >= 통계_방문간격) { 통계_방문확인(); return; }
+            통계_방문.m = (통계_방문.m || 0) + 1; 통계_방문.l = Date.now();
+            통계_저장소('sz_visit', JSON.stringify(통계_방문));
+            통계_기록({ l: 통계_서버시각(), m: 통계_방문.m, me: 통계_본인(), t: panelTickers.filter(Boolean).join(',') });
+        }
+        // 본인 기기 표시: 주소?me=비밀단어 (Worker 가 확인) / ?me=off = 해제 → 확인 뒤 주소창에서 지움
+        function 통계_본인확인() {
+            var m; try { m = new URLSearchParams(location.search).get('me'); } catch (e) { m = null; }
+            if (m == null) return;
+            function 주소정리() { try { var u = new URL(location.href); u.searchParams.delete('me'); history.replaceState(null, '', u.pathname + (u.search || '') + u.hash); } catch (e) { } }
+            if (m === 'off') { 통계_저장소('sz_me', null); 통계_기록({ me: 윈폼창() }); 주소정리(); 알림_잠깐('📊 이 기기의 본인 표시를 해제했습니다'); return; }
+            if (!CLOSE_WORKER_URL || CLOSE_WORKER_URL.indexOf('YOUR-ACCOUNT') >= 0) { 주소정리(); return; }
+            fetch(CLOSE_WORKER_URL.replace(/\/+$/, '') + '/me?k=' + encodeURIComponent(m), { cache: 'no-store' }).then(function (r) { return r.json(); })
+                .then(function (j) { if (j && j.ok === true) { 통계_저장소('sz_me', '1'); 통계_기록({ me: true }); 알림_잠깐('📊 이 기기를 접속 통계에서 본인으로 표시합니다'); } })
+                .catch(function () { }).then(주소정리);
+        }
+        function 통계_시작() {
+            통계_본인확인();
+            if (document.visibilityState === 'visible') 통계_방문확인();
+            setInterval(통계_신호, 통계_신호간격);
+            document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && (!통계_방문 || Date.now() - (통계_방문.l || 0) >= 통계_방문간격)) 통계_방문확인(); });
+        }
 
         // ── 탭 제목 깜빡임 (탭이 숨겨져 있을 때만) ──
         var 탭_원래제목 = document.title, 탭_타이머 = null;
@@ -7357,6 +7430,7 @@
             [0, 1, 2].forEach(function (i) { try { 레벨요약표시('p' + i + '-', { ticker: panelTickers[i] }); 매물대표시('p' + i + '-', { ticker: panelTickers[i] }); } catch (e) { } });
             try { 알람_화면갱신(); } catch (e) { }   // 요약 틀(빈 줄) 먼저 → 3개 패널 높이 동일
             try { 알림기록_오늘(); 알림기록_배지(); 화면_적용(); 이동_그리기(); } catch (e) { }
+            try { 통계_시작(); } catch (e) { }
             try {
                 firebase.database().ref('system/closeUpdate').on('value', function (snap) {
                     closeStatus = snap.val();
