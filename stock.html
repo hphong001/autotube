@@ -1417,6 +1417,7 @@
         .wl-v { font-size: 12.5px; font-weight: 700; color: #c9cedb; }
         .wl-c { font-size: 11px; font-weight: 600; color: #8b93a7; margin-left: 12px; }
         .wl-v.up, .wl-c.up { color: #ff6b6b; } .wl-v.dn, .wl-c.dn { color: #4d8dff; }
+        .wl-more { display: none; }
         .wl-rk { font-style: normal; font-size: 9.5px; font-weight: 700; }
         .wl-rk:empty { display: none; }
         .wl-top .wl-rk { order: 3; margin-left: auto; flex-shrink: 0; color: #8b93a7; background: #1a1d2b; border-radius: 3px; padding: 0 4px; line-height: 14px; }
@@ -1491,8 +1492,8 @@
             .mk-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
             .mk-txt { flex: 1 1 auto; min-width: 0 !important; }
             .mk-sp { flex: 0 0 48px; min-width: 48px; }
-            /* 세로 배치(태블릿·모바일): 오른쪽 메뉴·관심 종목·광고 숨기고 로고만 가운데 */
-            .sidebar-menu, .sidebar-watchlist, .sidebar-ad { display: none !important; }
+            /* 세로 배치(태블릿·모바일): 오른쪽 메뉴·광고 숨김 · 관심 종목은 패널 아래에 카드 목록으로 */
+            .sidebar-menu, .sidebar-ad { display: none !important; }
             .sidebar { justify-content: center; }
             .sidebar-logo { flex: 0 1 auto !important; margin: 0 auto; text-align: center; align-items: center; }
 
@@ -1573,10 +1574,38 @@
             }
 
             .sidebar-watchlist {
-                flex: 2;
-                min-width: 200px;
-                max-height: 200px;
+                order: -1;
+                flex: 1 1 100%;
+                width: 100%;
+                min-width: 0;
+                max-height: none;
+                overflow: visible;
+                padding: 12px 10px 10px;
+                box-sizing: border-box;
             }
+            .sidebar-watchlist .watchlist-title { font-size: 14px; color: #e3e7ef; margin-bottom: 10px; }
+            .wl-sort { margin: 0 0 10px; }
+            .wl-sb button { padding: 7px 0; font-size: 12px; }
+            .wl-so { font-size: 12px; }
+            .wl-so button { padding: 5px 9px; font-size: 12px; }
+            .wl-so input[type=checkbox] { width: 16px; height: 16px; }
+            /* 카드 목록: 태블릿 2~3열 / 휴대폰 1열 */
+            .ticker-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 6px; overflow: visible; max-height: none; flex: none; }
+            .ticker-item.wl-row { margin: 0; padding: 9px 10px; border: 1.5px solid #22263a; border-radius: 8px; background: #10121b; }
+            .ticker-item.wl-row[data-p="0"] { border-color: #ff6666; background: rgba(255, 102, 102, .07); }
+            .ticker-item.wl-row[data-p="1"] { border-color: #66cc66; background: rgba(102, 204, 102, .07); }
+            .ticker-item.wl-row[data-p="2"] { border-color: #6688ff; background: rgba(102, 136, 255, .08); }
+            /* 손가락으로 누르기 쉽게 패널 단추 크게 (가격 줄 첫 칸 폭도 같이 맞춤: 26×3 + 3×2 + 1 + 6 = 91px) */
+            .wl-pn { gap: 3px; }
+            .wl-pb { width: 26px; height: 24px; line-height: 22px; font-size: 12px; border-radius: 5px; }
+            .wl-l { width: 91px; font-size: 11px; }
+            .wl-t { font-size: 14.5px; } .wl-n { font-size: 11px; }
+            .wl-v { font-size: 15px; } .wl-c { font-size: 13px; }
+            .wl-main { gap: 4px; }
+            /* 처음엔 10개만 (지금 정렬 순서 기준) → [전체 보기] */
+            .sidebar-watchlist:not(.wl-all) .ticker-list .wl-row:nth-child(n+11) { display: none; }
+            .wl-more { display: block; width: 100%; margin-top: 8px; font: inherit; font-size: 12.5px; font-weight: 700; color: #cfd5e2; background: #141826; border: 1px solid #262c3e; border-radius: 6px; padding: 9px 0; cursor: pointer; }
+            .sidebar-logo { order: 2; }
 
             .sidebar-ad {
                 display: none;
@@ -1678,6 +1707,7 @@
                 <h3 class="watchlist-title">⭐ 관심 종목</h3>
                 <div class="wl-sort" id="wl-sort"></div>
                 <div class="ticker-list" id="ticker-list"></div>
+                <button type="button" class="wl-more" id="wl-more"></button>
             </div>
             <div class="sidebar-ad">광고 영역 (300×250)</div>
         </div>
@@ -3685,6 +3715,29 @@
             refreshWatchlistBadges();
             관심_가격표시();
             관심_정렬();
+            관심_더보기표시();
+        }
+        // 세로 배치(태블릿·모바일): 처음엔 10개만 → [전체 보기 (25)] / [접기]
+        var 관심_전체 = false;
+        try { 관심_전체 = localStorage.getItem('sz_wl_all') === '1'; } catch (e) { }
+        function 관심_더보기표시() {
+            var w = document.querySelector('.sidebar-watchlist'), b = document.getElementById('wl-more'); if (!w || !b) return;
+            w.classList.toggle('wl-all', 관심_전체);
+            var n = WATCH_LIST.length;
+            b.style.visibility = n > 10 ? '' : 'hidden';
+            b.textContent = 관심_전체 ? '접기 ▴' : '전체 보기 (' + n + ') ▾';
+        }
+        document.addEventListener('click', function (e) {
+            if (!(e.target && e.target.id === 'wl-more')) return;
+            관심_전체 = !관심_전체;
+            try { localStorage.setItem('sz_wl_all', 관심_전체 ? '1' : '0'); } catch (e2) { }
+            관심_더보기표시();
+            if (!관심_전체) { var w = document.querySelector('.sidebar-watchlist'); if (w) w.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+        });
+        // 세로 배치에서 패널 단추를 누르면 그 패널로 화면 이동 (패널이 목록보다 위에 있어 바뀐 걸 바로 보이게)
+        function 관심_패널로이동(idx) {
+            if (window.innerWidth > 1200) return;
+            var el = document.getElementById('panel-' + idx); if (el) setTimeout(function () { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 120);
         }
 
         // ── 정렬: 단추를 누를 때만 다시 정렬 (가격은 계속 갱신, 순서는 그대로 → 목록이 출렁이지 않음) ──
@@ -3774,6 +3827,7 @@
             var b = e.target.closest && e.target.closest('.wl-pb'); if (!b) return;
             e.stopPropagation();
             관심_패널지정(Number(b.getAttribute('data-i')), b.getAttribute('data-t'));
+            관심_패널로이동(Number(b.getAttribute('data-i')));
         });
 
         // ── 가격 ──
