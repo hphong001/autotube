@@ -854,6 +854,57 @@
         .al-pop.mob .al-row { height: auto; min-height: 40px; }
         .al-pop.mob .al-row button { min-height: 36px; min-width: 36px; font-size: 13px; }
         .al-pop.mob .al-list { max-height: none; }
+        /* 종목 🔔 창: [알람] [⚙ 설정] 탭 · 알람별 울림/끈 다음/알림음 */
+        .al-pop { width: 340px; max-height: calc(100vh - 16px); overflow-y: auto; box-sizing: border-box; }
+        .al-pop.set { width: 380px; }
+        .al-tabs { display: flex; gap: 4px; margin: 0 28px 8px 0; flex-wrap: wrap; }
+        .al-tabs button { font: inherit; font-size: 12.5px; font-weight: 700; background: #151925; color: #8b93a7; border: 1px solid #262c3e; border-radius: 6px; padding: 5px 10px; cursor: pointer; }
+        .al-tabs button.on { color: #ffe08a; border-color: #f5c542; background: rgba(245,197,66,.1); }
+        .al-now { color: #8b93a7; font-size: 11.5px; margin-bottom: 6px; }
+        .al-orow { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+        .al-ol { flex: 0 0 44px; font-size: 11.5px; color: #9aa3b5; }
+        .al-seg { flex: 1; display: flex; gap: 4px; }
+        .al-seg button { flex: 1; font: inherit; font-size: 11.5px; font-weight: 700; background: #1a1d2b; color: #8b93a7; border: 1px solid #2f3446; border-radius: 6px; padding: 5px 4px; cursor: pointer; line-height: 1.25; }
+        .al-seg button small { display: block; font-weight: 400; font-size: 10px; color: #8b93a7; }
+        .al-seg button.sel { color: #ffe08a; border-color: #f5c542; background: rgba(245,197,66,.12); }
+        #al-asnd { flex: 1; min-width: 0; background: #0b0c14; color: #e7e9f0; border: 1px solid #2f3446; border-radius: 6px; padding: 4px 6px; font: inherit; font-size: 12px; }
+        #al-aplay { font: inherit; font-size: 12px; background: #1a1d2b; color: #ffe08a; border: 1px solid #4a4020; border-radius: 6px; padding: 4px 9px; cursor: pointer; }
+        .al-pop .al-row .al-rearm { color: #6ee7b7; font-size: 14px; }
+        .al-pop.mob .al-seg button, .al-pop.mob #al-asnd, .al-pop.mob #al-aplay, .al-pop.mob .al-tabs button { min-height: 38px; font-size: 13px; }
+        .al-pop.mob .ns-sel, .al-pop.mob .ns-dnd button, .al-pop.mob .ns-quick button, .al-pop.mob .ns-c select, .al-pop.mob .ns-c button { min-height: 36px; }
+        /* 설정 표 (알림창 + 알림 방식) */
+        .ns-row { grid-template-columns: 1fr 60px 150px; }
+        .ns-m { display: flex; align-items: center; gap: 6px; justify-self: stretch; }
+        .ns-m .ns-sel { width: auto; flex: 1; min-width: 0; padding: 4px 4px; font-size: 12px; }
+        .ns-hot { display: flex; align-items: center; gap: 2px; font-size: 10.5px; color: #9aa3b5; white-space: nowrap; cursor: pointer; }
+        .ns-hot input { margin: 0; }
+        .ns-dnd { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-bottom: 4px; }
+        .ns-dl { font-size: 11.5px; font-weight: 800; color: #cfd5e2; margin-right: 2px; }
+        .ns-dnd button { font: inherit; font-size: 11.5px; font-weight: 700; background: #1a1d2b; color: #cfd5e2; border: 1px solid #2f3446; border-radius: 5px; padding: 4px 8px; cursor: pointer; }
+        .ns-dnd button small { font-weight: 400; font-size: 10.5px; }
+        .ns-dnd button.on { color: #1a1400; background: #f5c542; border-color: #f5c542; }
+        .ns-dnd button.off { color: #ff9b9b; border-color: #5a2f36; }
+        .ns-dnd button:disabled { opacity: .4; cursor: default; }
+        .ns-novc { color: #c9b26a; }
+        /* 📋 기록 단추 · 방해 금지 표시 */
+        .nt-hist .nt-dnd { font-style: normal; font-size: 10.5px; color: #cfd5e2; margin-left: 4px; }
+        .nt-pop .nt-mute { display: block; margin-bottom: 6px; }
+        .nt-pf { display: flex; justify-content: space-between; gap: 6px; } .nt-pf .nt-goset { color: #ffe08a; border-color: #4a4020; }
+        /* 가격 알람 확인 단추 (알림창·띠) */
+        .nt-btns .nt-act { background: #2a2f40; color: #e7e9f0; border-color: #3a4153; }
+        .nt-btns .nt-act.def { background: #f5c542; color: #1a1400; border-color: #f5c542; }
+        .al-ban .al-acts { display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; flex-wrap: wrap; justify-content: center; }
+        .al-ban .al-left { font-size: 12px; color: #ffe08a; }
+        .al-ban .al-ok { font: inherit; font-size: 12px; font-weight: 800; background: #2a2f40; color: #e7e9f0; border: 1px solid #4a4020; border-radius: 6px; padding: 4px 9px; cursor: pointer; }
+        .al-ban .al-ok.def { background: #f5c542; color: #1a1400; border-color: #f5c542; }
+        /* 설정에서 나올 때 안내 */
+        .nt-guide { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 10070; width: min(360px, calc(100vw - 32px)); box-sizing: border-box; background: #11131d; border: 1px solid #f5c542; border-radius: 12px; box-shadow: 0 16px 40px rgba(0,0,0,.7); padding: 16px; color: #e3e7ef; text-align: center; }
+        .nt-guide .ng-t { font-weight: 800; font-size: 14.5px; color: #ffe08a; line-height: 1.4; margin-bottom: 8px; }
+        .nt-guide .ng-b { font-size: 12.5px; color: #cfd5e2; line-height: 1.5; margin-bottom: 14px; }
+        .nt-guide .ng-btns { display: flex; gap: 8px; justify-content: center; }
+        .nt-guide button { font: inherit; font-size: 13px; font-weight: 800; border-radius: 8px; padding: 9px 14px; cursor: pointer; min-height: 40px; }
+        .nt-guide .ng-wake { background: #1a1d2b; color: #ffe08a; border: 1px solid #f5c542; }
+        .nt-guide .ng-ok { background: #f5c542; color: #1a1400; border: 1px solid #f5c542; min-width: 96px; }
         .lvs-r { position: relative; }
         .lvs-bell { position: absolute; right: -2px; top: 1px; display: none; background: #1a1d2b; border: 1px solid #4a4020; border-radius: 4px; font-size: 10px; padding: 1px 3px; cursor: pointer; }
         .lvs-r:hover .lvs-bell { display: block; }
@@ -1792,7 +1843,7 @@
                 <div class="top-time" id="h-time">연결 대기중</div>   <!-- 뉴욕 / 서울 시각 (로고 아래) -->
                 <div class="top-tools">   <!-- 휴대폰·태블릿: 시계 오른쪽 = 화면 켜두기 · 알림 기록 -->
                     <button type="button" class="tool-btn wake" id="wake-btn">☀ 화면 켜두기</button>
-                    <button type="button" class="tool-btn nt-hist" title="오늘 알림 기록">🔔</button>
+                    <button type="button" class="tool-btn nt-hist" title="오늘 알림 기록">📋</button>
                 </div>
             </div>
         </div>
@@ -1801,7 +1852,7 @@
             <div class="mk-left">
                 <div class="mk-sessrow"><span class="ws-dot dead" id="ws-dot-header"></span><span class="mk-sess" id="mk-sess">─</span></div>
                 <div class="mk-fg" id="neon-fg"><span class="tit">공포탐욕지수</span><span class="val neu">─</span></div>
-                <div class="mk-airow"><button type="button" class="mk-ai" id="ai-btn" title="지금 화면 상황을 AI 에게 물어볼 글로 정리해 복사">🤖 AI 분석</button><button type="button" class="mk-hist nt-hist" title="오늘 알림 기록">🔔</button></div>
+                <div class="mk-airow"><button type="button" class="mk-ai" id="ai-btn" title="지금 화면 상황을 AI 에게 물어볼 글로 정리해 복사">🤖 AI 분석</button><button type="button" class="mk-hist nt-hist" title="오늘 알림 기록">📋</button></div>
             </div>
             <div class="mk-grid">
                 <div class="mk-cell" id="neon-qqq"><div class="mk-txt"><div class="mk-nm"><i class="mk-dot"></i><span class="tit">QQQ(나스닥)</span></div><div class="mk-vl"><span class="val neu">─</span><span class="mk-ch"></span></div></div><div class="mk-sp"></div></div>
@@ -6339,8 +6390,8 @@
         // ★ 가격 알람 (패널 "정규장 현재가" 옆 🔔)
         //   - 방향: ▲ 상향 돌파(아래→위로 지나갈 때) / ▼ 하향 이탈(위→아래로 지나갈 때). 기본은 지금가 기준 자동, 창·목록에서 바꿀 수 있음
         //   - 체결 필터를 통과한 실시간 가격으로만 판정 (튄 시세에 울리지 않음)
-        //   - 기본 한 번 울리고 꺼짐 / 반복: 0.1% 이상 되돌아간 뒤 다시 지나가면 다시 울림 (최소 60초 간격)
-        //   - 계속 울림(끄기·1·3·5·10분): 띠의 [해제] 를 누르거나 시간이 끝날 때까지 4초마다 다시 울림
+        //   - 울림: 확인할 때까지(최대 5분, 4초마다) / 한 번만 · 끈 다음: 다시 대기(알람 가격에서 1% 벗어난 뒤 재도달) / 알람 끝
+        //   - 알림음: 알람마다 공통 설정 / 음성 / 알림음 종류 선택
         //   - 이 브라우저에 저장 (localStorage). 대시보드가 열려 있을 때만 동작
         //   - 윈폼 대시보드 창 안에서는 윈폼 알림음 + "최근 알림" 줄로도 전달
         // ════════════════════════════════════════════════════════
@@ -6354,19 +6405,26 @@
         // 방향: '상향' = 아래에서 위로 지나갈 때(돌파) / '하향' = 위에서 아래로 지나갈 때(이탈)
         //   무장 = 가격이 "지나가기 전 쪽"에 있음. 이미 반대쪽이면 한 번 되돌아올 때까지 기다림
         //   (이전 저장분 '이상'/'이하' 는 '상향'/'하향' 으로 바꿔 읽음)
-        var 알람_계속선택 = [[0, '끄기'], [1, '1분'], [3, '3분'], [5, '5분'], [10, '10분']];
+        // 울림: '확인' = [확인]을 누를 때까지 4초마다 (최대 5분) / '한번' = 한 번만
+        // 끈 다음: '대기' = 알람 가격에서 1% 이상 벗어났다가 다시 도달하면 또 울림 / '끝' = 한 번 울리고 끝 (목록에 "도달"로 남음)
+        // 소리: '' = 공통 설정(알림 설정의 가격 알람 방식·알림음) / '음성' = 음성으로 / 그 외 = 그 알림음
+        var 알람_울림최대분 = 5, 알람_재대기폭 = 0.01;
         function 알람_정리(a) {
             if (a.방향 === '이상') a.방향 = '상향'; else if (a.방향 === '이하') a.방향 = '하향';
             if (a.방향 !== '상향' && a.방향 !== '하향') a.방향 = '상향';
             if (a.무장 == null) a.무장 = a.재무장 !== false;
             delete a.재무장;
-            a.계속분 = Number(a.계속분) || 0;
+            // 예전 저장분: 반복 → 다시 대기 / 계속 울림 → 확인할 때까지
+            if (a.울림 !== '확인' && a.울림 !== '한번') a.울림 = Number(a.계속분) > 0 ? '확인' : '한번';
+            if (a.끝다음 !== '대기' && a.끝다음 !== '끝') a.끝다음 = a.반복 ? '대기' : '끝';
+            if (typeof a.소리 !== 'string') a.소리 = '';
+            delete a.반복; delete a.계속분;
             return a;
         }
         Object.keys(알람_모음).forEach(function (k) { if (Array.isArray(알람_모음[k])) 알람_모음[k].forEach(알람_정리); else delete 알람_모음[k]; });
-        // 가격이 "지나가기 전 쪽"에 있는가 (울린 뒤 다시 준비할 때는 0.1% 이상 되돌아가야 함)
+        // 가격이 "지나가기 전 쪽"에 있는가 (울린 뒤 다시 준비할 때는 알람 가격에서 1% 이상 벗어나야 함)
         function 알람_준비쪽(a, 가격, 되돌림) {
-            var 폭 = 되돌림 ? a.가격 * 0.001 : 0;
+            var 폭 = 되돌림 ? a.가격 * 알람_재대기폭 : 0;
             return a.방향 === '상향' ? 가격 < a.가격 - 폭 : 가격 > a.가격 + 폭;
         }
         function 알람_방향이름(방향) { return 방향 === '상향' ? '▲ 상향 돌파' : '▼ 하향 이탈'; }
@@ -6376,46 +6434,57 @@
             var 지금 = 알람_현재가(종목);
             if (!(가격 > 0) || !(지금 > 0)) { alert('가격 또는 현재가가 없어 알람을 등록할 수 없습니다.'); return false; }
             옵션 = 옵션 || {};
+            var 기본 = 알람_등록기본();
             var 방향 = 옵션.방향 === '상향' || 옵션.방향 === '하향' ? 옵션.방향 : (가격 >= 지금 ? '상향' : '하향');
-            var a = { id: Date.now() + '' + Math.floor(Math.random() * 1000), 가격: 가격, 방향: 방향, 반복: !!옵션.반복, 정규장만: !!옵션.정규장만,
-                      계속분: Number(옵션.계속분) || 0, 상태: '대기', 등록가: 지금, 도달: '', 마지막울림: 0, 무장: false };
+            var a = { id: Date.now() + '' + Math.floor(Math.random() * 1000), 가격: 가격, 방향: 방향, 정규장만: 옵션.정규장만 != null ? !!옵션.정규장만 : 기본.정규장만,
+                      울림: 옵션.울림 || 기본.울림, 끝다음: 옵션.끝다음 || 기본.끝다음, 소리: 옵션.소리 != null ? 옵션.소리 : 기본.소리,
+                      상태: '대기', 등록가: 지금, 도달: '', 마지막울림: 0, 무장: false };
             a.무장 = 알람_준비쪽(a, 지금, false);
             (알람_모음[종목] = 알람_모음[종목] || []).push(a);
             알람_저장(); 알람_화면갱신(종목);
             try { if (window.Notification && Notification.permission === 'default') Notification.requestPermission(); } catch (e) { }
             return true;
         }
+        function 알람_찾기(종목, id) { return 알람_목록(종목).filter(function (x) { return x.id === id; })[0] || null; }
         function 알람_삭제(종목, id) {
+            var i = panelTickers.indexOf(종목); if (i >= 0 && 알람_계속중[i] && 알람_계속중[i].id === id) 알람_띠닫기(i);
             알람_모음[종목] = 알람_목록(종목).filter(function (a) { return a.id !== id; });
             if (!알람_모음[종목].length) delete 알람_모음[종목];
             알람_저장(); 알람_화면갱신(종목);
         }
         // 목록에서 방향 바꾸기 → 다시 대기 상태로 (지금 가격 기준으로 준비 여부 다시 판단)
         function 알람_방향바꾸기(종목, id) {
-            var a = 알람_목록(종목).filter(function (x) { return x.id === id; })[0]; if (!a) return;
+            var a = 알람_찾기(종목, id); if (!a) return;
             a.방향 = a.방향 === '상향' ? '하향' : '상향';
             a.상태 = '대기'; a.마지막울림 = 0; a.도달 = '';
             var 지금 = 알람_현재가(종목); a.무장 = 지금 > 0 && 알람_준비쪽(a, 지금, false);
+            알람_저장(); 알람_화면갱신(종목);
+        }
+        // 도달한 알람 다시 켜기 (목록의 "다시 대기")
+        function 알람_다시대기(종목, id) {
+            var a = 알람_찾기(종목, id); if (!a) return;
+            a.상태 = '대기'; var 지금 = 알람_현재가(종목); a.무장 = 지금 > 0 && 알람_준비쪽(a, 지금, !!a.마지막울림);
             알람_저장(); 알람_화면갱신(종목);
         }
 
         // 체결 가격이 들어올 때마다 확인 (지나가는 순간에만 울림)
         function 알람_확인(종목, 가격) {
             var 목록 = 알람_목록(종목); if (!목록.length || !(가격 > 0)) return;
-            var 정규 = marketPhase().type === 'REG', 바뀜 = false, 지금 = Date.now();
+            var 정규 = marketPhase().type === 'REG', 바뀜 = false, 지금 = Date.now(), i = panelTickers.indexOf(종목);
             목록.forEach(function (a) {
                 if (a.상태 !== '대기') return;
                 if (a.정규장만 && !정규) return;
-                if (!a.무장) {   // 지나가기 전 쪽으로 돌아오면 준비 (울린 적 있으면 0.1% 이상 되돌아가야 함)
+                if (i >= 0 && 알람_계속중[i] && 알람_계속중[i].id === a.id) return;   // 울리는 중
+                if (!a.무장) {   // 지나가기 전 쪽으로 돌아오면 준비 (울린 적 있으면 1% 이상 벗어나야 함)
                     if (알람_준비쪽(a, 가격, !!a.마지막울림)) { a.무장 = true; 바뀜 = true; }
                     return;
                 }
                 var 지남 = a.방향 === '상향' ? 가격 >= a.가격 : 가격 <= a.가격;
                 if (!지남) return;
                 a.무장 = false; 바뀜 = true;
-                if (지금 - (a.마지막울림 || 0) < 60000) return;   // 반복 울림 최소 간격 60초 (그 안에 지나간 것은 무시)
+                if (지금 - (a.마지막울림 || 0) < 60000) return;   // 다시 울림 최소 간격 60초
                 a.마지막울림 = 지금; a.도달 = 알람_시각();
-                if (!a.반복) a.상태 = '도달';
+                if (a.끝다음 === '끝') a.상태 = '도달';
                 알람_울림(종목, a, 가격);
             });
             if (바뀜) { 알람_저장(); 알람_화면갱신(종목); }
@@ -6474,24 +6543,22 @@
             return c.state !== 'suspended';
         }
 
-        // ── 계속 울림: [해제] 를 누르거나 정한 시간이 지날 때까지 4초마다 다시 울림 (패널별 1개) ──
+        // ── 확인할 때까지 울림: [확인]을 누르거나 5분이 지날 때까지 4초마다 다시 울림 (패널별 1개) ──
         var 알람_계속중 = {};
-        function 알람_계속시작(i, 분) {
+        function 알람_계속시작(i, 분, a, 종목, 음성글) {
             알람_계속멈춤(i, true);
-            var 상 = { 끝: Date.now() + 분 * 60000, 다음: Date.now() + 4000 };
-            상.타이머 = setInterval(function () { 알람_계속틱(i); }, 1000);
+            var 상 = { 끝: Date.now() + 분 * 60000, 다음: Date.now() + 4000, id: a.id, 종목: 종목, 음성글: 음성글 };
+            상.타이머 = setInterval(function () { 알람_계속틱(i); }, 250);
             알람_계속중[i] = 상;
         }
         function 알람_계속틱(i) {
             var 상 = 알람_계속중[i]; if (!상) return;
             var t = Date.now();
-            if (t >= 상.끝) { 알람_계속멈춤(i); return; }
+            if (t >= 상.끝) { 알람_계속멈춤(i); 알람_띠닫기(i); return; }   // 5분 동안 확인 없음 → 멈춤 (등록할 때 고른 "끈 다음" 그대로)
             if (t >= 상.다음) {
-                // 음성만 설정이면 8초마다 음성으로 반복, 그 외는 4초마다 알림음
-                var 소허 = 알림_허용('가격', '소리'), 음허 = 상.음성글 && 알림_허용('가격', '음성') && 음성_한국어목록().length;
-                if (소허 || (상.음성글 && 알림_허용('가격', '음성') && !음성_한국어목록().length)) { 알람_소리(); 상.다음 = t + 4000; }
-                else if (음허) { 음성_읽기(상.음성글, true); 상.다음 = t + 8000; }
-                else 상.다음 = t + 4000;
+                var a = 알람_찾기(상.종목, 상.id) || { 소리: '' };
+                var 간격 = 알람_소리내기(a, 상.음성글, true) === '음성' ? 8000 : 4000;   // 음성은 8초, 알림음은 4초마다
+                상.다음 += 간격; if (상.다음 <= t) 상.다음 = t + 간격;   // 정해진 간격 유지 (1초 타이머 오차로 5초가 되지 않게)
             }
             알람_띠갱신(i);
         }
@@ -6505,13 +6572,45 @@
             try { 알림_닫기('가격|' + panelTickers[i]); } catch (e) { }
             var 띠 = document.getElementById('p' + i + '-alban'); if (띠) 띠.className = 'al-ban';
         }
-        // 띠 글 (계속 울림 중이면 [해제 · 남은 시간] 단추)
+        // [확인] 처리: 울림 멈춤 + 끈 다음(다시 대기 / 알람 끝) 적용
+        function 알람_확인처리(종목, id, 끝다음) {
+            var i = panelTickers.indexOf(종목); if (i >= 0) 알람_띠닫기(i);
+            var a = 알람_찾기(종목, id); if (!a) return;
+            if (끝다음 === '끝') a.상태 = '도달';
+            else if (a.상태 !== '대기') { a.상태 = '대기'; a.무장 = false; }
+            알람_저장(); 알람_화면갱신(종목);
+        }
+        // 이 알람의 소리 내기 (알람별 소리 → 없으면 공통 설정) · 반환: '음성' | '소리' | ''
+        function 알람_소리내기(a, 말, 반복) {
+            var s = a.소리 || '';
+            if (!s) {
+                var 음 = !!말 && 알림_허용('가격', '음성'), 소 = 알림_허용('가격', '소리');
+                if (음 && !음성_고른것()) { 음 = false; 소 = true; }
+                if (반복) {   // 반복 울림 중: 소리가 있으면 소리만, 음성만이면 음성
+                    if (소) { 알람_소리(); return '소리'; }
+                    if (음) { 음성_읽기(말, true, function () { 알람_소리(); }); return '음성'; }
+                    return '';
+                }
+                if (소) 알람_소리();
+                if (음) setTimeout(function () { 음성_읽기(말, true, 소 ? null : function () { 알람_소리(); }); }, 소 ? 900 : 0);
+                return 음 && !소 ? '음성' : 소 ? '소리' : '';
+            }
+            if (알림_무음중()) return '';
+            if (s === '음성') {
+                if (음성_고른것() && 말) { 음성_읽기(말, true, function () { 알람_소리(); }); return '음성'; }
+                알람_소리(); return '소리';
+            }
+            알람_소리(s); return '소리';
+        }
+        // 띠 글 (울리는 중이면 [확인 · 다시 대기] [확인 · 알람 끝] + 남은 시간)
         function 알람_띠갱신(i) {
             var 띠 = document.getElementById('p' + i + '-alban'); if (!띠 || !띠._글) return;
             var 상 = 알람_계속중[i], 막힘 = !알람_소리문맥 || 알람_소리문맥.state === 'suspended';
             var 남 = 상 ? Math.max(0, Math.ceil((상.끝 - Date.now()) / 1000)) : 0;
-            var 꼬리 = 상 ? '<button type="button" class="al-stop">🔕 해제 · ' + Math.floor(남 / 60) + ':' + ('0' + 남 % 60).slice(-2) + '</button>'
-                          : '<span class="al-cls">· 누르면 닫기</span>';
+            var 기 = 띠._끝다음 || '대기';
+            var 꼬리 = '<span class="al-acts">' + (상 ? '<span class="al-left">🔔 ' + Math.floor(남 / 60) + ':' + ('0' + 남 % 60).slice(-2) + '</span>' : '') +
+                '<button type="button" class="al-ok' + (기 === '대기' ? ' def' : '') + '" data-end="대기">확인 · 다시 대기</button>' +
+                '<button type="button" class="al-ok' + (기 === '끝' ? ' def' : '') + '" data-end="끝">확인 · 알람 끝</button></span>';
             var 글 = '<span>' + 띠._글.replace(/</g, '&lt;') + '</span>' + (막힘 && 알람_소리설정.종류 !== '끔' ? '<span class="al-mute">🔇 화면을 한 번 누르면 소리가 켜집니다</span>' : '') + 꼬리;
             if (띠._마지막 !== 글) { 띠.innerHTML = 글; 띠._마지막 = 글; }
         }
@@ -6519,21 +6618,27 @@
         function 알람_울림(종목, a, 가격) {
             var 글 = '🔔 ' + 종목 + ' ' + a.가격.toFixed(2) + ' ' + 알람_방향이름(a.방향) + ' · 현재 ' + 가격.toFixed(2) + ' (' + a.도달 + ' ET)';
             var i = panelTickers.indexOf(종목), 띠 = i >= 0 ? document.getElementById('p' + i + '-alban') : null;
-            var 말 = tickerName(종목) + ', ' + 알림_말가격(a.가격) + ' ' + (a.방향 === '상향' ? '상향 돌파' : '하향 이탈');
-            알림_소리와음성('가격', undefined, 말);
-            if (띠) {
-                띠._글 = 글;
-                if (a.계속분 > 0) { 알람_계속시작(i, a.계속분); if (알람_계속중[i]) 알람_계속중[i].음성글 = 말; } else 알람_계속멈춤(i, true);
+            var 말 = tickerName(종목) + ', ' + 알림_말가격(a.가격) + ' ' + (a.방향 === '상향' ? '이상 도달' : '이하 도달');
+            var 확인까지 = a.울림 === '확인' && i >= 0 && 알림_허용('가격', '창'), 유지 = (확인까지 ? 알람_울림최대분 * 60000 : 0) + 60000, id = a.id, 끝다음 = a.끝다음;
+            var 소리남 = 알람_소리내기(a, 말, false);
+            if (확인까지) 알람_계속시작(i, 알람_울림최대분, a, 종목, 말); else if (i >= 0) 알람_계속멈춤(i, true);
+            if (띠 && 알림_허용('가격', '창')) {
+                띠._글 = 글; 띠._끝다음 = 끝다음; 띠._마지막 = '';
                 알람_띠갱신(i);
                 띠.className = 'al-ban show'; void 띠.offsetWidth; 띠.className = 'al-ban show flash';
-                띠.onclick = function () { 알람_띠닫기(i); };   // 띠 어디를 눌러도 해제 + 닫기
-                clearTimeout(띠._닫기); 띠._닫기 = setTimeout(function () { 알람_띠닫기(i); }, (a.계속분 || 0) * 60000 + 60000);
+                띠.onclick = function (e) {   // 단추 = 그 선택 / 띠의 다른 곳 = 등록할 때 고른 "끈 다음"
+                    var b = e.target.closest && e.target.closest('.al-ok');
+                    알람_확인처리(종목, id, b ? b.getAttribute('data-end') : 끝다음);
+                };
+                clearTimeout(띠._닫기); 띠._닫기 = setTimeout(function () { if (!알람_계속중[i] || 알람_계속중[i].id !== id) 알람_띠닫기(i); }, 유지);
             }
             // 화면 위 공통 알림창 (+ 기록 · 탭 제목 · 탭이 숨겨져 있으면 윈도우 알림)
-            알림_띄우기({ 종류: '가격', 종목: 종목, 시각: a.도달 || 알림_시각(), 계속: a.계속분 > 0 && i >= 0, 유지ms: (a.계속분 || 0) * 60000 + 60000,
+            알림_띄우기({ 종류: '가격', 종목: 종목, 시각: a.도달 || 알림_시각(), 계속: 확인까지, 유지ms: 유지,
                          글: a.가격.toFixed(2) + ' ' + 알람_방향이름(a.방향) + ' · 현재 ' + 가격.toFixed(2), 짧은글: (a.방향 === '상향' ? '돌파 ' : '이탈 ') + a.가격.toFixed(2),
-                         해제: function () { if (i >= 0) 알람_띠닫기(i); } });
-            if (가상_기록가능) 가상매매.전송대기열.push({ 종류: '알람', 알람: { 종목: 종목, 가격: a.가격, 방향: a.방향 === '상향' ? '상향 돌파' : '하향 이탈', 현재가: 가격, 시각: a.도달, 반복: a.반복, 계속분: a.계속분 || 0, 웹소리: 알람_소리설정.종류 !== '끔' } });
+                         단추들: [{ 글: '확인 · 다시 대기', 기본: 끝다음 === '대기', 할일: function () { 알람_확인처리(종목, id, '대기'); } },
+                                  { 글: '확인 · 알람 끝', 기본: 끝다음 === '끝', 할일: function () { 알람_확인처리(종목, id, '끝'); } }],
+                         해제: function () { 알람_확인처리(종목, id, 끝다음); } });
+            if (가상_기록가능) 가상매매.전송대기열.push({ 종류: '알람', 알람: { 종목: 종목, 가격: a.가격, 방향: a.방향 === '상향' ? '상향 돌파' : '하향 이탈', 현재가: 가격, 시각: a.도달, 반복: 끝다음 === '대기', 계속분: 확인까지 ? 알람_울림최대분 : 0, 웹소리: !!소리남 } });
             console.info('[가격 알람]', 글);
         }
 
@@ -6545,68 +6650,95 @@
         var 알림_패널색 = ['#ff6666', '#66cc66', '#6688ff'];
 
         // ── 음성 안내 (브라우저·운영체제 내장 음성, 음성 파일 필요 없음) ──
-        var 음성설정 = { 방식: '둘다', 음성: '', 속도: 1.0 };   // 방식: 알림음 / 음성 / 둘다
-        (function () { try { var v = JSON.parse(localStorage.getItem('sz_voice') || 'null'); if (v && v.방식) 음성설정 = Object.assign(음성설정, v); } catch (e) { } })();
+        //   마이크로소프트 음성(Heami 등)은 발음이 부정확해 쓰지 않음 · 구글 음성 우선 (PC 는 크롬에서만 있음)
+        var 음성설정 = { 음성: '', 속도: 1.0 };
+        (function () { try { var v = JSON.parse(localStorage.getItem('sz_voice') || 'null'); if (v) { 음성설정.음성 = v.음성 || ''; 음성설정.속도 = Number(v.속도) || 1; } } catch (e) { } })();
         function 음성설정저장() { try { localStorage.setItem('sz_voice', JSON.stringify(음성설정)); } catch (e) { } }
         function 음성_지원() { return !!(window.speechSynthesis && window.SpeechSynthesisUtterance); }
         function 음성_한국어목록() {
             if (!음성_지원()) return [];
-            try { return speechSynthesis.getVoices().filter(function (v) { return /^ko/i.test(v.lang); }); } catch (e) { return []; }
+            try {
+                return speechSynthesis.getVoices().filter(function (v) { return /^ko/i.test(v.lang) && !/microsoft/i.test(v.name); })
+                    .sort(function (a, b) { return (/google/i.test(b.name) ? 1 : 0) - (/google/i.test(a.name) ? 1 : 0); });
+            } catch (e) { return []; }
         }
-        if (음성_지원()) { try { speechSynthesis.onvoiceschanged = function () { var p = document.getElementById('nt-pop'); if (p && p._탭 === '설정') 알림창_그리기(p); }; speechSynthesis.getVoices(); } catch (e) { } }
+        function 음성_고른것() { var 목록 = 음성_한국어목록(); return 목록.filter(function (v) { return v.name === 음성설정.음성; })[0] || 목록[0] || null; }
+        function 윈폼창() { return !!(window.chrome && window.chrome.webview); }
+        function 음성_없음안내() {
+            if (!음성_지원()) return '이 브라우저는 음성 안내를 지원하지 않아 음성 대신 알림음이 울립니다';
+            if (윈폼창()) return '윈폼 창에서는 음성 대신 알림음이 울립니다 (음성 안내는 크롬에서 사용)';
+            if (window.innerWidth > 1200 || !/Android|iPhone|iPad|Mobile/i.test(navigator.userAgent)) return '음성 안내는 크롬에서 사용할 수 있습니다 · 지금은 음성 대신 알림음이 울립니다';
+            return '이 기기에 한국어 음성이 없어 음성 대신 알림음이 울립니다';
+        }
+        if (음성_지원()) { try { speechSynthesis.onvoiceschanged = function () { var p = document.getElementById('al-pop'); if (p && p._탭 === '설정') 알람_창그리기(p); }; speechSynthesis.getVoices(); } catch (e) { } }
         var 음성_최근 = {};
-        // 글을 읽음 (같은 글은 10초 안에 다시 읽지 않음) · 반환: 읽었으면 true
-        function 음성_읽기(글, 강제) {
+        // 글을 읽음 (같은 글은 10초 안에 다시 읽지 않음) · 반환: 읽기 시작했으면 true
+        //   실패시: 2초 안에 말이 시작되지 않으면(인터넷 끊김 등) 대신 할 일 (알림음)
+        function 음성_읽기(글, 강제, 실패시) {
             if (!음성_지원() || !글) return false;
             var 지금 = Date.now();
             if (!강제 && 음성_최근[글] && 지금 - 음성_최근[글] < 10000) return false;
-            var 목록 = 음성_한국어목록(); if (!목록.length) return false;
+            var 목소리 = 음성_고른것(); if (!목소리) return false;
             음성_최근[글] = 지금;
             try {
-                var u = new SpeechSynthesisUtterance(글);
+                var u = new SpeechSynthesisUtterance(글), 시작 = false;
                 u.lang = 'ko-KR'; u.rate = Number(음성설정.속도) || 1; u.volume = Math.max(0.2, Math.min(1, (알람_소리설정.음량 || 0.6) * 1.4));
-                u.voice = 목록.filter(function (v) { return v.name === 음성설정.음성; })[0] || 목록[0];
+                u.voice = 목소리;
+                u.onstart = function () { 시작 = true; }; u.onend = function () { 시작 = true; };
+                u.onerror = function () { if (!시작 && 실패시) { 시작 = true; 실패시(); } };
                 speechSynthesis.speak(u);
+                if (실패시) setTimeout(function () { if (!시작) { 시작 = true; try { speechSynthesis.cancel(); } catch (e) { } 실패시(); } }, 2000);
                 return true;
             } catch (e) { return false; }
         }
         // 처음 화면을 누를 때 음성도 미리 켜 둠 (아이폰 등은 화면을 누르기 전 소리를 막음)
         ['pointerdown', 'keydown'].forEach(function (ev) { document.addEventListener(ev, function () { try { if (음성_지원()) { var u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } } catch (e) { } }, { once: true, capture: true }); });
-        // ── 받을 알림 설정 (이 브라우저에 저장): 종류(가격·급증·큰) × 알림창·소리·음성 / 방해 금지 / 장외 무음 ──
-        var 알림설정_기본 = { 가격: { 창: true, 소리: true, 음성: true }, 급증: { 창: true, 소리: '폭주만', 음성: true }, 큰: { 창: true, 소리: false, 음성: false }, 장외무음: false, 방해끝: 0, 방해장마감: false };
+
+        // ── 받을 알림 설정 (이 브라우저에 저장): 종류(가격·급증·큰) × 알림창 + 알림 방식(끔·소리·음성·소리+음성) / 방해 금지 / 장외 무음 ──
+        var 알림방식목록 = [['끔', '끔'], ['소리', '소리'], ['음성', '음성'], ['둘다', '소리+음성']];
+        var 알림설정_기본 = { v: 2, 가격: { 창: true, 방식: '소리' }, 급증: { 창: true, 방식: '소리', 폭주만: true }, 큰: { 창: true, 방식: '끔' }, 장외무음: false, 방해끝: 0, 방해종류: '' };
         var 알림설정 = JSON.parse(JSON.stringify(알림설정_기본));
         (function () {
             try {
                 var v = JSON.parse(localStorage.getItem('sz_notify') || 'null');
-                if (v && v.가격) { ['가격', '급증', '큰'].forEach(function (k) { if (v[k]) 알림설정[k] = Object.assign(알림설정[k], v[k]); }); 알림설정.장외무음 = !!v.장외무음; 알림설정.방해끝 = Number(v.방해끝) || 0; 알림설정.방해장마감 = !!v.방해장마감; return; }
-                // 처음: 예전 설정(체결 급증 켜기·소리 / 음성 방식)에서 옮겨 옴
-                if (체결알림설정.켜기 === false) 알림설정.급증 = { 창: false, 소리: false, 음성: false };
-                else if (체결알림설정.소리 === '모두') 알림설정.급증.소리 = true;
-                else if (체결알림설정.소리 === '끔') 알림설정.급증.소리 = false;
-                var 방 = 음성설정.방식;
-                if (방 === '알림음') ['가격', '급증', '큰'].forEach(function (k) { 알림설정[k].음성 = false; });
-                else if (방 === '음성') 알림설정.가격.소리 = false;
+                if (v && v.v === 2) {
+                    ['가격', '급증', '큰'].forEach(function (k) { if (v[k]) 알림설정[k] = Object.assign(알림설정[k], v[k]); });
+                    알림설정.장외무음 = !!v.장외무음; 알림설정.방해끝 = Number(v.방해끝) || 0; 알림설정.방해종류 = v.방해종류 || ''; return;
+                }
+                if (v && v.가격) {
+                    // 예전(소리·음성 따로) → 알림 방식 하나로. 음성은 기본 끔으로 한 번 정리
+                    ['가격', '큰'].forEach(function (k) { if (v[k]) 알림설정[k] = { 창: v[k].창 !== false, 방식: v[k].소리 ? '소리' : '끔' }; });
+                    if (v.급증) 알림설정.급증 = { 창: v.급증.창 !== false, 방식: v.급증.소리 ? '소리' : '끔', 폭주만: v.급증.소리 !== true };
+                    알림설정.장외무음 = !!v.장외무음; 알림설정.방해끝 = Number(v.방해끝) || 0; 알림설정.방해종류 = v.방해장마감 ? 'close' : (알림설정.방해끝 ? '30' : '');
+                    localStorage.setItem('sz_notify', JSON.stringify(알림설정)); return;
+                }
+                // 처음: 예전 체결 급증 설정(켜기·소리)에서 옮겨 옴
+                if (체결알림설정.켜기 === false) 알림설정.급증 = { 창: false, 방식: '끔', 폭주만: true };
+                else if (체결알림설정.소리 === '모두') 알림설정.급증.폭주만 = false;
+                else if (체결알림설정.소리 === '끔') 알림설정.급증.방식 = '끔';
             } catch (e) { }
         })();
         function 알림설정저장() { try { localStorage.setItem('sz_notify', JSON.stringify(알림설정)); } catch (e) { } try { 알림기록_배지(); } catch (e) { } }
         function 알림_방해중() { return 알림설정.방해끝 > Date.now(); }
-        // 이 종류·이 방식(창/소리/음성)을 지금 내보내도 되는지. 방해 금지·장외 무음은 소리·음성만 막음
+        // 방해 금지·장외 무음 = 소리·음성만 막음 (알림창·기록은 남음)
+        function 알림_무음중() { return 알림_방해중() || (알림설정.장외무음 && marketPhase().type !== 'REG'); }
+        function 알림_켜짐(종류) { var c = 알림설정[종류]; return !!(c && (c.창 || c.방식 !== '끔')); }
+        // 이 종류·이 방식(창/소리/음성)을 지금 내보내도 되는지
         function 알림_허용(종류, 방식, 단계) {
             var c = 알림설정[종류]; if (!c) return true;
-            var v = c[방식];
-            if (방식 === '창') return !!v;
-            if (!v) return false;
-            if (알림_방해중()) return false;
-            if (알림설정.장외무음 && marketPhase().type !== 'REG') return false;
-            if (v === '폭주만') return 단계 === 2;
+            if (방식 === '창') return !!c.창;
+            var m = c.방식;
+            if (!(방식 === '소리' ? (m === '소리' || m === '둘다') : (m === '음성' || m === '둘다'))) return false;
+            if (알림_무음중()) return false;
+            if (종류 === '급증' && c.폭주만 && 단계 !== 2) return false;
             return true;
         }
-        // 알림 소리 + 음성: 소리 → 0.9초 뒤 음성. 음성이 켜졌는데 한국어 음성이 없는 기기 = 알림음으로 대신 · 반환: 소리를 냈으면 true
+        // 알림 소리 + 음성: 소리 → 0.9초 뒤 음성. 음성을 쓸 수 없거나 2초 안에 말이 시작되지 않으면 알림음으로 대신 · 반환: 소리를 냈으면 true
         function 알림_소리와음성(종류, 소리종류, 음성글, 단계) {
             var 음 = !!음성글 && 알림_허용(종류, '음성', 단계), 소 = 알림_허용(종류, '소리', 단계);
-            if (음 && !음성_한국어목록().length) { 음 = false; 소 = true; }
+            if (음 && !음성_고른것()) { 음 = false; 소 = true; }
             if (소) 알람_소리(소리종류);
-            if (음) setTimeout(function () { 음성_읽기(음성글); }, 소 ? 900 : 0);
+            if (음) { var 대신 = 소 ? null : function () { 알람_소리(소리종류); }; setTimeout(function () { 음성_읽기(음성글, false, 대신); }, 소 ? 900 : 0); }
             return 소;
         }
         // 오늘 본장 마감 시각(ms) — 프리장·본장일 때만, 아니면 0 (조기 폐장 13:00 반영)
@@ -6634,69 +6766,104 @@
             Array.prototype.forEach.call(document.querySelectorAll('.nt-hist'), function (b) {
                 var n = 알림기록.안읽음 || 0;
                 var 무 = 알림_방해중();
-                b.innerHTML = (무 ? '🔕' : '🔔') + (n ? '<b>' + (n > 99 ? '99+' : n) + '</b>' : '');
+                b.innerHTML = '📋' + (n ? '<b>' + (n > 99 ? '99+' : n) + '</b>' : '') + (무 ? '<i class="nt-dnd">🔕 ' + 남은글(알림설정.방해끝 - Date.now()) + '</i>' : '');
                 b.classList.toggle('on', n > 0); b.classList.toggle('mute', 무);
-                b.title = '오늘 알림 기록 · 알림 설정' + (무 ? ' · 🔕 방해 금지 중' : '') + (n ? ' · 안 읽은 알림 ' + n + '개' : '');
+                b.title = '오늘 알림 기록' + (무 ? ' · 🔕 방해 금지 중' : '') + (n ? ' · 안 읽은 알림 ' + n + '개' : '');
             });
         }
-        // ── 🔔 창: [오늘 기록] [⚙ 설정] ──
-        function 알림기록_그리기(창) { if (창 && 창._탭 !== '설정') 알림창_그리기(창); }
-        function 알림창_그리기(창) {
+        // ── 📋 오늘 알림 기록 창 (위쪽 📋 단추) ──
+        function 알림기록_그리기(창) {
             알림기록_오늘();
-            var 탭 = 창._탭 || '기록', 목 = 알림기록.목록;
-            var 머리 = '<button type="button" class="nt-x" title="닫기">×</button>' +
-                '<div class="nt-tabs"><button type="button" data-tab="기록" class="' + (탭 === '기록' ? 'on' : '') + '">오늘 기록 <b>' + 목.length + '</b></button>' +
-                '<button type="button" data-tab="설정" class="' + (탭 === '설정' ? 'on' : '') + '">⚙ 설정</button>' +
-                (알림_방해중() ? '<span class="nt-mute">🔕 방해 금지 · ' + (알림설정.방해장마감 ? '장 마감까지 ' : '') + 남은글(알림설정.방해끝 - Date.now()) + ' 남음</span>' : '') + '</div>';
-            if (탭 === '기록') {
-                창.innerHTML = 머리 + '<div class="nt-sub">' + (알림기록.날짜 || '') + ' (ET) · 알림창을 끈 종류도 기록에는 남음</div>' +
-                    '<div class="nt-list">' + (목.length ? 목.map(function (x, k) {
-                        var 종 = 알림_종류[x.종류] || 알림_종류.가격, i = panelTickers.indexOf(x.종목);
-                        var 켜짐 = 알림설정[x.종류] && (알림설정[x.종류].창 || 알림설정[x.종류].소리 || 알림설정[x.종류].음성);
-                        return '<div class="nt-li" data-k="' + k + '" style="border-left-color:' + (i >= 0 ? 알림_패널색[i] : '#3a4153') + '"><span class="nt-lt">' + x.시각 + '</span>' +
-                            '<span class="nt-lb"><b>' + 종.아이콘 + ' ' + x.종목 + '</b> ' + String(x.글).replace(/</g, '&lt;') + '</span>' +
-                            (켜짐 ? '<button type="button" class="nt-off1" data-kind="' + x.종류 + '" title="' + 종.이름 + ' 알림창·소리·음성 끄기 (기록은 계속 남음)">이 종류 끄기</button>' : '<span class="nt-offd">꺼짐</span>') + '</div>';
-                    }).join('') : '<div class="nt-empty">오늘 알림 없음</div>') + '</div>' +
-                    (목.length ? '<div class="nt-pf"><button type="button" class="nt-clr">기록 지우기</button></div>' : '');
-            } else 창.innerHTML = 머리 + '<div class="ns-wrap">' + 알림설정_HTML() + '</div>';
+            var 목 = 알림기록.목록;
+            창.innerHTML = '<button type="button" class="nt-x" title="닫기">×</button>' +
+                '<div class="nt-ph">📋 오늘 알림 기록 <small>' + 목.length + '개 · ' + (알림기록.날짜 || '') + ' (ET)</small></div>' +
+                (알림_방해중() ? '<div class="nt-mute">🔕 방해 금지 중 · ' + 남은글(알림설정.방해끝 - Date.now()) + ' 남음 (소리·음성 꺼짐)</div>' : '') +
+                '<div class="nt-sub">알림창을 끈 종류도 기록에는 남음</div>' +
+                '<div class="nt-list">' + (목.length ? 목.map(function (x, k) {
+                    var 종 = 알림_종류[x.종류] || 알림_종류.가격, i = panelTickers.indexOf(x.종목);
+                    return '<div class="nt-li" data-k="' + k + '" style="border-left-color:' + (i >= 0 ? 알림_패널색[i] : '#3a4153') + '"><span class="nt-lt">' + x.시각 + '</span>' +
+                        '<span class="nt-lb"><b>' + 종.아이콘 + ' ' + x.종목 + '</b> ' + String(x.글).replace(/</g, '&lt;') + '</span>' +
+                        (알림_켜짐(x.종류) ? '<button type="button" class="nt-off1" data-kind="' + x.종류 + '" title="' + 종.이름 + ' 알림창·소리·음성 끄기 (기록은 계속 남음)">이 종류 끄기</button>' : '<span class="nt-offd">꺼짐</span>') + '</div>';
+                }).join('') : '<div class="nt-empty">오늘 알림 없음</div>') + '</div>' +
+                '<div class="nt-pf"><button type="button" class="nt-goset">⚙ 알림 설정</button>' + (목.length ? '<button type="button" class="nt-clr">기록 지우기</button>' : '') + '</div>';
             창.querySelector('.nt-x').onclick = 알림창_닫기;
-            Array.prototype.forEach.call(창.querySelectorAll('.nt-tabs button[data-tab]'), function (b) { b.onclick = function () { 창._탭 = b.getAttribute('data-tab'); 알림창_그리기(창); }; });
-            if (탭 === '기록') {
-                var c = 창.querySelector('.nt-clr'); if (c) c.onclick = function () { 알림기록.목록 = []; 알림기록.안읽음 = 0; 알림기록_저장(); 알림기록_배지(); 알림창_그리기(창); };
-                Array.prototype.forEach.call(창.querySelectorAll('.nt-li'), function (el) {
-                    el.onclick = function (e) {
-                        var off = e.target.closest && e.target.closest('.nt-off1');
-                        if (off) {
-                            var 종류 = off.getAttribute('data-kind'); 알림설정[종류] = { 창: false, 소리: false, 음성: false }; 알림설정저장(); 알림창_그리기(창);
-                            알림_잠깐((알림_종류[종류] || {}).이름 + ' 알림을 껐습니다 · ⚙ 설정에서 다시 켤 수 있음'); return;
-                        }
-                        var x = 목[Number(el.getAttribute('data-k'))]; if (x) { 알림창_닫기(); 알림_패널로가기(x.종목); }
-                    };
-                });
-            } else 알림설정_연결(창);
+            var c = 창.querySelector('.nt-clr'); if (c) c.onclick = function () { 알림기록.목록 = []; 알림기록.안읽음 = 0; 알림기록_저장(); 알림기록_배지(); 알림기록_그리기(창); };
+            창.querySelector('.nt-goset').onclick = function (e) { e.알람창안 = true; 알림창_닫기(); 알림설정_열기(); };
+            Array.prototype.forEach.call(창.querySelectorAll('.nt-li'), function (el) {
+                el.onclick = function (e) {
+                    var off = e.target.closest && e.target.closest('.nt-off1');
+                    if (off) {
+                        var 종류 = off.getAttribute('data-kind'); 알림설정[종류].창 = false; 알림설정[종류].방식 = '끔'; 알림설정저장(); 알림기록_그리기(창);
+                        알림_잠깐((알림_종류[종류] || {}).이름 + ' 알림을 껐습니다 · 종목 🔔 → ⚙ 설정에서 다시 켤 수 있음'); return;
+                    }
+                    var x = 목[Number(el.getAttribute('data-k'))]; if (x) { 알림창_닫기(); 알림_패널로가기(x.종목); }
+                };
+            });
         }
-        // 설정 탭 내용: 종류 × 알림창·소리·음성 / 방해 금지 / 빠른 선택 / 공통(알림음·음성·장외 무음·체결 급증 기준)
+        var 알림창_그리기 = 알림기록_그리기;
+        function 알림창_닫기() { var p = document.getElementById('nt-pop'); if (p) p.remove(); var d = document.getElementById('nt-dim'); if (d) d.remove(); }
+        var 알림기록_닫기 = 알림창_닫기;
+        function 알림창_열기(단추) {
+            if (document.getElementById('nt-pop')) { 알림창_닫기(); return; }
+            var 창 = document.createElement('div'); 창.id = 'nt-pop'; 창.className = 'nt-pop';
+            창.addEventListener('click', function (e) { e.알림기록안 = true; });
+            var 모바일 = window.innerWidth <= 600;
+            if (모바일) { var 어둠 = document.createElement('div'); 어둠.id = 'nt-dim'; 어둠.className = 'al-dim'; document.body.appendChild(어둠); 창.classList.add('mob'); }
+            document.body.appendChild(창); 알림기록_그리기(창);
+            if (!모바일) {
+                단추 = 단추 || Array.prototype.filter.call(document.querySelectorAll('.nt-hist'), function (b) { return b.offsetParent !== null; })[0];
+                var r = 단추 ? 단추.getBoundingClientRect() : { bottom: 60, left: 200 };
+                창.style.top = (r.bottom + 6) + 'px'; 창.style.left = Math.max(8, Math.min(window.innerWidth - 368, r.left)) + 'px';
+            }
+            알림기록.안읽음 = 0; 알림기록_저장(); 알림기록_배지();
+        }
+        var 알림기록_열기 = 알림창_열기;
+        document.addEventListener('click', function (e) {
+            var b = e.target.closest && e.target.closest('.nt-hist');
+            if (b) { e.stopPropagation(); 알림창_열기(b); return; }
+            if (e.알림기록안) return;
+            if (document.getElementById('nt-pop')) 알림창_닫기();
+        });
+
+        // ── ⚙ 알림 설정 (종목 🔔 창의 [⚙ 설정] 탭) ──
+        //   종류 × 알림창·알림 방식 / 방해 금지 / 빠른 선택 / 공통(알림음·음량·음성·장외 무음·체결 급증 기준)
+        function 알림설정_열기() {
+            var i = [0, 1, 2].filter(function (k) { return panelTickers[k]; })[0]; if (i == null) return;
+            var 기존 = document.getElementById('al-pop');
+            if (기존) { 기존._탭 = '설정'; 알람_창그리기(기존); return; }
+            알람_창열기(i, null, '설정');
+        }
+        function 방해_단추글(k) {
+            var 켜짐 = 알림_방해중() && 알림설정.방해종류 === k, 이름 = { '30': '30분', '60': '1시간', close: '장 마감까지' }[k];
+            return 이름 + (켜짐 ? ' <small>· ' + 남은글(알림설정.방해끝 - Date.now()) + ' 남음</small>' : '');
+        }
         function 알림설정_HTML() {
-            function 스위치(종류, 방식) {
-                var v = 알림설정[종류][방식];
-                if (종류 === '급증' && 방식 === '소리') return '<select class="ns-sel" data-kind="급증" data-way="소리">' + [[false, '끔'], ['폭주만', '폭주만'], [true, '켬']].map(function (o) { return '<option value="' + o[0] + '"' + (v === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>';
-                return '<button type="button" class="ns-sw' + (v ? ' on' : '') + '" data-kind="' + 종류 + '" data-way="' + 방식 + '" aria-pressed="' + (v ? 'true' : 'false') + '"><i></i></button>';
+            function 스위치(종류) {
+                var v = 알림설정[종류].창;
+                return '<button type="button" class="ns-sw' + (v ? ' on' : '') + '" data-kind="' + 종류 + '" aria-pressed="' + (v ? 'true' : 'false') + '"><i></i></button>';
+            }
+            function 방식칸(종류) {
+                var v = 알림설정[종류].방식;
+                return '<select class="ns-sel" data-kind="' + 종류 + '">' + 알림방식목록.map(function (o) { return '<option value="' + o[0] + '"' + (v === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>' +
+                    (종류 === '급증' ? '<label class="ns-hot"><input type="checkbox" id="ns-hot"' + (알림설정.급증.폭주만 ? ' checked' : '') + '>폭주 때만</label>' : '');
             }
             var 행 = [['가격', '가격 알람'], ['급증', '체결 급증'], ['큰', '대형 체결']].map(function (r) {
-                return '<div class="ns-row"><span class="ns-n">' + r[1] + '</span>' + 스위치(r[0], '창') + 스위치(r[0], '소리') + 스위치(r[0], '음성') + '</div>';
+                return '<div class="ns-row"><span class="ns-n">' + r[1] + '</span>' + 스위치(r[0]) + '<span class="ns-m">' + 방식칸(r[0]) + '</span></div>';
             }).join('');
-            var 마감 = 장마감시각();
-            var 방해 = '<select id="ns-dnd">' + [['0', 알림_방해중() ? '방해 금지 끄기' : '방해 금지 꺼짐'], ['30', '30분'], ['60', '1시간'], ['close', '장 마감까지' + (마감 ? '' : ' (정규장 시간 아님)')]].map(function (o) {
-                return '<option value="' + o[0] + '"' + (o[0] === 'close' && !마감 ? ' disabled' : '') + (o[0] === '0' ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>';
+            var 마감 = 장마감시각(), 방해중 = 알림_방해중();
+            var 방해 = '<div class="ns-dnd"><span class="ns-dl">🔕 방해 금지</span>' + ['30', '60', 'close'].map(function (k) {
+                return '<button type="button" data-dnd="' + k + '" class="' + (방해중 && 알림설정.방해종류 === k ? 'on' : '') + '"' + (k === 'close' && !마감 && !(방해중 && 알림설정.방해종류 === k) ? ' disabled title="정규장 시간 아님"' : '') + '>' + 방해_단추글(k) + '</button>';
+            }).join('') + '<button type="button" data-dnd="0" class="off"' + (방해중 ? '' : ' disabled') + '>끄기</button></div>' +
+                '<div class="ns-note">방해 금지 중에는 소리·음성만 꺼지고 알림창·기록은 남음</div>';
             var 목록 = 음성_한국어목록();
             var 음성줄 = 목록.length
-                ? '<div class="ns-c">음성 <select id="vc-name">' + 목록.map(function (v) { return '<option' + (v.name === 음성설정.음성 ? ' selected' : '') + '>' + v.name + '</option>'; }).join('') + '</select>' +
+                ? '<div class="ns-c">음성 <select id="vc-name">' + 목록.map(function (v) { return '<option' + (v === 음성_고른것() ? ' selected' : '') + '>' + v.name + '</option>'; }).join('') + '</select>' +
                   '<select id="vc-rate">' + [[0.85, '느리게'], [1, '보통'], [1.2, '빠르게']].map(function (o) { return '<option value="' + o[0] + '"' + (Number(음성설정.속도) === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>' +
                   '<button type="button" id="vc-play" title="음성 미리 듣기">▶</button></div>'
-                : '<div class="ns-note">' + (음성_지원() ? '이 기기에 한국어 음성이 없어 음성 대신 알림음이 울립니다 (윈도우: 설정 → 시간 및 언어 → 음성에서 한국어 추가)' : '이 브라우저는 음성 안내를 지원하지 않아 음성 대신 알림음이 울립니다') + '</div>';
-            return '<div class="ns-top"><span>받을 알림</span>' + 방해 + '</div>' +
-                '<div class="ns-grid"><div class="ns-row ns-head"><span class="ns-n">종류</span><span>알림창</span><span>소리</span><span>음성</span></div>' + 행 + '</div>' +
-                '<div class="ns-quick">빠른 선택 <button type="button" data-q="조용히" title="가격 알람만 전부 켜고 나머지는 기록만">조용히</button><button type="button" data-q="기본">기본</button><button type="button" data-q="모두">모두 켜기</button></div>' +
+                : '<div class="ns-note ns-novc">🗣 ' + 음성_없음안내() + '</div>';
+            return '<div class="ns-grid"><div class="ns-row ns-head"><span class="ns-n">종류</span><span>알림창</span><span>알림 방식</span></div>' + 행 + '</div>' +
+                '<div class="ns-quick">빠른 선택 <button type="button" data-q="조용히" title="가격 알람만 켜고 나머지는 기록만">조용히</button><button type="button" data-q="기본">기본</button><button type="button" data-q="모두">모두 켜기</button></div>' +
+                방해 +
                 '<div class="ns-sec">공통</div>' +
                 '<div class="ns-c">알림음 <select id="al-snd">' + 알람_소리목록.map(function (x) { return '<option value="' + x[0] + '"' + (x[0] === 알람_소리설정.종류 ? ' selected' : '') + '>' + x[1] + '</option>'; }).join('') + '</select>' +
                 '<button type="button" id="al-play" title="미리 듣기">▶</button></div>' +
@@ -6707,68 +6874,75 @@
                 '<span class="al-flst' + (체결_윈폼켜짐() ? ' on' : '') + '">' + (체결_윈폼켜짐() ? '윈폼 켜짐 · 동작 중' : '윈폼 꺼짐 → 대기 중') + '</span></div>' +
                 '<div class="ns-note al-flnote">평소(과거 5일 같은 시각) 대비 최근 1분 체결량. 급증 = 기준 이상 10초 유지 · 폭주 = ' + 체결_폭주기준().toFixed(1) + '배 이상. 체결 급증·대형 체결은 윈폼(키움 체결)이 켜져 있을 때만 동작</div>';
         }
-        function 알림설정_연결(창) {
+        function 알림설정_연결(창, 다시) {
             Array.prototype.forEach.call(창.querySelectorAll('.ns-sw'), function (b) {
-                b.onclick = function () { var k = b.getAttribute('data-kind'), w = b.getAttribute('data-way'); 알림설정[k][w] = !알림설정[k][w]; 알림설정저장(); 알림창_그리기(창); };
+                b.onclick = function () { var k = b.getAttribute('data-kind'); 알림설정[k].창 = !알림설정[k].창; 알림설정저장(); 다시(); };
             });
             Array.prototype.forEach.call(창.querySelectorAll('.ns-sel'), function (sel) {
-                sel.onchange = function () { var v = sel.value; 알림설정[sel.getAttribute('data-kind')][sel.getAttribute('data-way')] = v === 'true' ? true : v === 'false' ? false : v; 알림설정저장(); };
+                sel.onchange = function () { 알림설정[sel.getAttribute('data-kind')].방식 = sel.value; 알림설정저장(); if (sel.value === '음성' || sel.value === '둘다') 음성_읽기('테슬라, 357달러 이상 도달', true); };
             });
+            var hot = 창.querySelector('#ns-hot'); if (hot) hot.onchange = function () { 알림설정.급증.폭주만 = this.checked; 알림설정저장(); };
             Array.prototype.forEach.call(창.querySelectorAll('.ns-quick button'), function (b) {
                 b.onclick = function () {
                     var q = b.getAttribute('data-q'), 기 = JSON.parse(JSON.stringify(알림설정_기본));
-                    if (q === '조용히') { 알림설정.가격 = { 창: true, 소리: true, 음성: true }; 알림설정.급증 = { 창: false, 소리: false, 음성: false }; 알림설정.큰 = { 창: false, 소리: false, 음성: false }; }
-                    else if (q === '모두') { ['가격', '급증', '큰'].forEach(function (k) { 알림설정[k] = { 창: true, 소리: true, 음성: true }; }); }
+                    if (q === '조용히') { 알림설정.가격 = { 창: true, 방식: '소리' }; 알림설정.급증 = { 창: false, 방식: '끔', 폭주만: true }; 알림설정.큰 = { 창: false, 방식: '끔' }; }
+                    else if (q === '모두') { 알림설정.가격 = { 창: true, 방식: '소리' }; 알림설정.급증 = { 창: true, 방식: '소리', 폭주만: false }; 알림설정.큰 = { 창: true, 방식: '소리' }; }
                     else { 알림설정.가격 = 기.가격; 알림설정.급증 = 기.급증; 알림설정.큰 = 기.큰; }
-                    알림설정저장(); 알림창_그리기(창); 알림_잠깐('알림 설정: ' + b.textContent);
+                    알림설정저장(); 다시(); 알림_잠깐('알림 설정: ' + b.textContent);
                 };
             });
-            창.querySelector('#ns-dnd').onchange = function () {
-                var v = this.value;
-                if (v === '0') { 알림설정.방해끝 = 0; 알림설정.방해장마감 = false; }
-                else if (v === 'close') { var m = 장마감시각(); if (m) { 알림설정.방해끝 = m; 알림설정.방해장마감 = true; } }
-                else { 알림설정.방해끝 = Date.now() + Number(v) * 60000; 알림설정.방해장마감 = false; }
-                알림설정저장(); 알림창_그리기(창);
-                if (v !== '0') 알림_잠깐('🔕 방해 금지: 그동안 소리·음성만 꺼짐 (알림창·기록은 남음)');
-            };
+            Array.prototype.forEach.call(창.querySelectorAll('.ns-dnd button'), function (b) {
+                b.onclick = function () {
+                    var v = b.getAttribute('data-dnd');
+                    if (v === '0') { 알림설정.방해끝 = 0; 알림설정.방해종류 = ''; }
+                    else if (v === 'close') { var m = 장마감시각(); if (!m) return; 알림설정.방해끝 = m; 알림설정.방해종류 = 'close'; }
+                    else { 알림설정.방해끝 = Date.now() + Number(v) * 60000; 알림설정.방해종류 = v; }
+                    알림설정저장(); 다시();
+                    알림_잠깐(v === '0' ? '🔔 방해 금지를 껐습니다' : '🔕 방해 금지: 그동안 소리·음성만 꺼짐 (알림창·기록은 남음)');
+                };
+            });
             창.querySelector('#ns-ext').onchange = function () { 알림설정.장외무음 = this.checked; 알림설정저장(); };
-            창.querySelector('#fl-k').onchange = function () { 체결알림설정.기준 = Number(this.value); 체결알림설정저장(); 알림창_그리기(창); };
+            창.querySelector('#fl-k').onchange = function () { 체결알림설정.기준 = Number(this.value); 체결알림설정저장(); 다시(); };
             var 소리칸 = 창.querySelector('#al-snd'), 음량칸 = 창.querySelector('#al-vol');
             소리칸.onchange = function () { 알람_소리설정.종류 = 소리칸.value; 알람_소리설정저장(); 알람_소리(); };
             창.querySelector('#al-play').onclick = function () { 알람_소리(소리칸.value, Number(음량칸.value)); };
             음량칸.oninput = function () { 창.querySelector('#al-volv').textContent = Math.round(음량칸.value * 100) + '%'; };
             음량칸.onchange = function () { 알람_소리설정.음량 = Number(음량칸.value); 알람_소리설정저장(); 알람_소리(); };
             var 음성칸 = 창.querySelector('#vc-name'), 속도칸 = 창.querySelector('#vc-rate'), 듣기 = 창.querySelector('#vc-play');
-            if (음성칸) 음성칸.onchange = function () { 음성설정.음성 = this.value; 음성설정저장(); 음성_읽기('테슬라, 357달러 상향 돌파', true); };
-            if (속도칸) 속도칸.onchange = function () { 음성설정.속도 = Number(this.value); 음성설정저장(); 음성_읽기('테슬라, 357달러 상향 돌파', true); };
-            if (듣기) 듣기.onclick = function () { 음성_읽기('테슬라, 357달러 상향 돌파', true); };
+            if (음성칸) 음성칸.onchange = function () { 음성설정.음성 = this.value; 음성설정저장(); 음성_읽기('테슬라, 357달러 이상 도달', true); };
+            if (속도칸) 속도칸.onchange = function () { 음성설정.속도 = Number(this.value); 음성설정저장(); 음성_읽기('테슬라, 357달러 이상 도달', true); };
+            if (듣기) 듣기.onclick = function () { 음성_읽기('테슬라, 357달러 이상 도달', true); };
         }
-        function 알림창_닫기() { var p = document.getElementById('nt-pop'); if (p) p.remove(); var d = document.getElementById('nt-dim'); if (d) d.remove(); }
-        var 알림기록_닫기 = 알림창_닫기;
-        function 알림창_열기(단추, 탭) {
-            var 기존 = document.getElementById('nt-pop');
-            if (기존) { if (!탭 || 기존._탭 === 탭) { 알림창_닫기(); return; } 기존._탭 = 탭; 알림창_그리기(기존); return; }
-            var 창 = document.createElement('div'); 창.id = 'nt-pop'; 창.className = 'nt-pop'; 창._탭 = 탭 || '기록';
-            창.addEventListener('click', function (e) { e.알림기록안 = true; });
-            var 모바일 = window.innerWidth <= 600;
-            if (모바일) { var 어둠 = document.createElement('div'); 어둠.id = 'nt-dim'; 어둠.className = 'al-dim'; document.body.appendChild(어둠); 창.classList.add('mob'); }
-            document.body.appendChild(창); 알림창_그리기(창);
-            if (!모바일) {
-                단추 = 단추 || Array.prototype.filter.call(document.querySelectorAll('.nt-hist'), function (b) { return b.offsetParent !== null; })[0];
-                var r = 단추 ? 단추.getBoundingClientRect() : { bottom: 60, left: 200 };
-                창.style.top = (r.bottom + 6) + 'px'; 창.style.left = Math.max(8, Math.min(window.innerWidth - 388, r.left)) + 'px';
+        // 방해 금지: 끝나면 원래대로 · 설정 탭이 열려 있으면 남은 시간 갱신
+        setInterval(function () {
+            if (알림설정.방해끝 && Date.now() >= 알림설정.방해끝) { 알림설정.방해끝 = 0; 알림설정.방해종류 = ''; 알림설정저장(); 알림_잠깐('🔔 방해 금지가 끝났습니다'); var p = document.getElementById('al-pop'); if (p && p._탭 === '설정') 알람_창그리기(p); return; }
+            if (알림_방해중()) {
+                Array.prototype.forEach.call(document.querySelectorAll('.ns-dnd button.on'), function (b) { b.innerHTML = 방해_단추글(b.getAttribute('data-dnd')); });
+                알림기록_배지();
             }
-            알림기록.안읽음 = 0; 알림기록_저장(); 알림기록_배지();
+        }, 15000);
+
+        // ── 설정에서 나올 때 안내 (받을 알림이 하나라도 켜져 있을 때 · 윈폼 창 제외) ──
+        function 알림안내_띄우기() {
+            if (윈폼창()) return;
+            if (!['가격', '급증', '큰'].some(알림_켜짐)) return;
+            var 기존 = document.getElementById('nt-guide'); if (기존) 기존.remove();
+            var 폰 = !!(document.getElementById('wake-btn') && document.getElementById('wake-btn').offsetParent !== null);
+            var 창 = document.createElement('div'); 창.id = 'nt-guide'; 창.className = 'nt-guide';
+            창.addEventListener('click', function (e) { e.알람창안 = true; e.알림기록안 = true; e.화면창안 = true; });
+            창.innerHTML = 폰
+                ? '<div class="ng-t">☀ 화면이 켜져 있어야 알림을 받을 수 있습니다</div><div class="ng-b">실시간 시세는 화면이 켜져 있을 때만 수신 됩니다.</div>' +
+                  '<div class="ng-btns"><button type="button" class="ng-wake">☀ 화면 켜두기</button><button type="button" class="ng-ok">확인 (10)</button></div>'
+                : '<div class="ng-t">🔔 이 탭이 열려 있는 동안 알림이 울립니다</div><div class="ng-b">탭을 닫거나 PC가 절전 모드로 들어가면 알림을 받을 수 없습니다.</div>' +
+                  '<div class="ng-btns"><button type="button" class="ng-ok">확인 (10)</button></div>';
+            document.body.appendChild(창);
+            var 남 = 10, ok = 창.querySelector('.ng-ok');
+            var 타 = setInterval(function () { 남--; if (남 <= 0) 닫기(); else ok.textContent = '확인 (' + 남 + ')'; }, 1000);
+            function 닫기() { clearInterval(타); 창.remove(); }
+            ok.onclick = 닫기;
+            var w = 창.querySelector('.ng-wake');
+            if (w) w.onclick = function () { 닫기(); var b = document.getElementById('wake-btn'); if (b) setTimeout(function () { 화면_창열기(b); }, 0); };
         }
-        var 알림기록_열기 = function (단추) { 알림창_열기(단추); };
-        document.addEventListener('click', function (e) {
-            var b = e.target.closest && e.target.closest('.nt-hist');
-            if (b) { e.stopPropagation(); 알림창_열기(b); return; }
-            if (e.알림기록안) return;
-            if (document.getElementById('nt-pop')) 알림창_닫기();
-        });
-        // 방해 금지가 끝나면 배지 원래대로
-        setInterval(function () { if (알림설정.방해끝 && Date.now() >= 알림설정.방해끝) { 알림설정.방해끝 = 0; 알림설정.방해장마감 = false; 알림설정저장(); 알림_잠깐('🔔 방해 금지가 끝났습니다'); } }, 15000);
 
         // ── 패널로 가기: 모바일·태블릿 = 그 패널로 화면 이동 / PC = 그 패널 머리를 잠깐 반짝임 ──
         function 알림_패널로가기(종목) {
@@ -6819,12 +6993,15 @@
             el.innerHTML = '<div class="nt-top"><span class="nt-ic">' + 종.아이콘 + '</span>' + (i >= 0 ? '<span class="nt-pn" style="background:' + 알림_패널색[i] + '">' + (i + 1) + '</span>' : '') +
                 '<b class="nt-tk">' + x.종목 + '</b><span class="nt-kind">' + (x.단계 === 2 ? '체결 폭주' : 종.이름) + '</span><span class="nt-time">' + x.시각 + ' ET</span></div>' +
                 '<div class="nt-body">' + String(x.글).replace(/</g, '&lt;') + '</div>' +
-                '<div class="nt-btns">' + (i >= 0 ? '<button type="button" class="nt-go">패널로 가기</button>' : '') + '<button type="button" class="nt-off">' + (x.계속 ? '🔕 해제' : '닫기') + '</button></div>';
+                '<div class="nt-btns">' + (i >= 0 ? '<button type="button" class="nt-go">패널로 가기</button>' : '') +
+                (x.단추들 ? x.단추들.map(function (d, k) { return '<button type="button" class="nt-act' + (d.기본 ? ' def' : '') + '" data-k="' + k + '">' + d.글 + '</button>'; }).join('')
+                          : '<button type="button" class="nt-off">' + (x.계속 ? '🔕 해제' : '닫기') + '</button>') + '</div>';
             판.insertBefore(el, 판.firstChild);
             var 항 = { 키: 키, el: el, 닫기시각: Date.now() + (x.유지ms || 종.유지) };
             알림_창들.unshift(항);
             var go = el.querySelector('.nt-go'); if (go) go.onclick = function () { 알림_패널로가기(x.종목); if (!x.계속) 알림_닫기(키); };
-            el.querySelector('.nt-off').onclick = function () { if (x.해제) try { x.해제(); } catch (e) { } 알림_닫기(키); };
+            var off = el.querySelector('.nt-off'); if (off) off.onclick = function () { if (x.해제) try { x.해제(); } catch (e) { } 알림_닫기(키); };
+            Array.prototype.forEach.call(el.querySelectorAll('.nt-act'), function (b) { b.onclick = function () { try { x.단추들[Number(b.getAttribute('data-k'))].할일(); } catch (e) { } 알림_닫기(키); }; });
             void el.offsetWidth; el.classList.add('show');
             알림_정리();
             // 기록 · 탭 제목 · 윈도우 알림
@@ -6920,39 +7097,74 @@
                 });
                 if (!종목 || t === 종목) { try { if (panelDataStore[i] && panelDataStore[i].price > 0) renderTimeline('p' + i + '-', panelDataStore[i]); } catch (e) { } }
             });
-            var p = document.getElementById('al-pop'); if (p && (!종목 || p._종목 === 종목)) 알람_창그리기(p);
+            var p = document.getElementById('al-pop'); if (p && p._탭 !== '설정' && (!종목 || p._종목 === 종목)) 알람_창그리기(p);
         }
 
         function 알람_닫기() {
-            var p = document.getElementById('al-pop'); if (p) p.remove();
+            var p = document.getElementById('al-pop'), 설정이었음 = !!(p && p._탭 === '설정');
+            if (p) p.remove();
             var d = document.getElementById('al-dim'); if (d) d.remove();
+            if (설정이었음) 알림안내_띄우기();
+        }
+        // 등록 기본값 (마지막에 고른 값 기억)
+        function 알람_등록기본() {
+            var r = 알람_소리설정.등록 || {};
+            return { 울림: r.울림 === '한번' ? '한번' : '확인', 끝다음: r.끝다음 === '끝' ? '끝' : '대기', 소리: typeof r.소리 === 'string' ? r.소리 : '', 정규장만: !!r.정규장만 };
+        }
+        function 알람_소리이름(s) {
+            if (!s) return '';
+            if (s === '음성') return '🗣 음성';
+            var x = 알람_소리목록.filter(function (o) { return o[0] === s; })[0];
+            return x ? '♪ ' + x[1].split(' (')[0] : '';
+        }
+        function 알람_공통소리글() {
+            var m = 알림설정.가격.방식, 소리 = (알람_소리목록.filter(function (o) { return o[0] === 알람_소리설정.종류; })[0] || ['', ''])[1].split(' (')[0];
+            return m === '끔' ? '끔' : m === '음성' ? '음성' : m === '둘다' ? 소리 + '+음성' : 소리;
         }
         function 알람_창그리기(창) {
-            var 종목 = 창._종목, 지금 = 알람_현재가(종목), 입력 = 창.querySelector('.al-price'), 값 = 입력 ? 입력.value : (지금 > 0 ? 지금.toFixed(2) : '');
-            var 반복 = 창.querySelector('#al-rep'), 정규 = 창.querySelector('#al-reg');
-            var 반복값 = 반복 ? 반복.checked : false, 정규값 = 정규 ? 정규.checked : false;
-            var 계속값 = Number(알람_소리설정.계속분) || 0;
+            var 탭 = 창._탭 || '알람', 종목 = 창._종목;
+            var 머리 = '<button type="button" class="al-x" title="닫기">×</button>' +
+                '<div class="al-tabs"><button type="button" data-tab="알람" class="' + (탭 === '알람' ? 'on' : '') + '">🔔 ' + 종목 + ' 가격 알람</button>' +
+                '<button type="button" data-tab="설정" class="' + (탭 === '설정' ? 'on' : '') + '">⚙ 설정</button></div>';
+            if (탭 === '설정') {
+                창.classList.add('set');
+                창.innerHTML = 머리 + '<div class="ns-wrap">' + 알림설정_HTML() + '</div>';
+                알림설정_연결(창, function () { 알람_창그리기(창); });
+                알람_탭연결(창); 알람_위치맞춤(창);
+                return;
+            }
+            창.classList.remove('set');
+            var 지금 = 알람_현재가(종목), 입력 = 창.querySelector('.al-price'), 값 = 입력 ? 입력.value : (지금 > 0 ? 지금.toFixed(2) : '');
+            var 옵 = 창._옵션 || (창._옵션 = 알람_등록기본());
             var i = panelTickers.indexOf(종목), st = RT[i] && RT[i].ticker === 종목 ? RT[i] : null, 세 = st && st.레벨세분;
             var 빠른 = [];
             if (세) { if (세.저항[0]) 빠른.push(['1차저항', 세.저항[0].v]); if (세.저항[1]) 빠른.push(['2차저항', 세.저항[1].v]); if (세.지지[0]) 빠른.push(['1차지지', 세.지지[0].v]); if (세.지지[1]) 빠른.push(['2차지지', 세.지지[1].v]); }
             var 목록 = 알람_목록(종목);
-            창.innerHTML = '<button type="button" class="al-x" title="닫기">×</button>' +
-                '<div class="al-h">🔔 ' + 종목 + ' 가격 알람 <span style="color:#8b93a7;font-weight:400">· 현재 ' + (지금 > 0 ? 지금.toFixed(2) : '─') + '</span></div>' +
+            function 고르기(이름, 값들) {
+                return '<div class="al-seg" data-k="' + 이름 + '">' + 값들.map(function (o) { return '<button type="button" data-v="' + o[0] + '" class="' + (옵[이름] === o[0] ? 'sel' : '') + '">' + o[1] + '</button>'; }).join('') + '</div>';
+            }
+            창.innerHTML = 머리 +
+                '<div class="al-now">현재 ' + (지금 > 0 ? 지금.toFixed(2) : '─') + '</div>' +
                 '<div class="al-in">가격 <input type="number" class="al-price" inputmode="decimal" step="0.01" value="' + 값 + '"><button type="button" class="al-add">등록</button></div>' +
                 '<div class="al-dirs"><button type="button" data-dir="상향">▲ 상향 돌파</button><button type="button" data-dir="하향">▼ 하향 이탈</button></div>' +
                 '<div class="al-hint"></div>' +
                 (빠른.length ? '<div class="al-q">' + 빠른.map(function (q) { return '<button type="button" data-v="' + q[1] + '">' + q[0] + ' ' + q[1].toFixed(2) + '</button>'; }).join('') + '</div>' : '') +
-                '<div class="al-opt"><label><input type="checkbox" id="al-rep"' + (반복값 ? ' checked' : '') + '> 반복 울림 <small>(되돌아갔다 다시 닿으면)</small></label>' +
-                '<label><input type="checkbox" id="al-reg"' + (정규값 ? ' checked' : '') + '> 정규장에만</label></div>' +
-                '<div class="al-snd">계속 울림 <select id="al-keep">' + 알람_계속선택.map(function (x) { return '<option value="' + x[0] + '"' + (x[0] === 계속값 ? ' selected' : '') + '>' + x[1] + '</option>'; }).join('') + '</select>' +
-                '<small class="al-keepn">[해제] 누를 때까지 4초마다</small></div>' +
-                '<div class="al-setlink"><button type="button" id="al-goset">⚙ 알림 설정 <small>알림음 · 음성 · 체결 급증 · 받을 알림 선택</small></button></div>' +
+                '<div class="al-orow"><span class="al-ol">울림</span>' + 고르기('울림', [['확인', '확인할 때까지 <small>(최대 5분)</small>'], ['한번', '한 번만']]) + '</div>' +
+                '<div class="al-orow"><span class="al-ol">끈 다음</span>' + 고르기('끝다음', [['대기', '다시 대기 <small>(1% 벗어난 뒤)</small>'], ['끝', '알람 끝']]) + '</div>' +
+                '<div class="al-orow"><span class="al-ol">알림음</span><select id="al-asnd">' +
+                    '<option value="">공통 설정 (' + 알람_공통소리글() + ')</option><option value="음성"' + (옵.소리 === '음성' ? ' selected' : '') + '>🗣 음성 ("○○달러 이상 도달")</option>' +
+                    알람_소리목록.filter(function (x) { return x[0] !== '끔'; }).map(function (x) { return '<option value="' + x[0] + '"' + (옵.소리 === x[0] ? ' selected' : '') + '>' + x[1] + '</option>'; }).join('') +
+                '</select><button type="button" id="al-aplay" title="미리 듣기">▶</button></div>' +
+                '<div class="al-opt"><label><input type="checkbox" id="al-reg"' + (옵.정규장만 ? ' checked' : '') + '> 정규장에만</label></div>' +
                 '<div class="al-list">' + (목록.length ? 목록.slice().sort(function (a, b) { return b.가격 - a.가격; }).map(function (a) {
-                    var 상태글 = a.상태 === '도달' ? '도달 ' + a.도달
-                        : [a.반복 ? '반복' : '', a.계속분 ? '계속 ' + a.계속분 + '분' : '', a.정규장만 ? '정규장' : '', a.도달 ? '최근 ' + a.도달 : (a.무장 ? '대기 중' : '되돌아오길 기다림')].filter(Boolean).join(' · ');
+                    var 울중 = i >= 0 && 알람_계속중[i] && 알람_계속중[i].id === a.id;
+                    var 상태글 = 울중 ? '🔔 울리는 중' : a.상태 === '도달' ? '도달 ' + a.도달
+                        : [a.울림 === '확인' ? '확인까지' : '1번', a.끝다음 === '대기' ? '다시 대기' : '1회', 알람_소리이름(a.소리), a.정규장만 ? '정규장' : '',
+                           a.무장 ? '대기 중' : (a.마지막울림 ? '1% 벗어나길 기다림' : '되돌아오길 기다림')].filter(Boolean).join(' · ');
                     return '<div class="al-row"><button type="button" class="al-rdir ' + (a.방향 === '상향' ? 'up' : 'dn') + '" data-flip="' + a.id + '" title="눌러서 방향 바꾸기">' +
                         (a.방향 === '상향' ? '▲ ' : '▼ ') + a.가격.toFixed(2) + ' ' + (a.방향 === '상향' ? '상향' : '하향') + ' ⇅</button>' +
                         '<span class="al-rst' + (a.상태 === '도달' ? ' hit' : '') + '">' + 상태글 + '</span>' +
+                        (a.상태 === '도달' ? '<button type="button" class="al-rearm" data-id="' + a.id + '" title="다시 대기">↺</button>' : '') +
                         '<button type="button" class="al-del" data-id="' + a.id + '" title="삭제">✕</button></div>';
                 }).join('') : '<div style="color:#6b7386">등록된 알람 없음</div>') + '</div>';
             var inp = 창.querySelector('.al-price'), 힌트 = 창.querySelector('.al-hint');
@@ -6971,8 +7183,25 @@
             }
             inp.oninput = 방향표시; 방향표시();
             Array.prototype.forEach.call(창.querySelectorAll('.al-dirs button'), function (b) { b.onclick = function () { 창._방향 = b.getAttribute('data-dir'); 방향표시(); }; });
+            function 옵션저장() { 알람_소리설정.등록 = { 울림: 옵.울림, 끝다음: 옵.끝다음, 소리: 옵.소리, 정규장만: 옵.정규장만 }; 알람_소리설정저장(); }
+            Array.prototype.forEach.call(창.querySelectorAll('.al-seg'), function (g) {
+                var k = g.getAttribute('data-k');
+                Array.prototype.forEach.call(g.querySelectorAll('button'), function (b) {
+                    b.onclick = function () { 옵[k] = b.getAttribute('data-v'); 옵션저장(); Array.prototype.forEach.call(g.querySelectorAll('button'), function (x) { x.className = x === b ? 'sel' : ''; }); };
+                });
+            });
+            var 소칸 = 창.querySelector('#al-asnd');
+            function 미리듣기() {
+                var s = 소칸.value, 말 = tickerName(종목) + ', ' + 알림_말가격(Number(inp.value) > 0 ? Math.round(Number(inp.value) * 100) / 100 : (지금 || 357)) + ' ' + (고른방향() === '상향' ? '이상 도달' : '이하 도달');
+                if (s === '음성') { if (음성_고른것()) 음성_읽기(말, true, function () { 알람_소리(); }); else { 알람_소리(); 알림_잠깐(음성_없음안내()); } }
+                else if (s) 알람_소리(s);
+                else { var m = 알림설정.가격.방식; if (m === '음성' && 음성_고른것()) 음성_읽기(말, true); else if (m !== '끔') { 알람_소리(); if (m === '둘다' && 음성_고른것()) setTimeout(function () { 음성_읽기(말, true); }, 900); } }
+            }
+            소칸.onchange = function () { 옵.소리 = 소칸.value; 옵션저장(); 미리듣기(); };
+            창.querySelector('#al-aplay').onclick = 미리듣기;
+            창.querySelector('#al-reg').onchange = function () { 옵.정규장만 = this.checked; 옵션저장(); };
             function 등록() {
-                if (알람_추가(종목, inp.value, { 방향: 고른방향(), 반복: 창.querySelector('#al-rep').checked, 정규장만: 창.querySelector('#al-reg').checked, 계속분: Number(창.querySelector('#al-keep').value) })) {
+                if (알람_추가(종목, inp.value, { 방향: 고른방향(), 정규장만: 옵.정규장만, 울림: 옵.울림, 끝다음: 옵.끝다음, 소리: 옵.소리 })) {
                     창._방향 = null;
                     var 새 = 창.querySelector('.al-price'); if (새) 새.value = '';   // 등록 뒤 입력칸 비움 (창은 이미 새로 그려짐)
                     알람_창그리기(창);
@@ -6980,12 +7209,29 @@
             }
             창.querySelector('.al-add').onclick = 등록;
             inp.onkeydown = function (e) { if (e.key === 'Enter') 등록(); };
-            창.querySelector('.al-x').onclick = 알람_닫기;
-            창.querySelector('#al-keep').onchange = function () { 알람_소리설정.계속분 = Number(this.value); 알람_소리설정저장(); };
-            창.querySelector('#al-goset').onclick = function (e) { e.알림기록안 = true; 알람_닫기(); 알림창_열기(null, '설정'); };
             Array.prototype.forEach.call(창.querySelectorAll('.al-q button'), function (b) { b.onclick = function () { inp.value = Number(b.getAttribute('data-v')).toFixed(2); 방향표시(); }; });
             Array.prototype.forEach.call(창.querySelectorAll('.al-del'), function (b) { b.onclick = function () { 알람_삭제(종목, b.getAttribute('data-id')); }; });
+            Array.prototype.forEach.call(창.querySelectorAll('.al-rearm'), function (b) { b.onclick = function () { 알람_다시대기(종목, b.getAttribute('data-id')); }; });
             Array.prototype.forEach.call(창.querySelectorAll('.al-rdir'), function (b) { b.onclick = function () { 알람_방향바꾸기(종목, b.getAttribute('data-flip')); }; });
+            알람_탭연결(창); 알람_위치맞춤(창);
+        }
+        function 알람_탭연결(창) {
+            창.querySelector('.al-x').onclick = 알람_닫기;
+            Array.prototype.forEach.call(창.querySelectorAll('.al-tabs button[data-tab]'), function (b) {
+                b.onclick = function () {
+                    var 새 = b.getAttribute('data-tab'); if (새 === 창._탭) return;
+                    var 설정이었음 = 창._탭 === '설정';
+                    창._탭 = 새; 알람_창그리기(창);
+                    if (설정이었음) 알림안내_띄우기();
+                };
+            });
+        }
+        // PC: 창 크기가 바뀌면(탭 전환) 화면 안에 들어오게
+        function 알람_위치맞춤(창) {
+            if (창.classList.contains('mob') || !창._기준) return;
+            var r = 창._기준, w = 창.offsetWidth;
+            창.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, r.right - w)) + 'px';
+            창.style.top = Math.max(8, Math.min(window.innerHeight - 창.offsetHeight - 8, r.bottom + 6)) + 'px';
         }
         function 알람_모바일() { return window.innerWidth <= 600; }
         // 모바일: 화면 맨 위 전체 폭 + 키보드가 올라오면 보이는 높이에 맞춰 줄이고 창 안에서 스크롤
@@ -6996,22 +7242,23 @@
             p.style.maxHeight = Math.max(160, h - 12) + 'px';
         }
         if (window.visualViewport) { window.visualViewport.addEventListener('resize', 알람_모바일맞춤); window.visualViewport.addEventListener('scroll', 알람_모바일맞춤); }
-        function 알람_창열기(i, 단추) {
+        function 알람_창열기(i, 단추, 탭) {
             var 종목 = panelTickers[i]; if (!종목) return;
-            var 기존 = document.getElementById('al-pop'); if (기존) { var 같음 = 기존._종목 === 종목; 알람_닫기(); if (같음) return; }
-            var 창 = document.createElement('div'); 창.className = 'al-pop'; 창.id = 'al-pop'; 창._종목 = 종목;
+            var 기존 = document.getElementById('al-pop'); if (기존) { var 같음 = 기존._종목 === 종목 && !탭; 알람_닫기(); if (같음) return; }
+            var 창 = document.createElement('div'); 창.className = 'al-pop'; 창.id = 'al-pop'; 창._종목 = 종목; 창._탭 = 탭 || '알람';
             // 창 안 클릭 표시: 창 안 단추(✕ 삭제 등)가 다시 그려져 문서에서 떨어져도 "바깥 클릭"으로 보지 않음
             창.addEventListener('click', function (e) { e.알람창안 = true; });
             var 모바일 = 알람_모바일();
             if (모바일) {
                 var 어둠 = document.createElement('div'); 어둠.id = 'al-dim'; 어둠.className = 'al-dim'; document.body.appendChild(어둠);
                 창.classList.add('mob');
+                document.body.appendChild(창); 알람_창그리기(창); 알람_모바일맞춤();
+                return;   // 모바일은 키보드가 바로 뜨지 않게 입력칸 자동 선택 안 함
             }
+            단추 = 단추 || Array.prototype.filter.call(document.querySelectorAll('.px-bell[data-i="' + i + '"]'), function (b) { return b.offsetParent !== null; })[0];
+            var r = 단추 ? 단추.getBoundingClientRect() : { right: window.innerWidth / 2 + 180, bottom: 70 };
+            창._기준 = { right: r.right, bottom: r.bottom };
             document.body.appendChild(창); 알람_창그리기(창);
-            if (모바일) { 알람_모바일맞춤(); return; }   // 모바일은 키보드가 바로 뜨지 않게 입력칸 자동 선택 안 함
-            var r = 단추.getBoundingClientRect();
-            창.style.top = Math.max(8, Math.min(window.innerHeight - 창.offsetHeight - 8, r.bottom + 6)) + 'px';
-            창.style.left = Math.max(8, Math.min(window.innerWidth - 308, r.right - 300)) + 'px';
             var inp = 창.querySelector('.al-price'); if (inp) { inp.focus(); inp.select(); }
         }
         document.addEventListener('click', function (e) {
