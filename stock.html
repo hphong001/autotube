@@ -470,7 +470,13 @@
                 border-right: none;
             }
 
+        /* 패널 머리(종목·🔔·종가·현재가·거래량·알림 띠): 아래로 스크롤해도 맨 위에 붙어 있음
+           PC = 각 패널 안에서(패널마다 따로 스크롤) / 세로 배치(태블릿·모바일) = 화면 맨 위, 지금 보는 패널의 머리 */
         .ph {
+            position: sticky;
+            top: -8px;              /* 패널 안쪽 여백(8px)까지 덮어 위쪽 틈 없이 붙게 */
+            z-index: 30;
+            box-shadow: 0 -8px 0 #07070c;   /* 붙었을 때 머리 위 여백 자리를 패널 바탕색으로 덮음 */
             display: flex;
             flex-direction: column;
             flex-shrink: 0;
@@ -1606,6 +1612,10 @@
             .sidebar-watchlist:not(.wl-all) .ticker-list .wl-row:nth-child(n+11) { display: none; }
             .wl-more { display: block; width: 100%; margin-top: 8px; font: inherit; font-size: 12.5px; font-weight: 700; color: #cfd5e2; background: #141826; border: 1px solid #262c3e; border-radius: 6px; padding: 9px 0; cursor: pointer; }
             .sidebar-logo { order: 2; }
+            /* 머리 고정: 세로 배치는 페이지 전체가 스크롤 → 중간 상자가 스크롤 상자가 되지 않게(overflow visible) 해야 화면 맨 위에 붙음 */
+            .content-wrapper, .dashboard-grid { overflow: visible !important; }
+            body { overflow-x: clip !important; overflow-y: visible !important; }   /* body 가 스크롤 상자가 되면 머리가 붙지 않음 (가로 넘침은 clip 으로 막음) */
+            .ph { top: 0; box-shadow: none; }
 
             .sidebar-ad {
                 display: none;
