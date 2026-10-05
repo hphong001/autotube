@@ -406,6 +406,13 @@
         .al-setlink button:hover { border-color: #f5c542; }
         .wake-pop button:disabled { opacity: .45; cursor: default; }
         .wake-pop button small { font-size: 10.5px; color: #8b93a7; }
+        /* 월·수 만기 옵션 표 */
+        .oi-extra:empty { display: none; }
+        .oi-xsec { margin-top: 10px; padding-top: 8px; border-top: 1px dashed #2f3446; }
+        .oi-xhead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; cursor: pointer; user-select: none; }
+        .oi-xt { font-size: 12.5px; font-weight: bold; color: #7799dd; }
+        .oi-xsec.fold .oi-xbody { display: none; }
+        .oi-xsec.fold .oi-summary { margin-bottom: 0; }
         /* 빠른 이동 풍선 (휴대폰·태블릿) */
         .qnav { display: none; }
         @media (max-width: 1200px) {
@@ -3875,6 +3882,7 @@
                 + '<div class="oi-summary"><span id="p' + i + '-sum-power">수급 대기중</span><span id="p' + i + '-sum-env">지수 대기중</span></div>'
                 + '<div class="oi-grid-header"><div style="text-align:right;padding-right:2px;">콜</div><div>OI/V</div><div>등락</div><div>행사가</div><div>등락</div><div>OI/V</div><div style="text-align:left;padding-left:2px;">풋</div></div>'
                 + '<div id="p' + i + '-oi-rows"></div>'
+                + '<div class="oi-extra" id="p' + i + '-oi-extra"></div>'
                 + '</div>'
                 + '<div class="chart-wrapper">'
                 + '<select class="chart-interval-select" id="interval-' + i + '" onchange="changeInterval(' + i + ',this.value)">'
@@ -4162,6 +4170,7 @@
             var dte = document.getElementById(p + 'dte'); if (dte) dte.textContent = '옵션만기 : 대기중';
             var tl = document.getElementById(p + 'timeline'); if (tl) tl.innerHTML = '';
             var oit = document.getElementById(p + 'oi-title'); if (oit) oit.textContent = ticker + ' 옵션 체인';
+            var oix = document.getElementById(p + 'oi-extra'); if (oix) oix.innerHTML = '';
             setOiPending(panelIdx, ticker);
         }
 
@@ -4574,6 +4583,40 @@
         // ★ panel/optionUpdate 이벤트 처리 (Firebase panelRef → onWsMessage)
         //   - 점 색상은 renderPanelQuote 에서 현재 가격 소스 기준으로 결정
         // ════════════════════════════════════════════════════════
+        // 옵션 체인 14행 → 수급 점수 (콜·풋 에너지 비율 × 당일 등락 강도) · 패널 옵션 체인과 월·수 만기 표에 같이 사용
+        function 옵션_수급점수(rows, ticker, panel, change) {
+            var tCall = 0, tPut = 0;
+            rows.forEach(function (r) {
+                var cChgMult = (1 + Math.abs(r.callChg) / 100.0) * (r.callChg >= 0 ? 1 : -1);
+                var pChgMult = (1 + Math.abs(r.putChg) / 100.0) * (r.putChg >= 0 ? 1 : -1);
+                tCall += (r.callOI + r.callVol) * cChgMult;
+                tPut += (r.putOI + r.putVol) * pChgMult;
+            });
+            var totalEnergy = Math.abs(tCall) + Math.abs(tPut);
+            if (!(totalEnergy > 0)) return null;
+            var eRatio = (tCall - tPut) / totalEnergy;
+            var isIndex = (ticker === 'QQQ' || ticker === 'SPY' || ticker === 'IWM' || ticker === 'SPX');
+            var targetVol = isIndex ? 2.5 : 6.0;
+            var domRate = 0;
+            var cgEl = document.getElementById('p' + panel + (marketPhase().type === 'REG' ? '-chg' : '-c1cg'));   // 당일 등락률 (정규장 외 = 마지막 정규장 등락률)
+            if (cgEl && cgEl.textContent !== '─') {
+                var matches = cgEl.textContent.match(/-?\d+(\.\d+)?/g);
+                if (matches) domRate = Number(matches[matches.length - 1]) || 0;
+            }
+            if (domRate === 0 && change !== undefined) domRate = Number(change) || 0;
+            var intensity = Math.min(1.0, Math.abs(domRate) / targetVol);
+            return Math.max(0, Math.min(10, 5.0 + (eRatio * 5.0 * intensity)));
+        }
+        function 옵션_수급글(score) {
+            return score >= 9.0 ? '<b style="color:#ff3333;">콜 쏠림 심화</b>' :
+                score >= 7.5 ? '<b style="color:#ff6666;">콜 매수 우위</b>' :
+                score >= 5.6 ? '<b style="color:#ffaaaa;">상승 전환</b>' :
+                score >= 4.5 ? '<b class="c-gold">수급 중립</b>' :
+                score >= 2.6 ? '<b style="color:#88bbff;">하락 전환</b>' :
+                score >= 1.1 ? '<b style="color:#4488ff;">풋 매수 우위</b>' :
+                '<b style="color:#aa44ff;">풋 쏠림 심화</b>';
+        }
+
         window.onWsMessage = function (d) {
             if (!d || !d.type || d.type !== 'optionUpdate' || !d.ticker) return;
             var panel = panelTickers.indexOf(d.ticker);
@@ -4589,7 +4632,7 @@
                 var 키움시각 = 옵션_윈폼기준시각(d);
                 if (키움시각) { 옵션_키움시각[d.ticker] = 키움시각; 옵션_키움만기[d.ticker] = d.expiry || ''; }
                 var 보관 = 옵션_CBOE값[d.ticker];
-                if (보관 && 옵션_표시출처[d.ticker] === 'CBOE' && (!키움시각 || 키움시각 <= 옵션_CBOE기준(보관))) {
+                if (보관 && 옵션_표시출처[d.ticker] === 'CBOE' && ((보관.당일우선 && 옵션_당일유효(보관.expiry)) || !키움시각 || 키움시각 <= 옵션_CBOE기준(보관))) {
                     setTimeout(function () { 옵션_CBOE적용하기(d.ticker, 보관); }, 0);   // 지금 보이는 CBOE 값이 더 최신 → 그대로
                     return;
                 }
@@ -4600,30 +4643,8 @@
 
 
             if (d.optionRows && d.optionRows.length > 0) {
-                var tCall = 0, tPut = 0;
-                d.optionRows.forEach(function (r) {
-                    var cChgMult = (1 + Math.abs(r.callChg) / 100.0) * (r.callChg >= 0 ? 1 : -1);
-                    var pChgMult = (1 + Math.abs(r.putChg) / 100.0) * (r.putChg >= 0 ? 1 : -1);
-                    tCall += (r.callOI + r.callVol) * cChgMult;
-                    tPut += (r.putOI + r.putVol) * pChgMult;
-                });
-
-                var totalEnergy = Math.abs(tCall) + Math.abs(tPut);
-                if (totalEnergy > 0) {
-                    var eRatio = (tCall - tPut) / totalEnergy;
-                    var isIndex = (d.ticker === 'QQQ' || d.ticker === 'SPY' || d.ticker === 'IWM' || d.ticker === 'SPX');
-                    var targetVol = isIndex ? 2.5 : 6.0;
-                    var domRate = 0;
-                    var cgEl = document.getElementById('p' + panel + (marketPhase().type === 'REG' ? '-chg' : '-c1cg'));   // 당일 등락률 (정규장 외 = 마지막 정규장 등락률)
-                    if (cgEl && cgEl.textContent !== '─') {
-                        var matches = cgEl.textContent.match(/-?\d+(\.\d+)?/g);
-                        if (matches) domRate = Number(matches[matches.length - 1]) || 0;
-                    }
-                    if (domRate === 0 && d.change !== undefined) domRate = Number(d.change) || 0;
-                    var intensity = Math.min(1.0, Math.abs(domRate) / targetVol);
-                    var calcScore = 5.0 + (eRatio * 5.0 * intensity);
-                    d.score = Math.max(0, Math.min(10, calcScore));
-                }
+                var 점 = 옵션_수급점수(d.optionRows, d.ticker, panel, d.change);
+                if (점 != null) d.score = 점;
             }
 
             panelDataStore[panel] = JSON.parse(JSON.stringify(d));
@@ -4651,6 +4672,10 @@
         var 옵션_요청중 = {};
         var 옵션_CBOE값 = {};       // 종목 → 마지막으로 받은 Worker 응답 (종목을 다시 고를 때 재사용)
         var 옵션_표시출처 = {};     // 종목 → 지금 화면에 보이는 출처 ('윈폼' | 'CBOE')
+        var 옵션_CBOE받음 = {};     // 종목 → CBOE 를 마지막으로 받은 시각(ms) (적용 여부와 관계없이)
+        var 옵션_월수 = {};         // 종목 → 마지막 Worker 응답 (금요일 만기 + 월·수 만기 extras)
+        // 당일 만기가 아직 유효한가: 만기일 = 오늘(ET) 이고 정규장 마감(16:00, 조기 폐장 13:00) 전
+        function 옵션_당일유효(만기) { var t = etNowParts(); return !!만기 && 만기 === t.date && t.m < 정규장마감분(t.date); }
 
         // 윈폼 옵션 값의 데이터 기준 시각(ms): updatedAtMs(UTC) 우선, 없으면 updatedAt(한국시간) / 야후는 15분 지연
         function 옵션_윈폼기준시각(d) {
@@ -4770,7 +4795,8 @@
             // 만기 표시: 뉴욕 날짜 기준 남은 일수 (윈폼과 동일)
             var ex = v.expiry.split('-'), 오늘 = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
             var dte = Math.round((Date.UTC(+ex[0], +ex[1] - 1, +ex[2]) - Date.UTC(오늘.getFullYear(), 오늘.getMonth(), 오늘.getDate())) / 86400000);
-            var dteLabel = ex[1] + '/' + ex[2] + ' (D-' + dte + ')';
+            var 요일 = ['일', '월', '화', '수', '목', '금', '토'][new Date(Date.UTC(+ex[0], +ex[1] - 1, +ex[2])).getUTCDay()];
+            var dteLabel = ex[1] + '/' + ex[2] + (v.당일우선 ? ' (' + 요일 + ' · 당일 만기)' : ' (D-' + dte + ')');
             // CBOE 기준 시각(UTC) → 뉴욕 시각
             var cboeET = '';
             var m = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/.exec(v.cboeTime || '');
@@ -4786,11 +4812,11 @@
                 isMarketOpen: 장.type === 'REG', sessionLabel: 장.type === 'REG' ? '실시간' : 장.label || '장마감',
                 dte: dte, dteLabel: dteLabel, trendText: 옵션_추세문구(change),
                 updatedAt: 지금.getFullYear() + '-' + 두(지금.getMonth() + 1) + '-' + 두(지금.getDate()) + ' ' + 두(지금.getHours()) + ':' + 두(지금.getMinutes()) + ':' + 두(지금.getSeconds()),
-                옵션출처: 'CBOE', cboeET: cboeET, 만기: v.expiry }, 계산);
+                옵션출처: 'CBOE', cboeET: cboeET, 만기: v.expiry, 당일우선: !!v.당일우선 }, 계산);
             옵션_CBOE적용[ticker] = 옵션_CBOE적용[ticker] && 옵션_CBOE값[ticker] === v ? 옵션_CBOE적용[ticker] : Date.now();
             옵션_CBOE값[ticker] = v;
             p.updatedAtMs = 옵션_CBOE기준(v);
-            디버그('옵션' + ticker, '[' + ticker + '] 옵션 CBOE 적용 (만기 ' + v.expiry + ', ' + cboeET + ' 기준, 현재가 ' + 계산.price.toFixed(2) + ') → 지지 ' + 계산.support1 + '/' + 계산.support2 +
+            디버그('옵션' + ticker, '[' + ticker + '] 옵션 CBOE 적용 (만기 ' + v.expiry + (v.당일우선 ? ' · 당일 만기 우선' : '') + ', ' + cboeET + ' 기준, 현재가 ' + 계산.price.toFixed(2) + ') → 지지 ' + 계산.support1 + '/' + 계산.support2 +
                 ' · 저항 ' + 계산.resistance1 + '/' + 계산.resistance2 + ' · MaxPain ' + 계산.maxPain + ' · 점수 ' + 계산.score + ' (' + 계산.signal + ')');
             window.onWsMessage(p);
         }
@@ -4802,24 +4828,31 @@
             var 오늘ET = etNowParts().date;
             panelTickers.forEach(function (t) {
                 if (!t || 옵션_요청중[t]) return;
-                // 윈폼 값이 CBOE(15분 지연)보다 최신일 수 있는 동안은 받지 않음
-                if (옵션_키움시각[t] && 지금 - 옵션_키움시각[t] < 옵션_CBOE지연ms) return;
-                if (옵션_CBOE적용[t] && 지금 - 옵션_CBOE적용[t] < 옵션_CBOE주기ms) return;       // 5분 안에 받았음
+                // 당일(월·수) 만기를 쓰던 중 그 만기가 끝났으면(16:00 ET) 바로 다시 받아 다음 만기로
+                var 보던 = 옵션_CBOE값[t];
+                if (보던 && 보던.당일우선 && !옵션_당일유효(보던.expiry)) 옵션_CBOE받음[t] = 0;
+                // 5분마다 받음 (윈폼 값이 최신이어도 받음 → 월·수 만기 표시와 당일 만기 우선 판단에 필요. 금요일 만기 표시는 최신 쪽)
+                if (옵션_CBOE받음[t] && 지금 - 옵션_CBOE받음[t] < 옵션_CBOE주기ms) return;
                 if (옵션_재시도[t] && 지금 < 옵션_재시도[t]) return;                              // 실패 → 1분 뒤 다시
                 // 만기: 윈폼 옵션 만기가 있고 아직 안 지났으면 같은 만기로 요청 (두 출처가 같은 만기를 쓰도록)
                 var 만기 = 옵션_키움만기[t] && 옵션_키움만기[t] >= 오늘ET ? 옵션_키움만기[t] : '';
                 옵션_요청중[t] = true;
-                var 기본 = CLOSE_WORKER_URL.replace(/\/+$/, '') + '/options?s=' + encodeURIComponent(t);
+                var 기본 = CLOSE_WORKER_URL.replace(/\/+$/, '') + '/options?mw=1&s=' + encodeURIComponent(t);
                 var 받기 = function (url) { return fetch(url, { cache: 'no-store' }).then(function (r) { return r.json(); }); };
                 받기(기본 + (만기 ? '&e=' + 만기 : ''))
                     .then(function (v) { return (만기 && v && v.error && !v.strikes) ? 받기(기본) : v; })   // 그 만기가 CBOE 에 없으면 이번 주 만기
                     .then(function (v) {
                         if (!v || v.error || !v.strikes) { 디버그('옵션' + t, '[' + t + '] CBOE 옵션 조회 실패: ' + ((v && v.error) || '응답 없음')); 옵션_재시도[t] = Date.now() + 60000; return; }
-                        옵션_재시도[t] = 0;
+                        옵션_재시도[t] = 0; 옵션_CBOE받음[t] = Date.now();
                         if (panelTickers.indexOf(t) < 0) return;
+                        옵션_월수[t] = v;
+                        // ★ 오늘이 월·수 만기일이면 그 당일 만기를 우선 (매매 판단·결과 출력에 사용)
+                        var 당일 = (v.extras || []).filter(function (x) { return x.당일 && 옵션_당일유효(x.expiry) && x.strikes && x.strikes.length; })[0];
+                        if (당일) { 옵션_CBOE적용하기(t, Object.assign({}, v, { expiry: 당일.expiry, strikes: 당일.strikes, 당일우선: true })); 옵션_월수표시(panelTickers.indexOf(t)); return; }
                         // 기다리는 사이 더 최신 윈폼 값이 들어왔으면 적용하지 않음 (받은 값은 보관)
-                        if (옵션_키움시각[t] && 옵션_CBOE기준(v) <= 옵션_키움시각[t]) { 옵션_CBOE값[t] = v; 옵션_CBOE적용[t] = Date.now(); return; }
+                        if (옵션_키움시각[t] && 옵션_CBOE기준(v) <= 옵션_키움시각[t] && !(보던 && 보던.당일우선)) { 옵션_CBOE값[t] = v; 옵션_CBOE적용[t] = Date.now(); 옵션_월수표시(panelTickers.indexOf(t)); return; }
                         옵션_CBOE적용하기(t, v);
+                        옵션_월수표시(panelTickers.indexOf(t));
                     })
                     .catch(function (e) { 옵션_재시도[t] = Date.now() + 60000; console.warn('[옵션] CBOE 조회 실패', t, e); })   // 실패하면 1분 뒤 다시
                     .then(function () { 옵션_요청중[t] = false; });
@@ -5065,13 +5098,7 @@
             if (d.score !== undefined) {
                 var spEl = document.getElementById(p + 'sum-power');
                 if (spEl) {
-                    var s = d.score >= 9.0 ? '<b style="color:#ff3333;">콜 쏠림 심화</b>' :
-                        d.score >= 7.5 ? '<b style="color:#ff6666;">콜 매수 우위</b>' :
-                            d.score >= 5.6 ? '<b style="color:#ffaaaa;">상승 전환</b>' :
-                                d.score >= 4.5 ? '<b class="c-gold">수급 중립</b>' :
-                                    d.score >= 2.6 ? '<b style="color:#88bbff;">하락 전환</b>' :
-                                        d.score >= 1.1 ? '<b style="color:#4488ff;">풋 매수 우위</b>' :
-                                            '<b style="color:#aa44ff;">풋 쏠림 심화</b>';
+                    var s = 옵션_수급글(d.score);
                     spEl.innerHTML = '수급: ' + s + ' (' + d.score.toFixed(1) + '점)';
                 }
             }
@@ -5581,11 +5608,62 @@
             return d;
         }
 
+        // ── 월·수 만기 옵션 표 (패널 옵션 체인 아래) ──
+        //   Worker /options?mw=1 의 금요일 만기 + 7일 안의 가장 가까운 월·수 만기 중, 위 표에 이미 보이는 만기를 뺀 나머지
+        //   (오늘이 월·수 만기일이면 위 표 = 당일 만기, 아래 = 금요일·다른 요일 만기) · 표시 전용 (매매 판단은 위 표 기준)
+        var 옵션_접힘 = (function () { try { return JSON.parse(localStorage.getItem('sz_oi_fold') || '{}') || {}; } catch (e) { return {}; } })();
+        function 옵션_월수표시(idx) {
+            var el = document.getElementById('p' + idx + '-oi-extra'); if (!el) return;
+            var t = panelTickers[idx], v = 옵션_월수[t], d = panelDataStore[idx];
+            if (!t || !v || !v.strikes) { el.innerHTML = ''; return; }
+            var 위만기 = d && (d.만기 || d.expiry) || '';
+            var 본 = {}, 목록 = [{ expiry: v.expiry, strikes: v.strikes }].concat(v.extras || []).filter(function (c) {
+                if (!c || !c.expiry || !c.strikes || !c.strikes.length || c.expiry === 위만기 || 본[c.expiry]) return false;
+                if (c.당일 && !옵션_당일유효(c.expiry)) return false;   // 오늘 16:00 ET 지난 당일 만기
+                본[c.expiry] = 1; return true;
+            }).sort(function (a, b) { return a.expiry < b.expiry ? -1 : 1; });
+            if (!목록.length) { el.innerHTML = ''; return; }
+            var price = d && d.price > 0 ? d.price : v.price, 오늘 = etNowParts().date;
+            el.innerHTML = 목록.map(function (c) {
+                var ex = c.expiry.split('-'), wd = new Date(Date.UTC(+ex[0], +ex[1] - 1, +ex[2])).getUTCDay(), 요일 = ['일', '월', '화', '수', '목', '금', '토'][wd];
+                var dte = Math.round((Date.UTC(+ex[0], +ex[1] - 1, +ex[2]) - Date.UTC(+오늘.slice(0, 4), +오늘.slice(5, 7) - 1, +오늘.slice(8, 10))) / 86400000);
+                var 계산 = 옵션_계산(c.strikes, price); if (!계산) return '';
+                var 점 = 옵션_수급점수(계산.optionRows, t, idx, d && d.change);
+                var 접힘 = !!옵션_접힘[요일];
+                return '<div class="oi-xsec' + (접힘 ? ' fold' : '') + '" data-wd="' + 요일 + '">' +
+                    '<div class="oi-xhead"><span class="oi-xt">' + (접힘 ? '▶' : '▼') + ' ' + 요일 + '요일 만기</span>' +
+                    '<span class="oi-dte">' + ex[1] + '/' + ex[2] + ' (D-' + dte + ')' + '</span></div>' +
+                    '<div class="oi-summary"><span>수급: ' + (점 != null ? 옵션_수급글(점) + ' (' + 점.toFixed(1) + '점)' : '─') + '</span>' +
+                    '<span>MaxPain <b>' + 계산.maxPain + '</b> · 지지 ' + 계산.support1 + ' · 저항 ' + 계산.resistance1 + '</span></div>' +
+                    '<div class="oi-xbody"><div class="oi-grid-header"><div style="text-align:right;padding-right:2px;">콜</div><div>OI/V</div><div>등락</div><div>행사가</div><div>등락</div><div>OI/V</div><div style="text-align:left;padding-left:2px;">풋</div></div>' +
+                    옵션표_HTML(계산.optionRows, price) + '</div></div>';
+            }).join('');
+            Array.prototype.forEach.call(el.querySelectorAll('.oi-xhead'), function (h) {
+                h.onclick = function () {
+                    var sec = h.parentNode, k = sec.getAttribute('data-wd');
+                    옵션_접힘[k] = !옵션_접힘[k]; try { localStorage.setItem('sz_oi_fold', JSON.stringify(옵션_접힘)); } catch (e) { }
+                    옵션_월수표시(idx);
+                };
+            });
+        }
+
         function renderOiSafe(panelIdx, rows, price) {
             var p = 'p' + panelIdx + '-';
             var el = document.getElementById(p + 'oi-rows');
             if (!el) return;
-
+            hideInitialLoading();
+            el.innerHTML = 옵션표_HTML(rows, price);
+            옵션_월수예약(panelIdx);
+        }
+        // 가격이 바뀔 때마다 다시 그리지 않도록 최대 2초에 한 번
+        var 옵션_월수시각 = {}, 옵션_월수타이머 = {};
+        function 옵션_월수예약(idx) {
+            var 남 = 2000 - (Date.now() - (옵션_월수시각[idx] || 0));
+            if (남 <= 0) { 옵션_월수시각[idx] = Date.now(); try { 옵션_월수표시(idx); } catch (e) { } return; }
+            if (!옵션_월수타이머[idx]) 옵션_월수타이머[idx] = setTimeout(function () { 옵션_월수타이머[idx] = null; 옵션_월수시각[idx] = Date.now(); try { 옵션_월수표시(idx); } catch (e) { } }, 남);
+        }
+        function 옵션표_HTML(rows, price) {
+            if (!rows || !rows.length) return '';
             var isMobile = window.innerWidth <= 800;
 
             var atmItem = rows.reduce(function (pv, cv) {
@@ -5609,9 +5687,7 @@
             }));
             var fmt = function (v) { return v >= 1000 ? (v / 1000).toFixed(1) + 'K' : (v === 0 ? '-' : v); };
 
-            hideInitialLoading();
-
-            el.innerHTML = displayRows.map(function (r) {
+            return displayRows.map(function (r) {
                 var cw = Math.max(1, ((r.callOI + r.callVol) / mx) * 100);
                 var pw = Math.max(1, ((r.putOI + r.putVol) / mx) * 100);
                 var ia = r.strike === atm ? 'atm' : '';
