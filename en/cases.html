@@ -55,7 +55,7 @@
    "url": "https://aibaselab.com/en/cases",
    "inLanguage": "en",
    "hasPart": [
-    {"@type": "Article", "headline": "Three measuring instruments in one test program", "url": "https://aibaselab.com/en/cases#equipment-integration"},
+    {"@type": "Article", "headline": "Seamless integration of mixed industrial equipment and real-time monitoring", "url": "https://aibaselab.com/en/cases#equipment-integration"},
     {"@type": "Article", "headline": "Outgoing QA inspection: barcode, weight and camera checks before release", "url": "https://aibaselab.com/en/cases#qa-inspection"},
     {"@type": "Article", "headline": "Video production time cut from 9 hours to 2 hours 40 minutes", "url": "https://aibaselab.com/en/cases#video-automation"},
     {"@type": "Article", "headline": "The client's trading algorithm, automated exactly as written", "url": "https://aibaselab.com/en/cases#trading-automation"}
@@ -96,22 +96,26 @@
   <div class="container">
     <nav class="breadcrumb" aria-label="Breadcrumb"><ol><li><a href="/en/">Home</a></li><li aria-current="page">Cases</li></ol></nav>
     <span class="eyebrow eyebrow-dark">IMPLEMENTATION CASES</span>
-    <h1>Why you can trust us with your equipment</h1>
+    <!-- 🔹 수정 포인트 1: 제목 변경 (projects) -->
+    <h1>Why you can trust us with your projects</h1>
     <p class="lead">We are not just interpreters. These are systems in daily use at our clients in Korea —<br class="br-pc"> proof of the technical depth we bring when integrating and supporting your industrial equipment on site.</p>
   </div>
 </section>
 <section class="section">
   <div class="container">
+    <!-- 🔹 수정 포인트 2: Case 01 전면 재작성 (통신스펙/로컬버퍼링/다국어 지원 중심) -->
     <article class="case-block" id="equipment-integration">
       <p class="case-label">CASE 01 · EQUIPMENT INTEGRATION · MONITORING</p>
-      <h2>Three measuring instruments in one test program</h2>
-      <p class="case-stack">Audio equipment manufacturer · final test station · audio analyzer · DC power supply · barcode scanner · C# .NET · Excel · Telegram Bot API</p>
+      <h2>Seamless integration of mixed industrial equipment and real-time monitoring</h2>
+      <p class="case-stack">Manufacturer · mixed equipment integration · Wireless (Wi-Fi/BLE) · Modbus/PLC · SCPI/RS-232 · C# .NET · Local buffering · Telegram Bot API</p>
       <div class="case-cols">
-        <div><h3>Challenge</h3><ul><li>Operators switched between a separate program for each instrument on every unit.</li><li>Measurements were written on paper and re-typed into Excel after each shift.</li><li>Checking test progress required walking to the line.</li></ul></div>
-        <div><h3>Solution</h3><ul><li>RS-232, USB and LAN (SCPI) instruments controlled from one program.</li><li>Serial number, measurements and pass/fail logged to Excel automatically.</li><li>Live charts, data review, and Telegram alerts and remote control for authorized users.</li></ul></div>
-        <div><h3>Results</h3><ul><li>Paper records and re-typing eliminated</li><li>Test history found instantly by serial number</li><li>Status checked from the office or outside</li><li>Accumulated data used for defect trend analysis</li></ul></div>
+        <div><h3>Challenge</h3><ul><li>Production lines used a mix of equipment brands, requiring operators to switch between multiple separate programs.</li><li>Frequent network drops caused critical inspection data to be lost, forcing manual re-typing of paper logs.</li><li>Overseas staff struggled with Korean-only software interfaces, and remote monitoring was impossible.</li></ul></div>
+        <div><h3>Solution</h3><ul><li>Integrated diverse equipment via Wireless IoT (MQTT, BLE), Industrial Networks (Modbus, PLC), and legacy RS-232 into a single unified control program.</li><li>Implemented robust local buffering to safely store data during network failures, auto-syncing to the MES once restored.</li><li>Provided seamless multilingual UIs (EN/CN/KR) and a real-time web/Telegram dashboard for remote supervision.</li></ul></div>
+        <div><h3>Results</h3><ul><li>Paper records and manual re-typing were eliminated entirely.</li><li>Zero data loss guaranteed, regardless of factory network stability.</li><li>Line status, pass rates, and tact times are now visible in real time from anywhere in the world.</li><li>Foreign operators easily control equipment using native language UIs.</li></ul></div>
       </div>
     </article>
+
+    <!-- Case 02~04 유지 -->
     <article class="case-block" id="qa-inspection">
       <p class="case-label">CASE 02 · QA INSPECTION · VISION · MES</p>
       <h2>Outgoing QA inspection: barcode, weight and camera checks before release</h2>
