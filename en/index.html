@@ -9,6 +9,7 @@
 <link rel="canonical" href="https://aibaselab.com/en/">
 <link rel="alternate" hreflang="ko" href="https://aibaselab.com/">
 <link rel="alternate" hreflang="en" href="https://aibaselab.com/en/">
+<!-- 🔹 중국어 hreflang 추가 -->
 <link rel="alternate" hreflang="zh-CN" href="https://aibaselab.com/cn/">
 <link rel="alternate" hreflang="x-default" href="https://aibaselab.com/">
 <meta name="theme-color" content="#0b1121">
@@ -106,20 +107,15 @@
     <a href="/en/" class="logo" aria-label="AI BASE LAB home"><span class="logo-word"><em>AI</em> BASE LAB</span><span class="logo-sub">FIELD SERVICE & ENGINEERING</span></a>
     <nav aria-label="Main menu">
       <ul class="nav-menu" id="site-menu">
-        <!-- 문제 해결 1: 메인 페이지 내 이동 링크를 상대 경로(#)로 변경 -->
         <li><a href="#korea-partner">Korea Partner</a></li>
         <li><a href="/en/cases">Cases</a></li>
         <li><a href="/en/about">About</a></li>
-        <!-- 문제 해결 2: Contact 링크를 상대 경로(#)로 변경 -->
         <li class="nav-drawer-cta"><a href="#contact" class="btn btn-primary">Contact us</a></li>
       </ul>
     </nav>
-    <div class="lang-switch">
-  <a href="/" lang="ko" hreflang="ko">KO</a>
-  <a href="#" aria-current="true" lang="en">EN</a>
-  <a href="/cn/" lang="zh-CN" hreflang="zh-CN">CN</a>
-</div>
-      <!-- 문제 해결 3: Contact 링크 상대 경로 변경 -->
+    <div class="nav-cta">
+      <!-- 🔹 CN 버튼 추가 -->
+      <div class="lang-switch"><a href="/" lang="ko" hreflang="ko">KO</a><a href="#" aria-current="true" lang="en">EN</a><a href="/cn/" lang="zh-CN" hreflang="zh-CN">CN</a></div>
       <a href="#contact" class="btn btn-outline btn-sm">Contact</a>
       <button type="button" class="nav-toggle" aria-controls="site-menu" aria-expanded="false" aria-label="Open menu">
         <span class="icon-open"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span><span class="icon-close"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
@@ -136,7 +132,6 @@
       <h1 id="hero-title">Your Korea Field Service<br>&amp; Engineering Partner</h1>
       <p class="hero-lead">No need to fly across the globe. We act as your local branch in Korea,<br class="br-pc"> handling equipment setup, troubleshooting, and maintenance for your customers.<br class="br-pc"> Overcome time zones and language barriers with our hands-on engineering expertise.</p>
       <div class="btn-row">
-        <!-- 상대 경로 유지 -->
         <a href="#korea-partner" class="btn btn-primary">How we support you <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
         <a href="#contact" class="btn btn-outline">Contact us</a>
       </div>
@@ -331,7 +326,7 @@
   </div>
 </section>
 
-<!-- 9. Contact (원본 코드 완벽 유지) -->
+<!-- 9. Contact -->
 <section class="section section-dark" id="contact" aria-labelledby="contact-title">
   <div class="container contact-inner">
     <div class="contact-text">
