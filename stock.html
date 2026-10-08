@@ -885,12 +885,9 @@
         .al-ban .al-stop { font: inherit; font-size: 12.5px; font-weight: 800; margin-left: 8px; background: #f5c542; color: #1a1400; border: 0; border-radius: 6px; padding: 4px 10px; cursor: pointer; }
         .al-ban .al-cls { color: #c9b26a; font-weight: 400; margin-left: 6px; font-size: 12px; }
         .al-ban .al-mute { display: block; color: #fda4af; font-weight: 400; font-size: 11.5px; }
-        /* 좁은 패널(모바일 등): 🔔 를 종목 선택 옆으로 */
-        .px-bell-h { display: none; }
-        @container (max-width: 420px) {
-            .px-bell-h { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; padding: 0 6px; font-size: 14px; }
-            .px-v .px-bell { display: none; }
-        }
+        /* 🔔 는 종목 선택 옆 (시세 칸 오른쪽에 미니차트가 들어와 가격 줄을 짧게 유지) */
+        .px-bell-h { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; padding: 0 6px; font-size: 14px; }
+        .px-v .px-bell { display: none; }
         /* 모바일 알람 창: 화면 맨 위 전체 폭 · 창 안 스크롤 · 뒤 어둡게 */
         .al-dim { position: fixed; inset: 0; z-index: 9998; background: rgba(0, 0, 0, .55); }
         .al-pop.mob { left: 6px; right: 6px; top: 6px; width: auto; overflow-y: auto; overscroll-behavior: contain; padding: 14px 12px; font-size: 13px; box-sizing: border-box; }
@@ -1639,6 +1636,33 @@
         .wl-so button { font: inherit; font-size: 10.5px; background: transparent; border: 1px solid #262c3e; border-radius: 4px; color: #8b93a7; padding: 1px 6px; cursor: pointer; }
         .wl-so button b { color: #e3e7ef; }
         .wl-so label { display: flex; align-items: center; gap: 3px; cursor: pointer; margin-left: auto; }
+        /* 관심종목 칸 오른쪽 작은 라인차트 (오늘 프리~애프터 / 장외·주말 최근 24시간) */
+        .wl-sp { flex-shrink: 0; align-self: center; width: 52px; height: 24px; }
+        .wl-sp svg { display: block; width: 100%; height: 100%; }
+        .wl-editing .wl-sp { display: none; }
+        .wl-row .wl-c { margin-left: 8px; }
+        /* 지난 접속 때 저장해 둔 값 (새 값이 오기 전까지 흐리게) */
+        .wl-px.wl-stale .wl-v, .wl-px.wl-stale .wl-c { opacity: .45; }
+        /* 패널 시세 옆 미니 라인차트: 패널 폭 440px 이상 = 시세 왼쪽 52% · 차트 오른쪽 48% / 좁으면 시세 아래 */
+        .ph-split { width: 100%; }
+        .mini-box { display: flex; flex-direction: column; background: #0b0d16; border: 1px solid #1e2233; border-radius: 6px; padding: 3px 6px 2px; box-sizing: border-box; min-width: 0; }
+        .mini-hd { display: flex; justify-content: space-between; font-size: 10px; line-height: 13px; color: #7d8596; white-space: nowrap; }
+        .mini-hd b { font-weight: 700; } .mini-hd b.up { color: #ff6b6b; } .mini-hd b.dn { color: #4d8dff; }
+        .mini-sv { flex: 1; min-height: 0; position: relative; }
+        .mini-sv svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+        .mini-ft { display: flex; justify-content: space-between; font-size: 9.5px; line-height: 12px; color: #5d6578; font-variant-numeric: tabular-nums; }
+        .mini-empty { margin: auto; font-size: 10px; color: #4a5163; }
+        .ph-mini.mini-box { display: none; }
+        .ph-mini2 { margin: 6px 0 2px; height: 82px; }
+        @container (min-width: 440px) {
+            .ph-split { display: grid; grid-template-columns: 58% 42%; align-items: stretch; }   /* 440~640px: 시세 칸을 조금 넓게 (가격 한 줄 유지) */
+            .ph-split .price-container { min-width: 0; padding-right: 8px; box-sizing: border-box; }
+            /* 왼쪽 칸이 좁으면 값(가격·등락)이 다음 줄로 → 차트 칸을 덮지 않게 */
+            .ph-split .px-grid { max-width: 100%; grid-template-columns: max-content minmax(0, max-content); justify-content: center; }
+            .ph-mini.mini-box { display: flex; height: 82px; align-self: center; margin-right: 2px; }
+            .ph-mini2.mini-box { display: none; }
+        }
+        @container (min-width: 640px) { .ph-split { grid-template-columns: 52% 48%; } }
 
         .sidebar-ad {
             background: #0d0d1a;
@@ -1793,8 +1817,10 @@
             .sidebar-watchlist .watchlist-title { font-size: 14px; color: #e3e7ef; margin-bottom: 10px; }
             .wl-sort { margin: 0 0 10px; }
             .wl-sb button { padding: 7px 0; font-size: 12px; }
-            .wl-so { font-size: 12px; }
+            .wl-so { font-size: 12px; flex-wrap: wrap; row-gap: 6px; }
             .wl-so button { padding: 5px 9px; font-size: 12px; }
+            .wl-so .wl-edbtn { margin-left: auto; }
+            .wl-sp { width: 58px; }
             .wl-so input[type=checkbox] { width: 16px; height: 16px; }
             /* 카드 목록: 태블릿 2~3열 / 휴대폰 1열 */
             .ticker-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 6px; overflow: visible; max-height: none; flex: none; }
@@ -3859,7 +3885,7 @@
                 + '</div>'
                 + '<div class="al-ban" id="p' + i + '-alban"></div>'
                 + '<div class="fl-ban" id="p' + i + '-flban"></div>'
-                + '<div class="price-container"><div class="px-grid" id="p' + i + '-reg-block">'
+                + '<div class="ph-split"><div class="price-container"><div class="px-grid" id="p' + i + '-reg-block">'
                 // 1줄: 종가 (정규장 외 = 마지막 정규장 종가·전일 대비 / 정규장 = 전일 종가)
                 + '<span class="px-l" id="p' + i + '-l1">종가</span><span class="px-v">'
                 + '<span class="price-now" id="p' + i + '-c1px">─</span><span class="price-diff" id="p' + i + '-c1df"></span><span class="price-chg" id="p' + i + '-c1cg"></span>'
@@ -3874,7 +3900,11 @@
                 // 3줄: 거래량
                 + '<span class="px-l">거래량</span><span class="px-v"><span class="vol-num" id="p' + i + '-vol">─</span></span>'
                 + '</div></div>'
+                // 미니 라인차트: 넓은 패널 = 시세 오른쪽 / 좁은 패널(휴대폰) = 머리(고정 영역) 아래 → 고정 머리가 커지지 않게
+                + '<div class="ph-mini mini-box" id="p' + i + '-mini"></div>'
                 + '</div>'
+                + '</div>'
+                + '<div class="ph-mini2 mini-box" id="p' + i + '-mini2"></div>'
                 // 가격 바로 아래: 지지·저항·MaxPain·당일 변동 막대 (별도 섹션)
                 + '<div class="lv-box"><div class="timeline" id="p' + i + '-timeline"></div><div class="vp" id="p' + i + '-vp"></div><div class="lv-sum" id="p' + i + '-lvsum"></div></div>'
                 + '<div class="strategy-box">'
@@ -3947,6 +3977,7 @@
                     '<span class="wl-ed"><button type="button" class="wl-hd" title="끌어서 순서 바꾸기">≡</button></span>' +
                     '<div class="wl-main"><div class="wl-top"><span class="wl-pn">' + 단추 + '</span><b class="wl-t">' + w.ticker + '</b><i class="wl-rk"></i><span class="wl-n">' + w.name + '</span></div>' +
                     '<div class="wl-px" id="wl-px-' + w.ticker + '"><div class="wl-ln"><span class="wl-v">─</span></div></div></div>' +
+                    '<span class="wl-sp" id="wl-sp-' + w.ticker + '"></span>' +
                     '<span class="wl-ed wl-mvs"><button type="button" class="wl-mv" data-d="up" title="위로">▲</button><button type="button" class="wl-mv" data-d="dn" title="아래로">▼</button></span></div>';
             }).join('');
             refreshWatchlistBadges();
@@ -3989,7 +4020,7 @@
             var html = '<div class="wl-sb">' + 관심_정렬종류.map(function (x) { return '<button type="button" data-m="' + x[0] + '" class="' + (관심정렬.모드 === x[0] ? 'on' : '') + '" title="' + x[2] + ' (누를 때마다 지금 값으로 다시 정렬)">' + x[1] + '</button>'; }).join('') + '</div>' +
                 '<div class="wl-so">' + (정규 ? '' : '<button type="button" data-k="기준" title="정규장 외 정렬 기준 (누르면 전환)">기준: <b>' + (관심정렬.기준 === '종가' ? '종가 등락' : '시외 등락') + '</b> ⇄</button>') +
                 '<label title="패널 1·2·3 종목은 정렬과 관계없이 맨 위"><input type="checkbox" data-k="고정"' + (관심정렬.고정 ? ' checked' : '') + '> 패널 종목 위로</label>' +
-                (관심정렬.모드 === '기본' || 관심_편집 ? '<button type="button" data-k="편집" class="wl-edbtn' + (관심_편집 ? ' on' : '') + '" title="기본 순서를 직접 바꾸기 (≡ 끌기 · ▲▼)">' + (관심_편집 ? '✓ 완료' : '✎ 순서') + '</button>' : '') + '</div>';
+                '<button type="button" data-k="편집" class="wl-edbtn' + (관심_편집 ? ' on' : '') + '" title="기본 순서를 직접 바꾸기 (≡ 끌기 · ▲▼)' + (관심정렬.모드 !== '기본' && !관심_편집 ? ' · 누르면 기본 정렬로 바뀜' : '') + '">' + (관심_편집 ? '✓ 완료' : '✎ 순서') + '</button></div>';
             if (el._html !== html) { el.innerHTML = html; el._html = html; }
         }
         function 관심_정렬값(t) {
@@ -4025,7 +4056,13 @@
         }
         document.addEventListener('click', function (e) {
             var b = e.target.closest && e.target.closest('#wl-sort button'); if (!b) return;
-            if (b.getAttribute('data-k') === '편집') { 관심_편집설정(!관심_편집); return; }
+            if (b.getAttribute('data-k') === '편집') {
+                if (!관심_편집 && 관심정렬.모드 !== '기본') {   // 다른 정렬 중이면 기본 정렬로 바꾸고 편집 시작
+                    관심정렬.모드 = '기본';
+                    try { localStorage.setItem('sz_wl_sort', JSON.stringify(관심정렬)); } catch (e2) { }
+                }
+                관심_편집설정(!관심_편집); return;
+            }
             if (b.getAttribute('data-m')) { 관심정렬.모드 = b.getAttribute('data-m'); if (관심_편집) { 관심_편집 = false; 관심_순서저장(); var w0 = document.querySelector('.sidebar-watchlist'); if (w0) w0.classList.remove('wl-editing'); } }
             else if (b.getAttribute('data-k') === '기준') 관심정렬.기준 = 관심정렬.기준 === '종가' ? '시외' : '종가';
             try { localStorage.setItem('sz_wl_sort', JSON.stringify(관심정렬)); } catch (e2) { }
@@ -4231,50 +4268,98 @@
             var b = e.target.closest && e.target.closest('.wl-pb'); if (!b) return;
             e.stopPropagation();
             var i = Number(b.getAttribute('data-i')), t = b.getAttribute('data-t');
-            if (panelTickers[i] === t) { 패널_보이기설정(i, 패널_숨김(i)); return; }   // 켜진 번호 = 그 패널 숨기기/보이기
+            if (panelTickers[i] === t) {   // 켜진 번호 = 그 패널 숨기기/보이기
+                // 세로 배치: 패널이 목록 위에 있어 숨기면 페이지가 짧아짐 → 누른 칸이 화면의 같은 자리에 머물도록 스크롤 보정
+                var row = b.closest('.wl-row'), 전 = row && window.innerWidth <= 1200 ? row.getBoundingClientRect().top : null;
+                패널_보이기설정(i, 패널_숨김(i));
+                if (전 != null) {
+                    var 맞추기 = function () { var 후 = row.getBoundingClientRect().top; if (Math.abs(후 - 전) > 1) window.scrollBy(0, 후 - 전); };
+                    맞추기(); requestAnimationFrame(맞추기); setTimeout(맞추기, 150);   // 차트 등 늦게 바뀌는 높이까지 한 번 더
+                }
+                return;
+            }
             관심_패널지정(i, t);
             if (패널_숨김(i)) 패널_보이기설정(i, true);
             관심_패널로이동(i);
         });
 
         // ── 가격 ──
+        //   ① 지난 접속 때 값(sz_wl_q)을 바로 흐리게 표시 → 새 값이 오면 진하게
+        //   ② 시작하자마자 첫 조회 · 실패하면 3초 뒤 다시 · 이후 10초마다
+        //   ④ 오버나이트: 요청 종목에만 오버나이트 가격(fulldayPrice)이 적용되므로 처음부터 12개씩 나눠 요청
+        var 관심_간격 = 10000, 관심_재시도 = null;
+        (function () {
+            try {
+                var v = JSON.parse(localStorage.getItem('sz_wl_q') || 'null');
+                if (v && v.q && Date.now() - (v.at || 0) < 4 * 24 * 3600 * 1000)
+                    Object.keys(v.q).forEach(function (t) { var q = v.q[t]; if (q && q.price > 0) 관심Cache[t] = { price: q.price, changePct: q.changePct, regPrice: q.regPrice || 0, regPrevClose: q.regPrevClose || 0, at: q.at || v.at, stale: true }; });
+            } catch (e) { }
+        })();
+        var 관심_저장시각 = 0;
+        function 관심_저장() {
+            if (Date.now() - 관심_저장시각 < 30000) return;
+            관심_저장시각 = Date.now();
+            try {
+                var q = {}; Object.keys(관심Cache).forEach(function (t) { var c = 관심Cache[t]; if (c && !c.stale) q[t] = { price: c.price, changePct: c.changePct, regPrice: c.regPrice, regPrevClose: c.regPrevClose, at: c.at }; });
+                if (Object.keys(q).length) localStorage.setItem('sz_wl_q', JSON.stringify({ at: Date.now(), q: q }));
+            } catch (e) { }
+        }
         function 관심_조회() {
             if (관심_조회중 || !CLOSE_WORKER_URL || CLOSE_WORKER_URL.indexOf('YOUR-ACCOUNT') >= 0) return;
             if (document.visibilityState === 'hidden' || snapFor(WATCH_LIST[0] && WATCH_LIST[0].ticker)) return;   // 숨김 탭 · 주말·휴장일(스냅샷 사용) 은 조회 안 함
+            var 장 = marketPhase().type;
+            if (장 === 'WEEKEND' || 장 === 'HOLIDAY') return;                   // 주말·휴장일 = 스냅샷 (Worker 호출 안 함)
             관심_조회중 = true; 관심_조회시각 = Date.now();
+            clearTimeout(관심_재시도);
             var 기본 = CLOSE_WORKER_URL.replace(/\/+$/, '') + '/quote';
+            var 받은수 = 0;
             function 받기(j) {
                 var qs = (j && j.quotes) || {}, n = 0, now = Date.now();
                 Object.keys(qs).forEach(function (t) { var q = qs[t]; if (q && q.price > 0) { 관심Cache[t] = { price: q.price, changePct: q.changePct, regPrice: q.regPrice || 0, regPrevClose: q.regPrevClose || 0, at: now }; n++; } });
+                받은수 += n;
+                if (n) 관심_가격표시();      // 묶음마다 바로 표시
                 return n;
             }
-            fetch(기본, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
-                var n = 받기(j);
-                // 묶음 조회 실패(개별 조회로 대체)로 일부만 왔으면 12개씩 나눠 요청
-                var 빠진 = WATCH_LIST.map(function (w) { return w.ticker; }).filter(function (t) { return !관심Cache[t] || Date.now() - 관심Cache[t].at > 60000; });
-                if (n > 0 && 빠진.length === 0) return;
-                var 묶음 = []; for (var i = 0; i < 빠진.length; i += 12) 묶음.push(빠진.slice(i, i + 12));
+            function 나눠요청(목록) {
+                var 묶음 = []; for (var i = 0; i < 목록.length; i += 12) 묶음.push(목록.slice(i, i + 12));
                 return Promise.all(묶음.map(function (m) { return fetch(기본 + '?s=' + encodeURIComponent(m.join(',')), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(받기).catch(function () { }); }));
-            }).catch(function (e) { console.warn('[관심종목] 시세 조회 실패', e); })
-              .then(function () { 관심_조회중 = false; 관심_가격표시(); });
+            }
+            var 전체 = WATCH_LIST.map(function (w) { return w.ticker; });
+            var 일 = 장 === 'NIGHT'
+                ? 나눠요청(전체)
+                : fetch(기본, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+                    var n = 받기(j);
+                    // 묶음 조회 실패(개별 조회로 대체)로 일부만 왔으면 12개씩 나눠 요청
+                    var 빠진 = 전체.filter(function (t) { return !관심Cache[t] || 관심Cache[t].stale || Date.now() - 관심Cache[t].at > 60000; });
+                    if (n > 0 && 빠진.length === 0) return;
+                    return 나눠요청(빠진);
+                });
+            일.catch(function (e) { console.warn('[관심종목] 시세 조회 실패', e); })
+              .then(function () {
+                  관심_조회중 = false; 관심_가격표시();
+                  if (받은수 > 0) 관심_저장();
+                  else 관심_재시도 = setTimeout(관심_조회, 3000);   // 실패 → 3초 뒤 다시
+              });
         }
-        setInterval(function () { if (Date.now() - 관심_조회시각 >= 15000) 관심_조회(); 관심_가격표시(); 관심_정렬단추(); }, 2000);
-        document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && Date.now() - 관심_조회시각 >= 15000) 관심_조회(); });
+        setInterval(function () { if (Date.now() - 관심_조회시각 >= 관심_간격) 관심_조회(); 관심_가격표시(); 관심_정렬단추(); }, 2000);
+        document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && Date.now() - 관심_조회시각 >= 관심_간격) 관심_조회(); });
 
         function 관심_값(t) {
             var 장 = marketPhase(), 정규 = 장.type === 'REG', w = 관심Cache[t], sn = snapFor(t);
+            if (w && w.stale && sn) w = null;   // 지난 접속 값보다 장 마감 스냅샷 우선
             var pk = pickQuote(t), 실시간 = pk && pk.q && pk.q.price > 0 && pk.q.recvAt && Date.now() - pk.q.recvAt <= 120000 ? pk.q : null;
+            var 흐림 = !실시간 && !!(w && w.stale);
             var 현재 = 실시간 ? 실시간.price : w ? w.price : sn ? sn.price : 0;
             if (!(현재 > 0)) return null;
             var rc = getRegClose(t);
             if (정규) {
                 var 기준 = rc && rc.regClose > 0 ? rc.regClose : w && w.regPrevClose > 0 ? w.regPrevClose : 0;
                 var 등락 = 기준 > 0 ? (현재 - 기준) / 기준 * 100 : (실시간 && 실시간.changeRate != null ? Number(String(실시간.changeRate).replace('%', '')) : w ? w.changePct : null);
-                return { 정규: true, 현재: 현재, 등락: 등락 };
+                return { 정규: true, 현재: 현재, 등락: 등락, 흐림: 흐림 };
             }
             var 종가 = rc && rc.regClose > 0 ? rc.regClose : w && w.regPrice > 0 ? w.regPrice : sn && sn.regPrice > 0 ? sn.regPrice : 0;
             var 전일 = rc && rc.prevClose > 0 && rc.regClose === 종가 ? rc.prevClose : w && w.regPrevClose > 0 && Math.abs(w.regPrice - 종가) < 0.005 ? w.regPrevClose : sn && sn.regPrevClose > 0 && Math.abs(sn.regPrice - 종가) < 0.005 ? sn.regPrevClose : 0;
-            return { 정규: false, 종가: 종가, 종가등락: 종가 > 0 && 전일 > 0 ? (종가 - 전일) / 전일 * 100 : null, 현재: 현재, 등락: 종가 > 0 ? (현재 - 종가) / 종가 * 100 : null, 장: 장 };
+            return { 정규: false, 종가: 종가, 종가등락: 종가 > 0 && 전일 > 0 ? (종가 - 전일) / 전일 * 100 : null, 현재: 현재, 등락: 종가 > 0 ? (현재 - 종가) / 종가 * 100 : null, 장: 장, 흐림: 흐림 };
         }
         function 관심_가격표시() {
             function 칸(v, c, 라벨) {
@@ -4287,8 +4372,163 @@
                 var x = null; try { x = 관심_값(w.ticker); } catch (e) { }
                 var html = !x ? 칸(0, null, '') : x.정규 ? 칸(x.현재, x.등락, '') : 칸(x.종가, x.종가등락, '종가') + 칸(x.현재, x.등락, '시외');
                 if (el._html !== html) { el.innerHTML = html; el._html = html; }
+                var 흐 = !!(x && x.흐림); if (el._stale !== 흐) { el.classList.toggle('wl-stale', 흐); el._stale = 흐; el.title = 흐 ? '지난 접속 때 값 · 새 시세 받는 중' : ''; }
             });
         }
+
+
+        // ════════════════════════════════════════════════════════
+        // ★ 미니 라인차트 (관심종목 칸 오른쪽 · 패널 시세 옆)
+        //   데이터: Worker /lines (평일 04:00~20:00 ET = 오늘 프리·정규·애프터 / 그 밖 = 최근 24시간)
+        //   관심종목 5분봉(2분마다, 보이는 칸만) · 패널 1분봉(1분마다) · 12종목씩 묶어 요청
+        //   점선 = 기준가(오늘: 전일 종가 / 24시간: 마지막 정규장 종가) · 기준 위 빨강 / 아래 파랑
+        //   흐린 띠 = 프리·애프터 · ● = 지금 가격(실시간 값으로 끝점을 이어 붙임) · 거래 없는 구간은 건너뜀
+        // ════════════════════════════════════════════════════════
+        var 미니선 = {}, 미니_요청중 = {}, 미니_실패 = {};
+        function 미니_보관(키) { var x = 미니선[키]; if (!x) return 0; return x.v && x.v.mode === '24h' ? 300000 : 키.slice(-2) === '1m' ? 60000 : 120000; }
+        function 미니_패널칸(i) {
+            if (패널_숨김(i)) return null;
+            var a = document.getElementById('p' + i + '-mini'), b = document.getElementById('p' + i + '-mini2');
+            return a && a.offsetParent !== null ? a : b && b.offsetParent !== null ? b : null;
+        }
+        function 미니_확인() {
+            if (!CLOSE_WORKER_URL || CLOSE_WORKER_URL.indexOf('YOUR-ACCOUNT') >= 0 || document.visibilityState === 'hidden') return;
+            var 지금 = Date.now(), 필요 = { '5m': [], '1m': [] };
+            function 넣기(t, iv) {
+                var 키 = t + '|' + iv, x = 미니선[키];
+                if (미니_요청중[키] || (미니_실패[키] && 지금 - 미니_실패[키] < 30000)) return;
+                if (x && 지금 - x.at < 미니_보관(키)) return;
+                if (필요[iv].indexOf(t) < 0) 필요[iv].push(t);
+            }
+            [0, 1, 2].forEach(function (i) { if (panelTickers[i] && 미니_패널칸(i)) 넣기(panelTickers[i], '1m'); });
+            WATCH_LIST.forEach(function (w) { var el = document.getElementById('wl-sp-' + w.ticker); if (el && el.offsetParent !== null) 넣기(w.ticker, '5m'); });
+            Object.keys(필요).forEach(function (iv) {
+                var 목록 = 필요[iv];
+                for (var k = 0; k < 목록.length; k += 12) (function (m) {
+                    m.forEach(function (t) { 미니_요청중[t + '|' + iv] = true; });
+                    fetch(CLOSE_WORKER_URL.replace(/\/+$/, '') + '/lines?i=' + iv + '&s=' + encodeURIComponent(m.join(',')), { cache: 'no-store' })
+                        .then(function (r) { return r.json(); })
+                        .then(function (j) {
+                            var ls = (j && j.lines) || {};
+                            m.forEach(function (t) {
+                                var 키 = t + '|' + iv, v = ls[t];
+                                if (v && v.t && v.t.length && v.c && v.c.length === v.t.length) { 미니선[키] = { at: Date.now(), v: v }; delete 미니_실패[키]; }
+                                else 미니_실패[키] = Date.now();
+                            });
+                        })
+                        .catch(function () { m.forEach(function (t) { 미니_실패[t + '|' + iv] = Date.now(); }); })
+                        .then(function () { m.forEach(function (t) { delete 미니_요청중[t + '|' + iv]; }); 미니_모두그리기(true); });
+                })(목록.slice(k, k + 12));
+            });
+        }
+        // 그릴 점: 받은 봉 + 지금 가격(끝점)
+        function 미니_점(t, iv) {
+            var x = 미니선[t + '|' + iv]; if (!x) return null;
+            var v = x.v, ts = v.t.slice(), cs = v.c.slice();
+            var 장 = marketPhase().type, 실시간가 = 0;
+            var 이어붙임 = v.mode === 'today' ? (장 === 'REG' || 장 === 'PRE' || 장 === 'POST') && v.day === etNowParts().date : 장 === 'NIGHT';
+            if (이어붙임) { var q = null; try { q = 관심_값(t); } catch (e) { } if (q && q.현재 > 0 && !q.흐림) 실시간가 = q.현재; }
+            if (실시간가 > 0 && Math.abs(실시간가 - cs[cs.length - 1]) / cs[cs.length - 1] < 0.3) {
+                var 지금 = Math.floor(Date.now() / 1000), 봉 = iv === '1m' ? 60 : 300;
+                if (지금 - ts[ts.length - 1] < 봉) cs[cs.length - 1] = 실시간가;   // 진행 중인 봉 = 지금 가격
+                else { ts.push(지금); cs.push(실시간가); }
+            }
+            return { t: ts, c: cs, base: v.base > 0 ? v.base : cs[0], reg: v.reg || [], mode: v.mode, day: v.day, live: 실시간가 > 0 };
+        }
+        function 미니_svg(d, W, H, uid, 굵기) {
+            var n0 = d.c.length; if (n0 < 2) return '';
+            // 점이 폭보다 많으면 줄임 (마지막 점은 항상 포함)
+            var 간격 = Math.max(1, Math.ceil(n0 / Math.max(20, W))), ts = [], cs = [];
+            for (var i = 0; i < n0; i += 간격) { ts.push(d.t[i]); cs.push(d.c[i]); }
+            if (ts[ts.length - 1] !== d.t[n0 - 1]) { ts.push(d.t[n0 - 1]); cs.push(d.c[n0 - 1]); }
+            var n = cs.length, 기준 = d.base;
+            var lo = Math.min(기준, Math.min.apply(null, cs)), hi = Math.max(기준, Math.max.apply(null, cs));
+            var 최소 = 기준 * 0.002; if (hi - lo < 최소) { var m = (hi + lo) / 2; lo = m - 최소 / 2; hi = m + 최소 / 2; }
+            var 끝여백 = 굵기 > 1.4 ? 4 : 2.5;
+            function X(i) { return 1 + i * (W - 1 - 끝여백) / (n - 1); }
+            function Y(v) { return 2 + (hi - v) / (hi - lo) * (H - 4); }
+            var 기준y = Y(기준).toFixed(1);
+            // 정규장 밖(프리·애프터) 띠
+            function 정규(sec) { for (var k = 0; k < d.reg.length; k++) if (sec >= d.reg[k][0] && sec < d.reg[k][1]) return true; return false; }
+            var 띠 = '', 시작 = -1;
+            if (d.reg.length) for (var j = 0; j <= n; j++) {
+                var 밖 = j < n && !정규(ts[j]);
+                if (밖 && 시작 < 0) 시작 = j;
+                if (!밖 && 시작 >= 0) {
+                    var x1 = j === 0 ? 0 : 시작 === 0 ? 0 : (X(시작 - 1) + X(시작)) / 2, x2 = j >= n ? W : (X(j - 1) + X(j)) / 2;
+                    띠 += '<rect x="' + x1.toFixed(1) + '" y="0" width="' + Math.max(0, x2 - x1).toFixed(1) + '" height="' + H + '" fill="#8b93a7" opacity=".09"></rect>';
+                    시작 = -1;
+                }
+            }
+            var 끊김 = '';
+            for (var g = 1; g < n; g++) if (ts[g] - ts[g - 1] > 45 * 60) { var gx = ((X(g - 1) + X(g)) / 2).toFixed(1); 끊김 += '<line x1="' + gx + '" x2="' + gx + '" y1="0" y2="' + H + '" stroke="#4a5163" stroke-width="1" stroke-dasharray="1.5 2"></line>'; }
+            var 선점 = cs.map(function (v, i) { return X(i).toFixed(1) + ',' + Y(v).toFixed(1); }).join(' ');
+            var 면 = X(0).toFixed(1) + ',' + 기준y + ' ' + 선점 + ' ' + X(n - 1).toFixed(1) + ',' + 기준y;
+            var 빨 = '#ff5d5d', 파 = '#4d8dff', 끝x = X(n - 1).toFixed(1), 끝y = Y(cs[n - 1]).toFixed(1), 끝색 = cs[n - 1] >= 기준 ? 빨 : 파;
+            return '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">' +
+                '<defs><clipPath id="mu' + uid + '"><rect x="0" y="0" width="' + W + '" height="' + 기준y + '"></rect></clipPath>' +
+                '<clipPath id="md' + uid + '"><rect x="0" y="' + 기준y + '" width="' + W + '" height="' + H + '"></rect></clipPath></defs>' + 띠 +
+                '<polygon points="' + 면 + '" fill="' + 빨 + '" opacity=".14" clip-path="url(#mu' + uid + ')"></polygon>' +
+                '<polygon points="' + 면 + '" fill="' + 파 + '" opacity=".14" clip-path="url(#md' + uid + ')"></polygon>' + 끊김 +
+                '<line x1="0" x2="' + W + '" y1="' + 기준y + '" y2="' + 기준y + '" stroke="#69708a" stroke-width="1" stroke-dasharray="2 2"></line>' +
+                '<polyline points="' + 선점 + '" fill="none" stroke="' + 빨 + '" stroke-width="' + 굵기 + '" stroke-linejoin="round" clip-path="url(#mu' + uid + ')"></polyline>' +
+                '<polyline points="' + 선점 + '" fill="none" stroke="' + 파 + '" stroke-width="' + 굵기 + '" stroke-linejoin="round" clip-path="url(#md' + uid + ')"></polyline>' +
+                (d.live ? '<circle cx="' + 끝x + '" cy="' + 끝y + '" r="' + (굵기 > 1.4 ? 4.5 : 3.2) + '" fill="' + 끝색 + '" opacity=".25"></circle>' : '') +
+                '<circle cx="' + 끝x + '" cy="' + 끝y + '" r="' + (굵기 > 1.4 ? 2.6 : 1.8) + '" fill="' + 끝색 + '"></circle></svg>';
+        }
+        function 미니_제목(d, iv) {
+            if (d.mode === '24h') return '최근 24시간';
+            var 오늘 = d.day === etNowParts().date;
+            return (오늘 ? '오늘' : (+d.day.slice(5, 7)) + '/' + (+d.day.slice(8, 10))) + ' ' + (iv === '1m' ? '1분' : '5분');
+        }
+        function 미니_패널그리기(i, 강제) {
+            var 칸 = 미니_패널칸(i); if (!칸) return;
+            if (!칸.firstChild) 칸.innerHTML = '<div class="mini-hd"><span></span><b></b></div><div class="mini-sv"></div><div class="mini-ft"><span></span><span></span><span></span></div>';
+            var t = panelTickers[i], d = 미니_점(t, '1m'), sv = 칸.children[1], W = sv.clientWidth, H = sv.clientHeight;
+            if (!(W > 10 && H > 10)) return;
+            var 서명 = t + '|' + W + 'x' + H + '|' + (d ? d.t.length + ':' + d.c[d.c.length - 1] + ':' + d.t[d.t.length - 1] + ':' + d.mode : '-');
+            if (!강제 && 칸._서명 === 서명) return;
+            칸._서명 = 서명;
+            var hd = 칸.children[0], ft = 칸.children[2];
+            if (!d || d.c.length < 2) {
+                hd.children[0].textContent = t || ''; hd.children[1].textContent = ''; hd.children[1].className = '';
+                sv.innerHTML = '<div class="mini-empty" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">' + (미니_요청중[t + '|1m'] || !미니선[t + '|1m'] ? '차트 불러오는 중…' : '차트 없음') + '</div>';
+                ft.children[0].textContent = ft.children[1].textContent = ft.children[2].textContent = '';
+                return;
+            }
+            var 끝 = d.c[d.c.length - 1], pct = d.base > 0 ? (끝 - d.base) / d.base * 100 : 0;
+            hd.children[0].textContent = 미니_제목(d, '1m');
+            hd.children[1].textContent = (pct > 0 ? '+' : '') + pct.toFixed(2) + '%';
+            hd.children[1].className = pct > 0 ? 'up' : pct < 0 ? 'dn' : '';
+            sv.innerHTML = 미니_svg(d, W, H, 'p' + i, 1.6);
+            var n = d.t.length;
+            ft.children[0].textContent = 시황_ET날짜(d.t[0]).시각;
+            ft.children[1].textContent = 시황_ET날짜(d.t[Math.floor((n - 1) / 2)]).시각;
+            ft.children[2].textContent = d.live ? '지금' : 시황_ET날짜(d.t[n - 1]).시각;
+            칸.title = 미니_제목(d, '1m') + ' · 점선 = ' + (d.mode === '24h' ? '마지막 정규장 종가 ' : '전일 종가 ') + d.base.toFixed(2) + ' · 흐린 띠 = 프리·애프터 · 시각은 뉴욕(ET)';
+        }
+        function 미니_관심그리기(강제) {
+            WATCH_LIST.forEach(function (w) {
+                var el = document.getElementById('wl-sp-' + w.ticker); if (!el || el.offsetParent === null) return;
+                var d = 미니_점(w.ticker, '5m'), W = el.clientWidth || 52, H = el.clientHeight || 24;
+                var 서명 = W + 'x' + H + '|' + (d ? d.t.length + ':' + d.c[d.c.length - 1] + ':' + d.t[d.t.length - 1] + ':' + d.live : '-');
+                if (!강제 && el._서명 === 서명) return;
+                el._서명 = 서명;
+                el.innerHTML = d ? 미니_svg(d, W, H, 'w' + w.ticker.replace(/[^A-Za-z0-9]/g, ''), 1.2) : '';
+                el.title = d ? 미니_제목(d, '5m') + ' · 점선 = ' + (d.mode === '24h' ? '마지막 정규장 종가 ' : '전일 종가 ') + d.base.toFixed(2) : '';
+            });
+        }
+        var 미니_그린시각 = 0;
+        function 미니_모두그리기(강제) {
+            if (document.visibilityState === 'hidden') return;
+            미니_그린시각 = Date.now();
+            [0, 1, 2].forEach(function (i) { try { 미니_패널그리기(i, 강제); } catch (e) { console.warn('[미니차트]', e); } });
+            try { 미니_관심그리기(강제); } catch (e) { console.warn('[미니차트]', e); }
+        }
+        setInterval(function () { try { 미니_확인(); } catch (e) { } }, 5000);
+        setInterval(function () { 미니_모두그리기(false); }, 2500);
+        window.addEventListener('resize', function () { clearTimeout(미니_모두그리기._t); 미니_모두그리기._t = setTimeout(function () { 미니_모두그리기(true); 미니_확인(); }, 300); });
+        document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') { 미니_확인(); 미니_모두그리기(true); } });
 
         function onTickerSelectChange(panelIdx, newTicker) {
             if (panelTickers.indexOf(newTicker) >= 0 && panelTickers.indexOf(newTicker) !== panelIdx) {
@@ -7827,6 +8067,8 @@
             try { 패널_적용(); } catch (e) { console.warn('[패널]', e); }
             try { 알림기록_오늘(); 알림기록_배지(); 화면_적용(); 이동_그리기(); } catch (e) { }
             try { 통계_시작(); } catch (e) { }
+            try { 관심_조회(); } catch (e) { }                       // 관심종목 시세: 시작하자마자 첫 조회
+            setTimeout(function () { try { 미니_확인(); 미니_모두그리기(true); } catch (e) { } }, 300);   // 미니 라인차트
             try {
                 firebase.database().ref('system/closeUpdate').on('value', function (snap) {
                     closeStatus = snap.val();
