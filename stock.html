@@ -1624,7 +1624,14 @@
         .wl-more { display: none; }
         .wl-rk { font-style: normal; font-size: 9.5px; font-weight: 700; }
         .wl-rk:empty { display: none; }
-        .wl-top .wl-rk { order: 3; margin-left: auto; flex-shrink: 0; color: #8b93a7; background: #1a1d2b; border-radius: 3px; padding: 0 4px; line-height: 14px; }
+        .wl-top .wl-rk { order: 3; margin-left: auto; flex-shrink: 0; color: #8b93a7; background: #1a1d2b; border-radius: 3px; padding: 0 4px; line-height: 14px; display: inline-flex; gap: 4px; align-items: baseline; white-space: nowrap; }
+        .wl-rk .rk-d { font-weight: 800; } .wl-rk .rk-d.up { color: #ff6b6b; } .wl-rk .rk-d.dn { color: #4d8dff; } .wl-rk .rk-d.new { color: #f5c542; }
+        .wl-rk .rk-v { font-style: normal; font-weight: 700; color: #8b93a7; } .wl-rk .rk-v:empty { display: none; } .wl-rk .rk-v.up { color: #ff6b6b; } .wl-rk .rk-v.dn { color: #4d8dff; }
+        /* 급등락 강조: 패널 테두리와 겹치지 않게 바깥 빛 + 왼쪽 막대 (다음 정렬까지) · 처음 10초 깜빡임 */
+        .wl-row.wl-hot.up { box-shadow: 0 0 0 2px rgba(255, 93, 93, .9), 0 0 12px rgba(255, 93, 93, .45), inset 4px 0 0 #ff5d5d; }
+        .wl-row.wl-hot.dn { box-shadow: 0 0 0 2px rgba(77, 141, 255, .9), 0 0 12px rgba(77, 141, 255, .45), inset 4px 0 0 #4d8dff; }
+        .wl-row.wl-hot-blink { animation: wlHot .5s ease-in-out 20 alternate; }
+        @keyframes wlHot { from { filter: brightness(1); } to { filter: brightness(1.45); box-shadow: none; } }
         .wl-sort { flex-shrink: 0; margin: -2px 0 8px; display: flex; flex-direction: column; gap: 5px; }
         .wl-sb { display: flex; gap: 3px; }
         .wl-sb button { flex: 1; font: inherit; font-size: 10.5px; font-weight: 700; padding: 3px 0; border-radius: 4px; cursor: pointer; background: #141826; color: #8b93a7; border: 1px solid #262c3e; white-space: nowrap; }
@@ -4051,25 +4058,61 @@
 
         // ── 정렬: 단추를 누를 때만 다시 정렬 (가격은 계속 갱신, 순서는 그대로 → 목록이 출렁이지 않음) ──
         //   정규장 외: 기준 = 시외(종가 대비) 또는 종가(전일 대비)
-        var 관심정렬 = { 모드: '기본', 기준: '시외', 고정: false };
+        var 관심정렬 = { 모드: '기본', 기준: '시외', 고정: false, 변동기준: '1분', 자동: true };
         (function () { try { var v = JSON.parse(localStorage.getItem('sz_wl_sort') || 'null'); if (v && v.모드) 관심정렬 = Object.assign(관심정렬, v); } catch (e) { } })();
-        var 관심_정렬종류 = [['기본', '기본', '등록 순서'], ['상승', '▲상승', '등락률 높은 순'], ['하락', '▼하락', '등락률 낮은 순'], ['변동', '⇅변동', '오르든 내리든 많이 움직인 순'], ['가나', '가나', '티커 알파벳 순']];
+        var 관심_정렬종류 = [['기본', '기본', '등록 순서'], ['상승', '▲상승', '등락률 높은 순'], ['하락', '▼하락', '등락률 낮은 순'], ['변동', '⇅변동', '오르든 내리든 많이 움직인 순 · 다시 누르면 기준 바꿈 (1분 → 5분 → 하루)'], ['가나', '가나', '티커 알파벳 순']];
         function 관심_정렬단추() {
             var el = document.getElementById('wl-sort'); if (!el) return;
             var 정규 = marketPhase().type === 'REG';
-            var html = '<div class="wl-sb">' + 관심_정렬종류.map(function (x) { return '<button type="button" data-m="' + x[0] + '" class="' + (관심정렬.모드 === x[0] ? 'on' : '') + '" title="' + x[2] + ' (누를 때마다 지금 값으로 다시 정렬)">' + x[1] + '</button>'; }).join('') + '</div>' +
+            var html = '<div class="wl-sb">' + 관심_정렬종류.map(function (x) {
+                    var 이름 = x[0] === '변동' ? '⇅' + 관심정렬.변동기준 : x[1];
+                    return '<button type="button" data-m="' + x[0] + '" class="' + (관심정렬.모드 === x[0] ? 'on' : '') + '" title="' + x[2] + (x[0] === '변동' ? ' · 지금: ' + 관심정렬.변동기준 : '') + '">' + 이름 + '</button>';
+                }).join('') + '</div>' +
                 '<div class="wl-so">' + (정규 ? '' : '<button type="button" data-k="기준" title="정규장 외 정렬 기준 (누르면 전환)">기준: <b>' + (관심정렬.기준 === '종가' ? '종가 등락' : '시외 등락') + '</b> ⇄</button>') +
+                '<label title="상승·하락·변동 정렬일 때 1분마다 지금 값으로 다시 정렬 (목록 위에 마우스가 있거나 스크롤 중이면 잠시 미룸)"><input type="checkbox" data-k="자동"' + (관심정렬.자동 ? ' checked' : '') + '> 자동 1분</label>' +
                 '<label title="패널 1·2·3 종목은 정렬과 관계없이 맨 위"><input type="checkbox" data-k="고정"' + (관심정렬.고정 ? ' checked' : '') + '> 패널 종목 위로</label>' +
                 '<button type="button" data-k="편집" class="wl-edbtn' + (관심_편집 ? ' on' : '') + '" title="기본 순서를 직접 바꾸기 (≡ 끌기 · ▲▼)' + (관심정렬.모드 !== '기본' && !관심_편집 ? ' · 누르면 기본 정렬로 바뀜' : '') + '">' + (관심_편집 ? '✓ 완료' : '✎ 순서') + '</button></div>';
             if (el._html !== html) { el.innerHTML = html; el._html = html; }
         }
+        // ── 최근 N분 변동: 관심종목 가격을 2초마다 이 브라우저에 기록 (최근 6분) ──
+        var 관심_기록 = {};
+        function 관심_기록추가() {
+            var 지금 = Date.now();
+            WATCH_LIST.forEach(function (w) {
+                var x = null; try { x = 관심_값(w.ticker); } catch (e) { }
+                if (!x || !(x.현재 > 0) || x.흐림) return;
+                var a = 관심_기록[w.ticker] || (관심_기록[w.ticker] = []);
+                a.push([지금, x.현재]);
+                while (a.length && 지금 - a[0][0] > 390000) a.shift();
+            });
+        }
+        // 지금 가격 vs N분 전 가격 (%) · 기록이 부족하면(열고 N분 안 · 오래 끊김) null
+        function 관심_분변동(t, 분) {
+            var a = 관심_기록[t]; if (!a || a.length < 2) return null;
+            var 지금 = Date.now(), 목표 = 지금 - 분 * 60000, 기준 = null;
+            for (var i = a.length - 1; i >= 0; i--) if (a[i][0] <= 목표) { 기준 = a[i]; break; }
+            var 끝 = a[a.length - 1];
+            if (!기준 || 목표 - 기준[0] > 30000 || 지금 - 끝[0] > 30000) return null;
+            return (끝[1] - 기준[1]) / 기준[1] * 100;
+        }
+        function 관심_변동분() { return 관심정렬.변동기준 === '5분' ? 5 : 관심정렬.변동기준 === '하루' ? 0 : 1; }
+        // 급등락 기준(1분): 종목 묶음별 (지수 ETF 0.15 · 대형주 0.30 · 고변동 0.50 · 초고변동 0.70) · 5분은 2배
+        function 관심_급변기준(t, 분) {
+            var 묶 = '대형주'; try { 묶 = 방향기준_가져오기(t).묶음; } catch (e) { }
+            var b = { '지수 ETF': 0.15, '대형주': 0.30, '고변동': 0.50, '초고변동': 0.70 }[묶] || 0.30;
+            return 분 === 5 ? b * 2 : b;
+        }
         function 관심_정렬값(t) {
+            if (관심정렬.모드 === '변동' && 관심_변동분() > 0) return 관심_분변동(t, 관심_변동분());
             var x = null; try { x = 관심_값(t); } catch (e) { }
             if (!x) return null;
             if (x.정규) return x.등락;
             return 관심정렬.기준 === '종가' ? x.종가등락 : x.등락;
         }
-        function 관심_정렬() {
+        // 정렬 · 자동(1분) 정렬이면 스크롤 위치 유지 + 칸이 새 자리로 부드럽게 이동
+        //   순위 변화(▲3·▼2·NEW)는 다음 정렬까지 유지 · 급등락(순위 3계단↑ 또는 1분 변동이 기준 이상) 최대 3개 강조
+        var 관심_이전 = null, 관심_정렬시각 = 0, 관심_강조끝 = null;
+        function 관심_정렬(자동) {
             관심_정렬단추();
             var list = document.getElementById('ticker-list'); if (!list) return;
             var 모드 = 관심정렬.모드, 원순서 = WATCH_LIST.map(function (w) { return w.ticker; });
@@ -4087,13 +4130,80 @@
                 var d = 모드 === '상승' ? vb - va : 모드 === '하락' ? va - vb : Math.abs(vb) - Math.abs(va);
                 return d || 기본순(a) - 기본순(b);
             });
+            var 순위정렬 = 모드 === '상승' || 모드 === '하락' || 모드 === '변동';
+            // 부드러운 이동: 옮기기 전 위치 기억
+            var 전위치 = {};
+            if (자동) 목록.forEach(function (t) { var row = document.getElementById('wl-' + t); if (row && row.offsetParent !== null) 전위치[t] = row.getBoundingClientRect().top; });
+            var 스크롤 = list.scrollTop;
+            // 순위 변화 (같은 정렬 기준끼리 비교)
+            var 키 = 모드 + '|' + 관심정렬.변동기준 + '|' + 관심정렬.기준 + '|' + 관심정렬.고정;
+            var 새순위 = {}; 목록.forEach(function (t, i) { 새순위[t] = i + 1; });
+            var 변화 = {};
+            if (순위정렬 && 관심_이전 && 관심_이전.키 === 키) 목록.forEach(function (t) { var p = 관심_이전.순위[t]; 변화[t] = p == null || 값[t] == null ? (값[t] == null ? 0 : 'NEW') : p - 새순위[t]; });
+            관심_이전 = 순위정렬 ? { 키: 키, 순위: 새순위 } : null;
+            관심_정렬시각 = Date.now();
+            // 급등락 강조 (최대 3개)
+            var 강조 = {};
+            if (순위정렬) {
+                var 분 = 관심_변동분() === 5 ? 5 : 1;
+                목록.map(function (t) {
+                    var dv = 관심_분변동(t, 분), 기 = 관심_급변기준(t, 분), 순 = typeof 변화[t] === 'number' ? 변화[t] : 0;
+                    var 점 = Math.max(Math.abs(순) >= 3 ? Math.abs(순) / 3 : 0, dv != null && Math.abs(dv) >= 기 ? Math.abs(dv) / 기 : 0);
+                    return { t: t, 점: 점, 방: dv != null && dv !== 0 ? (dv > 0 ? 'up' : 'dn') : (순 > 0 ? 'up' : 'dn') };
+                }).filter(function (o) { return o.점 >= 1; }).sort(function (a, b) { return b.점 - a.점; }).slice(0, 3).forEach(function (o) { 강조[o.t] = o.방; });
+            }
             목록.forEach(function (t, i) {
                 var row = document.getElementById('wl-' + t); if (!row) return;
                 list.appendChild(row);
-                var r = row.querySelector('.wl-rk'); if (r) r.textContent = 모드 === '기본' || 모드 === '가나' ? '' : String(i + 1);
+                var r = row.querySelector('.wl-rk');
+                if (r) {
+                    if (!순위정렬) r.innerHTML = '';
+                    else {
+                        var c = 변화[t], 변 = c === 'NEW' ? '<b class="rk-d new">NEW</b>' : typeof c === 'number' && c !== 0 ? '<b class="rk-d ' + (c > 0 ? 'up' : 'dn') + '">' + (c > 0 ? '▲' : '▼') + Math.abs(c) + '</b>' : '';
+                        r.innerHTML = '<span class="rk-n">' + (i + 1) + '</span>' + 변 + '<em class="rk-v"></em>';
+                    }
+                }
+                row.classList.remove('wl-hot', 'up', 'dn', 'wl-hot-blink');
+                if (강조[t]) { row.classList.add('wl-hot', 강조[t], 'wl-hot-blink'); row.title = '급하게 움직임 · 다음 정렬까지 표시'; } else if (row.title === '급하게 움직임 · 다음 정렬까지 표시') row.title = '';
             });
-            list.scrollTop = 0;
+            clearTimeout(관심_강조끝); 관심_강조끝 = setTimeout(function () { Array.prototype.forEach.call(list.querySelectorAll('.wl-hot-blink'), function (r) { r.classList.remove('wl-hot-blink'); }); }, 10000);   // 깜빡임은 10초 · 외곽선은 다음 정렬까지
+            관심_변동표시();
+            if (!자동) { list.scrollTop = 0; return; }
+            list.scrollTop = 스크롤;
+            // 새 자리로 부드럽게 (FLIP)
+            목록.forEach(function (t) {
+                var row = document.getElementById('wl-' + t); if (!row || 전위치[t] == null || row.offsetParent === null) return;
+                var dy = 전위치[t] - row.getBoundingClientRect().top; if (Math.abs(dy) < 1) return;
+                row.style.transition = 'none'; row.style.transform = 'translateY(' + dy + 'px)';
+                requestAnimationFrame(function () { requestAnimationFrame(function () { row.style.transition = 'transform .3s ease'; row.style.transform = ''; setTimeout(function () { row.style.transition = ''; }, 350); }); });
+            });
         }
+        // 순위 칸 옆 변동 값 (1분·5분 변동 정렬일 때 · 2초마다 갱신)
+        function 관심_변동표시() {
+            var 분 = 관심정렬.모드 === '변동' ? 관심_변동분() : 0;
+            WATCH_LIST.forEach(function (w) {
+                var row = document.getElementById('wl-' + w.ticker), e = row && row.querySelector('.wl-rk .rk-v'); if (!e) return;
+                var 글 = '', 색 = '';
+                if (분 > 0) { var v = 관심_분변동(w.ticker, 분); 글 = v == null ? '…' : (v > 0 ? '+' : '') + v.toFixed(2) + '%'; 색 = v > 0 ? 'up' : v < 0 ? 'dn' : ''; }   // 기준(1분·5분)은 ⇅ 단추에 표시
+                if (e.textContent !== 글) { e.textContent = 글; e.className = 'rk-v ' + 색; e.title = !분 ? '' : v == null ? '가격 기록을 모으는 중 (화면을 연 뒤 ' + 분 + '분)' : '최근 ' + 분 + '분 변동'; }
+            });
+        }
+        // 자동 1분 정렬: 목록 위에 마우스가 있거나(최대 20초) 스크롤·끌기·편집 중이면 미룸
+        var 관심_마우스위 = 0, 관심_스크롤시각 = 0;
+        (function () {
+            document.addEventListener('mouseover', function (e) { var l = e.target.closest && e.target.closest('#ticker-list'); 관심_마우스위 = l ? (관심_마우스위 || Date.now()) : 0; });
+            ['scroll', 'touchmove', 'wheel'].forEach(function (ev) { window.addEventListener(ev, function () { 관심_스크롤시각 = Date.now(); }, { passive: true, capture: true }); });
+        })();
+        setInterval(function () {
+            try { 관심_기록추가(); 관심_변동표시(); } catch (e) { }
+            var 모 = 관심정렬.모드;
+            if (!관심정렬.자동 || !(모 === '상승' || 모 === '하락' || 모 === '변동') || 관심_편집) return;
+            if (Date.now() - 관심_정렬시각 < 60000) return;
+            if (Date.now() - 관심_스크롤시각 < 2500) return;
+            if (관심_마우스위 && Date.now() - 관심_마우스위 < 20000) return;
+            if (document.querySelector('.wl-row.wl-drag')) return;
+            관심_정렬(true);
+        }, 2000);
         document.addEventListener('click', function (e) {
             var b = e.target.closest && e.target.closest('#wl-sort button'); if (!b) return;
             if (b.getAttribute('data-k') === '편집') {
@@ -4103,13 +4213,17 @@
                 }
                 관심_편집설정(!관심_편집); return;
             }
-            if (b.getAttribute('data-m')) { 관심정렬.모드 = b.getAttribute('data-m'); if (관심_편집) { 관심_편집 = false; 관심_순서저장(); var w0 = document.querySelector('.sidebar-watchlist'); if (w0) w0.classList.remove('wl-editing'); } }
+            if (b.getAttribute('data-m')) {
+                var 새모드 = b.getAttribute('data-m');
+                if (새모드 === '변동' && 관심정렬.모드 === '변동') 관심정렬.변동기준 = { '1분': '5분', '5분': '하루', '하루': '1분' }[관심정렬.변동기준] || '1분';   // 다시 누르면 기준 바꿈
+                관심정렬.모드 = 새모드; if (관심_편집) { 관심_편집 = false; 관심_순서저장(); var w0 = document.querySelector('.sidebar-watchlist'); if (w0) w0.classList.remove('wl-editing'); } }
             else if (b.getAttribute('data-k') === '기준') 관심정렬.기준 = 관심정렬.기준 === '종가' ? '시외' : '종가';
             try { localStorage.setItem('sz_wl_sort', JSON.stringify(관심정렬)); } catch (e2) { }
             관심_가격표시(); 관심_정렬();
         });
         document.addEventListener('change', function (e) {
-            var c = e.target; if (!c || c.getAttribute('data-k') !== '고정') return;
+            var c = e.target; if (!c || (c.getAttribute('data-k') !== '고정' && c.getAttribute('data-k') !== '자동')) return;
+            if (c.getAttribute('data-k') === '자동') { 관심정렬.자동 = c.checked; try { localStorage.setItem('sz_wl_sort', JSON.stringify(관심정렬)); } catch (e2) { } 관심_정렬단추(); return; }
             관심정렬.고정 = c.checked;
             try { localStorage.setItem('sz_wl_sort', JSON.stringify(관심정렬)); } catch (e2) { }
             관심_정렬();
