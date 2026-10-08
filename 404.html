@@ -8,9 +8,6 @@
 <meta name="robots" content="noindex, follow">
 <meta name="theme-color" content="#0b1121">
 <meta name="format-detection" content="telephone=no">
-<!-- 검색엔진 소유 확인: 발급받은 코드로 교체 후 주석 해제 -->
-<!-- <meta name="google-site-verification" content="[구글 서치콘솔 코드]"> -->
-<!-- <meta name="naver-site-verification" content="[네이버 서치어드바이저 코드]"> -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="AI BASE LAB">
 <meta property="og:locale" content="ko_KR">
@@ -30,11 +27,6 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="/css/style.css?v=20261004f">
-<!-- Google Analytics 4: 측정 ID 발급 후 G-XXXXXXXXXX 교체하고 주석 해제
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script>
--->
-
 </head>
 <body>
 <a class="skip-link" href="#main">본문 바로가기</a>
@@ -47,7 +39,8 @@
       </ul>
     </nav>
     <div class="nav-cta">
-      <div class="lang-switch"><a href="#" aria-current="true" lang="ko">KO</a><a href="/en/" lang="en" hreflang="en">EN</a></div>
+      <!-- 🔹 CN 버튼 추가 (중국어 메인으로 이동) -->
+      <div class="lang-switch"><a href="#" aria-current="true" lang="ko">KO</a><a href="/en/" lang="en" hreflang="en">EN</a><a href="/cn/" lang="zh-CN">CN</a></div>
       <a href="/index.html#contact" class="btn btn-outline btn-sm">도입 문의</a>
       <button type="button" class="nav-toggle" aria-controls="site-menu" aria-expanded="false" aria-label="메뉴 열기">
         <span class="icon-open"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span><span class="icon-close"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
@@ -88,7 +81,6 @@
         <h2>회사</h2>
         <ul>
           <li><a href="/technology.html">핵심 기술</a></li>
-          
           <li><a href="/about.html">기업 소개</a></li>
           <li><a href="/privacy.html">개인정보처리방침</a></li>
         </ul>
@@ -101,7 +93,6 @@
         </ul>
       </div>
     </div>
-    <!-- 사업자등록번호를 표시하려면 상호 뒤에 <span>사업자등록번호: 000-00-00000</span> 를 추가하세요 -->
     <div class="biz-info">
       <span>상호: AI BASE LAB</span><span>이메일: contact@aibaselab.com</span>
     </div>
@@ -113,7 +104,6 @@
 </footer>
 <script src="/js/main.js?v=20261004f" defer></script>
 <script>
-/* 예전 주소로 들어온 경우 새 주소로 이동 (호스팅의 주소 이동 규칙이 동작하지 않을 때 대비) */
 (function(){var p=location.pathname.replace(/\.html$/,'').replace(/\/$/,'')||'/';
 var m={'/manual':'/autotube/manual','/terms':'/autotube/terms','/thankyou':'/autotube/thankyou','/paddle':'/autotube/paddle',
 '/en':'/autotube/en/','/en/index':'/autotube/en/','/en/manual':'/autotube/en/manual','/en/privacy':'/autotube/en/privacy','/en/terms':'/autotube/en/terms',

@@ -9,9 +9,6 @@
 <link rel="canonical" href="https://aibaselab.com/hardware-control">
 <meta name="theme-color" content="#0b1121">
 <meta name="format-detection" content="telephone=no">
-<!-- 검색엔진 소유 확인: 발급받은 코드로 교체 후 주석 해제 -->
-<!-- <meta name="google-site-verification" content="[구글 서치콘솔 코드]"> -->
-<!-- <meta name="naver-site-verification" content="[네이버 서치어드바이저 코드]"> -->
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="AI BASE LAB">
 <meta property="og:locale" content="ko_KR">
@@ -31,10 +28,6 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="css/style.css?v=20261004f">
-<!-- Google Analytics 4: 측정 ID 발급 후 G-XXXXXXXXXX 교체하고 주석 해제
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script>
--->
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -135,7 +128,8 @@
       </ul>
     </nav>
     <div class="nav-cta">
-      <div class="lang-switch"><a href="#" aria-current="true" lang="ko">KO</a><a href="/en/cases" lang="en" hreflang="en">EN</a></div>
+      <!-- 🔹 CN 버튼 추가 (중국어 메인으로 이동) -->
+      <div class="lang-switch"><a href="#" aria-current="true" lang="ko">KO</a><a href="/en/cases" lang="en" hreflang="en">EN</a><a href="/cn/" lang="zh-CN">CN</a></div>
       <a href="index.html#contact" class="btn btn-outline btn-sm">도입 문의</a>
       <button type="button" class="nav-toggle" aria-controls="site-menu" aria-expanded="false" aria-label="메뉴 열기">
         <span class="icon-open"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span><span class="icon-close"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
@@ -149,7 +143,7 @@
     <nav class="breadcrumb" aria-label="현재 위치"><ol><li><a href="index.html">홈</a></li><li><a href="cases.html">솔루션 사례</a></li><li aria-current="page">계측 장비 연동 · 자동 기록</li></ol></nav>
     <span class="eyebrow eyebrow-dark">CASE 02 · 장비 연동 · 실시간 모니터링</span>
     <h1>계측 장비 3대를 하나의 검사 프로그램으로</h1>
-    <p class="lead">장비마다 따로 켜던 프로그램과 수기 기록을 없앴습니다.<br class="br-pc"> 측정값은 시리얼 번호별로 엑셀에 자동으로 쌓이고, 실시간 차트와 텔레그램으로 어디서든 검사 상황을 확인하고 제어합니다.</p>
+    <p class="lead">장비마다 따로 켜던 프로그램과 수기 기록을 없애버렸습니다.<br class="br-pc"> 측정값은 시리얼 번호별로 엑셀에 자동으로 쌓이고, 실시간 차트와 텔레그램으로 어디서든 검사 상황을 확인하고 제어합니다.</p>
     <p class="case-meta">B사 (음향기기 제조사) · 출하 검사 스테이션 · 오디오 분석기 · DC 전원공급기 · 바코드 스캐너 · C# .NET · Excel · Telegram Bot API</p>
     <div class="hero-rel"><p class="hero-rel-label">다른 구축 사례</p><div class="rel-grid m-swipe"><a class="rel-card rel-dark" href="finance-ai.html"><span class="rel-tag">#자동매매</span><span class="rel-title">투자법인 — 키움증권 국내·미국 주식 자동매매</span><span class="rel-arrow" aria-hidden="true">→</span></a><a class="rel-card rel-dark" href="vision-inspection.html"><span class="rel-tag">#출하검수</span><span class="rel-title">제조사 출하 라인 — 바코드·중량·비전 출하 검수 · MES 연동</span><span class="rel-arrow" aria-hidden="true">→</span></a><a class="rel-card rel-dark" href="autotube-case.html"><span class="rel-tag">#콘텐츠자동화</span><span class="rel-title">교육 콘텐츠 채널 운영사 — 영상 제작 자동화(오토튜브)</span><span class="rel-arrow" aria-hidden="true">→</span></a></div></div>
   </div>
@@ -185,7 +179,6 @@
       </div>
 
       <h2><span class="h-num">03</span>도입 효과</h2>
-      <!-- [입력필요] 실제 측정 수치가 있으면 아래 목록에 함께 적어 주세요. 예: 검사 1건당 작업 시간 ○초 → ○초 -->
       <ul class="bullets"><li>수기 기록과 엑셀 옮겨 적기 작업이 없어졌습니다.</li><li>시리얼 번호만으로 검사 이력을 바로 찾아 고객사 문의에 대응합니다.</li><li>사무실이나 외부에서도 검사 상황을 확인하고 대응합니다.</li><li>쌓인 측정 데이터로 불량 경향을 분석해 공정 개선에 활용합니다.</li></ul>
       <p class="extend-note">확장 가능: 장비 추가, PLC·라벨 프린터 연동, 여러 라인 통합 관제, MES 전송, Wi-Fi·LTE 무선 원격 모니터링, 스마트폰 원격 제어</p>
 
@@ -233,7 +226,6 @@
         <h2>회사</h2>
         <ul>
           <li><a href="technology.html">핵심 기술</a></li>
-          
           <li><a href="about.html">기업 소개</a></li>
           <li><a href="privacy.html">개인정보처리방침</a></li>
         </ul>
@@ -246,7 +238,6 @@
         </ul>
       </div>
     </div>
-    <!-- 사업자등록번호를 표시하려면 상호 뒤에 <span>사업자등록번호: 000-00-00000</span> 를 추가하세요 -->
     <div class="biz-info">
       <span>상호: AI BASE LAB</span><span>이메일: contact@aibaselab.com</span>
     </div>
