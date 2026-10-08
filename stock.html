@@ -408,6 +408,10 @@
         .wake-pop button small { font-size: 10.5px; color: #8b93a7; }
         /* 월·수 만기 옵션 표 */
         .oi-extra:empty { display: none; }
+        .oi-star { color: #ffd84d; font-weight: 800; margin-left: 4px; }
+        .oi-mainhead:empty { display: none; }
+        .oi-mainhead { margin-top: 10px; padding-top: 8px; border-top: 1px dashed #2f3446; }
+        .oi-xhead.main { cursor: default; } .oi-xhead.main .oi-xt { color: #ffd84d; }
         .oi-xsec { margin-top: 10px; padding-top: 8px; border-top: 1px dashed #2f3446; }
         .oi-xhead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; cursor: pointer; user-select: none; }
         .oi-xt { font-size: 12.5px; font-weight: bold; color: #7799dd; }
@@ -427,6 +431,31 @@
             .qn-list .qn-dot { top: 50%; right: 10px; margin-top: -5px; }
             @keyframes qnBlink { from { opacity: 1; } to { opacity: .25; } }
         }
+        /* 패널 폭 조절 (PC) · 관심종목 순서 편집 · 패널 숨김 번호 */
+        .pz-split { display: none; }
+        @media (min-width: 1201px) {
+            .dashboard-grid { gap: 0 !important; }
+            .content-wrapper { gap: 0 !important; }
+            .pz-split { display: block; flex: 0 0 8px; cursor: col-resize; position: relative; touch-action: none; }
+            .pz-split.side { flex-basis: 10px; }
+            .pz-split::after { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; margin-left: -1px; background: transparent; transition: background .15s; }
+            .pz-split:hover::after, .pz-split.drag::after { background: rgba(245,197,66,.55); }
+            body.pz-dragging { cursor: col-resize; user-select: none; }
+            body.pz-dragging iframe { pointer-events: none; }
+        }
+        .wl-ed { display: none; }
+        .wl-editing .wl-ed { display: inline-flex; align-items: center; }
+        .wl-hd { font: inherit; font-size: 15px; line-height: 1; color: #8b93a7; background: none; border: 1px solid #2f3446; border-radius: 4px; width: 22px; height: 26px; cursor: grab; touch-action: none; padding: 0; }
+        .wl-hd:active { cursor: grabbing; }
+        .wl-mvs { flex-direction: column; gap: 2px; margin-left: auto; }
+        .wl-mv { font: inherit; font-size: 9px; line-height: 1; width: 22px; height: 15px; padding: 0; color: #cfd5e2; background: #1a1d2b; border: 1px solid #2f3446; border-radius: 3px; cursor: pointer; }
+        .wl-editing .wl-row { border-style: dashed !important; border-color: #2f3446 !important; }
+        .wl-row.wl-drag { opacity: .85; background: rgba(245,197,66,.08) !important; border-color: #f5c542 !important; }
+        .wl-edbtn { font: inherit; font-size: 11px; font-weight: 700; color: #ffe08a; background: #1a1d2b; border: 1px solid #4a4020; border-radius: 5px; padding: 2px 8px; cursor: pointer; }
+        .wl-edbtn.on { background: #f5c542; color: #1a1400; border-color: #f5c542; }
+        .wl-pb.hid { background: transparent !important; text-decoration: line-through; opacity: .85; }
+        .wl-pb.p0.hid { color: #ff8080; border: 1px dashed #ff6666; } .wl-pb.p1.hid { color: #80dd80; border: 1px dashed #66cc66; } .wl-pb.p2.hid { color: #8aa4ff; border: 1px dashed #6688ff; }
+        @media (max-width: 1200px) { .wl-hd { width: 32px; height: 34px; font-size: 18px; } .wl-mv { width: 30px; height: 20px; font-size: 11px; } }
         /* 시계 오른쪽 도구 (휴대폰·태블릿만) */
         .top-tools { display: none; }
         .tool-btn { font: inherit; cursor: pointer; }
@@ -3879,6 +3908,8 @@
                 + '</div>'
                 + '<span class="oi-dte" id="p' + i + '-dte">옵션만기 : 대기중</span>'
                 + '</div>'
+                + '<div class="oi-extra" id="p' + i + '-oi-before"></div>'
+                + '<div class="oi-mainhead" id="p' + i + '-oi-mainhead"></div>'
                 + '<div class="oi-summary"><span id="p' + i + '-sum-power">수급 대기중</span><span id="p' + i + '-sum-env">지수 대기중</span></div>'
                 + '<div class="oi-grid-header"><div style="text-align:right;padding-right:2px;">콜</div><div>OI/V</div><div>등락</div><div>행사가</div><div>등락</div><div>OI/V</div><div style="text-align:left;padding-left:2px;">풋</div></div>'
                 + '<div id="p' + i + '-oi-rows"></div>'
@@ -3913,8 +3944,10 @@
             list.innerHTML = WATCH_LIST.map(function (w) {
                 var 단추 = [0, 1, 2].map(function (i) { return '<button type="button" class="wl-pb p' + i + '" data-t="' + w.ticker + '" data-i="' + i + '" title="패널 ' + (i + 1) + '에 ' + w.ticker + ' 불러오기">' + (i + 1) + '</button>'; }).join('');
                 return '<div class="ticker-item wl-row" id="wl-' + w.ticker + '">' +
+                    '<span class="wl-ed"><button type="button" class="wl-hd" title="끌어서 순서 바꾸기">≡</button></span>' +
                     '<div class="wl-main"><div class="wl-top"><span class="wl-pn">' + 단추 + '</span><b class="wl-t">' + w.ticker + '</b><i class="wl-rk"></i><span class="wl-n">' + w.name + '</span></div>' +
-                    '<div class="wl-px" id="wl-px-' + w.ticker + '"><div class="wl-ln"><span class="wl-v">─</span></div></div></div></div>';
+                    '<div class="wl-px" id="wl-px-' + w.ticker + '"><div class="wl-ln"><span class="wl-v">─</span></div></div></div>' +
+                    '<span class="wl-ed wl-mvs"><button type="button" class="wl-mv" data-d="up" title="위로">▲</button><button type="button" class="wl-mv" data-d="dn" title="아래로">▼</button></span></div>';
             }).join('');
             refreshWatchlistBadges();
             관심_가격표시();
@@ -3927,7 +3960,7 @@
         try { 관심_전체 = localStorage.getItem('sz_wl_all') === '1'; } catch (e) { }
         function 관심_더보기표시() {
             var w = document.querySelector('.sidebar-watchlist'), b = document.getElementById('wl-more'); if (!w || !b) return;
-            w.classList.toggle('wl-all', 관심_전체);
+            w.classList.toggle('wl-all', 관심_전체 || 관심_편집);
             var n = WATCH_LIST.length;
             b.style.visibility = n > 10 ? '' : 'hidden';
             b.textContent = 관심_전체 ? '접기 ▴' : '전체 보기 (' + n + ') ▾';
@@ -3955,7 +3988,8 @@
             var 정규 = marketPhase().type === 'REG';
             var html = '<div class="wl-sb">' + 관심_정렬종류.map(function (x) { return '<button type="button" data-m="' + x[0] + '" class="' + (관심정렬.모드 === x[0] ? 'on' : '') + '" title="' + x[2] + ' (누를 때마다 지금 값으로 다시 정렬)">' + x[1] + '</button>'; }).join('') + '</div>' +
                 '<div class="wl-so">' + (정규 ? '' : '<button type="button" data-k="기준" title="정규장 외 정렬 기준 (누르면 전환)">기준: <b>' + (관심정렬.기준 === '종가' ? '종가 등락' : '시외 등락') + '</b> ⇄</button>') +
-                '<label title="패널 1·2·3 종목은 정렬과 관계없이 맨 위"><input type="checkbox" data-k="고정"' + (관심정렬.고정 ? ' checked' : '') + '> 패널 종목 위로</label></div>';
+                '<label title="패널 1·2·3 종목은 정렬과 관계없이 맨 위"><input type="checkbox" data-k="고정"' + (관심정렬.고정 ? ' checked' : '') + '> 패널 종목 위로</label>' +
+                (관심정렬.모드 === '기본' || 관심_편집 ? '<button type="button" data-k="편집" class="wl-edbtn' + (관심_편집 ? ' on' : '') + '" title="기본 순서를 직접 바꾸기 (≡ 끌기 · ▲▼)">' + (관심_편집 ? '✓ 완료' : '✎ 순서') + '</button>' : '') + '</div>';
             if (el._html !== html) { el.innerHTML = html; el._html = html; }
         }
         function 관심_정렬값(t) {
@@ -3969,15 +4003,18 @@
             var list = document.getElementById('ticker-list'); if (!list) return;
             var 모드 = 관심정렬.모드, 원순서 = WATCH_LIST.map(function (w) { return w.ticker; });
             var 값 = {}; 원순서.forEach(function (t) { 값[t] = 관심_정렬값(t); });
+            var 내순서 = {}; 관심_순서.forEach(function (t, i) { 내순서[t] = i; });
+            function 기본순(t) { return 내순서[t] != null ? 내순서[t] : 100000 + 원순서.indexOf(t); }
+            if (관심_편집) 모드 = '기본';
             var 목록 = 원순서.slice().sort(function (a, b) {
-                if (관심정렬.고정) { var pa = panelTickers.indexOf(a), pb = panelTickers.indexOf(b); if ((pa >= 0) !== (pb >= 0)) return pa >= 0 ? -1 : 1; if (pa >= 0 && pb >= 0) return pa - pb; }
+                if (관심정렬.고정 && !관심_편집) { var pa = panelTickers.indexOf(a), pb = panelTickers.indexOf(b); if ((pa >= 0) !== (pb >= 0)) return pa >= 0 ? -1 : 1; if (pa >= 0 && pb >= 0) return pa - pb; }
                 if (모드 === '가나') return a < b ? -1 : a > b ? 1 : 0;
-                if (모드 === '기본') return 원순서.indexOf(a) - 원순서.indexOf(b);
+                if (모드 === '기본') return 기본순(a) - 기본순(b);
                 var va = 값[a], vb = 값[b];
-                if (va == null && vb == null) return 원순서.indexOf(a) - 원순서.indexOf(b);
+                if (va == null && vb == null) return 기본순(a) - 기본순(b);
                 if (va == null) return 1; if (vb == null) return -1;             // 값 없는 종목은 맨 아래
                 var d = 모드 === '상승' ? vb - va : 모드 === '하락' ? va - vb : Math.abs(vb) - Math.abs(va);
-                return d || 원순서.indexOf(a) - 원순서.indexOf(b);
+                return d || 기본순(a) - 기본순(b);
             });
             목록.forEach(function (t, i) {
                 var row = document.getElementById('wl-' + t); if (!row) return;
@@ -3988,7 +4025,8 @@
         }
         document.addEventListener('click', function (e) {
             var b = e.target.closest && e.target.closest('#wl-sort button'); if (!b) return;
-            if (b.getAttribute('data-m')) 관심정렬.모드 = b.getAttribute('data-m');
+            if (b.getAttribute('data-k') === '편집') { 관심_편집설정(!관심_편집); return; }
+            if (b.getAttribute('data-m')) { 관심정렬.모드 = b.getAttribute('data-m'); if (관심_편집) { 관심_편집 = false; 관심_순서저장(); var w0 = document.querySelector('.sidebar-watchlist'); if (w0) w0.classList.remove('wl-editing'); } }
             else if (b.getAttribute('data-k') === '기준') 관심정렬.기준 = 관심정렬.기준 === '종가' ? '시외' : '종가';
             try { localStorage.setItem('sz_wl_sort', JSON.stringify(관심정렬)); } catch (e2) { }
             관심_가격표시(); 관심_정렬();
@@ -4000,11 +4038,172 @@
             관심_정렬();
         });
 
+        // ════════════════════════════════════════════════════════
+        // ★ 패널 켜기/끄기 · 폭 조절 (PC)
+        //   관심종목에서 켜진 번호(①②③)를 누르면 그 패널을 숨기거나 보임 (최소 1개) · 숨긴 패널도 시세·알람은 계속, 차트만 내림
+        //   PC: 패널 사이·관심종목 경계선을 끌어 폭 조절 (두 번 누르면 원래대로) · 보이는 패널 조합별로 저장
+        // ════════════════════════════════════════════════════════
+        var 패널숨김 = (function () { try { var v = JSON.parse(localStorage.getItem('sz_panel_hide') || '[]'); return Array.isArray(v) ? v.filter(function (i) { return i >= 0 && i <= 2; }) : []; } catch (e) { return []; } })();
+        if (패널숨김.length >= 3) 패널숨김 = [];
+        var 레이아웃 = (function () { try { return JSON.parse(localStorage.getItem('sz_layout') || '{}') || {}; } catch (e) { return {}; } })();
+        function 레이아웃저장() { try { localStorage.setItem('sz_layout', JSON.stringify(레이아웃)); } catch (e) { } }
+        function 패널_숨김(i) { return 패널숨김.indexOf(i) >= 0; }
+        function 패널_보이는() { return [0, 1, 2].filter(function (i) { return !패널_숨김(i); }); }
+        function 패널_보이기설정(i, 보임) {
+            var 있 = 패널_숨김(i);
+            if (보임 && 있) 패널숨김 = 패널숨김.filter(function (x) { return x !== i; });
+            else if (!보임 && !있) {
+                if (패널_보이는().length <= 1) { 알림_잠깐('마지막 남은 패널은 숨길 수 없습니다'); return false; }
+                패널숨김.push(i);
+            } else return true;
+            try { localStorage.setItem('sz_panel_hide', JSON.stringify(패널숨김)); } catch (e) { }
+            패널_적용();
+            알림_잠깐('패널 ' + (i + 1) + ' (' + (panelTickers[i] || '') + ') ' + (보임 ? '보임' : '숨김 · 관심종목의 번호를 다시 누르면 보임'));
+            return true;
+        }
+        function 패널_적용() {
+            [0, 1, 2].forEach(function (i) {
+                var el = document.getElementById('panel-' + i); if (!el) return;
+                var 숨 = 패널_숨김(i), 전 = el.style.display === 'none';
+                el.style.display = 숨 ? 'none' : '';
+                var 차트 = document.getElementById('chart-' + i);
+                if (숨 && !전) {   // 숨길 때 차트 내림 (가볍게)
+                    if (chartTimers[i]) { clearTimeout(chartTimers[i]); chartTimers[i] = null; }
+                    if (차트) 차트.innerHTML = '';
+                    currentChartTicker[i] = null;
+                } else if (!숨 && 전 && panelTickers[i]) {   // 다시 보일 때 차트 다시 (종목을 바꾸는 중이면 바뀔 종목으로)
+                    var 선택 = document.getElementById('ticker-select-' + i), 차트종목 = (선택 && 선택.value) || panelTickers[i];
+                    currentChartTicker[i] = 차트종목; updateChartWidget(i, 차트종목);
+                }
+            });
+            try { refreshWatchlistBadges(); } catch (e) { }
+            try { 이동_그리기(); } catch (e) { }
+            폭_적용();
+        }
+        // ── 폭 조절 ──
+        var 폭_최소패널 = 280;
+        function 폭_키() { return 패널_보이는().join(''); }
+        function 폭_적용() {
+            var grid = document.getElementById('dashboard-grid'); if (!grid) return;
+            Array.prototype.forEach.call(grid.querySelectorAll('.pz-split'), function (x) { x.remove(); });
+            var 보 = 패널_보이는(), 비 = (레이아웃.w || {})[폭_키()];
+            보.forEach(function (i, k) {
+                var el = document.getElementById('panel-' + i); if (!el) return;
+                el.style.flex = 비 && 비[k] > 0 ? 비[k] + ' 1 0px' : '';
+                if (k < 보.length - 1) {
+                    var sp = document.createElement('div'); sp.className = 'pz-split'; sp.setAttribute('data-k', String(k)); sp.title = '끌어서 폭 조절 · 두 번 누르면 원래대로';
+                    el.parentNode.insertBefore(sp, el.nextSibling);
+                }
+            });
+            [0, 1, 2].forEach(function (i) { if (패널_숨김(i)) { var el = document.getElementById('panel-' + i); if (el) el.style.flex = ''; } });
+            var side = document.querySelector('.sidebar'), sp2 = document.getElementById('pz-side');
+            if (side && !sp2) { sp2 = document.createElement('div'); sp2.id = 'pz-side'; sp2.className = 'pz-split side'; sp2.title = '끌어서 관심종목 폭 조절 · 두 번 누르면 원래대로'; side.parentNode.insertBefore(sp2, side); }
+            if (side) side.style.width = window.innerWidth > 1200 && 레이아웃.side > 0 ? 레이아웃.side + 'px' : '';
+        }
+        (function () {
+            var 끌기 = null;
+            document.addEventListener('pointerdown', function (e) {
+                var sp = e.target.closest && e.target.closest('.pz-split'); if (!sp || window.innerWidth <= 1200) return;
+                e.preventDefault();
+                if (sp.id === 'pz-side') { var side = document.querySelector('.sidebar'); 끌기 = { side: true, x: e.clientX, w: side.getBoundingClientRect().width, el: sp }; }
+                else {
+                    var 보 = 패널_보이는(), k = Number(sp.getAttribute('data-k'));
+                    var 폭들 = 보.map(function (i) { return document.getElementById('panel-' + i).getBoundingClientRect().width; });
+                    끌기 = { k: k, x: e.clientX, 폭들: 폭들, 보: 보, el: sp };
+                }
+                sp.classList.add('drag'); document.body.classList.add('pz-dragging');
+                try { sp.setPointerCapture(e.pointerId); } catch (er) { }
+            });
+            document.addEventListener('pointermove', function (e) {
+                if (!끌기) return;
+                var dx = e.clientX - 끌기.x;
+                if (끌기.side) {
+                    var w = Math.max(200, Math.min(560, 끌기.w - dx));
+                    document.querySelector('.sidebar').style.width = w + 'px'; 끌기.새 = w; return;
+                }
+                var 폭 = 끌기.폭들.slice(), a = 끌기.k, 합 = 폭[a] + 폭[a + 1];
+                폭[a] = Math.max(폭_최소패널, Math.min(합 - 폭_최소패널, 폭[a] + dx)); 폭[a + 1] = 합 - 폭[a];
+                끌기.보.forEach(function (i, k) { document.getElementById('panel-' + i).style.flex = Math.round(폭[k]) + ' 1 0px'; });
+                끌기.새 = 폭.map(Math.round);
+            });
+            function 놓기() {
+                if (!끌기) return;
+                끌기.el.classList.remove('drag'); document.body.classList.remove('pz-dragging');
+                if (끌기.새) {
+                    if (끌기.side) 레이아웃.side = 끌기.새;
+                    else { 레이아웃.w = 레이아웃.w || {}; 레이아웃.w[폭_키()] = 끌기.새; }
+                    레이아웃저장();
+                }
+                끌기 = null;
+            }
+            document.addEventListener('pointerup', 놓기); document.addEventListener('pointercancel', 놓기);
+            document.addEventListener('dblclick', function (e) {
+                var sp = e.target.closest && e.target.closest('.pz-split'); if (!sp) return;
+                if (sp.id === 'pz-side') delete 레이아웃.side; else if (레이아웃.w) delete 레이아웃.w[폭_키()];
+                레이아웃저장(); 폭_적용();
+            });
+            window.addEventListener('resize', function () { var side = document.querySelector('.sidebar'); if (side) side.style.width = window.innerWidth > 1200 && 레이아웃.side > 0 ? 레이아웃.side + 'px' : ''; });
+        })();
+
+        // ════════════════════════════════════════════════════════
+        // ★ 관심종목 순서 편집 ("기본" 정렬일 때 [✎ 순서] → ≡ 손잡이로 끌기 · ▲▼ 단추) · 이 브라우저에 저장
+        // ════════════════════════════════════════════════════════
+        var 관심_순서 = (function () { try { var v = JSON.parse(localStorage.getItem('sz_wl_order') || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; } })();
+        var 관심_편집 = false;
+        function 관심_순서저장() {
+            var list = document.getElementById('ticker-list'); if (!list) return;
+            관심_순서 = Array.prototype.map.call(list.querySelectorAll('.wl-row'), function (r) { return r.id.replace(/^wl-/, ''); });
+            try { localStorage.setItem('sz_wl_order', JSON.stringify(관심_순서)); } catch (e) { }
+        }
+        function 관심_편집설정(켬) {
+            관심_편집 = !!켬;
+            var w = document.querySelector('.sidebar-watchlist'); if (w) w.classList.toggle('wl-editing', 관심_편집);
+            if (!관심_편집) 관심_순서저장();
+            관심_정렬(); 관심_더보기표시();
+        }
+        (function () {
+            var 끌기 = null;
+            document.addEventListener('pointerdown', function (e) {
+                var h = e.target.closest && e.target.closest('.wl-hd'); if (!h || !관심_편집) return;
+                var row = h.closest('.wl-row'); if (!row) return;
+                e.preventDefault();
+                끌기 = { row: row, list: row.parentNode };
+                row.classList.add('wl-drag');
+                try { h.setPointerCapture(e.pointerId); } catch (er) { }
+            });
+            document.addEventListener('pointermove', function (e) {
+                if (!끌기) return;
+                var rows = Array.prototype.filter.call(끌기.list.querySelectorAll('.wl-row'), function (r) { return r !== 끌기.row && r.offsetParent !== null; });
+                var 앞 = null;
+                for (var i = 0; i < rows.length; i++) { var b = rows[i].getBoundingClientRect(); if (e.clientY < b.top + b.height / 2) { 앞 = rows[i]; break; } }
+                if (앞) { if (끌기.row.nextSibling !== 앞) 끌기.list.insertBefore(끌기.row, 앞); }
+                else if (끌기.list.lastElementChild !== 끌기.row) 끌기.list.appendChild(끌기.row);
+                // 끝에 가까우면 자동 스크롤 (목록 상자 · 화면)
+                var lb = 끌기.list.getBoundingClientRect();
+                if (끌기.list.scrollHeight > 끌기.list.clientHeight) { if (e.clientY < lb.top + 30) 끌기.list.scrollTop -= 12; else if (e.clientY > lb.bottom - 30) 끌기.list.scrollTop += 12; }
+                if (e.clientY < 40) window.scrollBy(0, -12); else if (e.clientY > window.innerHeight - 40) window.scrollBy(0, 12);
+            });
+            function 놓기() { if (!끌기) return; 끌기.row.classList.remove('wl-drag'); 끌기 = null; 관심_순서저장(); }
+            document.addEventListener('pointerup', 놓기); document.addEventListener('pointercancel', 놓기);
+            document.addEventListener('click', function (e) {
+                var b = e.target.closest && e.target.closest('.wl-mv'); if (!b || !관심_편집) return;
+                e.stopPropagation();
+                var row = b.closest('.wl-row'), list = row.parentNode;
+                if (b.getAttribute('data-d') === 'up') { var p = row.previousElementSibling; if (p) list.insertBefore(row, p); }
+                else { var n = row.nextElementSibling; if (n) list.insertBefore(n, row); }
+                관심_순서저장();
+            });
+        })();
+
         function refreshWatchlistBadges() {
             WATCH_LIST.forEach(function (w) {
                 var item = document.getElementById('wl-' + w.ticker); if (!item) return;
                 var idx = panelTickers.indexOf(w.ticker);
-                Array.prototype.forEach.call(item.querySelectorAll('.wl-pb'), function (b) { b.classList.toggle('on', Number(b.getAttribute('data-i')) === idx); });
+                Array.prototype.forEach.call(item.querySelectorAll('.wl-pb'), function (b) {
+                    var i = Number(b.getAttribute('data-i')), 켬 = i === idx, 숨 = 켬 && 패널_숨김(i);
+                    b.classList.toggle('on', 켬 && !숨); b.classList.toggle('hid', 숨);
+                    b.title = 켬 ? '패널 ' + (i + 1) + ' ' + (숨 ? '보이기' : '숨기기') : '패널 ' + (i + 1) + '에 ' + w.ticker + ' 불러오기';
+                });
                 item.classList.toggle('active-panel', idx >= 0);
                 item.setAttribute('data-p', idx >= 0 ? String(idx) : '');
             });
@@ -4031,8 +4230,11 @@
         document.addEventListener('click', function (e) {
             var b = e.target.closest && e.target.closest('.wl-pb'); if (!b) return;
             e.stopPropagation();
-            관심_패널지정(Number(b.getAttribute('data-i')), b.getAttribute('data-t'));
-            관심_패널로이동(Number(b.getAttribute('data-i')));
+            var i = Number(b.getAttribute('data-i')), t = b.getAttribute('data-t');
+            if (panelTickers[i] === t) { 패널_보이기설정(i, 패널_숨김(i)); return; }   // 켜진 번호 = 그 패널 숨기기/보이기
+            관심_패널지정(i, t);
+            if (패널_숨김(i)) 패널_보이기설정(i, true);
+            관심_패널로이동(i);
         });
 
         // ── 가격 ──
@@ -4135,7 +4337,7 @@
             restTick();                   // 새 종목 시세를 REST로 즉시 조회 (WebSocket 대기 없음)
 
             currentChartTicker[panelIdx] = null;
-            setTimeout(function () { updateChartWidget(panelIdx, newTicker); }, 200);
+            setTimeout(function () { if (!패널_숨김(panelIdx)) { currentChartTicker[panelIdx] = newTicker; updateChartWidget(panelIdx, newTicker); } }, 200);
 
             refreshWatchlistBadges();
             refreshAllDropdowns();
@@ -4170,7 +4372,7 @@
             var dte = document.getElementById(p + 'dte'); if (dte) dte.textContent = '옵션만기 : 대기중';
             var tl = document.getElementById(p + 'timeline'); if (tl) tl.innerHTML = '';
             var oit = document.getElementById(p + 'oi-title'); if (oit) oit.textContent = ticker + ' 옵션 체인';
-            var oix = document.getElementById(p + 'oi-extra'); if (oix) oix.innerHTML = '';
+            ['oi-extra', 'oi-before', 'oi-mainhead'].forEach(function (k) { var x = document.getElementById(p + k); if (x) x.innerHTML = ''; });
             setOiPending(panelIdx, ticker);
         }
 
@@ -4772,16 +4974,43 @@
             score = Math.max(0, Math.min(10, score));
             var signal = score >= 6 ? 'BUY' : score <= 4 ? 'SELL' : 'WAIT';
 
-            // 옵션 체인 표: 현재가에 가장 가까운 행사가 기준 위 6 · 아래 7 (14행, 높은 행사가부터)
+            // 옵션 체인 표: 현재가에 가장 가까운 행사가 기준 위 7 · 아래 6 (14행, 높은 행사가부터)
+            var rowsOut = 옵션_14줄(rows, price);
+            return { price: price, pcr: pcr, maxPain: maxPain, support1: support1, support2: support2, resistance1: resistance1, resistance2: resistance2,
+                     callWall: callWall, putWall: putWall, signal: signal, score: 옵션_반올림1(score), optionRows: rowsOut };
+        }
+
+        // 행사가 전체 목록(strikes: {k,cOI,cVol,cChg,pOI,pVol,pChg}) → 지금 가격에 가장 가까운 행사가 중심 14행 (표 형식)
+        function 옵션_14줄(strikes, price) {
+            var 맵 = {};
+            (strikes || []).forEach(function (r) { if (r && r.k > 0) 맵[r.k] = r; });
+            var all = Object.keys(맵).map(Number).sort(function (a, b) { return a - b; });
+            if (!all.length) return [];
+            if (!(price > 0)) price = all[Math.floor(all.length / 2)];
+            function g(s, f) { var r = 맵[s]; return r ? (Number(r[f]) || 0) : 0; }
             var closest = all[0], bestD = Math.abs(all[0] - price);
             all.forEach(function (s) { var dd = Math.abs(s - price); if (dd < bestD) { bestD = dd; closest = s; } });
             var center = all.indexOf(closest), start = Math.max(0, center - 6), take = 14;
             if (start + take > all.length) start = Math.max(0, all.length - take);
-            var rowsOut = all.slice(start, start + take).sort(function (a, b) { return b - a; }).map(function (s) {
+            return all.slice(start, start + take).sort(function (a, b) { return b - a; }).map(function (s) {
                 return { strike: s, callOI: g(s, 'cOI'), putOI: g(s, 'pOI'), callVol: g(s, 'cVol'), putVol: g(s, 'pVol'), callChg: g(s, 'cChg'), putChg: g(s, 'pChg') };
             });
-            return { price: price, pcr: pcr, maxPain: maxPain, support1: support1, support2: support2, resistance1: resistance1, resistance2: resistance2,
-                     callWall: callWall, putWall: putWall, signal: signal, score: 옵션_반올림1(score), optionRows: rowsOut };
+        }
+        // 패널 옵션 표에 쓸 행사가 전체 목록: CBOE 면 받은 전체 / 키움(14행만)이면 같은 만기의 CBOE 전체에 키움 값을 덮어씀 / 없으면 null
+        function 옵션_전체행사가(d) {
+            if (!d) return null;
+            if (d.옵션전체 && d.옵션전체.length) return d.옵션전체;
+            var v = 옵션_월수[d.ticker], 만기 = d.expiry || d.만기;
+            if (!v || !만기) return null;
+            var 같은 = [{ expiry: v.expiry, strikes: v.strikes }].concat(v.extras || []).filter(function (c) { return c && c.expiry === 만기 && c.strikes && c.strikes.length; })[0];
+            if (!같은) return null;
+            var 맵 = {};
+            같은.strikes.forEach(function (r) { 맵[r.k] = Object.assign({}, r); });
+            (d.optionRows || []).forEach(function (r) {
+                if (!(r.strike > 0)) return;
+                맵[r.strike] = { k: r.strike, cOI: r.callOI || 0, cVol: r.callVol || 0, cChg: r.callChg || 0, pOI: r.putOI || 0, pVol: r.putVol || 0, pChg: r.putChg || 0 };
+            });
+            return Object.keys(맵).map(function (k) { return 맵[k]; });
         }
 
         function 옵션_CBOE적용하기(ticker, v) {
@@ -4812,7 +5041,7 @@
                 isMarketOpen: 장.type === 'REG', sessionLabel: 장.type === 'REG' ? '실시간' : 장.label || '장마감',
                 dte: dte, dteLabel: dteLabel, trendText: 옵션_추세문구(change),
                 updatedAt: 지금.getFullYear() + '-' + 두(지금.getMonth() + 1) + '-' + 두(지금.getDate()) + ' ' + 두(지금.getHours()) + ':' + 두(지금.getMinutes()) + ':' + 두(지금.getSeconds()),
-                옵션출처: 'CBOE', cboeET: cboeET, 만기: v.expiry, 당일우선: !!v.당일우선 }, 계산);
+                옵션출처: 'CBOE', cboeET: cboeET, 만기: v.expiry, 당일우선: !!v.당일우선, 옵션전체: v.strikes || [] }, 계산);
             옵션_CBOE적용[ticker] = 옵션_CBOE적용[ticker] && 옵션_CBOE값[ticker] === v ? 옵션_CBOE적용[ticker] : Date.now();
             옵션_CBOE값[ticker] = v;
             p.updatedAtMs = 옵션_CBOE기준(v);
@@ -5089,7 +5318,7 @@
                 }
             }
             if (d.maxPain > 0 && price > 0) renderTimeline(p, Object.assign({}, d, { price: price }));
-            var dteEl = document.getElementById(p + 'dte'); if (dteEl && d.dteLabel) { dteEl.textContent = '옵션만기 : ' + d.dteLabel; }
+            var dteEl = document.getElementById(p + 'dte'); if (dteEl && d.dteLabel) { var 별 = !!dteEl.querySelector('.oi-star'); dteEl.textContent = '옵션만기 : ' + d.dteLabel; if (별) 옵션_기준표시(panel, true); }
             var oit = document.getElementById(p + 'oi-title'); if (oit) { oit.textContent = (d.ticker || panelTickers[panel]) + ' 옵션 체인'; }
             var timeEl = document.getElementById(p + 'update-time');
             if (timeEl && d.옵션출처 === 'CBOE') timeEl.textContent = '(CBOE 15분 지연 · ' + (d.cboeET || '') + ' 기준)';
@@ -5105,7 +5334,7 @@
             updateEnvSummary(panel);
             if (d.optionRows && d.optionRows.length) renderOiSafe(panel, d.optionRows, price || (d.maxPain || 100));
             var chartTicker = d.ticker || panelTickers[panel];
-            if (!currentChartTicker[panel] || currentChartTicker[panel] !== chartTicker) { currentChartTicker[panel] = chartTicker; updateChartWidget(panel, chartTicker); }
+            if (!패널_숨김(panel) && (!currentChartTicker[panel] || currentChartTicker[panel] !== chartTicker)) { currentChartTicker[panel] = chartTicker; updateChartWidget(panel, chartTicker); }
             hideInitialLoading();
 
             applyPanelSituation(p, d);
@@ -5290,6 +5519,26 @@
             return 결과;
         }
 
+        // ★ 지지·저항 막대 · 매물대 공통 가격 눈금: 현재가 중심
+        //   반폭 R = (1차 지지·1차 저항·당일 고가·저가 중 가장 먼 거리) × 1.25, 최소 1.2%(지수 ETF 0.6%) · 최대 6%
+        //   범위 밖 레벨(2차 지지·저항 등)은 막대 끝에 고정해 ◀ / ▶ 로 표시 (가격·% 는 실제 값)
+        //   가격이 조금 움직일 때마다 눈금이 출렁이지 않게: 레벨이 같고 현재가가 중심에서 R 의 35% 안이면 그대로 씀
+        function 막대_범위(host, d, 고저, 종목) {
+            var price = Number(d.price) || 0, s1 = Number(d.support1) || 0, r1 = Number(d.resistance1) || 0;
+            종목 = 종목 || d.ticker || '';
+            var 지수 = /^(QQQ|SPY|IWM|DIA|SPX)$/.test(종목);
+            var 최소 = price * (지수 ? 0.006 : 0.012), 최대 = price * 0.06, 거리 = [];
+            if (s1 > 0 && s1 < price) 거리.push(price - s1);
+            if (r1 > price) 거리.push(r1 - price);
+            if (고저 && !고저.정규장외) { 거리.push(Math.abs(price - 고저.L)); 거리.push(Math.abs(고저.H - price)); }
+            var R = Math.min(최대, Math.max(최소, (거리.length ? Math.max.apply(null, 거리) : 0) * 1.25));
+            var 키 = [종목, d.support1, d.support2, d.resistance1, d.resistance2, d.maxPain].join('|'), 전 = host && host._범위;
+            if (전 && 전.키 === 키 && Math.abs(price - 전.중심) <= 전.R * 0.35 && R <= 전.R * 1.3 && R >= 전.R * 0.6) return 전;
+            var 새 = { 키: 키, 중심: price, R: R, 최소: price - R, 최대: price + R };
+            if (host) host._범위 = 새;
+            return 새;
+        }
+
         function renderTimeline_막대(prefix, d) {
             var host = document.getElementById(prefix + 'timeline');
             if (!host) return;
@@ -5305,14 +5554,14 @@
             var PAD_L = 0.05, PAD_R = 0.05;
             var TRK_W = 1 - PAD_L - PAD_R;
 
-            var minV = s2, maxV = r2, span = maxV - minV || 1;
+            var 패널번호 = parseInt(String(prefix).replace(/[^0-9]/g, ''), 10);
+            var 고저 = 고저_가져오기(d.ticker || panelTickers[패널번호], price);
+            var 범위 = 막대_범위(host, d, 고저, d.ticker || panelTickers[패널번호]);
+            var minV = 범위.최소, maxV = 범위.최대, span = maxV - minV || 1;
             function pct(v) {
                 var r = Math.max(0, Math.min(1, (v - minV) / span));
                 return (PAD_L + r * TRK_W) * 100;
             }
-
-            var 패널번호 = parseInt(String(prefix).replace(/[^0-9]/g, ''), 10);
-            var 고저 = 고저_가져오기(d.ticker || panelTickers[패널번호], price);
             var dayHigh = 고저 ? 고저.H : price, dayLow = 고저 ? 고저.L : price;   // 없으면 막대 숨김
 
             var pctL = pct(dayLow);
@@ -5415,45 +5664,67 @@
                 { key: 'r2', val: r2, label: '2차저항', color: '#ff3333', glow: 'rgba(255,51,51,0.7)' },
             ];
 
+            // 같은 가격의 레벨은 하나로 합침 (예: 365.0 MaxPain·1차지지)
+            var 합친 = [];
+            nodes.filter(function (n) { return n.val > 0; }).forEach(function (n) {
+                var 같은 = 합친.filter(function (m) { return Math.abs(m.val - n.val) < 0.005; })[0];
+                if (같은) 같은.label += '·' + n.label; else 합친.push(Object.assign({}, n));
+            });
+            nodes = 합친.sort(function (a, b) { return a.val - b.val; });
+            nodes.forEach(function (n) { n.밖 = n.val < minV ? -1 : n.val > maxV ? 1 : 0; });
             var nodePcts = nodes.map(function (n) { return pct(n.val); });
 
-            nodes.forEach(function (n) {
-                var lp = pct(n.val);
+            nodes.forEach(function (n, i) {
+                var lp = nodePcts[i];
                 var dotSz = 10;
                 var dot = mkEl({
                     position: 'absolute', zIndex: '5', top: (NODE_CY - dotSz / 2) + 'px', left: lp + '%', transform: 'translateX(-50%)',
-                    width: dotSz + 'px', height: dotSz + 'px', borderRadius: '50%',
-                    background: n.color, boxShadow: '0 0 5px ' + n.glow,
+                    width: dotSz + 'px', height: dotSz + 'px', borderRadius: '50%', boxSizing: 'border-box',
+                    background: n.밖 ? '#07070c' : n.color, border: n.밖 ? '2px solid ' + n.color : 'none', boxShadow: '0 0 5px ' + n.glow,
                 });
+                if (n.밖) dot.title = n.label + ' ' + n.val.toFixed(2) + ' (막대 범위 밖 · ' + (n.밖 < 0 ? '아래' : '위') + ')';
                 host.appendChild(dot);
             });
+            // 범위 밖 레벨이 있는 쪽 막대 끝에 물결(≈) 표시
+            [-1, 1].forEach(function (쪽) {
+                if (!nodes.some(function (n) { return n.밖 === 쪽; })) return;
+                var w = mkEl({ position: 'absolute', zIndex: '6', top: (BOT_TRACK_Y - 6) + 'px', left: (쪽 < 0 ? PAD_L * 100 + 3.2 : (1 - PAD_R) * 100 - 3.2) + '%', transform: 'translateX(-50%)',
+                               fontSize: '13px', fontWeight: '900', color: '#8b93a7', lineHeight: '13px' });
+                w.textContent = '≈'; w.title = '이 너머 레벨은 막대 끝에 모아 표시 (실제 거리는 % 참고)';
+                host.appendChild(w);
+            });
 
-            // 라벨 겹침 방지: 실제 화면 폭 기준으로 라벨 폭(약 52px)보다 가까우면 아래 줄로 내림 (모바일 대응)
+            // 라벨 겹침 방지: 실제 화면 폭 기준 라벨 폭(약 54px)보다 가까우면 다음 줄로 (최대 3줄)
             var hostW = host.clientWidth || 300;
-            var minGapPct = Math.max(9, 52 / hostW * 100);
+            var minGapPct = Math.max(9, 54 / hostW * 100);
             var LBL_BLOCK_H = 36;                                  // 가격·이름·% 3줄 높이
-            var offsets = nodePcts.map(function () { return 0; });
-            for (var i = 0; i < nodePcts.length - 1; i++) {
-                if (nodePcts[i + 1] - nodePcts[i] < minGapPct) {
-                    offsets[i + 1] = offsets[i] === 0 ? LBL_BLOCK_H : 0;
-                }
-            }
-            if (offsets.some(function (o) { return o > 0; })) host.style.height = (TOTAL_H + LBL_BLOCK_H) + 'px';
+            var 줄끝 = [-1e9, -1e9, -1e9], offsets = [];
+            nodePcts.forEach(function (p, i) {
+                var 줄 = 0;
+                while (줄 < 2 && p - 줄끝[줄] < minGapPct) 줄++;
+                줄끝[줄] = p; offsets[i] = 줄 * LBL_BLOCK_H;
+            });
+            var 최대줄 = Math.max.apply(null, offsets);
+            if (최대줄 > 0) host.style.height = (TOTAL_H + 최대줄) + 'px';
 
             nodes.forEach(function (n, i) {
                 var lp = nodePcts[i];
                 var off = offsets[i];
                 var nodeClr = n.color;
+                // 막대 끝 라벨은 안쪽으로 붙여 잘리지 않게
+                var 끌기 = lp < 12 ? 'translateX(-20%)' : lp > 88 ? 'translateX(-80%)' : 'translateX(-50%)';
+                if (off > 0) host.appendChild(mkEl({ position: 'absolute', zIndex: '6', top: (NODE_CY + 5) + 'px', left: lp + '%', height: (PRICE_Y - NODE_CY - 5 + off) + 'px',
+                                                    borderLeft: '1px dotted ' + nodeClr, opacity: '.55' }));
 
                 var prEl = mkEl({
-                    position: 'absolute', zIndex: '7', top: (PRICE_Y + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
+                    position: 'absolute', zIndex: '7', top: (PRICE_Y + off) + 'px', left: lp + '%', transform: 끌기,
                     fontSize: '9.5px', fontWeight: 'bold', color: nodeClr, whiteSpace: 'nowrap', textAlign: 'center'
                 });
-                prEl.textContent = n.val.toFixed(1);
+                prEl.textContent = (n.밖 < 0 ? '◀ ' : '') + n.val.toFixed(1) + (n.밖 > 0 ? ' ▶' : '');
                 host.appendChild(prEl);
 
                 var nmEl = mkEl({
-                    position: 'absolute', zIndex: '7', top: (LABEL_Y0 + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
+                    position: 'absolute', zIndex: '7', top: (LABEL_Y0 + off) + 'px', left: lp + '%', transform: 끌기,
                     fontSize: '9px', fontWeight: 'bold', color: nodeClr, whiteSpace: 'nowrap', textAlign: 'center',
                     textShadow: '0 0 3px rgba(0,0,0,0.8)'
                 });
@@ -5465,7 +5736,7 @@
                 var signStr = totalTargetRate > 0 ? '+' : '';
 
                 var pctEl = mkEl({
-                    position: 'absolute', zIndex: '7', top: (PCT_Y0 + off) + 'px', left: lp + '%', transform: 'translateX(-50%)',
+                    position: 'absolute', zIndex: '7', top: (PCT_Y0 + off) + 'px', left: lp + '%', transform: 끌기,
                     fontSize: '8.5px', fontWeight: 'bold', color: nodeClr, whiteSpace: 'nowrap', textAlign: 'center',
                     textShadow: '0 0 3px rgba(0,0,0,0.8)'
                 });
@@ -5537,8 +5808,9 @@
             }
             var u = 칸.단위, 시작 = 칸.시작, n = 량.length;
             var 최대량 = 0, 총 = 0; 량.forEach(function (v) { v = Number(v) || 0; if (v > 최대량) 최대량 = v; 총 += v; });
-            // 가격 눈금: 위 지지·저항 막대와 같은 범위(2차 지지 ~ 2차 저항)·같은 여백(5%)
-            var minV = Number(d && d.support2) || 0, maxV = Number(d && d.resistance2) || 0;
+            // 가격 눈금: 위 지지·저항 막대와 같은 범위(현재가 중심)·같은 여백(5%)
+            var 막대el = document.getElementById(prefix + 'timeline'), 막범 = 막대el && 막대el._범위;
+            var minV = 막범 && 막범.키.split('|')[0] === 종목 ? 막범.최소 : 0, maxV = 막범 && 막범.키.split('|')[0] === 종목 ? 막범.최대 : 0;
             var 끝가 = 시작 + (n - 1) * u;
             if (!(minV > 0 && maxV > minV)) {   // 막대가 없으면 매물대 범위 + 현재가
                 minV = Math.min(시작, price > 0 ? price : 시작); maxV = Math.max(끝가, price > 0 ? price : 끝가);
@@ -5570,8 +5842,8 @@
             var 현 = price > 0 && price >= minV && price <= maxV ? '<line x1="' + X(price).toFixed(1) + '" x2="' + X(price).toFixed(1) + '" y1="0" y2="' + H + '" stroke="#22d3ee" stroke-width="2" vector-effect="non-scaling-stroke"/>' : '';
             var 그래프 = '<svg viewBox="0 0 1000 ' + H + '" preserveAspectRatio="none" aria-hidden="true">' + 띠 + 바닥 + 막대 + 현 + '</svg>' +
                 (price > 0 && price >= minV && price <= maxV ? '<span class="vp-now" style="left:' + (X(price) / 10).toFixed(2) + '%">▼</span>' : '') +
-                (밖왼 / 총 >= 0.03 ? '<span class="vp-out l" title="2차 지지보다 아래에서 거래된 비중">◀ ' + Math.round(밖왼 / 총 * 100) + '%</span>' : '') +
-                (밖오 / 총 >= 0.03 ? '<span class="vp-out r" title="2차 저항보다 위에서 거래된 비중">' + Math.round(밖오 / 총 * 100) + '% ▶</span>' : '');
+                (밖왼 / 총 >= 0.03 ? '<span class="vp-out l" title="위 막대 범위보다 아래에서 거래된 비중">◀ ' + Math.round(밖왼 / 총 * 100) + '%</span>' : '') +
+                (밖오 / 총 >= 0.03 ? '<span class="vp-out r" title="위 막대 범위보다 위에서 거래된 비중">' + Math.round(밖오 / 총 * 100) + '% ▶</span>' : '');
             // 머리: 날짜 · 출처
             var 날 = 물.날짜 ? (+물.날짜.slice(5, 7)) + '/' + (+물.날짜.slice(8, 10)) : '';
             var 출처 = 물.출처 === '체결' ? '체결 기준' + (물.시드까지 ? ' · ' + 물.시드까지 + ' 전 1분봉' : '') : '1분봉 기준' + (물.기준시각 ? ' · ' + 물.기준시각 : '');
@@ -5614,17 +5886,19 @@
         var 옵션_접힘 = (function () { try { return JSON.parse(localStorage.getItem('sz_oi_fold') || '{}') || {}; } catch (e) { return {}; } })();
         function 옵션_월수표시(idx) {
             var el = document.getElementById('p' + idx + '-oi-extra'); if (!el) return;
+            var 앞el = document.getElementById('p' + idx + '-oi-before'), 머el = document.getElementById('p' + idx + '-oi-mainhead');
             var t = panelTickers[idx], v = 옵션_월수[t], d = panelDataStore[idx];
-            if (!t || !v || !v.strikes) { el.innerHTML = ''; return; }
+            function 비움() { el.innerHTML = ''; if (앞el) 앞el.innerHTML = ''; if (머el) 머el.innerHTML = ''; 옵션_기준표시(idx, false); }
+            if (!t || !v || !v.strikes) { 비움(); return; }
             var 위만기 = d && (d.만기 || d.expiry) || '';
             var 본 = {}, 목록 = [{ expiry: v.expiry, strikes: v.strikes }].concat(v.extras || []).filter(function (c) {
                 if (!c || !c.expiry || !c.strikes || !c.strikes.length || c.expiry === 위만기 || 본[c.expiry]) return false;
                 if (c.당일 && !옵션_당일유효(c.expiry)) return false;   // 오늘 16:00 ET 지난 당일 만기
                 본[c.expiry] = 1; return true;
             }).sort(function (a, b) { return a.expiry < b.expiry ? -1 : 1; });
-            if (!목록.length) { el.innerHTML = ''; return; }
+            if (!목록.length) { 비움(); return; }
             var price = d && d.price > 0 ? d.price : v.price, 오늘 = etNowParts().date;
-            el.innerHTML = 목록.map(function (c) {
+            function 표(c) {
                 var ex = c.expiry.split('-'), wd = new Date(Date.UTC(+ex[0], +ex[1] - 1, +ex[2])).getUTCDay(), 요일 = ['일', '월', '화', '수', '목', '금', '토'][wd];
                 var dte = Math.round((Date.UTC(+ex[0], +ex[1] - 1, +ex[2]) - Date.UTC(+오늘.slice(0, 4), +오늘.slice(5, 7) - 1, +오늘.slice(8, 10))) / 86400000);
                 var 계산 = 옵션_계산(c.strikes, price); if (!계산) return '';
@@ -5637,14 +5911,32 @@
                     '<span>MaxPain <b>' + 계산.maxPain + '</b> · 지지 ' + 계산.support1 + ' · 저항 ' + 계산.resistance1 + '</span></div>' +
                     '<div class="oi-xbody"><div class="oi-grid-header"><div style="text-align:right;padding-right:2px;">콜</div><div>OI/V</div><div>등락</div><div>행사가</div><div>등락</div><div>OI/V</div><div style="text-align:left;padding-left:2px;">풋</div></div>' +
                     옵션표_HTML(계산.optionRows, price) + '</div></div>';
-            }).join('');
-            Array.prototype.forEach.call(el.querySelectorAll('.oi-xhead'), function (h) {
+            }
+            // 날짜순: 매매 기준 만기보다 빠른 만기는 위(기준 표 앞), 늦은 만기는 아래
+            var 앞 = 목록.filter(function (c) { return 위만기 && c.expiry < 위만기; }), 뒤 = 목록.filter(function (c) { return !위만기 || c.expiry > 위만기; });
+            if (앞el) 앞el.innerHTML = 앞.map(표).join('');
+            el.innerHTML = 뒤.map(표).join('');
+            if (머el) {
+                var 위ex = 위만기.split('-'), 위요일 = 위만기 ? ['일', '월', '화', '수', '목', '금', '토'][new Date(Date.UTC(+위ex[0], +위ex[1] - 1, +위ex[2])).getUTCDay()] : '';
+                var 위dte = 위만기 ? Math.round((Date.UTC(+위ex[0], +위ex[1] - 1, +위ex[2]) - Date.UTC(+오늘.slice(0, 4), +오늘.slice(5, 7) - 1, +오늘.slice(8, 10))) / 86400000) : 0;
+                머el.innerHTML = 앞.length && 위만기 ? '<div class="oi-xhead main"><span class="oi-xt">★ ' + 위요일 + '요일 만기 · 매매 기준</span><span class="oi-dte">' + 위ex[1] + '/' + 위ex[2] + (위dte === 0 ? ' (당일 만기)' : ' (D-' + 위dte + ')') + '</span></div>' : '';
+            }
+            옵션_기준표시(idx, true);
+            var 접기들 = [el].concat(앞el ? [앞el] : []);
+            접기들.forEach(function (box) { Array.prototype.forEach.call(box.querySelectorAll('.oi-xhead'), function (h) {
                 h.onclick = function () {
                     var sec = h.parentNode, k = sec.getAttribute('data-wd');
                     옵션_접힘[k] = !옵션_접힘[k]; try { localStorage.setItem('sz_oi_fold', JSON.stringify(옵션_접힘)); } catch (e) { }
                     옵션_월수표시(idx);
                 };
-            });
+            }); });
+        }
+        // 다른 만기 표가 함께 보이면 위 머리의 만기 옆에 "★ 매매 기준" 표시
+        function 옵션_기준표시(idx, 있음) {
+            var el = document.getElementById('p' + idx + '-dte'); if (!el) return;
+            var b = el.querySelector('.oi-star');
+            if (있음 && !b) { b = document.createElement('span'); b.className = 'oi-star'; b.textContent = ' ★ 매매 기준'; el.appendChild(b); }
+            else if (!있음 && b) b.remove();
         }
 
         function renderOiSafe(panelIdx, rows, price) {
@@ -5652,6 +5944,9 @@
             var el = document.getElementById(p + 'oi-rows');
             if (!el) return;
             hideInitialLoading();
+            // 받을 때 잘라 둔 14행이 아니라, 지금 가격 기준으로 전체 행사가에서 다시 고름 (가격이 움직여도 현재가가 가운데)
+            var 전체 = null; try { 전체 = 옵션_전체행사가(panelDataStore[panelIdx]); } catch (e) { }
+            if (전체 && price > 0) { var 다시 = 옵션_14줄(전체, price); if (다시.length) rows = 다시; }
             el.innerHTML = 옵션표_HTML(rows, price);
             옵션_월수예약(panelIdx);
         }
@@ -6839,7 +7134,30 @@
             return Math.floor(Date.now() / 1000) * 1000 + (남분 * 60 - t.et.getSeconds()) * 1000;
         }
         function 남은글(ms) { var 분 = Math.max(0, Math.ceil(ms / 60000)); return 분 < 60 ? 분 + '분' : Math.floor(분 / 60) + ':' + ('0' + 분 % 60).slice(-2); }
-        function 알림_말가격(v) { return (Math.abs(v - Math.round(v)) < 0.005 ? String(Math.round(v)) : v.toFixed(2)) + '달러'; }
+        // 음성용 숫자 읽기: 372.22 → "삼백칠십이 점 이이" (음성 엔진마다 소수점을 다르게 읽어서 미리 한글로 바꿈)
+        function 한글정수(n) {
+            n = Math.floor(Math.abs(n));
+            if (n === 0) return '영';
+            var 숫 = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'], 자리 = ['', '십', '백', '천'], 큰 = ['', '만', '억', '조'];
+            var 결과 = '', 묶음 = 0;
+            while (n > 0) {
+                var 넷 = n % 10000, 글 = '';
+                for (var i = 3; i >= 0; i--) {
+                    var d = Math.floor(넷 / Math.pow(10, i)) % 10;
+                    if (!d) continue;
+                    글 += (d === 1 && i > 0 ? '' : 숫[d]) + 자리[i];
+                }
+                if (글) 결과 = (글 === '일' && 묶음 === 1 ? '' : 글) + 큰[묶음] + 결과;
+                n = Math.floor(n / 10000); 묶음++;
+            }
+            return 결과;
+        }
+        function 한글수(v) {
+            var 글 = Number(v).toFixed(2).replace(/0+$/, '').replace(/\.$/, ''), 부분 = 글.split('.');
+            var 숫 = ['영', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+            return (Number(v) < 0 ? '마이너스 ' : '') + 한글정수(Number(부분[0].replace('-', ''))) + (부분[1] ? ' 점 ' + 부분[1].split('').map(function (c) { return 숫[+c]; }).join('') : '');
+        }
+        function 알림_말가격(v) { return 한글수(v) + ' 달러'; }
 
         // ── 알림 기록 (오늘 ET 날짜, 이 브라우저에 저장) ──
         var 알림기록 = { 날짜: '', 목록: [], 안읽음: 0 };
@@ -6970,7 +7288,7 @@
                 b.onclick = function () { var k = b.getAttribute('data-kind'); 알림설정[k].창 = !알림설정[k].창; 알림설정저장(); 다시(); };
             });
             Array.prototype.forEach.call(창.querySelectorAll('.ns-sel'), function (sel) {
-                sel.onchange = function () { 알림설정[sel.getAttribute('data-kind')].방식 = sel.value; 알림설정저장(); if (sel.value === '음성' || sel.value === '둘다') 음성_읽기('테슬라, 357달러 이상 도달', true); };
+                sel.onchange = function () { 알림설정[sel.getAttribute('data-kind')].방식 = sel.value; 알림설정저장(); if (sel.value === '음성' || sel.value === '둘다') 음성_읽기('테슬라, ' + 알림_말가격(357.22) + ' 이상 도달', true); };
             });
             var hot = 창.querySelector('#ns-hot'); if (hot) hot.onchange = function () { 알림설정.급증.폭주만 = this.checked; 알림설정저장(); };
             Array.prototype.forEach.call(창.querySelectorAll('.ns-quick button'), function (b) {
@@ -7000,9 +7318,9 @@
             음량칸.oninput = function () { 창.querySelector('#al-volv').textContent = Math.round(음량칸.value * 100) + '%'; };
             음량칸.onchange = function () { 알람_소리설정.음량 = Number(음량칸.value); 알람_소리설정저장(); 알람_소리(); };
             var 음성칸 = 창.querySelector('#vc-name'), 속도칸 = 창.querySelector('#vc-rate'), 듣기 = 창.querySelector('#vc-play');
-            if (음성칸) 음성칸.onchange = function () { 음성설정.음성 = this.value; 음성설정저장(); 음성_읽기('테슬라, 357달러 이상 도달', true); };
-            if (속도칸) 속도칸.onchange = function () { 음성설정.속도 = Number(this.value); 음성설정저장(); 음성_읽기('테슬라, 357달러 이상 도달', true); };
-            if (듣기) 듣기.onclick = function () { 음성_읽기('테슬라, 357달러 이상 도달', true); };
+            if (음성칸) 음성칸.onchange = function () { 음성설정.음성 = this.value; 음성설정저장(); 음성_읽기('테슬라, ' + 알림_말가격(357.22) + ' 이상 도달', true); };
+            if (속도칸) 속도칸.onchange = function () { 음성설정.속도 = Number(this.value); 음성설정저장(); 음성_읽기('테슬라, ' + 알림_말가격(357.22) + ' 이상 도달', true); };
+            if (듣기) 듣기.onclick = function () { 음성_읽기('테슬라, ' + 알림_말가격(357.22) + ' 이상 도달', true); };
         }
         // 방해 금지: 끝나면 원래대로 · 설정 탭이 열려 있으면 남은 시간 갱신
         setInterval(function () {
@@ -7039,6 +7357,7 @@
         function 알림_패널로가기(종목) {
             var i = panelTickers.indexOf(종목); if (i < 0) return;
             var 패널 = document.getElementById('panel-' + i); if (!패널) return;
+            if (패널_숨김(i)) 패널_보이기설정(i, true);
             if (window.innerWidth <= 1200) 이동_가기(i);
             else 패널.scrollTop = 0;
             var 머리 = 패널.querySelector('.ph'); if (머리) { 머리.classList.remove('nt-flash'); void 머리.offsetWidth; 머리.classList.add('nt-flash'); }
@@ -7092,7 +7411,7 @@
             Object.keys(이동_알림).forEach(function (i) { if (String(현재) === i || 지금 - 이동_알림[i] > 60000) delete 이동_알림[i]; });
             var 알림패널 = Object.keys(이동_알림).map(Number);
             var 색 = typeof 현재 === 'number' ? 알림_패널색[현재] : 현재 === 'wl' ? '#f5c542' : '#8b93a7';
-            var 목록 = '<div class="qn-list">' + [['top', '▲ 맨 위', '']].concat([0, 1, 2].map(function (i) { return [String(i), (i + 1) + ' ' + (panelTickers[i] || '─'), 알림_패널색[i]]; })).concat([['wl', '★ 관심종목', '#f5c542']]).map(function (o) {
+            var 목록 = '<div class="qn-list">' + [['top', '▲ 맨 위', '']].concat(패널_보이는().map(function (i) { return [String(i), (i + 1) + ' ' + (panelTickers[i] || '─'), 알림_패널색[i]]; })).concat([['wl', '★ 관심종목', '#f5c542']]).map(function (o) {
                 var 알 = o[0] !== 'top' && o[0] !== 'wl' && 알림패널.indexOf(Number(o[0])) >= 0;
                 return '<button type="button" data-go="' + o[0] + '" class="' + (String(현재) === o[0] ? 'cur' : '') + '"' + (o[2] ? ' style="border-left-color:' + o[2] + '"' : '') + '>' + o[1] + (알 ? '<i class="qn-dot" style="background:' + o[2] + '"></i>' : '') + '</button>';
             }).join('') + '</div>';
@@ -7505,6 +7824,7 @@
             initDashboard(); buildWatchlist(); refreshAllDropdowns(); initFirebase();
             [0, 1, 2].forEach(function (i) { try { 레벨요약표시('p' + i + '-', { ticker: panelTickers[i] }); 매물대표시('p' + i + '-', { ticker: panelTickers[i] }); } catch (e) { } });
             try { 알람_화면갱신(); } catch (e) { }   // 요약 틀(빈 줄) 먼저 → 3개 패널 높이 동일
+            try { 패널_적용(); } catch (e) { console.warn('[패널]', e); }
             try { 알림기록_오늘(); 알림기록_배지(); 화면_적용(); 이동_그리기(); } catch (e) { }
             try { 통계_시작(); } catch (e) { }
             try {
