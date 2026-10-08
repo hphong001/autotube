@@ -1453,7 +1453,7 @@
             background: #0b0c15;
             border: 1px solid #1a2a40;
             border-radius: 12px;
-            padding: 24px 16px;
+            padding: 12px 16px 11px;      /* 위·아래 여백 축소 → 관심종목을 더 길게 */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -1489,7 +1489,7 @@
             height: 1px;
             width: 90%;
             background: linear-gradient(90deg,transparent,#ffcc00,transparent);
-            margin: 12px 0 10px;
+            margin: 8px 0 7px;
         }
 
         .sl-sub {
@@ -1640,7 +1640,13 @@
         /* 세이브 뉴스: 패널 한 줄 · 배너 · 상단 버튼 */
         .mk-ai.mk-news { color: #fde68a; background: rgba(245, 197, 66, .12); border-color: rgba(245, 197, 66, .55); }
         .mk-ai.mk-news:hover { background: rgba(245, 197, 66, .24); }
-        .pn-news { margin: 4px 0 2px; font-size: 12px; min-width: 0; }
+        .pn-news { margin: 4px 0 2px; font-size: 12px; min-width: 0; zoom: var(--pnn-sc, 1); }
+        /* 패널 뉴스 제목 2줄 (설정) */
+        .pnn-two .pnn-row:not(.pnn-none), .pnn-two .pnn-it { white-space: normal; align-items: flex-start; }
+        .pnn-two .pnn-row .pnn-ti, .pnn-two .pnn-it .pnn-ti { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; line-height: 1.35; }
+        .pnn-two .pnn-row > *:not(.pnn-ti), .pnn-two .pnn-it > *:not(.pnn-ti) { margin-top: 1px; }
+        .pnn-it.read { opacity: .55; }
+        .pn-news mark.hl, .nw-ban mark.hl, #nw-top mark.hl { background: #ff8a3d55; color: #ffd7b5; border-radius: 2px; }
         .pnn-row { display: flex; align-items: center; gap: 5px; padding: 4px 7px; border-radius: 6px; background: #0e111c; border: 1px solid #1e2233; cursor: pointer; white-space: nowrap; overflow: hidden; color: #eef1f7; font-size: 12.5px; }
         .pnn-row.blink { border-color: #f5c542; animation: pnnBlink .55s ease-in-out 14 alternate; }
         @keyframes pnnBlink { from { background: #0e111c; } to { background: rgba(245, 197, 66, .38); } }
@@ -1662,9 +1668,11 @@
         .nw-ban .pnn-ti { color: #fff; }
         .nw-ban.flash { animation: nwFlash .5s ease-in-out 6 alternate; }
         @keyframes nwFlash { from { background: rgba(245, 197, 66, .14); } to { background: rgba(245, 197, 66, .42); } }
+        @media (min-width: 1201px) { #nw-top { left: 50% !important; right: auto !important; transform: translateX(-50%); width: min(720px, 90vw); } }
         #nw-top { display: none; position: fixed; left: 8px; right: 8px; top: 8px; z-index: 10050; padding: 9px 12px; border-radius: 9px; background: #2a2208; border: 1px solid #f5c542; color: #fde68a; font-weight: 700; font-size: 13px; box-shadow: 0 6px 20px rgba(0, 0, 0, .5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
         #nw-top.show { display: flex; align-items: center; gap: 5px; }
         #nw-top small { margin-left: auto; color: #c9b26a; flex-shrink: 0; }
+        .wl-t { white-space: nowrap; flex-shrink: 0; }
         .wl-t[data-nw]::after { content: ' 📰'; font-size: 10px; }
         #st-me { position: fixed; left: 6px; bottom: 4px; z-index: 50; font-size: 10px; color: #6b7386; background: rgba(13, 13, 26, .75); padding: 1px 6px; border-radius: 4px; pointer-events: none; }
         .wl-sp { flex-shrink: 0; align-self: center; width: 52px; height: 24px; }
@@ -1985,7 +1993,6 @@
                 <div class="sl-line"></div>
                 <div class="sl-sub">STOCK PREMIUM</div>
             </div>
-            <div class="sidebar-menu">[메뉴] 알림 · 설정 · 포트폴리오</div>
             <div class="sidebar-watchlist">
                 <div class="wl-head">
                     <h3 class="watchlist-title">⭐ 관심 종목 <small id="wl-count"></small></h3>
@@ -1994,7 +2001,6 @@
                 <div class="ticker-list" id="ticker-list"></div>
                 <button type="button" class="wl-more" id="wl-more"></button>
             </div>
-            <div class="sidebar-ad">광고 영역 (300×250)</div>
         </div>
     </div>
 
@@ -4590,9 +4596,10 @@
         // ════════════════════════════════════════════════════════
         // ★ 세이브 뉴스 (윈폼이 10초마다 수집 → Firebase news/{한국날짜}/{id})
         //   항목: t(ms) · ti 제목 · en 영어 원제 · c 본문 앞부분 · s 출처 · tk 종목 · tn 종목 이름 · lb 분류 · ho 속보 제목만 · pk SAVE PICK · ad 광고
-        //   - 패널: 미니차트 아래 한 줄 (최근 1건 · [N건 ▾] 펼치면 최근 5건) · 미니차트에 뉴스 시점 ▼
-        //   - 새 뉴스(제목에 종목 이름이 있거나 태그+이름 일치) → 패널 위 배너 15초 + 소리 (휴대폰은 화면 위에도)
-        //   - [📰 뉴스] 단추 → 새 창(?news=1): 오늘·어제·그제 전체 · 검색 · 빠른 필터
+        //   - 패널: 미니차트 아래 한 줄 (최근 1건 · [N건 ▾] 펼치면 최근 5건) · 미니차트에 뉴스 시점 ▼ · 새 뉴스면 한 줄 깜빡임
+        //   - 알림: 패널 종목(배너) · 관심종목·속보·SAVE PICK·강조 단어(화면 위 띠) — 설정에서 고름
+        //   - [📰 뉴스] 단추 → 새 창(?news=1): 최근 24시간·오늘·어제·그제·3일 · 검색 · 빠른 필터 · ⚙ 설정
+        //   - 설정: 이 기기에 저장(sz_news_cfg) · 뉴스 창에서 바꾸면 대시보드에도 바로 반영
         // ════════════════════════════════════════════════════════
         // (뉴스 창에서도 쓰므로 아래 함수들은 다른 전역 변수에 기대지 않음)
         function 뉴스_한국날짜(ms) {
@@ -4600,6 +4607,16 @@
             return d.toISOString().slice(0, 10);
         }
         function 뉴스_한국시각(ms) { return new Date(ms + 9 * 3600000).toISOString().slice(11, 16); }
+        function 뉴스_뉴욕시각(ms) {
+            try { return new Date(ms).toLocaleTimeString('en-GB', { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', hour12: false }); } catch (e) { return ''; }
+        }
+        // 설정의 "시각 표시"에 맞춘 시각 글
+        function 뉴스_시각글(ms) {
+            var c = 뉴스_설정().시각;
+            if (c === '뉴욕') return 뉴스_뉴욕시각(ms) + ' ET';
+            if (c === '둘다') return 뉴스_한국시각(ms) + ' <small>(ET ' + 뉴스_뉴욕시각(ms) + ')</small>';
+            return 뉴스_한국시각(ms);
+        }
         function 뉴스_전(ms) {
             var 초 = Math.max(0, Math.round((Date.now() - ms) / 1000));
             return 초 < 60 ? '방금' : 초 < 3600 ? Math.floor(초 / 60) + '분 전' : 초 < 86400 ? Math.floor(초 / 3600) + '시간 전' : Math.floor(초 / 86400) + '일 전';
@@ -4608,6 +4625,16 @@
             var m = { 'reuters': '로이터', 'prnewswire-us': 'PR 뉴스와이어', 'prnewswire': 'PR 뉴스와이어', 'financial-juice': '파이낸셜주스', 'globenewswire': '글로브뉴스와이어', 'businesswire': '비즈니스와이어', 'accesswire': '액세스와이어' };
             return m[String(s || '').toLowerCase()] || s || '';
         }
+        // 출처 묶음 (설정 "출처" 켜고 끄기용)
+        function 뉴스_출처묶음(x) {
+            var s = String(x.s || '').toLowerCase();
+            if (x.pk) return '픽';
+            if (s.indexOf('reuters') >= 0 || s === '로이터') return '로이터';
+            if (s.indexOf('financial-juice') >= 0) return '파이낸셜주스';
+            if (/prnewswire|globenewswire|businesswire|accesswire|newsfile/.test(s)) return '보도자료';
+            return '기타';
+        }
+        function 뉴스_출처묶음목록() { return [['로이터', '로이터'], ['파이낸셜주스', '파이낸셜주스 (속보)'], ['픽', 'SAVE PICK (세이브 정리)'], ['보도자료', '보도자료 (PR 뉴스와이어 등)'], ['기타', '그 밖 (CNBC·블룸버그 등)']]; }
         // 광고성 보도자료 (윈폼 뉴스_광고 와 같은 규칙) → 기본 숨김
         function 뉴스_광고(x) {
             if (!x) return false;
@@ -4618,6 +4645,64 @@
             return ['증권 사기', '집단소송', '집단 소송', '소송을 주도', '투자자 경고', '투자자들에게 알림', '신의성실', '로펌', '법률사무소', '손실을 입은 투자자', '주주 권리',
                 'class action', 'securities fraud', 'lawsuit', 'investors who lost', 'law firm', 'rosen law', 'pomerantz', 'shareholder rights', 'investor alert', 'fiduciary', 'sbs law', 'schall'].some(function (w) { return 글.indexOf(w) >= 0; });
         }
+
+        // ── 뉴스 설정 (이 기기에 저장) ──
+        function 뉴스_기본설정() {
+            return {
+                창글자: '보통', 패널글자: '보통', 패널2줄: true, 펼침: 5, 본문: '2줄', 원제: '검색', 시각: '한국', 읽음흐리게: true,
+                광고숨김: true, 출처끔: [], 분류끔: [], 제외: '', 강조: '', 관련보임: true,
+                알림패널: true, 알림관심: false, 알림속보: false, 알림픽: false, 알림강조: false, 알림기준: '확실',
+                소리: '마림바', 볼륨: 0.6, 음성: false, 배너초: 15, 깜빡: true, 위띠: true, 간격초: 20,
+                기본보기: '24시간', 패널기간: '24시간', 새뉴스: '단추', 원문: '새탭'
+            };
+        }
+        function 뉴스_설정() {
+            if (window.__뉴스설정) return window.__뉴스설정;
+            var c = 뉴스_기본설정();
+            try { var v = JSON.parse(localStorage.getItem('sz_news_cfg') || 'null'); if (v && typeof v === 'object') Object.keys(c).forEach(function (k) { if (v[k] !== undefined && typeof v[k] === typeof c[k]) c[k] = v[k]; }); } catch (e) { }
+            window.__뉴스설정 = c; return c;
+        }
+        function 뉴스_설정저장(c) {
+            window.__뉴스설정 = c; window.__뉴스설정판 = (window.__뉴스설정판 || 0) + 1;
+            try { localStorage.setItem('sz_news_cfg', JSON.stringify(c)); } catch (e) { }
+        }
+        function 뉴스_단어목록(글) { return String(글 || '').split(/[,，\n]/).map(function (w) { return w.trim(); }).filter(function (w) { return w.length >= 1; }); }
+        // 설정으로 숨길 뉴스 (출처·분류·제외 단어) — 광고는 따로
+        function 뉴스_거름(x, c) {
+            c = c || 뉴스_설정();
+            if (c.출처끔.length && c.출처끔.indexOf(뉴스_출처묶음(x)) >= 0) return true;
+            if (c.분류끔.length && (x.lb || []).some(function (l) { return c.분류끔.indexOf(l) >= 0; })) return true;
+            var 제외 = 뉴스_단어목록(c.제외);
+            if (제외.length) {
+                var 글 = ((x.ti || '') + ' ' + (x.en || '') + ' ' + (x.c || '')).toLowerCase();
+                if (제외.some(function (w) { return 글.indexOf(w.toLowerCase()) >= 0; })) return true;
+            }
+            return false;
+        }
+        function 뉴스_강조단어걸림(x, c) {
+            var 목 = 뉴스_단어목록((c || 뉴스_설정()).강조); if (!목.length) return '';
+            var 글 = ((x.ti || '') + ' ' + (x.en || '')).toLowerCase();
+            for (var i = 0; i < 목.length; i++) if (글.indexOf(목[i].toLowerCase()) >= 0) return 목[i];
+            return '';
+        }
+        // 글 안의 단어 강조 (<mark>) · 이미 HTML 로 바꾼 글에 씀
+        function 뉴스_강조(h, 단어들, 종류) {
+            var 패턴 = (단어들 || []).map(function (w) { return 뉴스_글(String(w).replace(/^\$/, '')).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).filter(Boolean).sort(function (a, b) { return b.length - a.length; }).join('|');
+            return 패턴 ? h.replace(new RegExp('(' + 패턴 + ')', 'gi'), '<mark' + (종류 ? ' class="' + 종류 + '"' : '') + '>$1</mark>') : h;
+        }
+        // 읽은 뉴스 (이 기기)
+        function 뉴스_읽음목록() {
+            if (window.__뉴스읽음) return window.__뉴스읽음;
+            var o = {}; try { (JSON.parse(localStorage.getItem('sz_news_read') || '[]') || []).forEach(function (id) { o[id] = 1; }); } catch (e) { }
+            window.__뉴스읽음 = o; return o;
+        }
+        function 뉴스_읽음표시(id) {
+            var o = 뉴스_읽음목록(); if (o[id]) return; o[id] = 1;
+            var 목 = Object.keys(o); if (목.length > 1500) { 목 = 목.slice(-1200); window.__뉴스읽음 = {}; 목.forEach(function (k) { window.__뉴스읽음[k] = 1; }); }
+            try { localStorage.setItem('sz_news_read', JSON.stringify(목)); } catch (e) { }
+        }
+        function 뉴스_글자배율(v) { return { '작게': 0.9, '보통': 1, '크게': 1.15, '아주 크게': 1.3 }[v] || 1; }
+
         // 종목 이름 (제목 확인·검색 확장용): 한국어 · 영어
         function 뉴스_기본이름() {
             return {
@@ -4652,10 +4737,11 @@
         }
         function 뉴스_글(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
         function 뉴스_원문주소(id) { return 'https://saveticker.com/news/' + encodeURIComponent(id); }
+        function 뉴스_원문대상() { return 뉴스_설정().원문 === '같은창' ? '_self' : '_blank'; }
         function 뉴스창_열기(검색) {
             var u = location.pathname + '?news=1' + (검색 ? '&q=' + encodeURIComponent(검색) : '');
             var 넓 = window.innerWidth > 900;
-            var w = window.open(u, 'sz_news', 넓 ? 'width=620,height=920' : undefined);
+            var w = window.open(u, 'sz_news', 넓 ? 'width=640,height=940' : undefined);
             if (w) { try { w.focus(); } catch (e) { } }
             else location.href = u;   // 팝업이 막히면 이 창에서 엶
         }
@@ -4663,7 +4749,7 @@
         // ────────── 대시보드 본체: 뉴스 받기 ──────────
         var 뉴스 = {};                 // id → 항목 (+ id, d 날짜)
         var 뉴스_시작 = Date.now(), 뉴스_구독날짜 = [], 뉴스_구독참조 = [], 뉴스_수집상태 = null;
-        var 뉴스_펼침 = {}, 뉴스_알린 = {}, 뉴스_소리시각 = 0, 뉴스_깜빡 = {};
+        var 뉴스_펼침 = {}, 뉴스_알린 = {}, 뉴스_소리시각 = 0, 뉴스_깜빡 = {}, 뉴스_알림시각 = {};
         function 뉴스_받기(id, x, 날짜) {
             if (!id || !x || !(x.t > 0)) return;
             var 새것 = !뉴스[id];
@@ -4678,7 +4764,7 @@
             뉴스_구독끊기(); 뉴스_구독날짜 = 날짜들;
             날짜들.forEach(function (d) {
                 try {
-                    var ref = firebase.database().ref('news/' + d).orderByChild('t').limitToLast(d === 오늘 ? 600 : 600);   // 최근 24시간을 다 덮도록
+                    var ref = firebase.database().ref('news/' + d).orderByChild('t').limitToLast(600);   // 최근 24시간을 다 덮도록
                     var 받음 = function (snap) { 뉴스_받기(snap.key, snap.val(), d); };
                     ref.on('child_added', 받음); ref.on('child_changed', 받음);
                     뉴스_구독참조.push(ref);
@@ -4693,15 +4779,26 @@
             try { firebase.database().ref('system/newsCollector').on('value', function (s) { 뉴스_수집상태 = s.val(); }); } catch (e) { }
         }
         setInterval(function () { try { 뉴스_구독(); } catch (e) { } }, 60000);   // 한국 날짜가 바뀌면 다시 구독
+        // 뉴스 창에서 설정을 바꾸면 (같은 기기의 다른 창) 바로 반영
+        window.addEventListener('storage', function (e) {
+            if (e.key === 'sz_news_cfg') { window.__뉴스설정 = null; window.__뉴스설정판 = (window.__뉴스설정판 || 0) + 1; 뉴스_설정적용(); 뉴스_화면갱신(); }
+            if (e.key === 'sz_news_read') { window.__뉴스읽음 = null; 뉴스_화면갱신(); }
+        });
+        function 뉴스_설정적용() {
+            var c = 뉴스_설정();
+            document.documentElement.style.setProperty('--pnn-sc', 뉴스_글자배율(c.패널글자));
+            document.documentElement.classList.toggle('pnn-two', !!c.패널2줄);
+        }
 
-        // 종목별 뉴스 (최근순) · 광고 제외
+        // 종목별 뉴스 (최근순) · 광고·설정으로 숨긴 것 제외
         function 뉴스_종목목록(t, 최소관계) {
             if (!t) return [];
-            var 이름들 = 뉴스_이름들(t, [tickerName(t)].concat(뉴스_세이브이름(t)));
+            var c = 뉴스_설정(), 이름들 = 뉴스_이름들(t, [tickerName(t)].concat(뉴스_세이브이름(t)));
+            var 최소 = Math.max(최소관계 || 1, c.관련보임 ? 1 : 2);
             var 결과 = [];
             Object.keys(뉴스).forEach(function (id) {
-                var x = 뉴스[id]; if (뉴스_광고(x)) return;
-                var r = 뉴스_관계(x, t, 이름들); if (r >= (최소관계 || 1)) 결과.push({ x: x, r: r });
+                var x = 뉴스[id]; if (뉴스_광고(x) || 뉴스_거름(x, c)) return;
+                var r = 뉴스_관계(x, t, 이름들); if (r >= 최소) 결과.push({ x: x, r: r });
             });
             결과.sort(function (a, b) { return b.x.t - a.x.t; });
             return 결과;
@@ -4714,43 +4811,58 @@
             if (목.length) 뉴스_세이브이름표[t] = 목;
             return 목;
         }
-        function 뉴스_줄(x, 짧게) {
+        function 뉴스_줄(x) {
             var 분류 = (x.lb || []).filter(function (l) { return l !== '정보'; });
             if (x.pk) 분류.unshift('SAVE');
-            return (분류.length ? '<i class="pnn-lb' + (분류.indexOf('속보') >= 0 ? ' hot' : '') + '">' + 뉴스_글(분류.slice(0, 2).join('·')) + '</i>' : '') + '<span class="pnn-ti">' + 뉴스_글(x.ti) + '</span>';
+            return (분류.length ? '<i class="pnn-lb' + (분류.indexOf('속보') >= 0 ? ' hot' : '') + '">' + 뉴스_글(분류.slice(0, 2).join('·')) + '</i>' : '') +
+                '<span class="pnn-ti">' + 뉴스_강조(뉴스_글(x.ti), 뉴스_단어목록(뉴스_설정().강조), 'hl') + '</span>';
         }
+        function 뉴스_패널기간시작() {
+            var p = 뉴스_설정().패널기간;
+            if (p === '오늘') return Date.parse(뉴스_한국날짜() + 'T00:00:00+09:00');
+            return Date.now() - (p === '6시간' ? 6 : 24) * 3600000;
+        }
+        function 뉴스_패널기간글() { var p = 뉴스_설정().패널기간; return p === '오늘' ? '오늘' : p === '6시간' ? '최근 6시간' : '최근 24시간'; }
         // 패널 한 줄 + 펼침 목록
         function 뉴스_패널그리기(i) {
             var el = document.getElementById('p' + i + '-news'); if (!el) return;
-            var t = panelTickers[i], 하루전 = Date.now() - 86400000, 목 = 뉴스_종목목록(t, 1).filter(function (o) { return o.x.t >= 하루전; });   // 최근 24시간 (자정에 비지 않게)
-            var 깜빡 = (뉴스_깜빡[i] || 0) > Date.now();
-            var 서명 = t + '|' + 목.length + '|' + (목[0] ? 목[0].x.id + 뉴스_전(목[0].x.t) : '') + '|' + !!뉴스_펼침[i] + '|' + 깜빡;
+            var c = 뉴스_설정(), t = panelTickers[i], 시작 = 뉴스_패널기간시작(), 목 = 뉴스_종목목록(t, 1).filter(function (o) { return o.x.t >= 시작; });
+            var 깜빡 = c.깜빡 && (뉴스_깜빡[i] || 0) > Date.now(), 읽음 = 뉴스_읽음목록();
+            var 서명 = t + '|' + 목.length + '|' + (목[0] ? 목[0].x.id + 뉴스_전(목[0].x.t) : '') + '|' + !!뉴스_펼침[i] + '|' + 깜빡 + '|' + (window.__뉴스설정판 || 0) + '|' + Object.keys(읽음).length;
             if (el._서명 === 서명) return; el._서명 = 서명;
             if (!목.length) {
-                el.innerHTML = '<div class="pnn-row pnn-none" data-q="' + 뉴스_글(t) + '" title="' + 뉴스_글(뉴스_기준설명(t)) + '">📰 <span>최근 24시간 ' + 뉴스_글(t) + ' 뉴스 없음</span><button type="button" class="pnn-all" data-q="">전체 뉴스</button></div>';
+                el.innerHTML = '<div class="pnn-row pnn-none" data-q="' + 뉴스_글(t) + '" title="' + 뉴스_글(뉴스_기준설명(t)) + '">📰 <span>' + 뉴스_패널기간글() + ' ' + 뉴스_글(t) + ' 뉴스 없음</span><button type="button" class="pnn-all" data-q="">전체 뉴스</button></div>';
                 return;
             }
             var 첫 = 목[0].x;
             var html = '<div class="pnn-row' + (깜빡 ? ' blink' : '') + '" data-q="' + 뉴스_글(t) + '" title="누르면 뉴스 창이 ' + 뉴스_글(t) + ' 으로 걸러진 채 열림 · ' + 뉴스_글(뉴스_기준설명(t)) + '">📰 <span class="pnn-age">' + 뉴스_전(첫.t) + '</span> · ' + (목[0].r < 2 ? '<i class="pnn-rel">관련</i>' : '') + 뉴스_줄(첫) +
                 '<button type="button" class="pnn-more" data-i="' + i + '">' + 목.length + '건 ' + (뉴스_펼침[i] ? '▴' : '▾') + '</button></div>';
             if (뉴스_펼침[i]) {
-                html += '<div class="pnn-list">' + 목.slice(0, 5).map(function (o) {
-                    return '<a class="pnn-it" href="' + 뉴스_원문주소(o.x.id) + '" target="_blank" rel="noopener"><span class="pnn-tm">' + 뉴스_한국시각(o.x.t) + '</span>' + (o.r < 2 ? '<i class="pnn-rel">관련</i>' : '') + 뉴스_줄(o.x) + '</a>';
+                html += '<div class="pnn-list">' + 목.slice(0, c.펼침).map(function (o) {
+                    return '<a class="pnn-it' + (c.읽음흐리게 && 읽음[o.x.id] ? ' read' : '') + '" data-id="' + 뉴스_글(o.x.id) + '" href="' + 뉴스_원문주소(o.x.id) + '" target="' + 뉴스_원문대상() + '" rel="noopener"><span class="pnn-tm">' + 뉴스_시각글(o.x.t) + '</span>' + (o.r < 2 ? '<i class="pnn-rel">관련</i>' : '') + 뉴스_줄(o.x) + '</a>';
                 }).join('') + '<button type="button" class="pnn-open" data-q="' + 뉴스_글(t) + '">' + 뉴스_글(t) + ' 뉴스 전체 보기 ↗</button></div>';
             }
             el.innerHTML = html;
         }
         document.addEventListener('click', function (e) {
+            var a = e.target.closest && e.target.closest('.pnn-it');
+            if (a) { 뉴스_읽음표시(a.getAttribute('data-id')); setTimeout(뉴스_화면갱신, 50); return; }
             var m = e.target.closest && e.target.closest('.pnn-more');
             if (m) { e.stopPropagation(); var i = Number(m.getAttribute('data-i')); 뉴스_펼침[i] = !뉴스_펼침[i]; 뉴스_패널그리기(i); return; }
             var o = e.target.closest && e.target.closest('.pnn-open, .pnn-all, .pnn-row, .nw-ban, #nw-top');
             if (!o) return;
-            if (o.id === 'nw-top') { var pi = Number(o.getAttribute('data-i')); o.classList.remove('show'); var p = document.getElementById('panel-' + pi); if (p) p.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+            if (o.id === 'nw-top') {
+                o.classList.remove('show');
+                var pi = Number(o.getAttribute('data-i'));
+                if (pi >= 0) { var p = document.getElementById('panel-' + pi); if (p) p.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+                else 뉴스창_열기(o.getAttribute('data-q') || '');
+                return;
+            }
             뉴스창_열기(o.getAttribute('data-q') || '');
         });
         function 뉴스_기준설명(t) {
             var 이름 = 뉴스_이름들(t, [tickerName(t)].concat(뉴스_세이브이름(t)));
-            return '기준: 세이브 종목 태그 $' + t + ' 또는 제목·본문에 ' + [t].concat(이름).join('·') + ' · 최근 24시간 · 광고 제외 ("관련" = 태그만 있거나 본문에만 나옴)';
+            return '기준: 세이브 종목 태그 $' + t + ' 또는 제목·본문에 ' + [t].concat(이름).join('·') + ' · ' + 뉴스_패널기간글() + ' · 광고 제외 ("관련" = 태그만 있거나 본문에만 나옴)';
         }
         // 관심종목 칸: 최근 1시간 안에 확실한 뉴스가 있으면 📰
         function 뉴스_관심표시() {
@@ -4778,39 +4890,77 @@
 
         // 새 뉴스가 패널 종목과 관계 있으면(관련 포함) 그 패널의 뉴스 한 줄을 15초 동안 깜빡임
         function 뉴스_깜빡표시(x) {
-            if (뉴스_광고(x)) return;
+            if (뉴스_광고(x) || 뉴스_거름(x) || !뉴스_설정().깜빡) return;
             [0, 1, 2].forEach(function (i) {
                 var t = panelTickers[i]; if (!t) return;
-                if (뉴스_관계(x, t, 뉴스_이름들(t, [tickerName(t)].concat(뉴스_세이브이름(t)))) < 1) return;
+                if (뉴스_관계(x, t, 뉴스_이름들(t, [tickerName(t)].concat(뉴스_세이브이름(t)))) < (뉴스_설정().관련보임 ? 1 : 2)) return;
                 뉴스_깜빡[i] = Date.now() + 15000;
                 setTimeout(function () { 뉴스_패널그리기(i); }, 15100);   // 끝나면 깜빡임 해제
             });
         }
-        // 새 뉴스 알림: 패널 종목 · 확실한 관계 · 광고 아님 → 패널 위 배너 15초 + 소리 (+ 휴대폰은 화면 위 띠)
+        // 소리 + (설정 시) 음성으로 제목 읽기 · 같은 대상은 설정한 간격 안에 다시 울리지 않음
+        function 뉴스_소리(키, 읽을글) {
+            var c = 뉴스_설정(), 지금 = Date.now();
+            if (뉴스_알림시각[키] && 지금 - 뉴스_알림시각[키] < c.간격초 * 1000) return;
+            if (지금 - 뉴스_소리시각 < 3000) return;   // 여러 뉴스가 한꺼번에 오면 한 번만
+            뉴스_알림시각[키] = 지금; 뉴스_소리시각 = 지금;
+            var 소 = 알림_허용('뉴스', '소리') && c.소리 !== '끔';
+            if (소) 알람_소리(c.소리, c.볼륨);
+            if (c.음성 && 알림_허용('뉴스', '소리') && 읽을글) {
+                try { setTimeout(function () { 음성_읽기(읽을글, false, 소 ? null : function () { 알람_소리(c.소리 === '끔' ? '마림바' : c.소리, c.볼륨); }); }, 소 ? 900 : 0); } catch (e) { }
+            }
+        }
+        // 화면 위 띠 (휴대폰: 패널 뉴스도 / PC·휴대폰: 관심종목·속보·SAVE PICK·강조 단어 알림)
+        function 뉴스_위띠(html, 패널, 검색) {
+            var c = 뉴스_설정();
+            var 위 = document.getElementById('nw-top');
+            if (!위) { 위 = document.createElement('div'); 위.id = 'nw-top'; document.body.appendChild(위); }
+            위.setAttribute('data-i', 패널 == null ? '-1' : String(패널)); 위.setAttribute('data-q', 검색 || '');
+            위.innerHTML = html + ' <small>' + (패널 == null ? '뉴스 보기 ↗' : '패널로 ↓') + '</small>';
+            위.className = 'show'; clearTimeout(위._끝); 위._끝 = setTimeout(function () { 위.className = ''; }, c.배너초 * 1000);
+        }
+        // 새 뉴스 알림
         function 뉴스_새소식(x) {
-            if (뉴스_광고(x)) return;
-            [0, 1, 2].forEach(function (i) {
+            var c = 뉴스_설정();
+            if (뉴스_광고(x) || 뉴스_거름(x, c)) return;
+            var 기준 = c.알림기준 === '관련' ? 1 : 2, 패널알림 = false;
+            // ① 패널 종목 → 패널 위 배너 (+ 휴대폰은 화면 위 띠)
+            if (c.알림패널) [0, 1, 2].forEach(function (i) {
                 var t = panelTickers[i]; if (!t) return;
-                if (뉴스_관계(x, t, 뉴스_이름들(t, [tickerName(t)].concat(뉴스_세이브이름(t)))) < 2) return;
-                var 키 = x.id + '|' + t; if (뉴스_알린[키]) return; 뉴스_알린[키] = 1;
-                if (!알림_허용('뉴스', '창')) { 알림기록_추가({ t: Date.now(), 시각: 뉴스_한국시각(x.t), 종류: '뉴스', 종목: t, 글: x.ti }); return; }
+                if (뉴스_관계(x, t, 뉴스_이름들(t, [tickerName(t)].concat(뉴스_세이브이름(t)))) < 기준) return;
+                var 키 = x.id + '|' + t; if (뉴스_알린[키]) return; 뉴스_알린[키] = 1; 패널알림 = true;
+                알림기록_추가({ t: Date.now(), 시각: 뉴스_한국시각(x.t), 종류: '뉴스', 종목: t, 글: x.ti });
+                if (!알림_허용('뉴스', '창')) return;
                 var 띠 = document.getElementById('p' + i + '-nwban');
                 if (띠) {
                     띠.setAttribute('data-q', t);
                     띠.innerHTML = '📰 <b>' + 뉴스_글(t) + '</b> ' + 뉴스_줄(x);
                     띠.className = 'nw-ban show'; void 띠.offsetWidth; 띠.className = 'nw-ban show flash';
-                    clearTimeout(띠._끝); 띠._끝 = setTimeout(function () { 띠.className = 'nw-ban'; }, 15000);
+                    clearTimeout(띠._끝); 띠._끝 = setTimeout(function () { 띠.className = 'nw-ban'; }, c.배너초 * 1000);
                 }
-                if (window.innerWidth <= 1200) {
-                    var 위 = document.getElementById('nw-top');
-                    if (!위) { 위 = document.createElement('div'); 위.id = 'nw-top'; document.body.appendChild(위); }
-                    위.setAttribute('data-i', String(i));
-                    위.innerHTML = '📰 <b>' + 뉴스_글(t) + '</b> ' + 뉴스_줄(x) + ' <small>패널로 ↓</small>';
-                    위.className = 'show'; clearTimeout(위._끝); 위._끝 = setTimeout(function () { 위.className = ''; }, 15000);
-                }
-                if (Date.now() - 뉴스_소리시각 > 20000 && 알림_허용('뉴스', '소리')) { 뉴스_소리시각 = Date.now(); 알람_소리('마림바'); }
-                알림기록_추가({ t: Date.now(), 시각: 뉴스_한국시각(x.t), 종류: '뉴스', 종목: t, 글: x.ti });
+                if (window.innerWidth <= 1200 && c.위띠) 뉴스_위띠('📰 <b>' + 뉴스_글(t) + '</b> ' + 뉴스_줄(x), i, t);
+                뉴스_소리('패널|' + t, tickerName(t) + ' 뉴스. ' + x.ti);
             });
+            if (패널알림) return;
+            // ② 관심종목 · 속보 · SAVE PICK · 강조 단어 → 화면 위 띠
+            var 이유 = '', 키2 = '', 검색 = '';
+            if (c.알림관심) {
+                WATCH_LIST.some(function (w) {
+                    if (panelTickers.indexOf(w.ticker) >= 0) return false;
+                    if (뉴스_관계(x, w.ticker, 뉴스_이름들(w.ticker, [w.name].concat(뉴스_세이브이름(w.ticker)))) < 기준) return false;
+                    이유 = '관심 ' + w.ticker; 키2 = '관심|' + w.ticker; 검색 = w.ticker; return true;
+                });
+            }
+            var 강 = 뉴스_강조단어걸림(x, c);
+            if (!이유 && c.알림강조 && 강) { 이유 = '강조: ' + 강; 키2 = '강조|' + 강; 검색 = 강; }
+            if (!이유 && c.알림속보 && (x.lb || []).indexOf('속보') >= 0) { 이유 = '속보'; 키2 = '속보'; }
+            if (!이유 && c.알림픽 && x.pk) { 이유 = 'SAVE PICK'; 키2 = '픽'; }
+            if (!이유 || 뉴스_알린[x.id]) return;
+            뉴스_알린[x.id] = 1;
+            알림기록_추가({ t: Date.now(), 시각: 뉴스_한국시각(x.t), 종류: '뉴스', 종목: 이유, 글: x.ti });
+            if (!알림_허용('뉴스', '창')) return;
+            if (c.위띠 || window.innerWidth > 1200) 뉴스_위띠('📰 <b>' + 뉴스_글(이유) + '</b> ' + 뉴스_줄(x), null, 검색);
+            뉴스_소리(키2, 이유 + ' 뉴스. ' + x.ti);
         }
 
         // ────────── 뉴스 창 (주소 ?news=1) ──────────
@@ -4818,37 +4968,61 @@
             var FB = 'https://hphong-2cb03-default-rtdb.asia-southeast1.firebasedatabase.app/';
             var 질의 = ''; try { 질의 = new URLSearchParams(location.search).get('q') || ''; } catch (e) { }
             var 패널들 = []; try { 패널들 = JSON.parse(localStorage.getItem('sz_panels') || '[]').filter(Boolean); } catch (e) { }
+            var 설 = 뉴스_설정();
             document.title = '세이브 뉴스 · STRIKEZONE';
             var css = 'html,body{margin:0;background:#0b0d16;color:#e8ecf3;font-family:"Noto Sans KR","Malgun Gothic",sans-serif;font-size:14px}' +
                 '#nw{max-width:860px;margin:0 auto;padding:10px 12px 40px}' +
                 '#nw-hd{position:sticky;top:0;z-index:5;background:#0b0d16;padding:8px 0 8px;border-bottom:1px solid #1e2233}' +
                 '#nw-hd h1{font-size:17px;margin:0 0 6px;display:flex;align-items:center;gap:8px;color:#f5c542}#nw-hd h1 small{font-size:11.5px;font-weight:600;color:#7d8596}' +
+                '#nw-gear{margin-left:auto;font:inherit;font-size:13px;font-weight:700;background:#141826;color:#e3e7ef;border:1px solid #2f3446;border-radius:7px;padding:4px 10px;cursor:pointer}' +
                 '.nw-st.ok{color:#5ad18a}.nw-st.off{color:#ff8f8f}' +
                 '#nw-q{width:100%;box-sizing:border-box;font:inherit;font-size:15px;padding:9px 34px 9px 11px;background:#141826;color:#fff;border:1px solid #2f3446;border-radius:8px;outline:none}#nw-q:focus{border-color:#f5c542}' +
                 '.nw-qw{position:relative;margin-bottom:7px}.nw-qx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:#8b93a7;font-size:16px;cursor:pointer}' +
-                '.nw-chips{display:flex;flex-wrap:wrap;gap:5px}.nw-chips button{font:inherit;font-size:12px;font-weight:700;padding:4px 9px;border-radius:14px;cursor:pointer;background:#141826;color:#8b93a7;border:1px solid #2a2f40}' +
-                '.nw-chips button.on{background:#f5c542;color:#1a1400;border-color:#f5c542}.nw-chips .sep{width:1px;background:#2a2f40;margin:0 3px}' +
-                '#nw-cnt{font-size:12px;color:#7d8596;margin:7px 0 0}' +
+                '.nw-chips{display:flex;flex-wrap:wrap;gap:5px}.nw-chips button{font:inherit;font-size:12px;font-weight:700;padding:4px 9px;border-radius:14px;cursor:pointer;background:#141826;color:#aab3c5;border:1px solid #2a2f40}' +
+                '.nw-chips button.on{background:#f5c542;color:#1a1400;border-color:#f5c542}.nw-chips button.empty{opacity:.4}' +
+                '#nw-cnt{font-size:12px;color:#9aa3b5;margin:7px 0 0}' +
                 '#nw-new{display:none;position:sticky;top:150px;z-index:4;margin:6px auto;font:inherit;font-weight:800;font-size:13px;background:#f5c542;color:#1a1400;border:0;border-radius:16px;padding:6px 14px;cursor:pointer}' +
-                '.nw-it{padding:10px 2px 11px;border-bottom:1px solid #222738}.nw-it.ad{opacity:.55}' +
-                '.nw-m{font-size:12px;color:#aab3c5;display:flex;gap:6px;flex-wrap:wrap;align-items:center}.nw-m b{color:#cfd5e2}' +
+                '.nw-it{padding:10px 2px 11px;border-bottom:1px solid #222738}.nw-it.ad{opacity:.55}.nw-it.read{opacity:.55}' +
+                '.nw-m{font-size:12px;color:#aab3c5;display:flex;gap:6px;flex-wrap:wrap;align-items:center}.nw-m b{color:#e3e7ef}.nw-m small{font-size:11px;color:#8b93a7}' +
                 '.nw-lb{font-style:normal;font-size:10.5px;font-weight:800;padding:0 5px;border-radius:3px;background:#1f2433;color:#aab3c5}.nw-lb.hot{background:#ff5d5d;color:#fff}.nw-lb.pk{background:#6d4cff;color:#fff}' +
                 '.nw-t{display:block;margin:3px 0 2px;font-size:15.5px;font-weight:700;color:#ffffff;text-decoration:none;line-height:1.4}.nw-t:hover{color:#f5c542}' +
                 '.nw-en{font-size:12.5px;color:#aab3c5;margin:1px 0}.nw-c{font-size:13.5px;color:#d3d9e4;line-height:1.45;white-space:pre-line;max-height:3.1em;overflow:hidden}' +
+                '#nw-list.c-long .nw-c{max-height:none}#nw-list.c-off .nw-c{display:none}' +
                 '.nw-tk{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}.nw-tk button{font:inherit;font-size:11px;font-weight:700;padding:1px 6px;border-radius:4px;background:#13203a;color:#8ab4ff;border:1px solid #23365c;cursor:pointer}' +
-                'mark{background:#f5c54266;color:#fff;border-radius:2px}' +
+                'mark{background:#f5c54266;color:#fff;border-radius:2px}mark.hl{background:#ff8a3d55;color:#ffd7b5}' +
                 '#nw-more{display:block;margin:14px auto;font:inherit;font-weight:700;background:#141826;color:#cfd5e2;border:1px solid #2f3446;border-radius:8px;padding:8px 18px;cursor:pointer}' +
-                '.nw-empty{padding:40px 0;text-align:center;color:#6b7386}';
+                '.nw-empty{padding:40px 10px;text-align:center;color:#9aa3b5;line-height:1.7}' +
+                // 설정 창
+                '#nw-set{display:none;position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.55)}#nw-set.show{display:block}' +
+                '#nw-sp{position:absolute;right:0;top:0;bottom:0;width:min(440px,100%);background:#10131e;border-left:1px solid #2a2f40;overflow-y:auto;padding:14px 16px 30px;box-sizing:border-box}' +
+                '#nw-sp h2{font-size:16px;margin:0 0 4px;color:#f5c542;display:flex;align-items:center}#nw-sp h2 button{margin-left:auto;font:inherit;font-size:13px;background:#1a1d2b;color:#e3e7ef;border:1px solid #2f3446;border-radius:6px;padding:3px 10px;cursor:pointer}' +
+                '#nw-sp h3{font-size:13px;color:#8ab4ff;margin:16px 0 6px;border-bottom:1px solid #222738;padding-bottom:4px}' +
+                '.ns-r{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:13px;color:#d3d9e4}.ns-r>span{flex:1}.ns-r select,.ns-r input[type=text]{font:inherit;font-size:13px;background:#141826;color:#fff;border:1px solid #2f3446;border-radius:6px;padding:4px 6px}' +
+                '.ns-r input[type=text]{width:100%;box-sizing:border-box}.ns-col{display:block}.ns-col>span{display:block;margin-bottom:4px}.ns-r small{color:#8b93a7;font-size:11.5px}' +
+                '.ns-r input[type=checkbox]{width:17px;height:17px}.ns-r input[type=range]{width:130px}.ns-r .ns-play{font:inherit;font-size:12px;background:#1a1d2b;color:#e3e7ef;border:1px solid #2f3446;border-radius:6px;padding:3px 8px;cursor:pointer}' +
+                '.ns-boxes{display:flex;flex-wrap:wrap;gap:4px 12px}.ns-boxes label{display:flex;align-items:center;gap:4px;font-size:12.5px}' +
+                '#ns-reset{margin-top:18px;font:inherit;font-size:13px;background:#2a1414;color:#ffb4b4;border:1px solid #5a2f36;border-radius:7px;padding:6px 12px;cursor:pointer}';
             document.head.insertAdjacentHTML('beforeend', '<style>' + css + '</style>');
-            document.body.innerHTML = '<div id="nw"><div id="nw-hd"><h1>📰 세이브 뉴스 <small class="nw-st" id="nw-st">연결 중…</small></h1>' +
+            document.body.innerHTML = '<div id="nw"><div id="nw-hd"><h1>📰 세이브 뉴스 <small class="nw-st" id="nw-st">연결 중…</small><button type="button" id="nw-gear" title="뉴스 설정">⚙ 설정</button></h1>' +
                 '<div class="nw-qw"><input id="nw-q" type="search" placeholder="검색: 테슬라 TSLA (띄어쓰기 = 하나라도 맞으면)" autocomplete="off"><button type="button" class="nw-qx" id="nw-qx" title="지우기">✕</button></div>' +
                 '<div class="nw-chips" id="nw-days"></div><div class="nw-chips" id="nw-f" style="margin-top:5px"></div><div id="nw-cnt"></div></div>' +
-                '<button type="button" id="nw-new"></button><div id="nw-list"></div><button type="button" id="nw-more" style="display:none">더 보기</button></div>';
-            var 상태 = { 날짜: 뉴스_한국날짜(), 필터: { 패널: false, 속보: false, 픽: false, 광고: false }, 보일수: 200, 새수: 0 };
-            var 자료 = {}, 이름표 = {};
+                '<button type="button" id="nw-new"></button><div id="nw-list"></div><button type="button" id="nw-more" style="display:none">더 보기</button></div>' +
+                '<div id="nw-set"><div id="nw-sp"></div></div>';
+            var 상태 = { 보기: 설.기본보기 === '오늘' ? 뉴스_한국날짜() : 설.기본보기 === '3일' ? '3일' : '24시간', 필터: { 패널: false, 속보: false, 픽: false, 광고: !설.광고숨김 }, 보일수: 200, 새수: 0 };
+            var 자료 = {}, 이름표 = {}, 있는날 = null, 수집 = {};
             var q = document.getElementById('nw-q'); q.value = 질의;
+            function 날짜들() { return [0, 1, 2].map(function (k) { return 뉴스_한국날짜(Date.now() - k * 86400000); }); }
+            function 보기날짜() {   // 지금 보기에 필요한 폴더(한국 날짜)
+                var d = 날짜들();
+                if (상태.보기 === '24시간') return [d[0], d[1]];
+                if (상태.보기 === '3일') return d;
+                return [상태.보기];
+            }
             function 날짜단추() {
-                var 목 = [0, 1, 2].map(function (k) { var d = 뉴스_한국날짜(Date.now() - k * 86400000); return '<button type="button" data-d="' + d + '" class="' + (상태.날짜 === d ? 'on' : '') + '">' + ['오늘', '어제', '그제'][k] + ' <small>' + d.slice(5).replace('-', '/') + '</small></button>'; });
+                var d = 날짜들(), 빈 = function (x) { return 있는날 && !있는날[x] ? ' empty' : ''; };
+                var 목 = ['<button type="button" data-v="24시간" class="' + (상태.보기 === '24시간' ? 'on' : '') + '">최근 24시간</button>']
+                    .concat(d.map(function (x, k) { return '<button type="button" data-v="' + x + '" class="' + (상태.보기 === x ? 'on' : '') + 빈(x) + '"' + (빈(x) ? ' title="이 날짜는 수집 기록이 없습니다"' : '') + '>' + ['오늘', '어제', '그제'][k] + ' <small>' + x.slice(5).replace('-', '/') + '</small></button>'; }))
+                    .concat(['<button type="button" data-v="3일" class="' + (상태.보기 === '3일' ? 'on' : '') + '">3일 전체</button>']);
                 document.getElementById('nw-days').innerHTML = 목.join('');
                 document.getElementById('nw-f').innerHTML = [['패널', '내 패널 종목' + (패널들.length ? ' (' + 패널들.join('·') + ')' : '')], ['속보', '속보만'], ['픽', 'SAVE PICK'], ['광고', '광고 보기']]
                     .map(function (f) { return '<button type="button" data-f="' + f[0] + '" class="' + (상태.필터[f[0]] ? 'on' : '') + '">' + 뉴스_글(f[1]) + '</button>'; }).join('');
@@ -4862,70 +5036,158 @@
                 });
                 return 목;
             }
+            function 기간안(x) { return 상태.보기 !== '24시간' || x.t >= Date.now() - 86400000; }
             function 맞음(x, 말) {
+                if (!기간안(x)) return false;
                 if (!상태.필터.광고 && 뉴스_광고(x)) return false;
+                if (뉴스_거름(x, 설)) return false;
                 if (상태.필터.속보 && (x.lb || []).indexOf('속보') < 0) return false;
                 if (상태.필터.픽 && !x.pk) return false;
-                if (상태.필터.패널 && !패널들.some(function (t) { return 뉴스_관계(x, t, 뉴스_이름들(t, 이름표[t] || [])) >= 1; })) return false;
+                if (상태.필터.패널 && !패널들.some(function (t) { return 뉴스_관계(x, t, 뉴스_이름들(t, 이름표[t] || [])) >= (설.관련보임 ? 1 : 2); })) return false;
                 if (!말.length) return true;
                 var 글 = ((x.ti || '') + ' ' + (x.en || '') + ' ' + (x.c || '') + ' ' + (x.tk || []).map(function (t) { return '$' + t + ' ' + t; }).join(' ') + ' ' + (x.tn || []).join(' ')).toLowerCase();
                 return 말.some(function (w) { return 글.indexOf(w.toLowerCase().replace(/^\$/, '')) >= 0; });
             }
-            function 강조(s, 말) {
-                var h = 뉴스_글(s); if (!말.length) return h;
-                var 패턴 = 말.map(function (w) { return 뉴스_글(w.replace(/^\$/, '')).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).filter(Boolean).sort(function (a, b) { return b.length - a.length; }).join('|');
-                return 패턴 ? h.replace(new RegExp('(' + 패턴 + ')', 'gi'), '<mark>$1</mark>') : h;
+            function 강조(s, 말) { return 뉴스_강조(뉴스_강조(뉴스_글(s), 말), 뉴스_단어목록(설.강조), 'hl'); }
+            function 빈안내() {
+                var 하나 = 보기날짜().length === 1 ? 보기날짜()[0] : '';
+                if (Object.keys(자료).length) return '조건에 맞는 뉴스가 없습니다' + (뉴스_설정().제외 || 설.출처끔.length || 설.분류끔.length ? '<br><small>⚙ 설정의 출처·분류·제외 단어로 숨긴 뉴스가 있을 수 있습니다</small>' : '');
+                if (하나 && 있는날 && !있는날[하나]) return '이 날짜(' + 하나 + ')는 수집 기록이 없습니다' + (수집.from ? '<br><small>윈폼 수집 범위: ' + 뉴스_한국날짜(수집.from) + ' ' + 뉴스_한국시각(수집.from) + ' 이후 (보관 3일)</small>' : '<br><small>윈폼 수집기를 켠 뒤부터 저장됩니다 (보관 3일)</small>');
+                return 처음남음 > 0 ? '뉴스를 불러오는 중…' : '뉴스가 없습니다';
             }
             function 그리기() {
-                var 말 = 단어들(), 목 = Object.keys(자료).map(function (k) { return 자료[k]; }).filter(function (x) { return 맞음(x, 말); }).sort(function (a, b) { return b.t - a.t; });
-                var 광고수 = 상태.필터.광고 ? 0 : Object.keys(자료).filter(function (k) { return 뉴스_광고(자료[k]); }).length;
-                document.getElementById('nw-cnt').textContent = 목.length + '건' + (말.length ? ' (검색: ' + q.value.trim() + ')' : '') + ' · 전체 ' + Object.keys(자료).length + '건' + (광고수 ? ' · 광고 ' + 광고수 + '건 숨김' : '');
+                var 말 = 단어들(), 전체 = Object.keys(자료).map(function (k) { return 자료[k]; }).filter(기간안);
+                var 목 = 전체.filter(function (x) { return 맞음(x, 말); }).sort(function (a, b) { return b.t - a.t; });
+                var 광고수 = 상태.필터.광고 ? 0 : 전체.filter(function (x) { return 뉴스_광고(x); }).length;
+                var 숨김수 = 전체.filter(function (x) { return !뉴스_광고(x) && 뉴스_거름(x, 설); }).length;
+                document.getElementById('nw-cnt').textContent = 목.length + '건' + (말.length ? ' (검색: ' + q.value.trim() + ')' : '') + ' · 전체 ' + 전체.length + '건' + (광고수 ? ' · 광고 ' + 광고수 + '건 숨김' : '') + (숨김수 ? ' · 설정으로 ' + 숨김수 + '건 숨김' : '');
+                var 리스트 = document.getElementById('nw-list');
+                리스트.className = 설.본문 === '길게' ? 'c-long' : 설.본문 === '끔' ? 'c-off' : '';
+                리스트.style.zoom = 뉴스_글자배율(설.창글자);
+                var 읽음 = 뉴스_읽음목록(), 대상 = 뉴스_원문대상();
                 var 보 = 목.slice(0, 상태.보일수);
-                document.getElementById('nw-list').innerHTML = 보.length ? 보.map(function (x) {
+                리스트.innerHTML = 보.length ? 보.map(function (x) {
                     var 분 = (x.lb || []).map(function (l) { return '<i class="nw-lb' + (l === '속보' ? ' hot' : '') + '">' + 뉴스_글(l) + '</i>'; }).join('') + (x.pk ? '<i class="nw-lb pk">SAVE PICK</i>' : '') + (뉴스_광고(x) ? '<i class="nw-lb">광고</i>' : '');
-                    return '<div class="nw-it' + (뉴스_광고(x) ? ' ad' : '') + '"><div class="nw-m"><b>' + 뉴스_한국시각(x.t) + '</b><span>' + 뉴스_전(x.t) + '</span>' + 분 + '<span>' + 뉴스_글(뉴스_출처이름(x.s)) + '</span></div>' +
-                        '<a class="nw-t" href="' + 뉴스_원문주소(x.id) + '" target="_blank" rel="noopener">' + 강조(x.ti, 말) + '</a>' +
-                        (x.en && 말.length ? '<div class="nw-en">' + 강조(x.en, 말) + '</div>' : '') +
+                    var 원제 = x.en && (설.원제 === '항상' || (설.원제 === '검색' && 말.length));
+                    return '<div class="nw-it' + (뉴스_광고(x) ? ' ad' : '') + (설.읽음흐리게 && 읽음[x.id] ? ' read' : '') + '"><div class="nw-m"><b>' + 뉴스_시각글(x.t) + '</b><span>' + 뉴스_전(x.t) + '</span>' + 분 + '<span>' + 뉴스_글(뉴스_출처이름(x.s)) + '</span></div>' +
+                        '<a class="nw-t" data-id="' + 뉴스_글(x.id) + '" href="' + 뉴스_원문주소(x.id) + '" target="' + 대상 + '" rel="noopener">' + 강조(x.ti, 말) + '</a>' +
+                        (원제 ? '<div class="nw-en">' + 강조(x.en, 말) + '</div>' : '') +
                         (x.c ? '<div class="nw-c">' + 강조(x.c, 말) + '</div>' : '') +
                         (x.tk && x.tk.length ? '<div class="nw-tk">' + x.tk.map(function (t) { return '<button type="button" data-t="' + 뉴스_글(t) + '">$' + 뉴스_글(t) + '</button>'; }).join('') + '</div>' : '') + '</div>';
-                }).join('') : '<div class="nw-empty">' + (Object.keys(자료).length ? '조건에 맞는 뉴스가 없습니다' : '뉴스를 불러오는 중이거나 이 날짜에 뉴스가 없습니다') + '</div>';
+                }).join('') : '<div class="nw-empty">' + 빈안내() + '</div>';
                 document.getElementById('nw-more').style.display = 목.length > 상태.보일수 ? '' : 'none';
                 상태.새수 = 0; document.getElementById('nw-new').style.display = 'none';
             }
             var 그림예약 = null;
             function 나중에그리기() { clearTimeout(그림예약); 그림예약 = setTimeout(그리기, 150); }
-            var ref = null, 처음 = true;
-            function 구독(d) {
-                if (ref) try { ref.off(); } catch (e) { }
-                자료 = {}; 처음 = true; 그리기();
-                ref = firebase.database().ref('news/' + d).orderByChild('t');
-                ref.once('value').then(function () { 처음 = false; 그리기(); }).catch(function (e) { document.getElementById('nw-list').innerHTML = '<div class="nw-empty">뉴스를 읽지 못했습니다: ' + 뉴스_글(e && e.message) + '<br>Firebase 규칙에 news 읽기 허용이 필요합니다</div>'; });
-                ref.on('child_added', function (s) {
-                    var x = s.val(); if (!x) return; x.id = s.key; 자료[s.key] = x;
-                    (x.tk || []).forEach(function (t, k) { if (x.tn && x.tn[k]) { 이름표[t] = 이름표[t] || []; if (이름표[t].indexOf(x.tn[k]) < 0) 이름표[t].push(x.tn[k]); } });
-                    if (처음) return;
-                    if (window.scrollY > 80 && 맞음(x, 단어들())) { 상태.새수++; var b = document.getElementById('nw-new'); b.textContent = '새 뉴스 ' + 상태.새수 + '건 ▲'; b.style.display = 'block'; }
-                    else 나중에그리기();
+            var 참조들 = [], 처음남음 = 0;
+            function 구독() {
+                참조들.forEach(function (r) { try { r.off(); } catch (e) { } }); 참조들 = [];
+                자료 = {}; var 날들 = 보기날짜(); 처음남음 = 날들.length; 그리기();
+                날들.forEach(function (d) {
+                    var ref = firebase.database().ref('news/' + d).orderByChild('t'), 처음 = true;
+                    참조들.push(ref);
+                    ref.once('value').then(function () { 처음 = false; 처음남음--; 그리기(); }).catch(function (e) { document.getElementById('nw-list').innerHTML = '<div class="nw-empty">뉴스를 읽지 못했습니다: ' + 뉴스_글(e && e.message) + '<br>Firebase 규칙에 news 읽기 허용이 필요합니다</div>'; });
+                    ref.on('child_added', function (s) {
+                        var x = s.val(); if (!x) return; x.id = s.key; 자료[s.key] = x;
+                        (x.tk || []).forEach(function (t, k) { if (x.tn && x.tn[k]) { 이름표[t] = 이름표[t] || []; if (이름표[t].indexOf(x.tn[k]) < 0) 이름표[t].push(x.tn[k]); } });
+                        if (처음) return;
+                        if (설.새뉴스 === '단추' && window.scrollY > 80 && 맞음(x, 단어들())) { 상태.새수++; var b = document.getElementById('nw-new'); b.textContent = '새 뉴스 ' + 상태.새수 + '건 ▲'; b.style.display = 'block'; }
+                        else 나중에그리기();
+                    });
                 });
             }
+            // 저장된 날짜 목록 (기록 없는 날짜 단추는 흐리게)
+            function 날짜확인() {
+                fetch(FB + 'news.json?shallow=true', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) { 있는날 = j && typeof j === 'object' ? j : {}; 날짜단추(); if (!Object.keys(자료).length) 그리기(); }).catch(function () { });
+            }
+
+            // ── ⚙ 설정 창 ──
+            function 설정그리기() {
+                var c = 설;
+                function 고르기(키, 이름, 목록, 설명) {
+                    return '<label class="ns-r"><span>' + 이름 + (설명 ? '<br><small>' + 설명 + '</small>' : '') + '</span><select data-k="' + 키 + '">' + 목록.map(function (o) { var v = Array.isArray(o) ? o[0] : o, n = Array.isArray(o) ? o[1] : o; return '<option value="' + 뉴스_글(v) + '"' + (String(c[키]) === String(v) ? ' selected' : '') + '>' + 뉴스_글(n) + '</option>'; }).join('') + '</select></label>';
+                }
+                function 켜기(키, 이름, 설명) { return '<label class="ns-r"><span>' + 이름 + (설명 ? '<br><small>' + 설명 + '</small>' : '') + '</span><input type="checkbox" data-k="' + 키 + '"' + (c[키] ? ' checked' : '') + '></label>'; }
+                function 글칸(키, 이름, 예) { return '<label class="ns-r ns-col"><span>' + 이름 + ' <small>(쉼표로 구분)</small></span><input type="text" data-k="' + 키 + '" value="' + 뉴스_글(c[키]) + '" placeholder="' + 뉴스_글(예) + '"></label>'; }
+                function 상자들(키, 이름, 목록, 끈것) {
+                    return '<div class="ns-r ns-col"><span>' + 이름 + '</span><div class="ns-boxes">' + 목록.map(function (o) { return '<label><input type="checkbox" data-list="' + 키 + '" value="' + 뉴스_글(o[0]) + '"' + (끈것.indexOf(o[0]) < 0 ? ' checked' : '') + '>' + 뉴스_글(o[1]) + '</label>'; }).join('') + '</div></div>';
+                }
+                var 소리목록 = [['기본', '띵-딩-띵 (기본)'], ['차임', '차임'], ['벨', '종소리'], ['핑', '맑은 핑'], ['삐삐', '삐삐삐'], ['마림바', '마림바'], ['하강', '내려가는 2음'], ['경보', '경보 (강하게)'], ['끔', '소리 끔']];
+                document.getElementById('nw-sp').innerHTML = '<h2>⚙ 뉴스 설정 <button type="button" id="ns-close">닫기 ✕</button></h2><small style="color:#8b93a7">이 기기에만 저장 · 대시보드 패널에도 바로 반영</small>' +
+                    '<h3>보기</h3>' + 고르기('창글자', '글자 크기 (뉴스 창)', ['작게', '보통', '크게', '아주 크게']) + 고르기('패널글자', '글자 크기 (패널 뉴스 줄)', ['작게', '보통', '크게', '아주 크게']) +
+                    켜기('패널2줄', '패널 뉴스 제목 2줄로', '끄면 1줄 (긴 제목은 … 으로 자름)') + 고르기('펼침', '패널 펼침 개수', [[3, '3건'], [5, '5건'], [10, '10건']]) +
+                    고르기('본문', '본문 미리보기', [['끔', '끔'], ['2줄', '2줄'], ['길게', '길게']]) + 고르기('원제', '영어 원제', [['검색', '검색할 때만'], ['항상', '항상'], ['끔', '끔']]) +
+                    고르기('시각', '시각 표시', [['한국', '한국'], ['뉴욕', '뉴욕 (ET)'], ['둘다', '둘 다']]) + 켜기('읽음흐리게', '읽은 뉴스 흐리게', '누른 뉴스는 흐리게 표시') +
+                    '<h3>거르기</h3>' + 켜기('광고숨김', '광고성 보도자료 숨김 (기본값)', '로펌 집단소송 모집 글 등') + 켜기('관련보임', '"관련" 뉴스도 보이기', '종목 태그만 있거나 본문에만 나온 뉴스') +
+                    상자들('출처끔', '출처 (체크한 것만 보임)', 뉴스_출처묶음목록(), c.출처끔) + 상자들('분류끔', '분류 (체크한 것만 보임 · 분류 없는 뉴스는 항상 보임)', [['속보', '속보'], ['정보', '정보'], ['시황/분석', '시황/분석'], ['경제지표', '경제지표'], ['에너지', '에너지']], c.분류끔) +
+                    글칸('제외', '제외 단어 (들어간 뉴스 숨김)', '탄자니아, 커피, 콩고') + 글칸('강조', '강조 단어 (주황색 표시)', 'FOMC, 관세, 금리') +
+                    '<h3>알림</h3>' + 켜기('알림패널', '패널 종목 뉴스', '패널 위 배너 + 소리') + 켜기('알림관심', '관심종목 뉴스', '화면 위 띠 + 소리') + 켜기('알림속보', '속보 전체', '화면 위 띠 + 소리 (많을 수 있음)') +
+                    켜기('알림픽', 'SAVE PICK', '세이브가 정리한 글') + 켜기('알림강조', '강조 단어가 들어간 뉴스') +
+                    고르기('알림기준', '알림 기준', [['확실', '확실한 것만 (제목에 종목 이름)'], ['관련', '관련 포함 (태그만 있어도)']]) +
+                    '<label class="ns-r"><span>소리</span><select data-k="소리">' + 소리목록.map(function (o) { return '<option value="' + o[0] + '"' + (c.소리 === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select><button type="button" class="ns-play" id="ns-play">▶</button></label>' +
+                    '<label class="ns-r"><span>볼륨 <small id="ns-vol">' + Math.round(c.볼륨 * 100) + '%</small></span><input type="range" min="0" max="100" step="5" data-k="볼륨" value="' + Math.round(c.볼륨 * 100) + '"></label>' +
+                    '<label class="ns-r"><span>음성으로 제목 읽기<br><small>소리 다음에 "테슬라 뉴스. 제목…" (크롬 · 한국어 음성 필요)</small></span><input type="checkbox" data-k="음성"' + (c.음성 ? ' checked' : '') + '><button type="button" class="ns-play" id="ns-say">▶</button></label>' +
+                    고르기('배너초', '배너·위 띠 유지', [[5, '5초'], [15, '15초'], [30, '30초']]) + 켜기('깜빡', '패널 뉴스 줄 깜빡임') + 켜기('위띠', '휴대폰 화면 위 띠') +
+                    고르기('간격초', '같은 종목 알림 간격', [[20, '20초'], [60, '1분'], [300, '5분']]) +
+                    '<small style="color:#8b93a7;display:block;margin-top:4px">🔕 방해 금지·장외 무음은 대시보드 알림 설정을 그대로 따릅니다</small>' +
+                    '<h3>기간</h3>' + 고르기('기본보기', '뉴스 창 기본 보기', [['24시간', '최근 24시간'], ['오늘', '오늘'], ['3일', '3일 전체']]) + 고르기('패널기간', '패널 뉴스 줄 기간', [['24시간', '최근 24시간'], ['오늘', '오늘'], ['6시간', '최근 6시간']]) +
+                    '<h3>기타</h3>' + 고르기('새뉴스', '새 뉴스가 오면', [['단추', '"새 뉴스 N건 ▲" 단추 (읽는 중 밀리지 않게)'], ['바로', '맨 위에 바로 추가']]) + 고르기('원문', '원문 열기', [['새탭', '새 탭'], ['같은창', '같은 창']]) +
+                    '<button type="button" id="ns-reset">설정 초기화</button>';
+            }
+            function 설정바꿈(el) {
+                var k = el.getAttribute('data-k'), 목록키 = el.getAttribute('data-list');
+                if (목록키) {
+                    var 끈 = Array.prototype.filter.call(document.querySelectorAll('[data-list="' + 목록키 + '"]'), function (x) { return !x.checked; }).map(function (x) { return x.value; });
+                    설[목록키] = 끈;
+                } else if (k) {
+                    var 기본 = 뉴스_기본설정()[k];
+                    if (el.type === 'checkbox') 설[k] = el.checked;
+                    else if (k === '볼륨') { 설[k] = Number(el.value) / 100; document.getElementById('ns-vol').textContent = el.value + '%'; }
+                    else if (typeof 기본 === 'number') 설[k] = Number(el.value);
+                    else 설[k] = el.value;
+                } else return;
+                뉴스_설정저장(설);
+                if (k === '광고숨김') { 상태.필터.광고 = !설.광고숨김; 날짜단추(); }
+                그리기();
+            }
+            document.getElementById('nw-sp').addEventListener('change', function (e) { 설정바꿈(e.target); });
+            document.getElementById('nw-sp').addEventListener('input', function (e) { if (e.target.type === 'text' || e.target.type === 'range') 설정바꿈(e.target); });
+
             try { if (!firebase.apps.length) firebase.initializeApp({ databaseURL: FB }); } catch (e) { }
-            날짜단추(); 구독(상태.날짜);
+            날짜단추(); 구독(); 날짜확인();
             firebase.database().ref('system/newsCollector').on('value', function (s) {
                 var v = s.val() || {}, el = document.getElementById('nw-st'), 살아 = v.at && Date.now() - v.at < 3 * 60000 && v.on !== false;
+                수집 = v;
                 el.className = 'nw-st ' + (살아 ? 'ok' : 'off');
                 el.textContent = 살아 ? '● 수집 중 · 마지막 ' + 뉴스_한국시각(v.at) : '⏸ 수집 멈춤' + (v.at ? ' (마지막 ' + 뉴스_한국날짜(v.at).slice(5).replace('-', '/') + ' ' + 뉴스_한국시각(v.at) + ')' : '') + ' · 윈폼이 꺼져 있음';
             });
             q.addEventListener('input', function () { 상태.보일수 = 200; 나중에그리기(); try { var u = new URL(location.href); if (q.value.trim()) u.searchParams.set('q', q.value.trim()); else u.searchParams.delete('q'); history.replaceState(null, '', u.pathname + u.search); } catch (e) { } });
             document.addEventListener('click', function (e) {
-                var b = e.target.closest('button'); if (!b) return;
+                var a = e.target.closest('.nw-t'); if (a) { 뉴스_읽음표시(a.getAttribute('data-id')); var it = a.closest('.nw-it'); if (it && 설.읽음흐리게) it.classList.add('read'); return; }
+                var b = e.target.closest('button');
+                if (!b) { if (e.target.id === 'nw-set') e.target.classList.remove('show'); return; }
+                if (b.id === 'nw-gear') { 설정그리기(); document.getElementById('nw-set').classList.add('show'); return; }
+                if (b.id === 'ns-close') { document.getElementById('nw-set').classList.remove('show'); return; }
+                if (b.id === 'ns-play') { 알람_소리(설.소리 === '끔' ? '마림바' : 설.소리, 설.볼륨); return; }
+                if (b.id === 'ns-say') { try { var u = new SpeechSynthesisUtterance('테슬라 뉴스. 3분기 인도량 예상 상회'); u.lang = 'ko-KR'; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (er) { } return; }
+                if (b.id === 'ns-reset') { if (!confirm('뉴스 설정을 처음 상태로 되돌릴까요?')) return; 설 = 뉴스_기본설정(); 뉴스_설정저장(설); 상태.필터.광고 = !설.광고숨김; 설정그리기(); 날짜단추(); 그리기(); return; }
                 if (b.id === 'nw-qx') { q.value = ''; q.dispatchEvent(new Event('input')); q.focus(); return; }
                 if (b.id === 'nw-more') { 상태.보일수 += 200; 그리기(); return; }
                 if (b.id === 'nw-new') { 그리기(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
-                if (b.getAttribute('data-d')) { 상태.날짜 = b.getAttribute('data-d'); 상태.보일수 = 200; 날짜단추(); 구독(상태.날짜); return; }
+                if (b.getAttribute('data-v')) { 상태.보기 = b.getAttribute('data-v'); 상태.보일수 = 200; 날짜단추(); 구독(); return; }
                 if (b.getAttribute('data-f')) { var f = b.getAttribute('data-f'); 상태.필터[f] = !상태.필터[f]; 날짜단추(); 그리기(); return; }
                 if (b.getAttribute('data-t')) { q.value = b.getAttribute('data-t'); q.dispatchEvent(new Event('input')); window.scrollTo({ top: 0 }); }
             });
-            setInterval(function () { if (상태.날짜 === 뉴스_한국날짜(Date.now() - 60000) && 상태.날짜 !== 뉴스_한국날짜()) { 상태.날짜 = 뉴스_한국날짜(); 날짜단추(); 구독(상태.날짜); } else if (window.scrollY < 80) 그리기(); }, 60000);   // 자정 넘으면 오늘로 · "N분 전" 갱신
+            var 마지막날 = 뉴스_한국날짜();
+            setInterval(function () {
+                if (뉴스_한국날짜() !== 마지막날) {   // 자정: 날짜 단추·구독 다시
+                    var 옛 = 마지막날; 마지막날 = 뉴스_한국날짜();
+                    if (상태.보기 === 옛) 상태.보기 = 마지막날;
+                    날짜단추(); 구독(); 날짜확인(); return;
+                }
+                if (window.scrollY < 80) 그리기();   // "N분 전" 갱신 · 24시간 범위 이동
+            }, 60000);
         }
 
         function onTickerSelectChange(panelIdx, newTicker) {
@@ -8520,7 +8782,7 @@
             try { 통계_시작(); } catch (e) { }
             try { 관심_조회(); } catch (e) { }                       // 관심종목 시세: 시작하자마자 첫 조회
             setTimeout(function () { try { 미니_확인(); 미니_모두그리기(true); } catch (e) { } }, 300);   // 미니 라인차트
-            try { 뉴스_구독(); 뉴스_상태구독(); 뉴스_화면갱신(); } catch (e) { console.warn('[뉴스]', e); }   // 세이브 뉴스
+            try { 뉴스_설정적용(); 뉴스_구독(); 뉴스_상태구독(); 뉴스_화면갱신(); } catch (e) { console.warn('[뉴스]', e); }   // 세이브 뉴스
             document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('#news-btn')) 뉴스창_열기(''); });
             try {
                 firebase.database().ref('system/closeUpdate').on('value', function (snap) {
