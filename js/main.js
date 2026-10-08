@@ -5,23 +5,38 @@
   /* ------------------------------------------------------------
      [설정] 문의 폼 전송 주소
      Google Apps Script 웹앱 배포 후 받은 URL을 아래에 붙여넣으세요.
-     예: 'https://script.google.com/macros/s/AKfycb.../exec'
-     비워두면 '받는 주소·작성 내용 복사' 안내가 표시됩니다.
      ------------------------------------------------------------ */
   var FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxX0sveKMe_j1_JfIm-OKC2BrUBWDXgcQGqjNq5gyF6CCE6UdeYZIkdxeNZWN2yjGu9/exec';
   var CONTACT_EMAIL = 'contact@aibaselab.com';
 
   var body = document.body;
-  var EN = (document.documentElement.lang || '').indexOf('en') === 0;
-  var T = EN ? {
-    open: 'Open menu', close: 'Close menu', slide: 'Show image ', empty: 'Please fill in at least one item.', need: 'Please select at least one option.',
-    sending: 'Sending...', ok: 'Thank you. Your inquiry has been received. Our lead engineer will review it and reply by email.',
-    fail: 'Sending failed. Please email us directly at ', cta: 'Contact us →', ctaHref: '/en/#contact', more: ' more'
-  } : {
-    open: '메뉴 열기', close: '메뉴 닫기', slide: '번 이미지 보기', empty: '문의 내용을 한 가지 이상 적어 주세요.', need: '문의 분야를 한 가지 이상 선택해 주세요.',
-    sending: '전송 중...', ok: '문의가 접수되었습니다. 대표 엔지니어가 검토 후 회신드리겠습니다.',
-    fail: '전송에 실패했습니다. ', cta: '도입 문의하기 →', ctaHref: '/#contact', more: '개 더보기'
-  };
+  
+  // 현재 문서의 언어를 감지하여 3가지(KO, EN, CN)로 완벽히 분기
+  var lang = (document.documentElement.lang || '').toLowerCase();
+  var isEN = lang.indexOf('en') === 0;
+  var isCN = lang.indexOf('zh') === 0;
+
+  // 언어별 알림 및 버튼 텍스트 설정 (도입 문의하기 -> 문의하기 변경 완료)
+  var T;
+  if (isEN) {
+    T = {
+      open: 'Open menu', close: 'Close menu', slide: 'Show image ', empty: 'Please fill in at least one item.', need: 'Please select at least one option.',
+      sending: 'Sending...', ok: 'Thank you. Your inquiry has been received. Our lead engineer will review it and reply by email.',
+      fail: 'Sending failed. Please email us directly at ', cta: 'Contact us →', ctaHref: '/en/#contact', more: ' more'
+    };
+  } else if (isCN) {
+    T = {
+      open: '打开菜单', close: '关闭菜单', slide: '号图片', empty: '请至少填写一项内容。', need: '请至少选择一个选项。',
+      sending: '发送中...', ok: '您的咨询已收到，首席工程师评估后将通过邮件或微信回复您。',
+      fail: '发送失败。请直接发送邮件至 ', cta: '联系我们 →', ctaHref: '/cn/#contact', more: '项更多'
+    };
+  } else {
+    T = {
+      open: '메뉴 열기', close: '메뉴 닫기', slide: '번 이미지 보기', empty: '문의 내용을 한 가지 이상 적어 주세요.', need: '문의 분야를 한 가지 이상 선택해 주세요.',
+      sending: '전송 중...', ok: '문의가 접수되었습니다. 대표 엔지니어가 검토 후 회신드리겠습니다.',
+      fail: '전송에 실패했습니다. ', cta: '문의하기 →', ctaHref: '/#contact', more: '개 더보기'
+    };
+  }
 
   /* 0. 로고 아랫줄(AUTOMATION ENGINEERING)을 로고 글자 폭에 맞춤 */
   function fitLogos() {
@@ -88,7 +103,7 @@
       slides.forEach(function (s, i) {
         var b = document.createElement('button');
         b.type = 'button';
-        b.setAttribute('aria-label', EN ? T.slide + (i + 1) : (i + 1) + T.slide);
+        b.setAttribute('aria-label', isEN ? T.slide + (i + 1) : (i + 1) + T.slide);
         if (i === 0) b.setAttribute('aria-current', 'true');
         b.addEventListener('click', function () { show(i); start(); });
         dotsWrap.appendChild(b);
@@ -102,7 +117,6 @@
   /* 4. 문의 폼 */
   var form = document.getElementById('contact-form');
   if (form) {
-    // 사례 페이지에서 ?type=xxx 로 들어오면 문의 분야 자동 선택
     var params = new URLSearchParams(location.search);
     var type = params.get('type');
     if (type) preselect(type);
@@ -155,17 +169,15 @@
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      // TEMPLATE_CHECK: 안내 문구만 있고 내용을 하나도 적지 않은 경우
       var msg = form.querySelector('[name="message"]');
       if (msg && msg.defaultValue && msg.value.replace(/\s/g, '') === msg.defaultValue.replace(/\s/g, '')) {
         msg.setCustomValidity(T.empty);
       } else if (msg) { msg.setCustomValidity(''); }
       checkNeeds();
       if (!form.checkValidity()) { form.reportValidity(); return; }
-      if (form.querySelector('[name="website"]').value) return; // 스팸 봇
+      if (form.querySelector('[name="website"]').value) return; 
       var data = new FormData(form);
       data.append('page', location.href);
-      // 항목별 입력 → 문의 분야(category) · 의뢰 내용(message)으로 합침
       if (needs.length) {
         data.delete('need');
         data.set('category', Array.prototype.filter.call(needs, function (c) { return c.checked; }).map(function (c) { return c.value; }).join(', '));
@@ -204,13 +216,20 @@
           }
         })
         .catch(function () {
-          setStatus(EN ? T.fail + CONTACT_EMAIL + '.' : T.fail + CONTACT_EMAIL + ' 로 직접 메일을 보내주세요.', false);
+          // 에러 메시지도 언어별로 완벽히 분기
+          if (isEN) {
+            setStatus(T.fail + CONTACT_EMAIL + '.', false);
+          } else if (isCN) {
+            setStatus(T.fail + CONTACT_EMAIL, false);
+          } else {
+            setStatus(T.fail + CONTACT_EMAIL + ' 로 직접 메일을 보내주세요.', false);
+          }
         })
         .finally(function () { btn.disabled = false; btn.textContent = old; if (tsField) tsField.value = String(Date.now()); });
     });
   }
 
-  /* M_CTA: 모바일 하단 고정 문의 버튼 (문의 폼이 보이면 숨김) */
+  /* M_CTA: 모바일 하단 고정 문의 버튼 */
   (function () {
     var onIndex = !!document.getElementById('contact');
     var a = document.createElement('a');
@@ -231,7 +250,8 @@
   document.querySelectorAll('.m-fold').forEach(function (ul) {
     if (ul.children.length <= 10) return;
     var b = document.createElement('button');
-    b.type = 'button'; b.className = 'fold-btn'; b.textContent = '기술 ' + (ul.children.length - 10) + '개 더보기';
+    b.type = 'button'; b.className = 'fold-btn'; 
+    b.textContent = isEN ? '10' + T.more : (isCN ? '10' + T.more : '기술 10' + T.more);
     b.addEventListener('click', function () { ul.classList.add('open'); b.remove(); });
     ul.insertAdjacentElement('afterend', b);
   });
