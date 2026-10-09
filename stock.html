@@ -3365,8 +3365,8 @@
             // 레벨: 세분화 지지·저항 (전일·프리장·개장15분·오늘 고저·옵션 OI 등. 구간·VWAP 은 아래에서 따로 더함)
             //   세분화 근거가 하나도 없으면 예전 옵션 레벨(1·2차 지지·저항)로 대신
             var 레벨VWAP = (s.extVwap > 0 || 일VWAP > 0 || 마감) ? vwap : 0;
-            s.레벨세분 = 레벨_세분(s.ticker, price, d, { vwap: 레벨VWAP, 마감: !!마감, 구간: 구간 });          // 화면·AI 분석용 (모든 근거)
-            var 전략세분 = 레벨_세분(s.ticker, price, d, { 마감: !!마감, 구간: 구간, 구간제외: true });
+            s.레벨세분 = 레벨_세분(s.ticker, price, d, { vwap: 레벨VWAP, 마감: !!마감, 구간: 구간, 안정키: '표시' });          // 화면·AI 분석용 (모든 근거)
+            var 전략세분 = 레벨_세분(s.ticker, price, d, { 마감: !!마감, 구간: 구간, 구간제외: true, 안정키: '전략' });
             var lvList = 전략세분.지지.concat(전략세분.저항).map(function (x) { return { k: x.k, n: x.n, v: x.v, 강도: x.강도, 근거: x.근거 }; });
             if (!lvList.length) lvList = [
                 { k: 'R2', n: '2차저항', v: r2 }, { k: 'R1', n: '1차저항', v: r1 },
@@ -6999,16 +6999,16 @@
         //   범위 = 평소 하루 변동폭 (1.5% ~ 6%, 없으면 3%)
         //   opt: { vwap, 마감, 구간, 구간제외 } — 구간제외 = 전략 계산용 (구간·VWAP 은 전략이 따로 씀)
         // ════════════════════════════════════════════════════════
-        function 레벨_세분(종목, price, d, opt) {
+        function 레벨_후보(종목, price, d, opt) {
             opt = opt || {}; d = d || {};
-            var 결과 = { 범위: 3, 지지: [], 저항: [], 벽: {}, 기준가: price };
+            var 결과 = { 범위: 3, 지지: [], 저항: [], 벽: {}, 기준가: price, 후보: [], 허용: price * 0.0015 };
             if (!(price > 0)) return 결과;
             var 일 = 일데이터[종목], 장 = marketPhase(), 정규 = 장.type === 'REG', 오늘 = etNowParts().date;
             var 레 = (일 && 일.레벨) || {};
             if (레.일평균폭 > 0) 결과.범위 = Math.max(1.5, Math.min(6, 레.일평균폭));
-            var R = 결과.범위 / 100, lo = price * (1 - R), hi = price * (1 + R);
+            var R = 결과.범위 / 100 * (opt.근접허용 ? 1.3 : 1), lo = price * (1 - R), hi = price * (1 + R);
             var 후보 = [];
-            function 넣기(v, 점, 글, 옵션) { if (v > 0 && v >= lo && v <= hi && Math.abs(v - price) / price > 0.0003) 후보.push({ v: v, 점: 점, 글: 글, 옵션: !!옵션 }); }
+            function 넣기(v, 점, 글, 옵션) { if (v > 0 && v >= lo && v <= hi && (opt.근접허용 || Math.abs(v - price) / price > 0.0003)) 후보.push({ v: v, 점: 점, 글: 글, 옵션: !!옵션 }); }
             var 구 = opt.구간 || 구간_가져오기(종목);
             if (!opt.구간제외 && 구 && 구.상태 === '정상') {
                 구.지지.concat(구.저항).forEach(function (z) { 넣기(z.v, z.횟수 >= 3 ? 2 : 1, '구간 ' + z.횟수 + '회'); });
@@ -7048,32 +7048,88 @@
             // 범위 밖 큰 벽
             if (d.callWall > hi) 결과.벽.콜 = d.callWall;
             if (d.putWall > 0 && d.putWall < lo) 결과.벽.풋 = d.putWall;
-            // 합치기: 허용폭(구간 기준, 없으면 0.15%) 안의 근거는 한 레벨
-            var 허용 = (구 && 구.허용폭 > 0) ? Math.min(구.허용폭, price * 0.003) : price * 0.0015;
-            후보.sort(function (a, b) { return a.v - b.v; });
+            결과.허용 = (구 && 구.허용폭 > 0) ? Math.min(구.허용폭, price * 0.003) : price * 0.0015;
+            결과.후보 = 후보;
+            return 결과;
+        }
+
+        // 합치기: 허용폭(구간 기준, 없으면 0.15%) 안의 근거는 한 레벨
+        function 레벨_묶기(후보, 허용) {
+            후보 = 후보.slice().sort(function (a, b) { return a.v - b.v; });
             var 묶음 = [];
             후보.forEach(function (c) {
                 var g = 묶음[묶음.length - 1];
                 if (g && c.v - g.시작 <= 허용) { g.목록.push(c); return; }
                 묶음.push({ 시작: c.v, 목록: [c] });
             });
-            var 레벨 = 묶음.map(function (g) {
+            return 묶음.map(function (g) {
                 var 대표 = g.목록.slice().sort(function (a, b) { return b.점 - a.점 || (a.옵션 ? 1 : -1); })[0];
                 var 글 = [], 점 = 0;
                 g.목록.forEach(function (c) { if (글.indexOf(c.글) < 0) { 글.push(c.글); 점 += c.점; } });
                 return { v: Math.round(대표.v * 100) / 100, 점: 점, 강도: Math.min(3, 점), 근거: 글, 옵션: g.목록.some(function (c) { return c.옵션; }) };
             });
-            // 고르기: 가장 가까운 레벨은 항상 1차 → 나머지 2개는 강한 순(같으면 가까운 순) → 다시 가까운 순으로 1·2·3차
-            function 고르기(목록) {
+        }
+        // 고르기: 가장 가까운 레벨은 항상 1차 → 나머지 2개는 강한 순(같으면 가까운 순) → 다시 가까운 순으로 1·2·3차
+        //   이전: 지금 표시 중인 레벨 가격들 → 점수에 +0.9 (도전 레벨이 1점 이상 높아야 교체)
+        //   쪽: 현재가와 0.03% 안으로 붙은 레벨은 지난번 쪽(지지/저항) 유지, 없으면 표시 안 함
+        function 레벨_배정(레벨, price, 이전) {
+            var 결 = { 지지: [], 저항: [] };
+            function 이전에(v, 쪽) { return 이전 && (이전[쪽] || []).some(function (x) { return Math.abs(x - v) < 0.005; }); }
+            var 아래 = [], 위 = [];
+            레벨.forEach(function (x) {
+                var 근접 = Math.abs(x.v - price) / price <= 0.0003;
+                if (근접) { if (이전에(x.v, '지지')) 아래.push(x); else if (이전에(x.v, '저항')) 위.push(x); return; }
+                (x.v < price ? 아래 : 위).push(x);
+            });
+            function 고르기(목록, 쪽) {
                 if (목록.length <= 3) return 목록;
-                var 나머지 = 목록.slice(1).sort(function (a, b) { return b.점 - a.점 || Math.abs(a.v - price) - Math.abs(b.v - price); }).slice(0, 2);
+                function 가점(x) { return x.점 + (이전 && (이전에(x.v, '지지') || 이전에(x.v, '저항')) ? 0.9 : 0); }
+                var 나머지 = 목록.slice(1).sort(function (a, b) { return 가점(b) - 가점(a) || Math.abs(a.v - price) - Math.abs(b.v - price); }).slice(0, 2);
                 return [목록[0]].concat(나머지).sort(function (a, b) { return Math.abs(a.v - price) - Math.abs(b.v - price); });
             }
-            결과.지지 = 고르기(레벨.filter(function (x) { return x.v < price; }).sort(function (a, b) { return b.v - a.v; }));
-            결과.저항 = 고르기(레벨.filter(function (x) { return x.v > price; }).sort(function (a, b) { return a.v - b.v; }));
-            결과.지지.forEach(function (x, i) { x.k = 'S' + (i + 1); x.n = (i + 1) + '차지지'; });
-            결과.저항.forEach(function (x, i) { x.k = 'R' + (i + 1); x.n = (i + 1) + '차저항'; });
-            return 결과;
+            아래.sort(function (a, b) { return b.v - a.v; }); 위.sort(function (a, b) { return a.v - b.v; });
+            결.지지 = 고르기(아래, '지지').map(function (x, i) { return Object.assign({}, x, { k: 'S' + (i + 1), n: (i + 1) + '차지지' }); });
+            결.저항 = 고르기(위, '저항').map(function (x, i) { return Object.assign({}, x, { k: 'R' + (i + 1), n: (i + 1) + '차저항' }); });
+            return 결;
+        }
+        // 지지·저항 세분 (기존 호출 그대로): opt.안정키 가 있으면 레벨_안정 (출렁임 방지) 사용
+        function 레벨_세분(종목, price, d, opt) {
+            opt = opt || {};
+            if (opt.안정키) return 레벨_안정(종목, price, d, opt);
+            var r = 레벨_후보(종목, price, d, opt);
+            var 배 = 레벨_배정(레벨_묶기(r.후보, r.허용), price, null);
+            return { 범위: r.범위, 지지: 배.지지, 저항: 배.저항, 벽: r.벽, 기준가: price };
+        }
+
+        // ★ 지지·저항 안정화 (출렁임 방지) — 3단계
+        //   1) 후보 레벨(매물대·구간·옵션·전일·프리장·개장15분·VWAP)은 3분봉이 바뀔 때 / 원본(구간·옵션·마감·장 구분·매물대 출처)이 바뀔 때 / 가격이 수집 범위를 크게 벗어날 때만 다시 모음
+        //      예외: 오늘 신고가·신저가는 즉시 그 후보만 고침 · VWAP 은 다시 모을 때의 값으로 고정
+        //   2) 현재가와의 관계(지지↔저항, 1·2·3차 번호)는 매 틱 즉시
+        //   3) 표시 중인 레벨은 도전 레벨이 1점 이상 높을 때만 교체
+        var 레벨안정 = {};
+        function 레벨_안정(종목, price, d, opt) {
+            var 키 = 종목 + '|' + opt.안정키, c = 레벨안정[키], t = etNowParts(), 장 = marketPhase().type;
+            var 봉 = t.date + ':' + Math.floor(t.m / 3);
+            var 구 = opt.구간 || 구간_가져오기(종목), 일 = 일데이터[종목], 레 = (일 && 일.레벨) || {}, m = 일 && 일.마감;
+            var 옵 = (d.optionRows || []), 옵합 = 0; 옵.forEach(function (r) { 옵합 += (Number(r.callOI) || 0) + (Number(r.putOI) || 0); });
+            var 물 = 매물대_가져오기(종목);
+            var 서명 = [장, !!opt.마감, 물 ? 물.출처 + 물.날짜 : '', 구 && 구.기준시각, 구 && 구.상태, 옵.length, Math.round(옵합 / 100), d.maxPain, d.dte, m && m.날짜, 레.프리 && 레.프리.날짜, 레.개장15 && 레.개장15.날짜, 레.일평균폭, opt.vwap > 0 ? 1 : 0].join('|');
+            var 다시 = !c || c.봉 !== 봉 || c.서명 !== 서명 || !(price > 0) || Math.abs(price - c.기준가) / c.기준가 > c.범위 / 100 * 0.6;
+            if (다시) {
+                var r = 레벨_후보(종목, price, d, Object.assign({}, opt, { 근접허용: true }));
+                c = 레벨안정[키] = { 봉: 봉, 서명: 서명, 기준가: price, 범위: r.범위, 벽: r.벽, 허용: r.허용, 후보: r.후보, 레벨: 레벨_묶기(r.후보, r.허용), 이전: c ? c.이전 : null };
+            } else if (장 === 'REG' && !opt.마감) {
+                // 오늘 신고가·신저가: '오늘 고가/저가' 후보만 즉시 고침
+                var 고저 = 고저_가져오기(종목, price), 바뀜 = false;
+                if (고저) c.후보.forEach(function (x) {
+                    if (x.글 === '오늘 고가' && Math.abs(x.v - 고저.H) > 1e-9) { x.v = 고저.H; 바뀜 = true; }
+                    if (x.글 === '오늘 저가' && Math.abs(x.v - 고저.L) > 1e-9) { x.v = 고저.L; 바뀜 = true; }
+                });
+                if (바뀜) c.레벨 = 레벨_묶기(c.후보, c.허용);
+            }
+            var 배 = 레벨_배정(c.레벨, price, c.이전);
+            c.이전 = { 지지: 배.지지.map(function (x) { return x.v; }), 저항: 배.저항.map(function (x) { return x.v; }) };
+            return { 범위: c.범위, 지지: 배.지지, 저항: 배.저항, 벽: c.벽, 기준가: price, 안정: true, 다시모은시각: c.봉 };
         }
 
         // ★ 지지·저항 막대 · 매물대 공통 가격 눈금: 현재가 중심
@@ -7333,7 +7389,7 @@
                 var st = RT[패널번호] && RT[패널번호].ticker === 종목 ? RT[패널번호] : null, 정규지금 = marketPhase().type === 'REG';
                 var 일v = 일_오늘(종목), 일m = 일데이터[종목] && 일데이터[종목].마감;
                 var 표VWAP = 정규지금 ? (st && st.extVwap > 0 ? st.extVwap : (일v && 일v.마감.VWAP > 0 ? 일v.마감.VWAP : 0)) : (일m && 일m.확정 && 일m.VWAP > 0 ? 일m.VWAP : 0);
-                세분 = 레벨_세분(종목, price, d, { vwap: 표VWAP, 마감: !정규지금 });
+                세분 = st && st.레벨세분 ? st.레벨세분 : 레벨_세분(종목, price, d, { vwap: 표VWAP, 마감: !정규지금 });   // 차트 선과 같은 값 (안정화된 값)
             }
             function 줄(x, i, 지지) {
                 if (!x) return '<div class="lvs-r lvs-empty"><span class="lvs-k">' + (i + 1) + '차</span><span class="lvs-p">—</span></div>';
