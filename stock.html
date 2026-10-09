@@ -3604,11 +3604,7 @@
                 신호: paperPlain(line1) + ' / ' + paperPlain(line3),
                 진입점수: 지금점수.점수
             });
-            // 눌림 후보 선택 과정 (바뀔 때만 기록)
-            if (눌림결과) 디버그('눌림' + s.ticker, '[' + s.ticker + '] ' + (눌림결과.plan && 눌림결과.plan.dir === 'short' ? '반등' : '눌림') + ' 후보 (현재가 ' + price.toFixed(2) + ') ' +
-                (눌림결과.후보.map(function (c) { return c.n + ' ' + c.v.toFixed(2) + '(' + fmtPct((c.v - price) / price * 100) + ')' + (눌림결과.유효.indexOf(c) >= 0 ? '' : '✕거리'); }).join(', ') || '없음') +
-                ' → 선택 ' + (눌림결과.선택 ? 눌림결과.선택.n + ' ' + 눌림결과.선택.v.toFixed(2) : '없음') +
-                (눌림결과.plan ? ' · 진입 ' + 눌림결과.plan.entry.toFixed(2) + ' 손절 ' + 눌림결과.plan.stop.toFixed(2) + ' 목표 ' + 눌림결과.plan.target.toFixed(2) + ' 1:' + 눌림결과.plan.rr.toFixed(1) : ''));
+            // (눌림·반등 후보 선택 과정 로그는 가격이 바뀔 때마다 나와 부하만 커서 제거)
 
             // 결론 3단계: 관망 / 대기(계획은 있고 진입가까지 거리가 남음) / 진입 구간(진입가 0.1% 이내)
             //   깜빡임 방지: 최근 12초 가격의 중간값으로 판정, 진입 구간이 된 뒤에는 0.25% 를 벗어나야 대기로 돌아감 (가상매매 주문·체결과는 무관한 표시)
@@ -5361,6 +5357,7 @@
             var 새것 = !뉴스[id];
             x.id = id; x.d = 날짜 || 뉴스_한국날짜(x.t); 뉴스[id] = x;
             if (새것 && Date.now() - 뉴스_시작 > 8000 && Date.now() - x.t < 15 * 60000) { 뉴스_지금id = id; 뉴스_깜빡표시(x); 뉴스_새소식(x); 뉴스_지금id = ''; if (격자모드) { 격자_뉴스(x); try { 격자_칸뉴스갱신(); 격자_시장뉴스새것(x); } catch (e) { } } }   // 처음 불러온 것은 알리지 않음
+            else if (!새것 && 격자모드) { try { 격자_칸뉴스갱신(); 격자_시장뉴스갱신(false); } catch (e) { } }   // 제목이 바뀜 (영어 → 한국어 번역)
             뉴스_다시그리기예약();
         }
         function 뉴스_구독() {
@@ -5701,6 +5698,7 @@
                     var ref = firebase.database().ref('news/' + d).orderByChild('t'), 처음 = true;
                     참조들.push(ref);
                     ref.once('value').then(function () { 처음 = false; 처음남음--; 그리기(); }).catch(function (e) { document.getElementById('nw-list').innerHTML = '<div class="nw-empty">뉴스를 읽지 못했습니다: ' + 뉴스_글(e && e.message) + '<br>Firebase 규칙에 news 읽기 허용이 필요합니다</div>'; });
+                    ref.on('child_changed', function (s) { var x = s.val(); if (!x) return; x.id = s.key; 자료[s.key] = x; if (!처음) 나중에그리기(); });   // 제목 번역 갱신
                     ref.on('child_added', function (s) {
                         var x = s.val(); if (!x) return; x.id = s.key; 자료[s.key] = x;
                         (x.tk || []).forEach(function (t, k) { if (x.tn && x.tn[k]) { 이름표[t] = 이름표[t] || []; if (이름표[t].indexOf(x.tn[k]) < 0) 이름표[t].push(x.tn[k]); } });
@@ -8025,11 +8023,12 @@
             }
             var 세 = s && s.레벨세분;
             if (세 && ((세.지지 || []).length || (세.저항 || []).length)) {
-                (세.지지 || []).forEach(function (x, k) { 넣('sr' + Math.min(3, k + 1), x.n || ((k + 1) + '차지지'), x.v, k ? C.지지 + '99' : C.지지, k ? 2 : 0, k ? 1 : 2); });
-                (세.저항 || []).forEach(function (x, k) { 넣('sr' + Math.min(3, k + 1), x.n || ((k + 1) + '차저항'), x.v, k ? C.저항 + '99' : C.저항, k ? 2 : 0, k ? 1 : 2); });
+                // 1차 = 실선(조금 연하게, 굵기 1) · 2·3차 = 점선(더 연하게)
+                (세.지지 || []).forEach(function (x, k) { 넣('sr' + Math.min(3, k + 1), x.n || ((k + 1) + '차지지'), x.v, k ? C.지지 + '99' : C.지지 + 'bb', k ? 2 : 0, 1); });
+                (세.저항 || []).forEach(function (x, k) { 넣('sr' + Math.min(3, k + 1), x.n || ((k + 1) + '차저항'), x.v, k ? C.저항 + '99' : C.저항 + 'bb', k ? 2 : 0, 1); });
             } else {
-                넣('sr1', '1차지지', d.support1, C.지지, 0, 2); 넣('sr2', '2차지지', d.support2, C.지지 + '99', 2, 1);
-                넣('sr1', '1차저항', d.resistance1, C.저항, 0, 2); 넣('sr2', '2차저항', d.resistance2, C.저항 + '99', 2, 1);
+                넣('sr1', '1차지지', d.support1, C.지지 + 'bb', 0, 1); 넣('sr2', '2차지지', d.support2, C.지지 + '99', 2, 1);
+                넣('sr1', '1차저항', d.resistance1, C.저항 + 'bb', 0, 1); 넣('sr2', '2차저항', d.resistance2, C.저항 + '99', 2, 1);
             }
             var jd = s && s.판단, 계 = jd && jd.계획;
             if (계) { 넣('plan', '진입', 계.entry, C.진입, 0, 2); 넣('plan', '손절', 계.stop, C.손절, 2, 1); 넣('plan', '목표', 계.target, C.목표, 2, 1); }
