@@ -2043,7 +2043,8 @@
         .grid-mode .content-wrapper { position: absolute; left: 0; top: 0; width: 100%; height: 100%; min-width: 1240px; min-height: 860px; box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 1fr) var(--g-side, clamp(300px, 20vw, 520px)); gap: 8px !important; padding: 8px; background: var(--g-bg); }
         /* 차트 영역: 위 = 시황 바 · 아래 = 차트 격자 (맨 아래 큰 차트 줄 높이는 시황 바가 없을 때와 같게 → 위 두 줄만 줄어듦) */
         .grid-mode .g-main { display: flex; flex-direction: column; gap: 8px; min-width: 0; min-height: 0; }
-        .grid-mode .g-main .top-bar { border-radius: 8px; border: 1px solid #1a1a30; padding: 4px 10px; flex-shrink: 0; min-width: 0; overflow: hidden; }
+        .grid-mode .content-wrapper > .top-bar { grid-column: 1 / -1; border-radius: 8px; border: 1px solid #1a1a30; padding: 4px 10px; min-width: 0; overflow: hidden; }
+        .grid-mode .content-wrapper { grid-template-rows: auto minmax(0, 1fr); }
         .grid-mode .g-main .dashboard-grid { flex: 1; grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) calc((max(100vh, 860px) - 32px) / 3) !important; }
         .grid-mode .sidebar { position: relative !important; }
         .grid-mode .g-side-drag { position: absolute; left: 0; top: 0; bottom: 0; width: 7px; cursor: col-resize; z-index: 20; touch-action: none; }
@@ -2116,7 +2117,7 @@
         .g-light .g-news b { color: #1c2230; }
         .g-light .g-news .g-nt { color: #b07800; }
         /* 밝음 모드 시황 바 */
-        .g-light .g-main .top-bar { background: #ffffff; border-color: var(--g-line); box-shadow: var(--g-shadow); }
+        .g-light .content-wrapper > .top-bar { background: #ffffff; border-color: var(--g-line); box-shadow: var(--g-shadow); }
         .g-light .neon-ticker-bar.mk-bar { background: #f7f9fc; border-color: #dfe4ec; }
         .g-light .mk-left { border-right-color: #dfe4ec; }
         .g-light .mk-cell { background: #ffffff; border-color: #e1e6ee; }
@@ -2179,7 +2180,7 @@
         .grid-mode .g-mn-cols { flex: 1; min-width: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
         .grid-mode .g-mn-col { display: flex; align-items: center; gap: 8px; min-width: 0; border-left: 1px solid var(--g-line); padding-left: 10px; }
         .grid-mode .g-mn-col:first-child { border-left: none; padding-left: 0; }
-        .grid-mode .g-mn-sel { flex-shrink: 0; font: inherit; font-size: 13px; font-weight: 800; background: var(--g-btn); color: var(--g-text); border: 1px solid var(--g-line); border-radius: 5px; padding: 2px 4px; max-width: 128px; }
+        .grid-mode .g-mn-sel { flex-shrink: 0; font: inherit; font-size: 13px; font-weight: 800; background: var(--g-btn); color: var(--g-text); border: 1px solid var(--g-line); border-radius: 5px; padding: 2px 0 2px 2px; width: 74px; }
         .grid-mode .g-mn-list { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
         .grid-mode .g-mn-list .g-ni, .grid-mode .g-mn-mini .g-ni { font-size: 15px; line-height: 21px; }
         .grid-mode .g-mn-side { flex-shrink: 0; display: flex; flex-direction: column; justify-content: center; gap: 3px; font-size: 12px; color: var(--g-sub); }
@@ -2209,7 +2210,7 @@
         .grid-mode .mk-ext { font-size: 14px; }
         .grid-mode .mk-sp { height: 38px; }
         /* 오른쪽 */
-        .grid-mode .sidebar { width: auto !important; height: auto; min-height: 0; padding: 0; overflow: hidden; display: grid; grid-template-rows: minmax(0, 2fr) minmax(0, 1fr); gap: 8px; }
+        .grid-mode .sidebar { width: auto !important; height: auto; min-height: 0; padding: 0; overflow: hidden; display: grid; grid-template-rows: minmax(0, 1fr) clamp(190px, 21vh, 260px); gap: 8px; }
         .grid-mode .sidebar-watchlist { min-height: 0; padding: 9px 10px; background: var(--g-card); border: 1px solid var(--g-line); border-radius: 8px; box-shadow: var(--g-shadow); }
         .grid-mode .g-bar { display: flex; align-items: center; gap: 4px; margin: -2px 0 8px; font-size: 11px; color: var(--g-sub); flex-shrink: 0; }
         .grid-mode .g-bar button { font: inherit; font-size: 11px; font-weight: 700; background: var(--g-btn); color: var(--g-sub); border: 1px solid var(--g-line); border-radius: 4px; padding: 2px 8px; cursor: pointer; }
@@ -8369,7 +8370,7 @@
             document.title = 'STRIKEZONE · 대시보드2';
             // 차트 영역 = [시황 바(대시보드1 맨 위 줄) + 차트 격자] · 관심종목은 오른쪽 전체 높이
             var 격 = document.getElementById('dashboard-grid'), 위 = document.querySelector('.top-bar');
-            if (격 && 위) { var 본 = document.createElement('div'); 본.className = 'g-main'; 격.parentNode.insertBefore(본, 격); 본.appendChild(위); 본.appendChild(격); }
+            if (격 && 위) { var 본 = document.createElement('div'); 본.className = 'g-main'; 격.parentNode.insertBefore(본, 격); 본.appendChild(격); 본.parentNode.insertBefore(위, 본.parentNode.firstChild); }   // 시황 바 = 맨 위 전체 폭
             격자_관심폭적용();
             패널들().forEach(function (i) {
                 var 판 = document.getElementById('panel-' + i), 차 = 판 && 판.querySelector('.chart-wrapper'); if (!차) return;
@@ -8439,7 +8440,7 @@
         //   ④ 알림 카드: 지수 박스 바로 아래 · 10초 · 최대 3장 · 대상(속보+PICK / 속보 / 뉴스 칸 전체 / 끔) · 소리 (대시보드1 과 같은 뉴스면 한 번만)
         //   기준 = 최근 24시간 · 광고 제외 · 종목 뉴스는 확실히 그 종목인 것(관계 2)만
         // ════════════════════════════════════════════════════════
-        var 격자_뉴스분류 = [['속보', '⚡ 속보'], ['시장', '🌐 시장'], ['PICK', '⭐ SAVE PICK'], ['관심', '👀 관심종목'], ['전체', '📰 전체 최신'], ['끔', '끔']];
+        var 격자_뉴스분류 = [['속보', '⚡속보'], ['시장', '🌐시장'], ['PICK', '⭐PICK'], ['관심', '👀관심'], ['전체', '📰전체'], ['끔', '끔']];
         var 격자_시장단어 = /연준|FOMC|파월|금리|기준금리|CPI|PCE|PPI|물가|인플레|고용|실업|비농업|일자리|GDP|국채|수익률|유가|원유|OPEC|관세|무역|환율|달러|엔화|위안|트럼프|백악관|재무부|경기|침체|ISM|소매판매|증시|나스닥|다우|S&P|지수|VIX|ECB|BOJ|일본은행|유럽중앙은행|셧다운|부채한도|지정학|전쟁|\bFed\b|treasury|tariff|inflation|payrolls|recession/i;
         function 격자_뉴스설정() {
             var u = 격자UI.뉴스 && typeof 격자UI.뉴스 === 'object' ? 격자UI.뉴스 : (격자UI.뉴스 = {});
@@ -8522,7 +8523,7 @@
 
         // ③ 시장 뉴스 줄
         function 격자_시장뉴스만들기() {
-            var 위 = document.querySelector('.g-main .top-bar'); if (!위) return;
+            var 본 = document.querySelector('.g-main'); if (!본) return;
             var u = 격자_뉴스설정();
             var 줄 = document.createElement('div'); 줄.className = 'g-mn' + (u.접힘 ? ' folded' : ''); 줄.id = 'g-mn';
             var 옵 = function (선택, 목록) { return 목록.map(function (x) { return '<option value="' + x[0] + '"' + (x[0] === 선택 ? ' selected' : '') + '>' + x[1] + '</option>'; }).join(''); };
@@ -8533,7 +8534,7 @@
                 }).join('') + '</div>' +
                 '<div class="g-mn-side"><label>알림 <select id="g-mn-al" title="새 뉴스 알림 카드">' + 옵(u.알림, [['속보PICK', '속보+PICK'], ['속보', '속보만'], ['칸', '뉴스 칸 전체'], ['끔', '끔']]) + '</select></label>' +
                 '<label>소리 <select id="g-mn-snd">' + 옵(u.소리, 알람_소리목록.map(function (x) { return [x[0], x[1].split(' (')[0]]; })) + '</select></label></div>';
-            위.parentNode.insertBefore(줄, 위.nextSibling);
+            본.insertBefore(줄, 본.firstChild);
             줄.addEventListener('change', function (e) {
                 var t = e.target, u2 = 격자_뉴스설정();
                 if (t.classList.contains('g-mn-sel')) u2.칸[Number(t.getAttribute('data-k'))] = t.value;
@@ -8547,7 +8548,7 @@
                 격자UI_저장(); 격자_설정저장예약(); 격자_시장뉴스갱신(true);
             });
             // 알림 카드 자리 (지수 박스 바로 아래)
-            var 판 = document.createElement('div'); 판.className = 'g-toast'; 판.id = 'g-toast'; 위.parentNode.appendChild(판);
+            var 판 = document.createElement('div'); 판.className = 'g-toast'; 판.id = 'g-toast'; 본.appendChild(판);
             격자_시장뉴스갱신(true);
         }
         function 격자_시장뉴스갱신(강제) {
@@ -8575,8 +8576,7 @@
             if (!맞음) return;
             격자_카드알린[x.id] = 1;
             var 판 = document.getElementById('g-toast'); if (!판) return;
-            var 위 = document.querySelector('.g-main .top-bar'), 본 = document.querySelector('.g-main');
-            if (위 && 본) 판.style.top = (위.getBoundingClientRect().bottom - 본.getBoundingClientRect().top + 6) + 'px';
+            판.style.top = '0px';   // 차트 영역 맨 위 = 지수 박스 바로 아래
             var 분 = 격자_분류맞음(x, '속보') ? '⚡ 속보' : x.pk ? '⭐ SAVE PICK' : 격자_분류맞음(x, '시장') ? '🌐 시장' : '📰 뉴스';
             var el = document.createElement('div'); el.className = 'g-card' + (분.indexOf('속보') >= 0 ? ' hot' : '');
             el.innerHTML = '<div class="g-ct"><i>' + 분 + '</i><span>' + 뉴스_한국시각(x.t) + (x.s ? ' · ' + 뉴스_글(x.s) : '') + '</span><button type="button" class="g-cx" title="닫기">✕</button></div>' +
