@@ -2005,15 +2005,22 @@
         .kc-src button.on { background: #ffcc00; color: #1a1400; border-color: #ffcc00; }
         .kc-chk label { display: flex; align-items: center; gap: 6px; padding: 2px 0; cursor: pointer; }
         .kc-pb { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+        .kc-row { display: grid; grid-template-columns: auto 1fr auto 70px auto; align-items: center; gap: 5px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #22263a; }
+        .kc-row label { color: #8b93a7; font-weight: 700; }
+        .kc-row select, .kc-row input { font: inherit; font-size: 12px; background: #0b0d16; color: #e3e7ef; border: 1px solid #2f3550; border-radius: 4px; padding: 2px 4px; min-width: 0; }
+        .kc-row button { font: inherit; font-size: 11px; font-weight: 700; background: #ffcc00; color: #1a1400; border: 1px solid #ffcc00; border-radius: 4px; padding: 2px 8px; cursor: pointer; }
+        .kc-row button:disabled, .kc-row input:disabled { opacity: .45; cursor: not-allowed; }
         .kc-pn { margin-top: 7px; color: #f2c14e; font-size: 11px; }
         .kc-cr { margin-top: 8px; padding-top: 6px; border-top: 1px solid #22263a; color: #6b7386; font-size: 10px; }
         .kc-cr a { color: #8b93a7; }
 
         /* ── 대시보드2 (?grid=1): 차트 4·4·2 / 3·3·2 · 오른쪽 관심종목 2/3 + 잔고·주문 목업 1/3 ──
            테마: 다크 카드(기본) / 밝음(body.g-light) — 색은 아래 변수만 바꿈 */
-        body.grid-mode { --g-bg: #05060a; --g-card: #0c0f18; --g-line: #262d42; --g-head: #121726; --g-text: #e3e7ef; --g-sub: #8f99ad; --g-btn: #171c2b; --g-up: #ef5350; --g-dn: #4f8cff; --g-sel: #f2c14e; --g-shadow: 0 2px 10px rgba(0, 0, 0, .5);
+        body.grid-mode { --g-on-t: #1a1400; --g-badge: #f2c14e; --g-badge-t: #1a1400; --g-row-on: rgba(242, 193, 78, .07); --g-hover: rgba(255, 255, 255, .04);
+                         --g-bg: #05060a; --g-card: #0c0f18; --g-line: #262d42; --g-head: #121726; --g-text: #e3e7ef; --g-sub: #8f99ad; --g-btn: #171c2b; --g-up: #ef5350; --g-dn: #4f8cff; --g-sel: #f2c14e; --g-shadow: 0 2px 10px rgba(0, 0, 0, .5);
                          overflow: hidden; height: 100vh; background: var(--g-bg); }
-        body.grid-mode.g-light { --g-bg: #dfe3ea; --g-card: #ffffff; --g-line: #cfd5df; --g-head: #f4f6f9; --g-text: #1c2230; --g-sub: #5f6b7d; --g-btn: #eef1f5; --g-up: #d32f2f; --g-dn: #1e5fd6; --g-sel: #e3a008; --g-shadow: 0 1px 4px rgba(20, 30, 50, .12); }
+        body.grid-mode.g-light { --g-bg: #dfe3ea; --g-card: #ffffff; --g-line: #cfd5df; --g-head: #f4f6f9; --g-text: #1c2230; --g-sub: #5f6b7d; --g-btn: #eef1f5; --g-up: #d32f2f; --g-dn: #1e5fd6; --g-sel: #2f6fed; --g-shadow: 0 1px 4px rgba(20, 30, 50, .12);
+                                     --g-on-t: #ffffff; --g-badge: #2f3b52; --g-badge-t: #ffffff; --g-row-on: #f3f7ff; --g-hover: #f5f7fa; }
         .grid-mode .top-bar, .grid-mode .sidebar-logo, .grid-mode .pz-split, .grid-mode #qnav, .grid-mode .nt-stack { display: none !important; }
         .grid-mode .content-wrapper { position: absolute; left: 0; top: 0; width: 100%; height: 100%; min-width: 1240px; min-height: 690px; box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 1fr) clamp(270px, 17.5vw, 430px); gap: 8px !important; padding: 8px; background: var(--g-bg); }
         .grid-mode .dashboard-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr)); gap: 8px !important; border: none; border-radius: 0; overflow: hidden; min-width: 0; min-height: 0; }
@@ -2036,7 +2043,7 @@
         .grid-mode .g-head { display: flex; flex-direction: column; gap: 1px; flex-shrink: 0; padding: 4px 8px 4px; background: var(--g-head); border-bottom: 1px solid var(--g-line); cursor: pointer; min-width: 0; overflow: hidden; color: var(--g-text); }
         .grid-mode .g-r1, .grid-mode .g-r2 { display: flex; align-items: center; gap: 6px; min-width: 0; height: 26px; white-space: nowrap; }
         .grid-mode .g-no { flex-shrink: 0; width: 20px; height: 20px; line-height: 20px; text-align: center; border-radius: 5px; background: var(--g-btn); color: var(--g-sub); font-size: 12px; border: 1px solid var(--g-line); }
-        .grid-mode .panel.g-on .g-no { background: var(--g-sel); color: #1a1400; border-color: var(--g-sel); }
+        .grid-mode .panel.g-on .g-no { background: var(--g-sel); color: var(--g-on-t); border-color: var(--g-sel); }
         .grid-mode .g-tk { display: flex; align-items: center; gap: 5px; flex: 0 1 auto; min-width: 0; }
         .grid-mode .g-tk .ticker-select { width: auto; min-width: 70px; max-width: 220px; font-size: 19px; font-weight: 800; padding: 0 2px; line-height: 24px; background: transparent; border: 1px solid transparent; color: var(--g-text); }
         .grid-mode .g-tk .ticker-select:hover { border-color: var(--g-line); }
@@ -2067,13 +2074,17 @@
         .grid-mode .sidebar-watchlist { min-height: 0; padding: 9px 10px; background: var(--g-card); border: 1px solid var(--g-line); border-radius: 8px; box-shadow: var(--g-shadow); }
         .grid-mode .g-bar { display: flex; align-items: center; gap: 4px; margin: -2px 0 8px; font-size: 11px; color: var(--g-sub); flex-shrink: 0; }
         .grid-mode .g-bar button { font: inherit; font-size: 11px; font-weight: 700; background: var(--g-btn); color: var(--g-sub); border: 1px solid var(--g-line); border-radius: 4px; padding: 2px 8px; cursor: pointer; }
-        .grid-mode .g-bar button.on { background: var(--g-sel); color: #1a1400; border-color: var(--g-sel); }
+        .grid-mode .g-bar button.on { background: var(--g-sel); color: var(--g-on-t); border-color: var(--g-sel); }
         .grid-mode .g-bar-gap { margin-left: 8px; }
         .grid-mode .g-hint { flex-shrink: 0; font-size: 11.5px; color: var(--g-sub); margin: -2px 0 6px; }
         .grid-mode .g-hint.on { color: var(--g-sel); font-weight: 700; }
         .grid-mode .wl-row { cursor: pointer; }
-        .grid-mode .wl-pn .g-wn { font-style: normal; display: inline-block; min-width: 15px; height: 15px; line-height: 15px; text-align: center; font-size: 10px; font-weight: 800; border-radius: 3px; background: var(--g-sel); color: #1a1400; }
-        .grid-mode .ticker-item.active-panel { background: rgba(242, 193, 78, .06); }
+        .grid-mode .wl-pn .g-wn { font-style: normal; display: inline-block; min-width: 15px; height: 15px; line-height: 15px; text-align: center; font-size: 10px; font-weight: 800; border-radius: 3px; background: var(--g-badge); color: var(--g-badge-t); }
+        /* 관심종목 줄: 칸 색 테두리(대시보드1 의 1·2·3 패널 색) 대신 같은 강조 하나 = 옅은 바탕 + 왼쪽 띠 */
+        .grid-mode .ticker-item.wl-row, .grid-mode .ticker-item.wl-row[data-p] { border-color: transparent; border-bottom-color: var(--g-line); background: transparent; border-radius: 4px; }
+        .grid-mode .ticker-item.wl-row.active-panel { background: var(--g-row-on); box-shadow: inset 3px 0 0 var(--g-sel); }
+        .grid-mode .ticker-item:hover { background: var(--g-hover); }
+        .grid-mode .ticker-item.wl-row.active-panel:hover { background: var(--g-row-on); }
         .g-acct { min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 6px; background: var(--g-card, #0d0d1a); border: 1px dashed var(--g-line, #343b55); border-radius: 8px; padding: 9px 10px; font-size: 12px; color: var(--g-sub, #aab3c5); box-shadow: var(--g-shadow); }
         .ga-head { display: flex; align-items: center; justify-content: space-between; color: var(--g-text, #e3e7ef); }
         .ga-tag { font-size: 10.5px; font-weight: 800; color: var(--g-sel, #f2c14e); border: 1px solid var(--g-sel, #f2c14e); border-radius: 4px; padding: 0 5px; }
@@ -2100,14 +2111,26 @@
         /* 밝은 테마: 관심종목·차트 안내 글자 */
         .g-light .watchlist-title { color: var(--g-text); }
         .g-light .watchlist-title small, .g-light .wl-n, .g-light .wl-l, .g-light .wl-so { color: var(--g-sub); }
-        .g-light .wl-t { color: var(--g-text); }
+        .g-light .wl-t, .g-light .ticker-item.active-panel .wl-t { color: var(--g-text); }
+        .g-light .ticker-item { color: var(--g-sub); }
+        .g-light .wl-rk, .g-light .wl-top .wl-rk { color: var(--g-sub); }
+        .g-light .wl-sb button.on { background: var(--g-sel); color: #fff; border-color: var(--g-sel); }
+        .g-light .wl-sb button[data-m="상승"].on { background: var(--g-up); border-color: var(--g-up); color: #fff; }
+        .g-light .wl-sb button[data-m="하락"].on { background: var(--g-dn); border-color: var(--g-dn); color: #fff; }
+        .g-light .g-hint.on { color: var(--g-sel); }
+        .g-light .ga-tag { color: var(--g-sub); border-color: var(--g-line); }
+        .g-light .kc-pop { background: #ffffff; color: #1c2230; border-color: #cfd5df; box-shadow: 0 10px 30px rgba(20, 30, 50, .18); }
+        .g-light .kc-pt { color: #1c2230; }
+        .g-light .kc-row, .g-light .kc-src, .g-light .kc-cr { border-color: #e3e7ee; }
+        .g-light .kc-row select, .g-light .kc-row input { background: #fff; color: #1c2230; border-color: #cfd5df; }
+        .g-light .kc-row button, .g-light .kc-src button.on { background: #2f6fed; color: #fff; border-color: #2f6fed; }
+        .g-light .kc-pb button, .g-light .kc-src button { background: #f4f6f9; color: #4a5263; border-color: #cfd5df; }
         .g-light .wl-v { color: #2b3240; } .g-light .wl-c { color: var(--g-sub); }
         .g-light .wl-v.up, .g-light .wl-c.up, .g-light .wl-rk .rk-d.up, .g-light .wl-rk .rk-v.up { color: var(--g-up); }
         .g-light .wl-v.dn, .g-light .wl-c.dn, .g-light .wl-rk .rk-d.dn, .g-light .wl-rk .rk-v.dn { color: var(--g-dn); }
         .g-light .ticker-item.wl-row { border-bottom-color: var(--g-line); }
         .g-light .wl-top .wl-rk { background: var(--g-btn); }
         .g-light .wl-sb button, .g-light .wl-so button { background: var(--g-btn); color: var(--g-sub); border-color: var(--g-line); }
-        .g-light .wl-sb button.on { background: var(--g-sel); color: #1a1400; border-color: var(--g-sel); }
         .g-light .wl-so button b { color: var(--g-text); }
         .g-light .kc-msg { background: rgba(255, 255, 255, .92); color: var(--g-sub); border-color: var(--g-line); }
         .g-light .kc-wait { color: var(--g-sub); }
@@ -5597,7 +5620,14 @@
             }, 60000);
         }
 
+        // 다른 칸(보이는 칸)이 쓰는 종목인지: 대시보드2 3·3·2 에서 숨은 9·10번 칸 종목은 '비어 있는 종목'으로 봄
+        function 패널_사용칸(t, 제외) {
+            for (var k = 0; k < 패널수; k++) if (k !== 제외 && panelTickers[k] === t && !(격자모드 && 패널_숨김(k))) return k;
+            return -1;
+        }
         function onTickerSelectChange(panelIdx, newTicker) {
+            var 숨은칸 = panelTickers.indexOf(newTicker);
+            if (격자모드 && 숨은칸 >= 0 && 숨은칸 !== panelIdx && 패널_숨김(숨은칸)) { 관심_패널지정(panelIdx, newTicker); return; }   // 숨은 칸과 맞바꿈 (4·4·2 로 돌아가도 겹치지 않게)
             if (panelTickers.indexOf(newTicker) >= 0 && panelTickers.indexOf(newTicker) !== panelIdx) {
                 alert('이미 패널에 표시 중인 종목입니다.');
                 var sel = document.getElementById('ticker-select-' + panelIdx);
@@ -5690,7 +5720,7 @@
         function setSelectDisabled(panelIdx, val) { var sel = document.getElementById('ticker-select-' + panelIdx); if (sel) sel.disabled = val; var isel = document.getElementById('interval-' + panelIdx); if (isel) isel.disabled = val; }
 
         function refreshAllDropdowns() {
-            패널들().forEach(function (i) { var sel = document.getElementById('ticker-select-' + i); if (!sel) return; var opts = sel.options; for (var k = 0; k < opts.length; k++) { var t = opts[k].value; var usedIdx = panelTickers.indexOf(t); opts[k].disabled = (usedIdx >= 0 && usedIdx !== i); } });
+            패널들().forEach(function (i) { var sel = document.getElementById('ticker-select-' + i); if (!sel) return; var opts = sel.options; for (var k = 0; k < opts.length; k++) { var t = opts[k].value; opts[k].disabled = 패널_사용칸(t, i) >= 0; } });
         }
 
         var FIREBASE_URL = 'https://hphong-2cb03-default-rtdb.asia-southeast1.firebasedatabase.app/';
@@ -7846,12 +7876,17 @@
             키움_창닫기();
             var 창 = document.createElement('div'); 창.id = 'kc-pop'; 창.className = 'kc-pop'; 창.setAttribute('data-i', i);
             var h = '<div class="kc-pt">' + (격자모드 ? '차트 ' + (i + 1) + ' · ' : '') + (panelTickers[i] || '') + ' 차트 표시</div>';
+            var 지금분 = String(panelIntervals[i] || '3'), 지금개 = (K차트[i] && K차트[i].개수) || Number(키움설정_칸(i).개수) || 키움_기본개수, 키움씀 = 키움차트_사용();
+            h += '<div class="kc-row"><label>분봉</label><select data-f="분">' + Object.keys(키움_분봉표).map(function (k) { return '<option value="' + k + '"' + (k === 지금분 ? ' selected' : '') + '>' + 키움_분봉표[k] + '</option>'; }).join('') + '</select>' +
+                 '<label>캔들</label><input data-f="개수" type="number" min="20" max="1500" step="10" value="' + 지금개 + '"' + (키움씀 ? '' : ' disabled title="키움 차트에서만"') + '><button type="button" data-a="개수"' + (키움씀 ? '' : ' disabled') + '>적용</button></div>';
             if (!격자모드) h += '<div class="kc-src"><span>차트</span><button type="button" data-src="키움" class="' + (키움설정.출처 !== '트레이딩뷰' ? 'on' : '') + '">키움 실시간</button><button type="button" data-src="트레이딩뷰" class="' + (키움설정.출처 === '트레이딩뷰' ? 'on' : '') + '">트레이딩뷰</button></div>';
             h += '<div class="kc-chk">' + 키움_표시항목.map(function (x) { return '<label><input type="checkbox" data-k="' + x[0] + '"' + (키움_표시켬(i, x[0]) ? ' checked' : '') + '> ' + x[1] + '</label>'; }).join('') + '</div>';
             h += '<div class="kc-pb"><button type="button" data-a="모두">모두 켜기</button><button type="button" data-a="끄기">모두 끄기</button><button type="button" data-a="같게">다른 차트도 같게</button></div>';
             if (키움.판정 !== true) h += '<div class="kc-pn">윈폼 연결 전 · 키움 차트를 쓸 수 없어 트레이딩뷰로 표시 중</div>';
             h += '<div class="kc-cr">차트: <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView</a> Lightweight Charts™ · 데이터: 키움</div>';
             창.innerHTML = h;
+            창.addEventListener('change', function (e) { if (e.target.matches('select[data-f="분"]')) 키움_분봉바꿈(i, e.target.value); });
+            창.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.matches('input[data-f="개수"]')) { e.preventDefault(); 키움_개수바꿈(i, e.target.value); } if (e.key !== 'Escape') e.stopPropagation(); });
             창.addEventListener('click', function (e) {
                 e.stopPropagation();
                 var t = e.target;
@@ -7860,10 +7895,18 @@
                 if (src) { 키움설정.출처 = src; 키움설정_저장(); 키움_창닫기(); 키움차트_모두다시(); return; }
                 var a = t.getAttribute && t.getAttribute('data-a');
                 if (a === '모두' || a === '끄기') { 키움_표시항목.forEach(function (x) { 키움설정_칸(i).표시[x[0]] = a === '모두'; }); 키움설정_저장(); 키움차트_설정반영(i); 키움_창열기(i, 단추); }
-                else if (a === '같게') {
-                    var 원본 = JSON.parse(JSON.stringify(키움설정_칸(i).표시));
-                    패널들().forEach(function (k) { if (k !== i) { 키움설정_칸(k).표시 = JSON.parse(JSON.stringify(원본)); 키움차트_설정반영(k); } });
-                    키움설정_저장(); 알림_잠깐('다른 차트에도 같은 표시 항목을 적용했습니다');
+                else if (a === '개수') { var 입 = 창.querySelector('input[data-f="개수"]'); if (입) 키움_개수바꿈(i, 입.value); }
+                else if (a === '같게') {   // 표시 항목 · 분봉 · 캔들 개수를 모든 차트에 일괄 적용
+                    var 원본 = JSON.parse(JSON.stringify(키움설정_칸(i).표시)), 분 = String(panelIntervals[i] || '3'), 개 = (K차트[i] && K차트[i].개수) || Number(키움설정_칸(i).개수) || 0, 다시 = [];
+                    패널들().forEach(function (k) {
+                        if (k === i) return;
+                        var c = 키움설정_칸(k); c.표시 = JSON.parse(JSON.stringify(원본)); if (개 >= 20) c.개수 = 개;
+                        if (String(panelIntervals[k] || '3') !== 분) { panelIntervals[k] = 분; var sel = document.getElementById('interval-' + k); if (sel) sel.value = 분; 다시.push(k); }
+                        else { 키움차트_설정반영(k); if (개 >= 20) 키움_개수바꿈(k, 개, true); }
+                    });
+                    saveLS(LS_INTERVAL, panelIntervals); 키움설정_저장();
+                    다시.forEach(function (k) { if (!패널_숨김(k) && panelTickers[k]) { currentChartTicker[k] = panelTickers[k]; updateChartWidget(k, panelTickers[k]); } });
+                    알림_잠깐('다른 차트에도 표시 항목 · 분봉(' + 키움_분봉표[분] + ') · 캔들 ' + (개 || '─') + '개를 적용했습니다');
                 }
             });
             document.body.appendChild(창);
@@ -7871,6 +7914,25 @@
             var x = Math.min(window.innerWidth - w - 6, Math.max(6, r.right - w)), y = r.bottom + 4;
             if (y + hh > window.innerHeight - 6) y = Math.max(6, r.top - hh - 4);
             창.style.left = x + 'px'; 창.style.top = y + 'px';
+        }
+        // 분봉 바꾸기 (머리의 분봉 선택칸과 같은 동작)
+        function 키움_분봉바꿈(i, v) {
+            v = String(v); if (!키움_분봉표[v] || String(panelIntervals[i] || '3') === v) return;
+            var sel = document.getElementById('interval-' + i); if (sel) sel.value = v;
+            changeInterval(i, v);
+        }
+        // 보이는 캔들 개수 (20~1500): 바로 그만큼 보이게 · 저장
+        function 키움_개수바꿈(i, n, 저장안함) {
+            n = Math.round(Number(n)); if (!(n >= 20)) n = 20; if (n > 1500) n = 1500;
+            키움설정_칸(i).개수 = n;
+            var st = K차트[i];
+            if (st) {
+                st.개수 = n;
+                if (st.chart && st.봉.length) { var 끝 = st.봉.length - 1 + st.오른쪽; st.개수무시 = Date.now() + 1500; st.chart.timeScale().setVisibleLogicalRange({ from: 끝 - n, to: 끝 }); }
+                if (st.봉.length && st.봉.length < n && st.준비) 키움차트_요청(st);   // 받은 봉보다 많이 보려면 더 받음
+            }
+            var 입 = document.querySelector('#kc-pop[data-i="' + i + '"] input[data-f="개수"]'); if (입 && document.activeElement !== 입) 입.value = n;
+            if (!저장안함) 키움설정_저장();
         }
         function 키움차트_설정반영(i) { var st = K차트[i]; if (!st || !st.캔들) return; 키움차트_선갱신(st, true); 키움차트_뉴스(st, true); }
         document.addEventListener('click', function (e) {
@@ -7973,7 +8035,7 @@
             document.body.classList.toggle('g-332', 격자배치 === '332');
             패널숨김 = 격자배치 === '332' ? [8, 9] : [];   // 3·3·2 = 9·10번 칸 숨김 (차트·실시간 수신 멈춤 · 종목은 기억)
             if (격자_선택칸 >= 0 && 패널_숨김(격자_선택칸)) 격자_칸선택(-1);
-            try { 패널_적용(); } catch (e) { }
+            try { 패널_적용(); refreshWatchlistBadges(); refreshAllDropdowns(); } catch (e) { }
             격자UI_저장(); 격자_도구표시();
             if (!파일에서) 격자_설정저장예약();
         }
@@ -7992,8 +8054,8 @@
             패널들().forEach(function (i) {
                 var 판 = document.getElementById('panel-' + i), 차 = 판 && 판.querySelector('.chart-wrapper'); if (!차) return;
                 var 머 = document.createElement('div'); 머.className = 'g-head'; 머.setAttribute('data-i', i);
-                // 1줄: 번호 · 종목 · 판단 · 분봉 · [표시] / 2줄: 실시간 점 · (정규장) 현재가 · 등락 / (시외) 종가 · 시외 현재가 · 마지막 체결 시각
-                머.innerHTML = '<div class="g-r1"><b class="g-no">' + (i + 1) + '</b><span class="g-tk"></span><span class="g-sig" id="g' + i + '-sig"></span><span class="g-sp"></span><span class="g-tools"></span></div>' +
+                // 1줄: 번호 · 종목 · 분봉 · [표시] / 2줄: 실시간 점 · (정규장) 현재가 · 등락 / (시외) 종가 · 시외 현재가 · 마지막 체결 시각
+                머.innerHTML = '<div class="g-r1"><b class="g-no">' + (i + 1) + '</b><span class="g-tk"></span><span class="g-sp"></span><span class="g-tools"></span></div>' +
                                '<div class="g-r2"><i class="g-live" id="g' + i + '-live"></i><span class="g-q" id="g' + i + '-q">─</span><span class="g-sp"></span><span class="g-tm" id="g' + i + '-tm"></span></div>';
                 차.insertBefore(머, 차.firstChild);
                 var 점 = document.getElementById('p' + i + '-status-dot'), 선택 = document.getElementById('ticker-select-' + i), 분 = document.getElementById('interval-' + i), 표 = 차.querySelector('.kc-opt');
