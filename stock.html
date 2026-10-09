@@ -2996,7 +2996,7 @@
         document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') 일_점검(); });
 
         // ── 디버그 로그 (윈폼 대시보드 창에서만, 윈폼 로그·파일로 전달) ──
-        var 디버그로그사용 = true;
+        var 디버그로그사용 = false;   // 🔎 [대시보드] 디버그 로그 끔 (다시 보려면 true)
         var 디버그_마지막 = {};
         function 디버그(키, 글) {
             if (!디버그로그사용 || !가상_기록가능) return;
