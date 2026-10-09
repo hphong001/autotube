@@ -2026,6 +2026,9 @@
         .g-light .kc-spk { border-color: #e3e7ee; }
         .g-light .kc-g2 input[type=number], .g-light .kc-g2 select { background: #fff; color: #1c2230; border-color: #cfd5df; }
         .g-light .kc-g2 button { background: #f4f6f9; color: #4a5263; border-color: #cfd5df; }
+        .kc-hh-line { position: absolute; left: 0; height: 0; border-top: 1px dashed; opacity: .55; pointer-events: none; }
+        .kc-hh-tag { position: absolute; font-size: 11px; font-weight: 700; white-space: nowrap; pointer-events: none; text-shadow: 0 0 3px rgba(0, 0, 0, .6); }
+        .g-light .kc-hh-tag { text-shadow: 0 0 3px #fff; }
         .kc-cr { margin-top: 8px; padding-top: 6px; border-top: 1px solid #22263a; color: #6b7386; font-size: 10px; }
         .kc-cr a { color: #8b93a7; }
 
@@ -2037,11 +2040,11 @@
         body.grid-mode.g-light { --g-bg: #dfe3ea; --g-card: #ffffff; --g-line: #cfd5df; --g-head: #f4f6f9; --g-text: #1c2230; --g-sub: #5f6b7d; --g-btn: #eef1f5; --g-up: #d32f2f; --g-dn: #1e5fd6; --g-sel: #2f6fed; --g-shadow: 0 1px 4px rgba(20, 30, 50, .12);
                                      --g-on-t: #ffffff; --g-badge: #2f3b52; --g-badge-t: #ffffff; --g-row-on: #f3f7ff; --g-hover: #f5f7fa; }
         .grid-mode .sidebar-logo, .grid-mode .pz-split, .grid-mode #pc-btn, .grid-mode .nt-hist, .grid-mode #qnav, .grid-mode .nt-stack { display: none !important; }
-        .grid-mode .content-wrapper { position: absolute; left: 0; top: 0; width: 100%; height: 100%; min-width: 1240px; min-height: 690px; box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 1fr) var(--g-side, clamp(300px, 20vw, 520px)); gap: 8px !important; padding: 8px; background: var(--g-bg); }
+        .grid-mode .content-wrapper { position: absolute; left: 0; top: 0; width: 100%; height: 100%; min-width: 1240px; min-height: 860px; box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 1fr) var(--g-side, clamp(300px, 20vw, 520px)); gap: 8px !important; padding: 8px; background: var(--g-bg); }
         /* 차트 영역: 위 = 시황 바 · 아래 = 차트 격자 (맨 아래 큰 차트 줄 높이는 시황 바가 없을 때와 같게 → 위 두 줄만 줄어듦) */
         .grid-mode .g-main { display: flex; flex-direction: column; gap: 8px; min-width: 0; min-height: 0; }
         .grid-mode .g-main .top-bar { border-radius: 8px; border: 1px solid #1a1a30; padding: 4px 10px; flex-shrink: 0; min-width: 0; overflow: hidden; }
-        .grid-mode .g-main .dashboard-grid { flex: 1; grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) calc((max(100vh, 690px) - 32px) / 3) !important; }
+        .grid-mode .g-main .dashboard-grid { flex: 1; grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) calc((max(100vh, 860px) - 32px) / 3) !important; }
         .grid-mode .sidebar { position: relative !important; }
         .grid-mode .g-side-drag { position: absolute; left: 0; top: 0; bottom: 0; width: 7px; cursor: col-resize; z-index: 20; touch-action: none; }
         .grid-mode .g-side-drag::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: transparent; transition: background .15s; }
@@ -2136,6 +2139,73 @@
         .g-light .logo-top-sub { color: #1c2230; }
         .g-light .tt-nm { color: #5f6b7d; } .g-light .tt-v { color: #1c2230; } .g-light .tt-z, .g-light .tt-w { color: #5f6b7d; }
         .g-light .g-main .ws-dot.dead { background: #c3cad6; }
+        /* ── 대시보드2 뉴스: 칸 뉴스 줄 · 큰 칸 2줄 · 시장 뉴스 줄 · 알림 카드 (대시보드1 보다 큰 글자) ── */
+        .grid-mode .g-head { flex-direction: row; align-items: stretch; gap: 10px; }
+        .grid-mode .g-hl { display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0; }
+        .grid-mode .g-hn { display: none; }
+        .grid-mode .panel.g-big .g-hl { flex: 0 1 46%; }
+        .grid-mode .panel.g-big .g-hn { display: flex; flex-direction: column; justify-content: center; gap: 3px; flex: 1; min-width: 0; border-left: 1px solid var(--g-line); padding-left: 10px; }
+        .grid-mode .g-r3 { display: flex; align-items: center; gap: 6px; height: 22px; min-width: 0; font-size: 14px; }
+        .grid-mode .g-age { flex-shrink: 0; color: var(--g-sub); font-weight: 700; font-size: 13px; }
+        .grid-mode .g-ni { display: flex; align-items: baseline; gap: 6px; min-width: 0; color: var(--g-text); text-decoration: none; white-space: nowrap; overflow: hidden; font-size: 14px; line-height: 20px; }
+        .grid-mode .g-ni:hover b { text-decoration: underline; }
+        .grid-mode .g-ni b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+        .grid-mode .g-ni em { font-style: normal; font-size: 10px; font-weight: 900; color: #fff; background: #ff4d4d; border-radius: 3px; padding: 0 3px; line-height: 14px; animation: gLive .5s ease-in-out infinite alternate; flex-shrink: 0; }
+        .grid-mode .g-nt { flex-shrink: 0; color: #f5c542; font-weight: 700; font-size: 13px; }
+        .g-light .g-nt { color: #b07800; }
+        .grid-mode .g-ns { flex-shrink: 0; color: var(--g-sub); font-size: 12px; }
+        .grid-mode .g-nb { flex-shrink: 0; font-style: normal; font-size: 11px; font-weight: 800; border-radius: 3px; padding: 0 4px; line-height: 16px; border: 1px solid var(--g-sel); color: var(--g-sel); }
+        .grid-mode .g-nb.hot { border-color: #ff4d4d; color: #ff4d4d; }
+        .grid-mode .g-r3 .g-ni { flex: 1; }
+        .grid-mode .g-nmore { flex-shrink: 0; font: inherit; font-size: 12px; font-weight: 700; background: var(--g-btn); color: var(--g-sub); border: 1px solid var(--g-line); border-radius: 4px; padding: 0 6px; line-height: 18px; cursor: pointer; }
+        .grid-mode .panel.g-big .g-hn .g-ni { font-size: 15px; line-height: 21px; }
+        .grid-mode .g-nnone { color: var(--g-sub); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .grid-mode .g-news { top: 64px; }
+        .grid-mode .panel:not(.g-big) .g-head:has(.g-r3:not([style*="none"])) ~ .g-news { top: 86px; }
+        .g-nlist { position: fixed; z-index: 9100; width: 460px; max-height: 70vh; overflow: auto; background: var(--g-card, #10131d); border: 1px solid var(--g-line, #2f3550); border-radius: 8px; box-shadow: 0 10px 30px rgba(0, 0, 0, .45); padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; }
+        .g-nlist .g-nlh { font-size: 14px; font-weight: 800; color: var(--g-text, #e3e7ef); margin-bottom: 4px; }
+        .g-nlist .g-ni { display: flex; gap: 6px; align-items: baseline; font-size: 14px; line-height: 20px; color: var(--g-text, #e3e7ef); text-decoration: none; white-space: normal; padding: 3px 0; border-bottom: 1px solid var(--g-line, #22263a); }
+        .g-nlist .g-ni b { font-weight: 600; }
+        .g-nlist .g-nt { color: #f5c542; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .g-nlist .g-ns { color: var(--g-sub, #8b93a7); font-size: 12px; flex-shrink: 0; }
+        .g-nlist .g-nb { font-style: normal; font-size: 11px; font-weight: 800; border: 1px solid #f5c542; color: #f5c542; border-radius: 3px; padding: 0 4px; flex-shrink: 0; }
+        .g-nlist .g-nlall { margin-top: 4px; font: inherit; font-size: 13px; font-weight: 700; background: var(--g-btn, #141826); color: var(--g-sub, #aab3c5); border: 1px solid var(--g-line, #2a2f40); border-radius: 5px; padding: 4px; cursor: pointer; }
+        /* 시장 뉴스 줄 */
+        .grid-mode .g-main { position: relative; }
+        .grid-mode .g-mn { display: flex; align-items: stretch; gap: 8px; flex-shrink: 0; background: var(--g-card); border: 1px solid var(--g-line); border-radius: 8px; box-shadow: var(--g-shadow); padding: 5px 8px; min-width: 0; }
+        .grid-mode .g-mn-fold { flex-shrink: 0; font: inherit; font-size: 13px; font-weight: 800; background: var(--g-btn); color: var(--g-sub); border: 1px solid var(--g-line); border-radius: 5px; padding: 0 8px; cursor: pointer; }
+        .grid-mode .g-mn-cols { flex: 1; min-width: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+        .grid-mode .g-mn-col { display: flex; align-items: center; gap: 8px; min-width: 0; border-left: 1px solid var(--g-line); padding-left: 10px; }
+        .grid-mode .g-mn-col:first-child { border-left: none; padding-left: 0; }
+        .grid-mode .g-mn-sel { flex-shrink: 0; font: inherit; font-size: 13px; font-weight: 800; background: var(--g-btn); color: var(--g-text); border: 1px solid var(--g-line); border-radius: 5px; padding: 2px 4px; max-width: 128px; }
+        .grid-mode .g-mn-list { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+        .grid-mode .g-mn-list .g-ni, .grid-mode .g-mn-mini .g-ni { font-size: 15px; line-height: 21px; }
+        .grid-mode .g-mn-side { flex-shrink: 0; display: flex; flex-direction: column; justify-content: center; gap: 3px; font-size: 12px; color: var(--g-sub); }
+        .grid-mode .g-mn-side label { display: flex; align-items: center; justify-content: flex-end; gap: 4px; white-space: nowrap; }
+        .grid-mode .g-mn-side select { font: inherit; font-size: 12px; background: var(--g-btn); color: var(--g-text); border: 1px solid var(--g-line); border-radius: 4px; padding: 0 3px; }
+        .grid-mode .g-mn-mini { display: none; flex: 1; min-width: 0; align-items: center; }
+        .grid-mode .g-mn.folded { padding: 3px 8px; }
+        .grid-mode .g-mn.folded .g-mn-cols, .grid-mode .g-mn.folded .g-mn-side { display: none; }
+        .grid-mode .g-mn.folded .g-mn-mini { display: flex; }
+        /* 알림 카드 (지수 박스 바로 아래, 가운데) */
+        .grid-mode .g-toast { position: absolute; left: 50%; transform: translateX(-50%); width: min(620px, 90%); z-index: 9000; display: flex; flex-direction: column; gap: 6px; pointer-events: none; }
+        .grid-mode .g-card { pointer-events: auto; background: var(--g-card); border: 1px solid var(--g-line); border-left: 5px solid #f5c542; border-radius: 10px; box-shadow: 0 10px 30px rgba(0, 0, 0, .45); padding: 9px 12px; animation: gNews .3s ease-out; transition: opacity .35s; }
+        .grid-mode .g-card.hot { border-left-color: #ff4d4d; }
+        .grid-mode .g-card.out { opacity: 0; }
+        .grid-mode .g-ct { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--g-sub); }
+        .grid-mode .g-ct i { font-style: normal; font-weight: 800; color: #f5c542; }
+        .grid-mode .g-card.hot .g-ct i { color: #ff4d4d; }
+        .grid-mode .g-cx { margin-left: auto; font: inherit; background: none; border: 0; color: var(--g-sub); cursor: pointer; font-size: 14px; }
+        .grid-mode .g-cb { display: block; margin-top: 4px; font-size: 16px; font-weight: 700; line-height: 1.4; color: var(--g-text); text-decoration: none; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .grid-mode .g-cb:hover { text-decoration: underline; }
+        /* 시황 바 글자 1.3배 */
+        .grid-mode .mk-grid { grid-template-rows: 48px 48px; }
+        .grid-mode .mk-txt { min-width: 150px; }
+        .grid-mode .mk-nm .tit, .grid-mode .mk-fg .tit { font-size: 15.5px; }
+        .grid-mode .mk-vl .val { font-size: 18px; }
+        .grid-mode .mk-ch { font-size: 15px; }
+        .grid-mode .mk-ext { font-size: 14px; }
+        .grid-mode .mk-sp { height: 38px; }
         /* 오른쪽 */
         .grid-mode .sidebar { width: auto !important; height: auto; min-height: 0; padding: 0; overflow: hidden; display: grid; grid-template-rows: minmax(0, 2fr) minmax(0, 1fr); gap: 8px; }
         .grid-mode .sidebar-watchlist { min-height: 0; padding: 9px 10px; background: var(--g-card); border: 1px solid var(--g-line); border-radius: 8px; box-shadow: var(--g-shadow); }
@@ -5270,7 +5340,7 @@
             if (!id || !x || !(x.t > 0)) return;
             var 새것 = !뉴스[id];
             x.id = id; x.d = 날짜 || 뉴스_한국날짜(x.t); 뉴스[id] = x;
-            if (새것 && Date.now() - 뉴스_시작 > 8000 && Date.now() - x.t < 15 * 60000) { 뉴스_지금id = id; 뉴스_깜빡표시(x); 뉴스_새소식(x); 뉴스_지금id = ''; if (격자모드) 격자_뉴스(x); }   // 처음 불러온 것은 알리지 않음
+            if (새것 && Date.now() - 뉴스_시작 > 8000 && Date.now() - x.t < 15 * 60000) { 뉴스_지금id = id; 뉴스_깜빡표시(x); 뉴스_새소식(x); 뉴스_지금id = ''; if (격자모드) { 격자_뉴스(x); try { 격자_칸뉴스갱신(); 격자_시장뉴스새것(x); } catch (e) { } } }   // 처음 불러온 것은 알리지 않음
             뉴스_다시그리기예약();
         }
         function 뉴스_구독() {
@@ -7455,7 +7525,7 @@
         var 키움_LWC약속 = null;
         var 키움_분봉표 = { '1': '1분', '3': '3분', '5': '5분', '10': '10분', '15': '15분', '30': '30분', '60': '1시간', 'D': '일봉' };
         var 키움_봉초표 = { '1': 60, '3': 180, '5': 300, '10': 600, '15': 900, '30': 1800, '60': 3600, 'D': 86400 };
-        var 키움_표시항목 = [['sr', '지지·저항 (1~3차)'], ['plan', '진입·손절·목표'], ['vwap', 'VWAP'], ['vp', '매물대'], ['zone', '반등·막힘 구간'], ['opt', '옵션 (MaxPain·콜벽·풋벽)'], ['pc', '전일 종가'], ['news', '뉴스 ▼']];
+        var 키움_표시항목 = [['sr', '지지·저항 (1~3차)'], ['plan', '진입·손절·목표'], ['vwap', 'VWAP'], ['vp', '매물대'], ['zone', '반등·막힘 구간'], ['opt', '옵션 (MaxPain·콜벽·풋벽)'], ['pc', '전일 종가'], ['hh', '최고가 (보이는 구간)'], ['news', '뉴스 ▼']];
         var 키움_우선 = { plan: 0, sr: 1, vwap: 2, vp: 3, zone: 4, opt: 5, pc: 6 };
         var 키움_기본개수 = 격자모드 ? 90 : 120;
         var 키움설정키 = 격자모드 ? 'sz_grid_kchart' : 'sz_kchart';
@@ -7642,7 +7712,7 @@
             st.캔들 = st.chart.addCandlestickSeries({ upColor: 색.up, downColor: 색.dn, borderUpColor: 색.up, borderDownColor: 색.dn, wickUpColor: 색.upW, wickDownColor: 색.dnW, priceLineVisible: true, lastValueVisible: true });
             st.거래량 = st.chart.addHistogramSeries({ priceScaleId: 'vol', priceFormat: { type: 'volume' }, lastValueVisible: false, priceLineVisible: false });
             st.chart.priceScale('vol').applyOptions({ scaleMargins: { top: 0.84, bottom: 0 }, visible: false });
-            st.vwap = st.chart.addLineSeries({ color: 색.vwap, lineWidth: 2, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false,
+            st.vwap = st.chart.addLineSeries({ color: 색.vwap, lineWidth: 2, lineStyle: L.LineStyle.Dotted, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false,
                                                visible: 키움_표시켬(st.i, 'vwap') && !st.일봉, autoscaleInfoProvider: function () { return null; } });   // 자동 범위에서 뺌
             st.chart.timeScale().subscribeVisibleLogicalRangeChange(function () { 키움차트_라벨예약(st); 키움차트_개수기록(st); });
             // 뉴스 ▼ 봉에 마우스 → 그 시점 뉴스 제목
@@ -7940,14 +8010,31 @@
                        (위쪽 ? '▲ ' : '▼ ') + x.n + ' ' + 키움_가격글(x.v, 정밀) + (더 > 0 ? ' 외 ' + 더 : '') + '</div>';
             }
             h += 끝표(위, true) + 끝표(아래, false);
+            h += 키움차트_최고가글(st, 판, 오른, 정밀, C);
             if (층._h !== h) { 층.innerHTML = h; 층._h = h; }
             // 오른쪽 빈 공간 = 가장 긴 이름표 폭 (실시간 끝을 보고 있을 때만 맞춤 → 지난 봉을 보는 중에는 화면을 움직이지 않음)
-            var 최대 = 0; Array.prototype.forEach.call(층.children, function (e) { if (e.offsetWidth > 최대) 최대 = e.offsetWidth; });
+            var 최대 = 0; Array.prototype.forEach.call(층.children, function (e) { if (!e.classList.contains('kc-hh') && e.offsetWidth > 최대) 최대 = e.offsetWidth; });
             var ts = st.chart.timeScale(), r = ts.getVisibleLogicalRange(); if (!r) return;
             var 칸폭 = 판.width / Math.max(1, r.to - r.from), 필요 = Math.min(60, Math.max(3, Math.ceil((최대 + 10) / Math.max(0.5, 칸폭))));
             var 끝보는중 = r.to >= st.봉.length - 1, 지금 = Date.now();
             var 늘림 = 필요 > st.오른쪽, 줄임 = 필요 < st.오른쪽 - 6 && 지금 - (st.오른쪽시각 || 0) > 10000;
             if (끝보는중 && (늘림 || 줄임)) { st.오른쪽 = 늘림 ? 필요 + 2 : 필요 + 2; st.오른쪽시각 = 지금; ts.applyOptions({ rightOffset: st.오른쪽 }); }
+        }
+        // ── 최고가 (윈폼 차트와 같게): 보이는 봉 중 최고가 가로선 + '최고 399.33 (-0.52%, 10/09 03:12)' · 최고가 봉이 오른쪽 절반이면 왼쪽에, 아니면 오른쪽에 ──
+        function 키움차트_최고가글(st, 판, 오른, 정밀, C) {
+            if (!키움_표시켬(st.i, 'hh') || !st.봉.length || 판.width < 200 || 판.height < 110) return '';
+            var r = st.chart.timeScale().getVisibleLogicalRange(); if (!r) return '';
+            var a = Math.max(0, Math.floor(r.from)), b = Math.min(st.봉.length - 1, Math.ceil(r.to)); if (a > b) return '';
+            var 최고 = -Infinity, 곳 = -1;
+            for (var k = a; k <= b; k++) if (st.봉[k].h > 최고) { 최고 = st.봉[k].h; 곳 = k; }
+            if (곳 < 0) return '';
+            var y = st.캔들.priceToCoordinate(최고); if (y == null || y < 0 || y > 판.height) return '';
+            var 종 = st.봉[st.봉.length - 1].c, 차 = (최고 - 종) / 최고 * 100, d = new Date(st.봉[곳].t * 1000), p2 = function (n) { return (n < 10 ? '0' : '') + n; };
+            var 때 = p2(d.getUTCMonth() + 1) + '/' + p2(d.getUTCDate()) + (st.일봉 ? '' : ' ' + p2(d.getUTCHours()) + ':' + p2(d.getUTCMinutes()));
+            var 왼쪽 = 곳 > (a + b) / 2, 색 = C.밝음 ? '#3a4252' : '#d7dbe4';
+            return '<div class="kc-hh kc-hh-line" style="top:' + Math.round(y) + 'px;width:' + 판.width + 'px;border-color:' + 색 + '"></div>' +
+                   '<div class="kc-hh kc-hh-tag" style="top:' + Math.max(0, Math.round(y) - 15) + 'px;' + (왼쪽 ? 'left:6px' : 'right:' + (오른 + 2) + 'px') + ';color:' + 색 + '">최고 ' + 키움_가격글(최고, 정밀) +
+                   ' (' + (차 > 0 ? '-' : '') + Math.abs(차).toFixed(2) + '%, ' + 때 + ')</div>';
         }
         function 키움차트_개수기록(st) {
             if (!st.준비 || Date.now() < (st.개수무시 || 0)) return;
@@ -8165,7 +8252,7 @@
         var 격자테마 = 격자UI.테마 === '밝음' ? '밝음' : '다크';
         var 격자배치 = 격자UI.배치 === '332' ? '332' : '442';
         var 격자관심폭 = Number(격자UI.관심폭) >= 240 ? Math.round(Number(격자UI.관심폭)) : 0;   // 0 = 기본 (화면 폭의 약 1/5)
-        function 격자UI_저장() { try { localStorage.setItem('sz_grid_ui', JSON.stringify({ 테마: 격자테마, 배치: 격자배치, 관심폭: 격자관심폭 })); } catch (e) { } }
+        function 격자UI_저장() { try { localStorage.setItem('sz_grid_ui', JSON.stringify({ 테마: 격자테마, 배치: 격자배치, 관심폭: 격자관심폭, 뉴스: 격자UI.뉴스 || null })); } catch (e) { } }
         // 관심종목 폭: 240px ~ (화면의 40%, 최대 760px) · 차트 영역은 최소 860px 남김
         function 격자_관심폭최대() { return Math.max(240, Math.min(760, Math.round(window.innerWidth * 0.4), window.innerWidth - 16 - 8 - 860)); }
         function 격자_관심폭적용() {
@@ -8176,7 +8263,7 @@
         window.addEventListener('resize', function () { if (격자모드) 격자_관심폭적용(); });
         function 격자_설정내용() {
             return {
-                판: 2, 저장: new Date().toISOString(), 테마: 격자테마, 배치: 격자배치, 관심폭: 격자관심폭,
+                판: 2, 저장: new Date().toISOString(), 테마: 격자테마, 배치: 격자배치, 관심폭: 격자관심폭, 뉴스: 격자_뉴스설정(),
                 종목: panelTickers.slice(0, 패널수),
                 분봉: 패널들().map(function (i) { return String(panelIntervals[i] || '3'); }),
                 칸: 패널들().map(function (i) { var c = 키움설정_칸(i); return { 개수: Number(c.개수) || 0, 표시: c.표시, 급: 급등_설정(i) }; })
@@ -8192,6 +8279,12 @@
             if (!c || typeof c !== 'object') return;
             if (c.테마 === '밝음' || c.테마 === '다크') 격자_테마설정(c.테마, true);
             if (c.배치 === '332' || c.배치 === '442') 격자_배치설정(c.배치, true);
+            if (c.뉴스 && typeof c.뉴스 === 'object') {
+                격자UI.뉴스 = c.뉴스; var u = 격자_뉴스설정(), 줄 = document.getElementById('g-mn');
+                if (줄) { 줄.classList.toggle('folded', u.접힘); 줄.querySelector('.g-mn-fold').textContent = u.접힘 ? '▸ 시장 뉴스' : '▾';
+                    Array.prototype.forEach.call(줄.querySelectorAll('.g-mn-sel'), function (s2) { s2.value = u.칸[Number(s2.getAttribute('data-k'))]; });
+                    줄.querySelector('#g-mn-al').value = u.알림; 줄.querySelector('#g-mn-snd').value = u.소리; 격자_시장뉴스갱신(true); }
+            }
             if (Number(c.관심폭) >= 240 || Number(c.관심폭) === 0) { 격자관심폭 = Math.round(Number(c.관심폭)) || 0; 격자_관심폭적용(); 격자UI_저장(); }
             if (Array.isArray(c.칸)) c.칸.forEach(function (x, i) {
                 if (i >= 패널수 || !x || typeof x !== 'object') return;
@@ -8255,7 +8348,7 @@
             document.body.classList.toggle('g-332', 격자배치 === '332');
             패널숨김 = 격자배치 === '332' ? [8, 9] : [];   // 3·3·2 = 9·10번 칸 숨김 (차트·실시간 수신 멈춤 · 종목은 기억)
             if (격자_선택칸 >= 0 && 패널_숨김(격자_선택칸)) 격자_칸선택(-1);
-            try { 패널_적용(); refreshWatchlistBadges(); refreshAllDropdowns(); } catch (e) { }
+            try { 패널_적용(); refreshWatchlistBadges(); refreshAllDropdowns(); 격자_큰칸표시(); } catch (e) { }
             격자UI_저장(); 격자_도구표시();
             if (!파일에서) 격자_설정저장예약();
         }
@@ -8279,8 +8372,8 @@
                 var 판 = document.getElementById('panel-' + i), 차 = 판 && 판.querySelector('.chart-wrapper'); if (!차) return;
                 var 머 = document.createElement('div'); 머.className = 'g-head'; 머.setAttribute('data-i', i);
                 // 1줄: 번호 · 종목 · 분봉 · [표시] / 2줄: 실시간 점 · (정규장) 현재가 · 등락 / (시외) 종가 · 시외 현재가 · 마지막 체결 시각
-                머.innerHTML = '<div class="g-r1"><b class="g-no">' + (i + 1) + '</b><span class="g-tk"></span><span class="g-sp"></span><span class="g-tools"></span></div>' +
-                               '<div class="g-r2"><i class="g-live" id="g' + i + '-live"></i><span class="g-q" id="g' + i + '-q">─</span><span class="g-sp"></span><span class="g-spk" id="g' + i + '-spk" data-i="' + i + '"></span><span class="g-tm" id="g' + i + '-tm"></span></div>';
+                머.innerHTML = '<div class="g-hl"><div class="g-r1"><b class="g-no">' + (i + 1) + '</b><span class="g-tk"></span><span class="g-sp"></span><span class="g-tools"></span></div>' +
+                               '<div class="g-r2"><i class="g-live" id="g' + i + '-live"></i><span class="g-q" id="g' + i + '-q">─</span><span class="g-sp"></span><span class="g-spk" id="g' + i + '-spk" data-i="' + i + '"></span><span class="g-tm" id="g' + i + '-tm"></span></div><div class="g-r3" id="g' + i + '-nl" style="display:none"></div></div><div class="g-hn" id="g' + i + '-hn"></div>';
                 차.insertBefore(머, 차.firstChild);
                 var 띠 = document.createElement('div'); 띠.className = 'g-news'; 띠.id = 'g' + i + '-news'; 머.parentNode.insertBefore(띠, 머.nextSibling);
                 var 점 = document.getElementById('p' + i + '-status-dot'), 선택 = document.getElementById('ticker-select-' + i), 분 = document.getElementById('interval-' + i), 표 = 차.querySelector('.kc-opt');
@@ -8321,6 +8414,7 @@
                 손.addEventListener('dblclick', function () { 격자관심폭 = 0; 격자_관심폭적용(); 격자UI_저장(); 격자_설정저장예약(); });
             }
             격자_칸선택(-1); 격자_도구표시();
+            격자_시장뉴스만들기(); 격자_큰칸표시();
             setInterval(격자_머리갱신, 500);
         }
         function 격자_계좌목업() {
@@ -8333,6 +8427,175 @@
                 '<button type="button" class="ga-buy" disabled>매수</button><button type="button" class="ga-sell" disabled>매도</button></div>' +
                 '<div class="ga-note">키움 계좌 API 연동 후 동작 (모의투자 먼저 · 주문은 윈폼에서만, 안전 한도 적용)</div>';
         }
+        // ════════════════════════════════════════════════════════
+        // ★ 대시보드2 뉴스
+        //   ① 작은 차트: 시세 아래 그 종목 최신 뉴스 1줄 + [N건 ▾] 목록 (뉴스 없으면 줄 숨김)
+        //   ② 큰 차트 2개(4·4·2 = 9·10번 / 3·3·2 = 7·8번): 시세 오른쪽에 최신 뉴스 2줄
+        //   ③ 시황 바 아래 시장 뉴스 줄 (접기/펴기): 3칸 × 최신 2건 · 칸마다 분류 고르기 (속보 · 시장 · PICK · 관심종목 · 전체 · 끔)
+        //      차트 종목 뉴스는 차트에 나오므로 이 줄에서는 뺌
+        //   ④ 알림 카드: 지수 박스 바로 아래 · 10초 · 최대 3장 · 대상(속보+PICK / 속보 / 뉴스 칸 전체 / 끔) · 소리 (대시보드1 과 같은 뉴스면 한 번만)
+        //   기준 = 최근 24시간 · 광고 제외 · 종목 뉴스는 확실히 그 종목인 것(관계 2)만
+        // ════════════════════════════════════════════════════════
+        var 격자_뉴스분류 = [['속보', '⚡ 속보'], ['시장', '🌐 시장'], ['PICK', '⭐ SAVE PICK'], ['관심', '👀 관심종목'], ['전체', '📰 전체 최신'], ['끔', '끔']];
+        var 격자_시장단어 = /연준|FOMC|파월|금리|기준금리|CPI|PCE|PPI|물가|인플레|고용|실업|비농업|일자리|GDP|국채|수익률|유가|원유|OPEC|관세|무역|환율|달러|엔화|위안|트럼프|백악관|재무부|경기|침체|ISM|소매판매|증시|나스닥|다우|S&P|지수|VIX|ECB|BOJ|일본은행|유럽중앙은행|셧다운|부채한도|지정학|전쟁|\bFed\b|treasury|tariff|inflation|payrolls|recession/i;
+        function 격자_뉴스설정() {
+            var u = 격자UI.뉴스 && typeof 격자UI.뉴스 === 'object' ? 격자UI.뉴스 : (격자UI.뉴스 = {});
+            if (!Array.isArray(u.칸) || u.칸.length !== 3) u.칸 = ['속보', '시장', 'PICK'];
+            if (typeof u.접힘 !== 'boolean') u.접힘 = false;
+            if (['속보PICK', '속보', '칸', '끔'].indexOf(u.알림) < 0) u.알림 = '속보PICK';
+            if (!u.소리) u.소리 = '마림바';
+            return u;
+        }
+        function 격자_뉴스24(t, 관계) { var 시작 = Date.now() - 24 * 3600000; try { return 뉴스_종목목록(t, 관계 || 2).filter(function (o) { return o.x.t >= 시작; }); } catch (e) { return []; } }
+        function 격자_차트종목관련(x) {
+            for (var i = 0; i < 패널수; i++) {
+                var t = panelTickers[i]; if (!t || 패널_숨김(i)) continue;
+                try { if (뉴스_관계(x, t, 뉴스_이름들(t, [tickerName(t)].concat(뉴스_세이브이름(t)))) >= 2) return true; } catch (e) { }
+            }
+            return false;
+        }
+        function 격자_분류맞음(x, 분류) {
+            if (분류 === '끔' || 뉴스_광고(x) || 뉴스_거름(x)) return false;
+            if (분류 === '속보') return (x.lb || []).indexOf('속보') >= 0;
+            if (분류 === 'PICK') return !!x.pk;
+            if (분류 === '시장') return 격자_시장단어.test((x.ti || '') + ' ' + (x.en || ''));
+            if (분류 === '관심') return WATCH_LIST.some(function (w) { return panelTickers.indexOf(w.ticker) < 0 && (x.tk || []).indexOf(w.ticker) >= 0; });
+            return 분류 === '전체';
+        }
+        function 격자_분류목록(분류, 개수) {
+            var 시작 = Date.now() - 24 * 3600000, 목 = [];
+            Object.keys(뉴스).forEach(function (id) { var x = 뉴스[id]; if (x && x.t >= 시작 && 격자_분류맞음(x, 분류) && !격자_차트종목관련(x)) 목.push(x); });
+            목.sort(function (a, b) { return b.t - a.t; });
+            return 목.slice(0, 개수 || 2);
+        }
+        function 격자_뉴스한줄(x, 출처) {
+            var 새 = Date.now() - x.t < 60000;
+            return '<a class="g-ni' + (새 ? ' new' : '') + '" href="' + 뉴스_원문주소(x.id) + '" target="' + 뉴스_원문대상() + '" rel="noopener" data-id="' + 뉴스_글(x.id) + '" title="' + 뉴스_글(x.ti || x.en || '') + '">' +
+                (새 ? '<em>NEW</em>' : '') + '<span class="g-nt">' + 뉴스_한국시각(x.t) + '</span>' + (출처 && x.s ? '<span class="g-ns">' + 뉴스_글(x.s) + '</span>' : '') +
+                ((x.lb || []).indexOf('속보') >= 0 ? '<i class="g-nb hot">속보</i>' : x.pk ? '<i class="g-nb">PICK</i>' : '') + '<b>' + 뉴스_글(x.ti || x.en || '') + '</b></a>';
+        }
+        // ① ② 차트 칸 뉴스 (5초마다 · 새 뉴스 때)
+        function 격자_칸뉴스갱신() {
+            if (!격자모드) return;
+            패널들().forEach(function (i) {
+                var t = panelTickers[i], 판 = document.getElementById('panel-' + i); if (!판 || 패널_숨김(i)) return;
+                var 목 = t ? 격자_뉴스24(t) : [], 큰 = 판.classList.contains('g-big');
+                var 서명 = t + '|' + 큰 + '|' + 목.length + '|' + (목[0] ? 목[0].x.id + 뉴스_전(목[0].x.t) : '') + '|' + (목[1] ? 목[1].x.id : '') + '|' + Math.floor(Date.now() / 30000);
+                if (판._뉴스서명 === 서명) return; 판._뉴스서명 = 서명;
+                var 줄 = document.getElementById('g' + i + '-nl'), 둘 = document.getElementById('g' + i + '-hn');
+                if (줄) {
+                    if (큰 || !목.length) { 줄.innerHTML = ''; 줄.style.display = 'none'; }
+                    else {
+                        var x = 목[0].x;
+                        줄.innerHTML = '<span class="g-age">📰 ' + 뉴스_전(x.t) + '</span>' + 격자_뉴스한줄(x, false) + '<button type="button" class="g-nmore" data-i="' + i + '">' + 목.length + '건 ▾</button>';
+                        줄.style.display = '';
+                    }
+                }
+                if (둘) 둘.innerHTML = !큰 ? '' : 목.length ? 목.slice(0, 2).map(function (o) { return 격자_뉴스한줄(o.x, true); }).join('') : '<span class="g-nnone">📰 최근 24시간 ' + 뉴스_글(t || '') + ' 뉴스 없음</span>';
+            });
+        }
+        // [N건 ▾] 목록
+        function 격자_뉴스목록열기(i, 단추) {
+            var 전 = document.getElementById('g-nlist'); if (전) { var 같음 = 전.getAttribute('data-i') === String(i); 전.remove(); if (같음) return; }
+            var t = panelTickers[i], 목 = 격자_뉴스24(t).slice(0, 12);
+            var 창 = document.createElement('div'); 창.id = 'g-nlist'; 창.className = 'g-nlist'; 창.setAttribute('data-i', i);
+            창.innerHTML = '<div class="g-nlh">📰 ' + 뉴스_글(t) + ' 최근 24시간 ' + 격자_뉴스24(t).length + '건</div>' + 목.map(function (o) { return 격자_뉴스한줄(o.x, true); }).join('') +
+                          '<button type="button" class="g-nlall" data-q="' + 뉴스_글(t) + '">' + 뉴스_글(t) + ' 뉴스 전체 보기 ↗</button>';
+            document.body.appendChild(창);
+            var r = 단추.getBoundingClientRect(), w = 창.offsetWidth, h = 창.offsetHeight;
+            창.style.left = Math.max(6, Math.min(window.innerWidth - w - 6, r.right - w)) + 'px';
+            창.style.top = (r.bottom + h + 6 > window.innerHeight ? Math.max(6, r.top - h - 4) : r.bottom + 4) + 'px';
+        }
+        document.addEventListener('click', function (e) {
+            if (!격자모드 || !e.target.closest) return;
+            var m = e.target.closest('.g-nmore'); if (m) { e.stopPropagation(); 격자_뉴스목록열기(Number(m.getAttribute('data-i')), m); return; }
+            var a = e.target.closest('.g-nlall'); if (a) { 뉴스창_열기(a.getAttribute('data-q') || ''); }
+            var 목록 = document.getElementById('g-nlist'); if (목록 && !목록.contains(e.target)) 목록.remove();
+            var ni = e.target.closest('.g-ni'); if (ni) { e.stopPropagation(); try { 뉴스_읽음표시(ni.getAttribute('data-id')); } catch (er) { } }
+        }, true);
+
+        // ③ 시장 뉴스 줄
+        function 격자_시장뉴스만들기() {
+            var 위 = document.querySelector('.g-main .top-bar'); if (!위) return;
+            var u = 격자_뉴스설정();
+            var 줄 = document.createElement('div'); 줄.className = 'g-mn' + (u.접힘 ? ' folded' : ''); 줄.id = 'g-mn';
+            var 옵 = function (선택, 목록) { return 목록.map(function (x) { return '<option value="' + x[0] + '"' + (x[0] === 선택 ? ' selected' : '') + '>' + x[1] + '</option>'; }).join(''); };
+            줄.innerHTML = '<button type="button" class="g-mn-fold" title="시장 뉴스 줄 접기/펴기">' + (u.접힘 ? '▸ 시장 뉴스' : '▾') + '</button>' +
+                '<div class="g-mn-mini" id="g-mn-mini"></div>' +
+                '<div class="g-mn-cols">' + [0, 1, 2].map(function (k) {
+                    return '<div class="g-mn-col"><select class="g-mn-sel" data-k="' + k + '" title="이 칸에 보일 뉴스">' + 옵(u.칸[k], 격자_뉴스분류) + '</select><div class="g-mn-list" id="g-mn-' + k + '"></div></div>';
+                }).join('') + '</div>' +
+                '<div class="g-mn-side"><label>알림 <select id="g-mn-al" title="새 뉴스 알림 카드">' + 옵(u.알림, [['속보PICK', '속보+PICK'], ['속보', '속보만'], ['칸', '뉴스 칸 전체'], ['끔', '끔']]) + '</select></label>' +
+                '<label>소리 <select id="g-mn-snd">' + 옵(u.소리, 알람_소리목록.map(function (x) { return [x[0], x[1].split(' (')[0]]; })) + '</select></label></div>';
+            위.parentNode.insertBefore(줄, 위.nextSibling);
+            줄.addEventListener('change', function (e) {
+                var t = e.target, u2 = 격자_뉴스설정();
+                if (t.classList.contains('g-mn-sel')) u2.칸[Number(t.getAttribute('data-k'))] = t.value;
+                else if (t.id === 'g-mn-al') u2.알림 = t.value;
+                else if (t.id === 'g-mn-snd') { u2.소리 = t.value; 격자_소리(t.value); }
+                격자UI_저장(); 격자_설정저장예약(); 격자_시장뉴스갱신(true);
+            });
+            줄.querySelector('.g-mn-fold').addEventListener('click', function () {
+                var u2 = 격자_뉴스설정(); u2.접힘 = !u2.접힘;
+                줄.classList.toggle('folded', u2.접힘); this.textContent = u2.접힘 ? '▸ 시장 뉴스' : '▾';
+                격자UI_저장(); 격자_설정저장예약(); 격자_시장뉴스갱신(true);
+            });
+            // 알림 카드 자리 (지수 박스 바로 아래)
+            var 판 = document.createElement('div'); 판.className = 'g-toast'; 판.id = 'g-toast'; 위.parentNode.appendChild(판);
+            격자_시장뉴스갱신(true);
+        }
+        function 격자_시장뉴스갱신(강제) {
+            var 줄 = document.getElementById('g-mn'); if (!줄) return;
+            var u = 격자_뉴스설정(), 서명 = [];
+            [0, 1, 2].forEach(function (k) {
+                var el = document.getElementById('g-mn-' + k); if (!el) return;
+                var 목 = u.칸[k] === '끔' ? [] : 격자_분류목록(u.칸[k], 2);
+                var h = 목.length ? 목.map(function (x) { return 격자_뉴스한줄(x, true); }).join('') : '<span class="g-nnone">' + (u.칸[k] === '끔' ? '(끔)' : '최근 24시간 없음') + '</span>';
+                서명.push(목.map(function (x) { return x.id; }).join(','));
+                if (강제 || el._h !== h) { el.innerHTML = h; el._h = h; }
+            });
+            // 접혔을 때: 첫 칸(없으면 다음 칸)의 최신 1건
+            var 미 = document.getElementById('g-mn-mini');
+            if (미) { var 첫 = null; for (var k = 0; k < 3 && !첫; k++) if (u.칸[k] !== '끔') 첫 = 격자_분류목록(u.칸[k], 1)[0]; var mh = 첫 ? 격자_뉴스한줄(첫, true) : ''; if (미._h !== mh) { 미.innerHTML = mh; 미._h = mh; } }
+        }
+        // ④ 새 뉴스 알림 카드 (지수 박스 아래)
+        var 격자_카드알린 = {};
+        function 격자_시장뉴스새것(x) {
+            격자_시장뉴스갱신(false);
+            var u = 격자_뉴스설정(); if (u.알림 === '끔' || 격자_카드알린[x.id] || 뉴스_광고(x) || 격자_차트종목관련(x)) return;
+            var 맞음 = u.알림 === '속보PICK' ? (격자_분류맞음(x, '속보') || 격자_분류맞음(x, 'PICK'))
+                     : u.알림 === '속보' ? 격자_분류맞음(x, '속보')
+                     : u.칸.some(function (c) { return c !== '끔' && 격자_분류맞음(x, c); });
+            if (!맞음) return;
+            격자_카드알린[x.id] = 1;
+            var 판 = document.getElementById('g-toast'); if (!판) return;
+            var 위 = document.querySelector('.g-main .top-bar'), 본 = document.querySelector('.g-main');
+            if (위 && 본) 판.style.top = (위.getBoundingClientRect().bottom - 본.getBoundingClientRect().top + 6) + 'px';
+            var 분 = 격자_분류맞음(x, '속보') ? '⚡ 속보' : x.pk ? '⭐ SAVE PICK' : 격자_분류맞음(x, '시장') ? '🌐 시장' : '📰 뉴스';
+            var el = document.createElement('div'); el.className = 'g-card' + (분.indexOf('속보') >= 0 ? ' hot' : '');
+            el.innerHTML = '<div class="g-ct"><i>' + 분 + '</i><span>' + 뉴스_한국시각(x.t) + (x.s ? ' · ' + 뉴스_글(x.s) : '') + '</span><button type="button" class="g-cx" title="닫기">✕</button></div>' +
+                           '<a class="g-cb" href="' + 뉴스_원문주소(x.id) + '" target="' + 뉴스_원문대상() + '" rel="noopener">' + 뉴스_글(x.ti || x.en || '') + '</a>';
+            판.insertBefore(el, 판.firstChild);
+            while (판.children.length > 3) 판.lastChild.remove();
+            el.querySelector('.g-cx').onclick = function () { el.remove(); };
+            el.querySelector('.g-cb').onclick = function () { el.remove(); };
+            setTimeout(function () { el.classList.add('out'); setTimeout(function () { el.remove(); }, 400); }, 10000);
+            // 소리: 대시보드1 이 같은 뉴스로 울렸으면 생략
+            setTimeout(function () {
+                var 기록 = null; try { 기록 = JSON.parse(localStorage.getItem('sz_news_snd') || 'null'); } catch (e) { }
+                if (기록 && 기록.id === x.id && Date.now() - 기록.t < 60000) return;
+                try { localStorage.setItem('sz_news_snd', JSON.stringify({ id: x.id, t: Date.now() })); } catch (e) { }
+                격자_소리(u.소리);
+            }, 1500);
+        }
+        setInterval(function () { if (격자모드) { try { 격자_칸뉴스갱신(); 격자_시장뉴스갱신(false); } catch (e) { } } }, 5000);
+        // 큰 차트 칸 표시 (4·4·2 = 9·10번 / 3·3·2 = 7·8번)
+        function 격자_큰칸표시() {
+            var 큰 = 격자배치 === '332' ? [6, 7] : [8, 9];
+            패널들().forEach(function (k) { var p = document.getElementById('panel-' + k); if (p) p.classList.toggle('g-big', 큰.indexOf(k) >= 0); });
+            try { 격자_칸뉴스갱신(); } catch (e) { }
+        }
+
         // ── 칸 머리 갱신 (0.5초): 패널 시세 칸 값을 그대로 옮김 (대시보드1 과 같은 값) ──
         //   정규장 = 현재가 · 등락률 / 그 외 = 종가(전일 대비) + 시외 현재가(종가 대비)
         function 격자_머리갱신() {
@@ -9925,6 +10188,12 @@
             알림_창들 = 알림_창들.filter(function (x) { if (x.키 !== 키) return true; x.el.remove(); return false; });
             알림_정리();
         }
+        // PC: 알림 카드를 맨 위 시황 바(지수 박스) 바로 아래에 (휴대폰·태블릿은 화면 맨 위 그대로)
+        function 알림_자리맞춤(판) {
+            if (!판) return;
+            var 바 = document.querySelector('.top-bar'), 아래 = 바 && window.innerWidth > 1200 ? 바.getBoundingClientRect().bottom : 0;
+            판.style.top = 아래 > 0 ? Math.round(아래 + 6) + 'px' : '';
+        }
         function 알림_정리() {
             var 판 = document.getElementById('nt-stack'); if (!판) return;
             알림_창들.forEach(function (x, k) { x.el.style.display = k < 3 ? '' : 'none'; });
@@ -9942,6 +10211,7 @@
             if (!알림_허용(x.종류, '창')) { 알림기록_추가({ t: Date.now(), 시각: x.시각, 종류: x.종류, 종목: x.종목, 글: x.글 }); return null; }
             var 판 = document.getElementById('nt-stack');
             if (!판) { 판 = document.createElement('div'); 판.id = 'nt-stack'; 판.className = 'nt-stack'; document.body.appendChild(판); }
+            알림_자리맞춤(판);
             var 종 = 알림_종류[x.종류] || 알림_종류.가격, i = panelTickers.indexOf(x.종목), 키 = x.종류 + '|' + x.종목;
             알림_닫기(키);   // 같은 종목·같은 종류는 새 알림으로 바꿈
             var el = document.createElement('div');
