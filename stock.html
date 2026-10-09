@@ -179,6 +179,7 @@
         .ai-pop .ai-x { position: absolute; top: 6px; right: 8px; background: none; border: 0; color: #8b93a7; font-size: 16px; cursor: pointer; }
         .mk-fg .tit { font-size: 12px; font-weight: 600; color: #e3e7ef; }
         .mk-fg .val { font-size: 13px; font-weight: 700; color: #ccc; }
+        .mk-rg { font-weight: 600; opacity: .8; font-size: .92em; }
         .mk-tag { font-size: 10.5px; font-weight: 700; line-height: 1; padding: 3px 5px; border-radius: 4px; border: 1px solid; margin-left: 4px; vertical-align: 1px; }
         .mk-grid { flex: 1; min-width: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-template-rows: 38px 38px; grid-auto-flow: column; column-gap: 8px; row-gap: 5px; }   /* 세로로 채움 → 위: QQQ·나스닥선물·비트코인·달러인덱스·VIX / 아래: SPY·금선물·미국채10년·원달러환율·WTI원유 */
         .mk-cell { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 0 8px; border-radius: 7px; background: rgba(255, 255, 255, .03); border: 1px solid rgba(160, 170, 200, .16); }
@@ -2026,9 +2027,9 @@
         .g-light .kc-spk { border-color: #e3e7ee; }
         .g-light .kc-g2 input[type=number], .g-light .kc-g2 select { background: #fff; color: #1c2230; border-color: #cfd5df; }
         .g-light .kc-g2 button { background: #f4f6f9; color: #4a5263; border-color: #cfd5df; }
-        .kc-hh-line { position: absolute; left: 0; height: 0; border-top: 1px dashed; opacity: .55; pointer-events: none; }
-        .kc-hh-tag { position: absolute; font-size: 11px; font-weight: 700; white-space: nowrap; pointer-events: none; background: rgba(7, 7, 12, .72); border-radius: 3px; padding: 0 4px; line-height: 14px; }
-        .g-light .kc-hh-tag { background: rgba(255, 255, 255, .85); }
+        .kc-hh-line { position: absolute; left: 0; height: 0; border-top: 1px dashed; pointer-events: none; }
+        .kc-hh-tag { position: absolute; font-size: 11px; font-weight: 600; white-space: nowrap; pointer-events: none; background: rgba(180, 0, 0, .88); color: #fff; border-radius: 3px; padding: 1px 6px; line-height: 14px; box-shadow: 0 1px 4px rgba(0, 0, 0, .3); }   /* 윈폼 차트 #hh-tag 와 같은 색 */
+        
         .kc-cr { margin-top: 8px; padding-top: 6px; border-top: 1px solid #22263a; color: #6b7386; font-size: 10px; }
         .kc-cr a { color: #8b93a7; }
 
@@ -2202,8 +2203,18 @@
         .grid-mode .g-cb { display: block; margin-top: 4px; font-size: 16px; font-weight: 700; line-height: 1.4; color: var(--g-text); text-decoration: none; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .grid-mode .g-cb:hover { text-decoration: underline; }
         /* 시황 바 글자 1.3배 */
-        .grid-mode .mk-grid { grid-template-rows: 48px 48px; }
-        .grid-mode .mk-txt { min-width: 150px; }
+        .grid-mode .mk-grid { grid-template-rows: 48px 48px; grid-template-columns: 1.55fr 1fr 0.8fr 1fr 1.08fr; column-gap: 7px; }   /* QQQ·SPY 넓게 · 비트코인·미국채 좁게 · VIX(주의 표시) 조금 넓게 */
+        .grid-mode .mk-bar { gap: 8px; padding: 5px 8px !important; }
+        .grid-mode .mk-left { width: auto; min-width: 0; padding-right: 8px; gap: 5px; align-items: flex-start; }
+        .grid-mode .mk-fg { order: 1; } .grid-mode .mk-sessrow { order: 2; } .grid-mode .mk-airow { order: 3; }
+        .grid-mode .mk-fg .tit { font-size: 13px; } .grid-mode .mk-fg .val { font-size: 15px; }
+        .grid-mode .mk-sess { font-size: 12px; padding: 4px 6px; }
+        .grid-mode .mk-airow .mk-ai { padding: 4px 7px; font-size: 12px; }
+        .grid-mode .logo-top { padding-right: 2px; }
+        .grid-mode .lt-strike, .grid-mode .lt-zone { font-size: 19px; }
+        .grid-mode .logo-top-sub { letter-spacing: 3px; font-size: 8px; }
+        .grid-mode .content-wrapper > .top-bar { gap: 8px; padding: 4px 8px; }
+        .grid-mode .mk-txt { min-width: 112px; }
         .grid-mode .mk-nm .tit, .grid-mode .mk-fg .tit { font-size: 15.5px; }
         .grid-mode .mk-vl .val { font-size: 18px; }
         .grid-mode .mk-ch { font-size: 15px; }
@@ -8035,9 +8046,9 @@
             var y = st.캔들.priceToCoordinate(최고); if (y == null || y < 0 || y > 판.height) return '';
             var 종 = st.봉[st.봉.length - 1].c, 차 = (최고 - 종) / 최고 * 100, d = new Date(st.봉[곳].t * 1000), p2 = function (n) { return (n < 10 ? '0' : '') + n; };
             var 때 = p2(d.getUTCMonth() + 1) + '/' + p2(d.getUTCDate()) + (st.일봉 ? '' : ' ' + p2(d.getUTCHours()) + ':' + p2(d.getUTCMinutes()));
-            var 색 = C.밝음 ? '#3a4252' : '#d7dbe4';
+            var 색 = 'rgba(200,0,0,.65)';
             return '<div class="kc-hh kc-hh-line" style="top:' + Math.round(y) + 'px;width:' + 판.width + 'px;border-color:' + 색 + '"></div>' +
-                   '<div class="kc-hh kc-hh-tag" style="top:' + Math.max(0, Math.round(y) - 15) + 'px;' + 'left:6px;color:' + 색 + '">최고 ' + 키움_가격글(최고, 정밀) +
+                   '<div class="kc-hh kc-hh-tag" style="top:' + Math.max(0, Math.round(y) - 15) + 'px;' + 'left:6px">최고 ' + 키움_가격글(최고, 정밀) +
                    ' (' + (차 > 0 ? '-' : '') + Math.abs(차).toFixed(2) + '%, ' + 때 + ')</div>';
         }
         function 키움차트_개수기록(st) {
@@ -8372,6 +8383,8 @@
             var 격 = document.getElementById('dashboard-grid'), 위 = document.querySelector('.top-bar');
             if (격 && 위) { var 본 = document.createElement('div'); 본.className = 'g-main'; 격.parentNode.insertBefore(본, 격); 본.appendChild(격); 본.parentNode.insertBefore(위, 본.parentNode.firstChild); }   // 시황 바 = 맨 위 전체 폭
             격자_관심폭적용();
+            var 뉴단 = document.getElementById('news-btn'), ai단 = document.getElementById('ai-btn');
+            if (뉴단) { 뉴단.textContent = '📰 뉴스'; } if (ai단) { ai단.textContent = '🤖 AI'; ai단.title = 'AI 분석 (지금 화면 상황을 AI 에게 물어볼 글로 정리해 복사)'; }
             패널들().forEach(function (i) {
                 var 판 = document.getElementById('panel-' + i), 차 = 판 && 판.querySelector('.chart-wrapper'); if (!차) return;
                 var 머 = document.createElement('div'); 머.className = 'g-head'; 머.setAttribute('data-i', i);
@@ -9005,9 +9018,11 @@
                         var rKr = fgr.includes('extreme fear') ? '극단적 공포' : fgr.includes('fear') ? '공포' : fgr.includes('extreme greed') ? '극단적 탐욕' : fgr.includes('greed') ? '탐욕' : '중립';
                         var fgEl = document.getElementById('neon-fg');
                         var fgc = fgs <= 25 ? '#ff5d5d' : fgs <= 45 ? '#4d8dff' : fgs >= 75 ? '#ff5d5d' : fgs >= 55 ? '#3ecf8e' : '#aab2c3';
-                        if (fgEl) fgEl.innerHTML = '<span class="tit">공포탐욕지수</span><span class="val">' + fgs + '</span>' +
-                            '<span class="mk-tag" style="color:' + fgc + ';border-color:' + fgc + '88;background:' + fgc + '1f">' + rKr + '</span>';
-                        if (fgEl) fgEl.title = 'CNN 공포·탐욕 지수 (하루 단위 값)';
+                        // CNN 구간: 극단적 공포 0~24 · 공포 25~44 · 중립 45~55 · 탐욕 56~75 · 극단적 탐욕 76~100
+                        var 구간 = fgs <= 24 ? '0~24' : fgs <= 44 ? '25~44' : fgs <= 55 ? '45~55' : fgs <= 75 ? '56~75' : '76~100';
+                        if (fgEl) fgEl.innerHTML = '<span class="tit">공포탐욕</span><span class="val">' + fgs + '</span>' +
+                            '<span class="mk-tag" style="color:' + fgc + ';border-color:' + fgc + '88;background:' + fgc + '1f">' + rKr + ' <span class="mk-rg">' + 구간 + '</span></span>';
+                        if (fgEl) fgEl.title = 'CNN 공포·탐욕 지수 (하루 단위 값) · 구간: 극단적 공포 0~24 / 공포 25~44 / 중립 45~55 / 탐욕 56~75 / 극단적 탐욕 76~100';
         }
 
         // 윈폼 매크로가 없거나 오래됐을 때: Worker /spark 의 마지막 가격·전일 종가로 상단 값 표시
