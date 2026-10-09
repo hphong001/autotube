@@ -2021,8 +2021,16 @@
                          overflow: hidden; height: 100vh; background: var(--g-bg); }
         body.grid-mode.g-light { --g-bg: #dfe3ea; --g-card: #ffffff; --g-line: #cfd5df; --g-head: #f4f6f9; --g-text: #1c2230; --g-sub: #5f6b7d; --g-btn: #eef1f5; --g-up: #d32f2f; --g-dn: #1e5fd6; --g-sel: #2f6fed; --g-shadow: 0 1px 4px rgba(20, 30, 50, .12);
                                      --g-on-t: #ffffff; --g-badge: #2f3b52; --g-badge-t: #ffffff; --g-row-on: #f3f7ff; --g-hover: #f5f7fa; }
-        .grid-mode .top-bar, .grid-mode .sidebar-logo, .grid-mode .pz-split, .grid-mode #qnav, .grid-mode .nt-stack { display: none !important; }
-        .grid-mode .content-wrapper { position: absolute; left: 0; top: 0; width: 100%; height: 100%; min-width: 1240px; min-height: 690px; box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 1fr) clamp(270px, 17.5vw, 430px); gap: 8px !important; padding: 8px; background: var(--g-bg); }
+        .grid-mode .sidebar-logo, .grid-mode .pz-split, .grid-mode #pc-btn, .grid-mode .nt-hist, .grid-mode #qnav, .grid-mode .nt-stack { display: none !important; }
+        .grid-mode .content-wrapper { position: absolute; left: 0; top: 0; width: 100%; height: 100%; min-width: 1240px; min-height: 690px; box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 1fr) var(--g-side, clamp(300px, 20vw, 520px)); gap: 8px !important; padding: 8px; background: var(--g-bg); }
+        /* 차트 영역: 위 = 시황 바 · 아래 = 차트 격자 (맨 아래 큰 차트 줄 높이는 시황 바가 없을 때와 같게 → 위 두 줄만 줄어듦) */
+        .grid-mode .g-main { display: flex; flex-direction: column; gap: 8px; min-width: 0; min-height: 0; }
+        .grid-mode .g-main .top-bar { border-radius: 8px; border: 1px solid #1a1a30; padding: 4px 10px; flex-shrink: 0; min-width: 0; overflow: hidden; }
+        .grid-mode .g-main .dashboard-grid { flex: 1; grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) calc((max(100vh, 690px) - 32px) / 3) !important; }
+        .grid-mode .sidebar { position: relative !important; }
+        .grid-mode .g-side-drag { position: absolute; left: 0; top: 0; bottom: 0; width: 7px; cursor: col-resize; z-index: 20; touch-action: none; }
+        .grid-mode .g-side-drag::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: transparent; transition: background .15s; }
+        .grid-mode .g-side-drag:hover::after, .grid-mode .g-side-drag.on::after { background: var(--g-sel); }
         .grid-mode .dashboard-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr)); gap: 8px !important; border: none; border-radius: 0; overflow: hidden; min-width: 0; min-height: 0; }
         .grid-mode .panel { padding: 0; gap: 0; background: var(--g-card); border: 1px solid var(--g-line); border-radius: 8px; box-shadow: var(--g-shadow); overflow: hidden; height: auto; min-height: 0; min-width: 0; flex: none !important; display: flex; }
         .grid-mode .panel:last-child { border-right: 1px solid var(--g-line); }
@@ -2070,7 +2078,7 @@
         @container (max-width: 360px) { .grid-mode .g-sig { display: none; } .grid-mode .g-q .g-ch:nth-of-type(4) { display: none; } }
         @container (max-width: 300px) { .grid-mode .g-q .g-ch { display: none; } .grid-mode .g-head { padding: 3px 5px; } }
         /* 오른쪽 */
-        .grid-mode .sidebar { position: static; width: auto !important; height: auto; min-height: 0; padding: 0; overflow: hidden; display: grid; grid-template-rows: minmax(0, 2fr) minmax(0, 1fr); gap: 8px; }
+        .grid-mode .sidebar { width: auto !important; height: auto; min-height: 0; padding: 0; overflow: hidden; display: grid; grid-template-rows: minmax(0, 2fr) minmax(0, 1fr); gap: 8px; }
         .grid-mode .sidebar-watchlist { min-height: 0; padding: 9px 10px; background: var(--g-card); border: 1px solid var(--g-line); border-radius: 8px; box-shadow: var(--g-shadow); }
         .grid-mode .g-bar { display: flex; align-items: center; gap: 4px; margin: -2px 0 8px; font-size: 11px; color: var(--g-sub); flex-shrink: 0; }
         .grid-mode .g-bar button { font: inherit; font-size: 11px; font-weight: 700; background: var(--g-btn); color: var(--g-sub); border: 1px solid var(--g-line); border-radius: 4px; padding: 2px 8px; cursor: pointer; }
@@ -2079,7 +2087,25 @@
         .grid-mode .g-hint { flex-shrink: 0; font-size: 11.5px; color: var(--g-sub); margin: -2px 0 6px; }
         .grid-mode .g-hint.on { color: var(--g-sel); font-weight: 700; }
         .grid-mode .wl-row { cursor: pointer; }
-        .grid-mode .wl-pn .g-wn { font-style: normal; display: inline-block; min-width: 15px; height: 15px; line-height: 15px; text-align: center; font-size: 10px; font-weight: 800; border-radius: 3px; background: var(--g-badge); color: var(--g-badge-t); }
+        /* 관심종목 글자 1.5배 · 한글 종목명 선명하게 */
+        .grid-mode .watchlist-title { font-size: 18px; }
+        .grid-mode .watchlist-title small { font-size: 14px; }
+        .grid-mode .wl-sb button { font-size: 14px; padding: 4px 0; }
+        .grid-mode .wl-so, .grid-mode .wl-so button { font-size: 13px; }
+        .grid-mode .g-bar, .grid-mode .g-bar button { font-size: 13px; }
+        .grid-mode .g-hint { font-size: 14px; }
+        .grid-mode .ticker-item.wl-row { padding: 8px 6px; gap: 9px; }
+        .grid-mode .wl-t { font-size: 19px; }
+        .grid-mode .wl-n { font-size: 14.5px; font-weight: 600; color: #c3cad8; }
+        .grid-mode .wl-l { font-size: 13.5px; width: 52px; padding-right: 8px; color: #9aa3b5; }
+        .grid-mode .wl-v { font-size: 19px; }
+        .grid-mode .wl-c { font-size: 16px; }
+        .grid-mode .wl-rk, .grid-mode .wl-top .wl-rk { font-size: 13px; line-height: 19px; }
+        .grid-mode .wl-sp { width: 78px; height: 36px; }
+        .grid-mode .wl-pn .g-wn { min-width: 22px; height: 22px; line-height: 22px; font-size: 14px; border-radius: 4px; }
+        .g-light .wl-n { color: #3a4252; }
+        .g-light .wl-l { color: #5f6b7d; }
+        .grid-mode .wl-pn .g-wn { font-style: normal; display: inline-block; text-align: center; font-weight: 800; border-radius: 3px; background: var(--g-badge); color: var(--g-badge-t); }
         /* 관심종목 줄: 칸 색 테두리(대시보드1 의 1·2·3 패널 색) 대신 같은 강조 하나 = 옅은 바탕 + 왼쪽 띠 */
         .grid-mode .ticker-item.wl-row, .grid-mode .ticker-item.wl-row[data-p] { border-color: transparent; border-bottom-color: var(--g-line); background: transparent; border-radius: 4px; }
         .grid-mode .ticker-item.wl-row.active-panel { background: var(--g-row-on); box-shadow: inset 3px 0 0 var(--g-sel); }
@@ -2110,7 +2136,7 @@
         .ga-note { font-size: 10.5px; }
         /* 밝은 테마: 관심종목·차트 안내 글자 */
         .g-light .watchlist-title { color: var(--g-text); }
-        .g-light .watchlist-title small, .g-light .wl-n, .g-light .wl-l, .g-light .wl-so { color: var(--g-sub); }
+        .g-light .watchlist-title small, .g-light .wl-so { color: var(--g-sub); }
         .g-light .wl-t, .g-light .ticker-item.active-panel .wl-t { color: var(--g-text); }
         .g-light .ticker-item { color: var(--g-sub); }
         .g-light .wl-rk, .g-light .wl-top .wl-rk { color: var(--g-sub); }
@@ -7955,10 +7981,19 @@
         var 격자UI = (function () { try { return JSON.parse(localStorage.getItem('sz_grid_ui') || '{}') || {}; } catch (e) { return {}; } })();
         var 격자테마 = 격자UI.테마 === '밝음' ? '밝음' : '다크';
         var 격자배치 = 격자UI.배치 === '332' ? '332' : '442';
-        function 격자UI_저장() { try { localStorage.setItem('sz_grid_ui', JSON.stringify({ 테마: 격자테마, 배치: 격자배치 })); } catch (e) { } }
+        var 격자관심폭 = Number(격자UI.관심폭) >= 240 ? Math.round(Number(격자UI.관심폭)) : 0;   // 0 = 기본 (화면 폭의 약 1/5)
+        function 격자UI_저장() { try { localStorage.setItem('sz_grid_ui', JSON.stringify({ 테마: 격자테마, 배치: 격자배치, 관심폭: 격자관심폭 })); } catch (e) { } }
+        // 관심종목 폭: 240px ~ (화면의 40%, 최대 760px) · 차트 영역은 최소 860px 남김
+        function 격자_관심폭최대() { return Math.max(240, Math.min(760, Math.round(window.innerWidth * 0.4), window.innerWidth - 16 - 8 - 860)); }
+        function 격자_관심폭적용() {
+            var w = 격자관심폭 > 0 ? Math.min(격자관심폭, 격자_관심폭최대()) : 0;
+            var cw = document.querySelector('.content-wrapper');
+            if (cw) cw.style.setProperty('--g-side', w > 0 ? w + 'px' : 'clamp(300px, 20vw, 520px)');
+        }
+        window.addEventListener('resize', function () { if (격자모드) 격자_관심폭적용(); });
         function 격자_설정내용() {
             return {
-                판: 2, 저장: new Date().toISOString(), 테마: 격자테마, 배치: 격자배치,
+                판: 2, 저장: new Date().toISOString(), 테마: 격자테마, 배치: 격자배치, 관심폭: 격자관심폭,
                 종목: panelTickers.slice(0, 패널수),
                 분봉: 패널들().map(function (i) { return String(panelIntervals[i] || '3'); }),
                 칸: 패널들().map(function (i) { var c = 키움설정_칸(i); return { 개수: Number(c.개수) || 0, 표시: c.표시 }; })
@@ -7974,6 +8009,7 @@
             if (!c || typeof c !== 'object') return;
             if (c.테마 === '밝음' || c.테마 === '다크') 격자_테마설정(c.테마, true);
             if (c.배치 === '332' || c.배치 === '442') 격자_배치설정(c.배치, true);
+            if (Number(c.관심폭) >= 240 || Number(c.관심폭) === 0) { 격자관심폭 = Math.round(Number(c.관심폭)) || 0; 격자_관심폭적용(); 격자UI_저장(); }
             if (Array.isArray(c.칸)) c.칸.forEach(function (x, i) {
                 if (i >= 패널수 || !x || typeof x !== 'object') return;
                 var k = 키움설정_칸(i);
@@ -8051,6 +8087,10 @@
             document.body.classList.toggle('g-332', 격자배치 === '332');
             if (격자배치 === '332') 패널숨김 = [8, 9];
             document.title = 'STRIKEZONE · 대시보드2';
+            // 차트 영역 = [시황 바(대시보드1 맨 위 줄) + 차트 격자] · 관심종목은 오른쪽 전체 높이
+            var 격 = document.getElementById('dashboard-grid'), 위 = document.querySelector('.top-bar');
+            if (격 && 위) { var 본 = document.createElement('div'); 본.className = 'g-main'; 격.parentNode.insertBefore(본, 격); 본.appendChild(위); 본.appendChild(격); }
+            격자_관심폭적용();
             패널들().forEach(function (i) {
                 var 판 = document.getElementById('panel-' + i), 차 = 판 && 판.querySelector('.chart-wrapper'); if (!차) return;
                 var 머 = document.createElement('div'); 머.className = 'g-head'; 머.setAttribute('data-i', i);
@@ -8078,7 +8118,23 @@
                 관.insertBefore(바, 관.firstChild);
                 var 안 = document.createElement('div'); 안.className = 'g-hint'; 안.id = 'g-hint'; 관.insertBefore(안, 관.querySelector('.ticker-list'));
             }
-            if (옆) { var 계 = document.createElement('div'); 계.className = 'g-acct'; 계.id = 'g-acct'; 계.innerHTML = 격자_계좌목업(); 옆.appendChild(계); }
+            if (옆) {
+                var 계 = document.createElement('div'); 계.className = 'g-acct'; 계.id = 'g-acct'; 계.innerHTML = 격자_계좌목업(); 옆.appendChild(계);
+                // 관심종목 왼쪽 경계 끌기 = 폭 조절 (두 번 누르면 기본 폭) · 설정 파일에 저장
+                var 손 = document.createElement('div'); 손.className = 'g-side-drag'; 손.title = '끌어서 관심종목 폭 조절 · 두 번 누르면 기본 폭';
+                옆.appendChild(손);
+                손.addEventListener('pointerdown', function (e) {
+                    e.preventDefault(); 손.setPointerCapture(e.pointerId); 손.classList.add('on');
+                    var 움직 = function (ev) {
+                        var cw = document.querySelector('.content-wrapper').getBoundingClientRect();
+                        격자관심폭 = Math.max(240, Math.min(격자_관심폭최대(), Math.round(cw.right - 8 - ev.clientX)));
+                        격자_관심폭적용();
+                    };
+                    var 끝 = function () { 손.classList.remove('on'); 손.removeEventListener('pointermove', 움직); 손.removeEventListener('pointerup', 끝); 손.removeEventListener('pointercancel', 끝); 격자UI_저장(); 격자_설정저장예약(); };
+                    손.addEventListener('pointermove', 움직); 손.addEventListener('pointerup', 끝); 손.addEventListener('pointercancel', 끝);
+                });
+                손.addEventListener('dblclick', function () { 격자관심폭 = 0; 격자_관심폭적용(); 격자UI_저장(); 격자_설정저장예약(); });
+            }
             격자_칸선택(-1); 격자_도구표시();
             setInterval(격자_머리갱신, 500);
         }
