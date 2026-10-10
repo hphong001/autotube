@@ -181,6 +181,9 @@
       if (!form.checkValidity()) { form.reportValidity(); return; }
       if (form.querySelector('[name="website"]').value) return; 
       var data = new FormData(form);
+      var wu = (data.get('website_url') || '').trim();
+      if (wu && !/^[a-z][a-z0-9+.-]*:\/\//i.test(wu)) wu = 'https://' + wu.replace(/^\/+/, '');
+      if (data.has('website_url')) data.set('website_url', wu);
       data.append('page', location.href);
       try { data.append('tz', Intl.DateTimeFormat().resolvedOptions().timeZone || ''); } catch (err) {}
       data.append('browser_lang', (navigator.languages && navigator.languages.join(', ')) || navigator.language || '');
