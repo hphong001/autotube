@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>핵심 기술 — 업무 자동화·장비 연동·자동매매·비전 AI 검사 | AI BASE LAB</title>
+<meta name="description" content="AI BASE LAB의 4가지 핵심 기술: 반복 업무·영상 제작 자동화, RS-232·Modbus·SCPI·PLC 이기종 장비 연동과 중앙 모니터링, 증권사 API 금융 데이터·자동매매, 바코드·전자저울·비전 출하 검수와 MES 연동. 기능, 적용 분야, 기술 스택을 소개합니다.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://aibaselab.com/technology/">
+<meta name="theme-color" content="#0b1121">
+<meta name="format-detection" content="telephone=no">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AI BASE LAB">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="AI BASE LAB 핵심 기술 4가지">
+<meta property="og:description" content="AI BASE LAB의 4가지 핵심 기술: 반복 업무·영상 제작 자동화, RS-232·Modbus·SCPI·PLC 이기종 장비 연동과 중앙 모니터링, 증권사 API 금융 데이터·자동매매, 바코드·전자저울·비전 출하 검수와 MES 연동. 기능, 적용 분야, 기술 스택을 소개합니다.">
+<meta property="og:url" content="https://aibaselab.com/technology/">
+<meta property="og:image" content="https://aibaselab.com/image/og-default.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AI BASE LAB 핵심 기술 4가지">
+<meta name="twitter:description" content="AI BASE LAB의 4가지 핵심 기술: 반복 업무·영상 제작 자동화, RS-232·Modbus·SCPI·PLC 이기종 장비 연동과 중앙 모니터링, 증권사 API 금융 데이터·자동매매, 바코드·전자저울·비전 출하 검수와 MES 연동. 기능, 적용 분야, 기술 스택을 소개합니다.">
+<meta name="twitter:image" content="https://aibaselab.com/image/og-default.jpg">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/image/apple-touch-icon.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="/css/style.css?v=20261010">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "홈",
+     "item": "https://aibaselab.com/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "핵심 기술",
+     "item": "https://aibaselab.com/technology/"
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">본문 바로가기</a>
+<header class="site-header">
+  <div class="container nav">
+    <a href="/" class="logo" aria-label="AI BASE LAB 홈"><span class="logo-word"><em>AI</em> BASE LAB</span><span class="logo-sub">AUTOMATION ENGINEERING</span></a>
+    <nav aria-label="주 메뉴">
+      <ul class="nav-menu" id="site-menu">
+        <li><a href="/technology/" aria-current="page">핵심 기술</a></li><li><a href="/cases/">솔루션 사례</a></li><li><a href="/about/">기업 소개</a></li><li class="nav-drawer-cta"><a href="/#contact" class="btn btn-primary">도입 문의하기</a></li>
+      </ul>
+    </nav>
+    <div class="nav-cta">
+      <div class="lang-switch"><a href="#" aria-current="true" lang="ko">KO</a><a href="/en/" lang="en" hreflang="en">EN</a><a href="/cn/" lang="zh-CN" hreflang="zh-CN">CN</a></div>
+      <a href="/#contact" class="btn btn-outline btn-sm">도입 문의</a>
+      <button type="button" class="nav-toggle" aria-controls="site-menu" aria-expanded="false" aria-label="메뉴 열기">
+        <span class="icon-open"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span><span class="icon-close"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
+      </button>
+    </div>
+  </div>
+</header>
+<main id="main">
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="현재 위치"><ol><li><a href="/">홈</a></li><li aria-current="page">핵심 기술</li></ol></nav>
+    <span class="eyebrow eyebrow-dark">CORE TECHNOLOGY</span>
+    <h1>현장의 장비, 데이터, AI를 하나로 잇는 4가지 기술</h1>
+    <p class="lead">기술은 따로 떨어져 있을 때보다 연결될 때 가치가 커집니다.<br class="br-pc"> 네 가지 기술은 모두 같은 설계 원칙(모듈 분리, 자동 기록, 예외 상황 우선 설계)으로 만들어져 필요에 따라 조합할 수 있습니다.</p>
+    <div class="btn-row" style="margin-top:28px">
+      <a href="#automation" class="btn btn-outline btn-sm">반복 업무 · 영상 제작 자동화</a>
+      <a href="#monitoring" class="btn btn-outline btn-sm">장비 연동 · 모니터링</a>
+      <a href="#finance" class="btn btn-outline btn-sm">금융 데이터 · 자동매매</a>
+      <a href="#vision" class="btn btn-outline btn-sm">출하 검수 · MES 연동</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="automation" aria-labelledby="t1">
+  <div class="container container-narrow prose">
+    <span class="eyebrow">01 · WORKFLOW AUTOMATION</span>
+    <h2 id="t1" style="margin-top:0">반복 업무 자동화<br>영상 제작 자동화</h2>
+    <p>여러 프로그램을 오가며 파일을 옮기고, 복사하고, 이름을 맞추는 일은 생각보다 많은 시간을 차지합니다. 반복 업무 자동화는 이런 단계를 하나의 흐름으로 묶고, 각 단계에 생성형 AI를 결합해 사람은 판단과 검수만 하도록 만듭니다.</p>
+    <h3>이런 업무에 적합합니다</h3>
+    <ul class="bullets">
+      <li>유튜브·교육 영상처럼 정해진 형식으로 반복 제작하는 콘텐츠</li>
+      <li>엑셀·문서 데이터를 받아 이미지, 음성, 보고서로 변환하는 업무</li>
+      <li>여러 웹사이트·프로그램에 같은 내용을 반복 입력하는 업무</li>
+    </ul>
+    <div class="feature-grid">
+      <div class="feature"><h3><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3-3-9 9"/></svg>생성형 AI 연동</h3><p>Gemini 이미지 생성을 API와 브라우저 자동화 두 경로로 연결하고, 캐릭터 시트 첨부로 결과물 일관성을 유지합니다.</p></div>
+      <div class="feature"><h3><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/></svg>로컬 AI 음성 · 자막</h3><p>Qwen3-TTS 음성 합성과 Whisper 음성 인식을 고객 PC의 GPU에서 실행해 비용과 데이터 유출 걱정이 없습니다.</p></div>
+      <div class="feature"><h3><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></svg>편집 도구 자동 조립</h3><p>CapCut 프로젝트 파일을 직접 생성해 이미지·음성·자막 트랙을 자동 배치합니다.</p></div>
+      <div class="feature"><h3><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>브라우저 · 화면 자동화</h3><p>API가 없는 웹 서비스나 프로그램도 Playwright, Windows 자동화로 반복 조작을 대신합니다.</p></div>
+    </div>
+    <p><a href="/autotube-case/" class="link-arrow">적용 사례: 교육 콘텐츠 제작사 영상 제작 자동화 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></p>
+  </div>
+</section>
+
+<section class="section section-soft" id="monitoring" aria-labelledby="t2">
+  <div class="container container-narrow prose">
+    <span class="eyebrow">02 · EQUIPMENT INTEGRATION</span>
+    <h2 id="t2" style="margin-top:0">이기종 장비 연동<br>중앙 모니터링</h2>
+    <p>생산 현장에는 제조사도, 통신 방식도 다른 장비가 섞여 있습니다. 장비마다 전용 프로그램을 따로 쓰면 작업자는 화면을 오가야 하고 데이터는 어디에도 남지 않습니다. 기존 장비를 그대로 두고, 하나의 프로그램에서 제어·측정·판정·기록까지 처리하도록 연결합니다.</p>
+    <div class="table-wrap">
+      <table class="spec-table">
+        <thead><tr><th>분류</th><th>지원 통신 · 프로토콜 (유선 · 무선)</th><th>주요 장비 예시</th></tr></thead>
+        <tbody>
+          <tr><td>시리얼</td><td>RS-232, RS-485, USB 가상 시리얼</td><td>전원공급기, 바코드 스캐너, 저울, 컨트롤러</td></tr>
+          <tr><td>산업용 네트워크</td><td>Modbus RTU/TCP, Mitsubishi MC Protocol</td><td>PLC, 인버터, 온습도 로거, 센서</td></tr>
+          <tr><td>계측기</td><td>SCPI (VISA · LAN · USB · GPIB)</td><td>오디오 분석기, 멀티미터, 오실로스코프</td></tr>
+          <tr><td>네트워크 장비</td><td>TCP/UDP 소켓, HTTP REST, ZPL</td><td>라벨 프린터, 산업용 카메라, 서버</td></tr>
+          <tr><td>무선 (근거리)</td><td>Wi-Fi, 블루투스(BLE), 무선 시리얼 모듈(RS-232/485 무선화)</td><td>휴대형 측정기, 이동 설비, 배선이 어려운 장비</td></tr>
+          <tr><td>무선 (원거리)</td><td>LTE(이동통신) 모뎀 통신, LoRa, MQTT 기반 IoT</td><td>원격지 설비, 야외 장비, 분산된 현장</td></tr>
+          <tr><td>스마트폰 연동</td><td>스마트폰 원격 모니터링·제어 (웹 대시보드, 텔레그램)</td><td>외부에서 상태 확인, 알림 수신, 원격 명령</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="feature-grid">
+      <div class="feature"><h3><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>검사 레시피</h3><p>모델별 측정 순서와 합격 기준을 코드가 아닌 설정으로 관리해, 신모델 추가 시 개발 없이 대응합니다.</p></div>
+      <div class="feature"><h3><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/></svg>자동 기록 · 추적</h3><p>모든 측정값을 시리얼 번호별로 저장하고, 네트워크가 끊겨도 로컬에 보관했다가 서버와 동기화합니다.</p></div>
+      <div class="feature"><h3><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M6 10h3l2-3 2 6 2-3h3"/></svg>중앙 관제 대시보드</h3><p>여러 라인의 가동 상태, 합격률, 택트타임, 장비 연결 상태를 한 화면에서 실시간으로 확인합니다.</p></div>
+      <div class="feature"><h3><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/></svg>다국어 작업 화면</h3><p>해외 공장 작업자를 위해 중국어·영어·한국어 화면을 제공합니다.</p></div>
+    </div>
+    <p><a href="/hardware-control/" class="link-arrow">적용 사례: 음향기기 제조사 계측 장비 연동 검사 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></p>
+  </div>
+</section>
+
+<section class="section" id="finance" aria-labelledby="t3">
+  <div class="container container-narrow prose">
+    <span class="eyebrow">03 · FINANCIAL DATA &amp; AUTO TRADING</span>
+    <h2 id="t3" style="margin-top:0">금융 데이터<br>자동매매 시스템</h2>
+    <p>증권사 Open API로 국내·해외 시세를 실시간으로 받고, 사용자가 정한 매매 규칙을 정확하게 집행하는 시스템을 개발합니다. 수익을 약속하는 전략이 아니라 <strong>정해진 규칙을 감정 없이, 빠르게, 빠짐없이 실행하는 도구</strong>를 만듭니다.</p>
+    <div class="feature-grid">
+      <div class="feature"><h3><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22v-5M9 8V2M15 8V2M18 8v5a6 6 0 0 1-12 0V8z"/></svg>증권사 API 연동</h3><p>키움증권 REST·WebSocket, 한국투자증권 Open API 등으로 시세 수신, 잔고 조회, 주문을 처리합니다.</p></div>
+      <div class="feature"><h3><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg>스크리너 · 차트</h3><p>추세 단계, 거래량, 이동평균 등 조건 검색과 Lightweight Charts 기반 실시간 캔들 차트를 제공합니다.</p></div>
+      <div class="feature"><h3><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>리스크 관리 · 안전장치</h3><p>비중 한도, 일일 손실 한도, 추적 손절, 연결 끊김 시 주문 중단, 킬 스위치를 기본 탑재합니다.</p></div>
+      <div class="feature"><h3><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>알림 · 기록</h3><p>텔레그램으로 체결과 결산을 받고, 모든 주문의 발생 조건을 DB에 남겨 성과 분석에 활용합니다.</p></div>
+    </div>
+    <p><a href="/finance-ai/" class="link-arrow">적용 사례: 투자법인 키움증권 국내·미국 자동매매 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></p>
+  </div>
+</section>
+
+<section class="section section-soft" id="vision" aria-labelledby="t4">
+  <div class="container container-narrow prose">
+    <span class="eyebrow">04 · INSPECTION &amp; MES</span>
+    <h2 id="t4" style="margin-top:0">출하 검수 · 비전 검사<br>MES 연동</h2>
+    <p>바코드, 산업용 전자저울, 카메라를 하나의 검수 프로그램으로 묶습니다.<br class="br-pc"> 잘못된 제품·수량, 구성품·라벨 누락을 출하 전에 걸러내고,<br class="br-pc"> 결과를 사진과 함께 남겨 MES로 실시간 전송합니다.</p>
+    <h3>이런 의뢰를 받습니다</h3>
+    <ul class="bullets">
+      <li>바코드·QR로 주문서와 출하 제품 대조, 오출고 경고</li>
+      <li>산업용 전자저울 연동 중량 검사 (구성품 누락 감지)</li>
+      <li>카메라로 라벨·부품 유무 검사, 검수 사진 이력 저장</li>
+      <li>생산 수량 카운팅·현황판, MES·ERP 실적 전송</li>
+    </ul>
+    <div class="feature-grid">
+      <div class="feature"><h3>규칙 기반 비전 검사</h3><p>정해진 위치의 라벨·부품 유무를 판별합니다. AI 학습 데이터 없이 바로 시작할 수 있습니다.</p></div>
+      <div class="feature"><h3>장비 연동</h3><p>USB·RS-232·LAN 바코드 스캐너와 전자저울, 경광등·부저를 연동합니다.</p></div>
+      <div class="feature"><h3>MES · ERP 전송</h3><p>REST API, DB, CSV 등 기존 시스템이 받을 수 있는 방식으로 실적을 보냅니다.</p></div>
+      <div class="feature"><h3>AI 검사로 확장</h3><p>복잡한 외관 불량은 필요할 때 딥러닝 검사로 확장할 수 있습니다.</p></div>
+    </div>
+    <p><a href="/vision-inspection/" class="link-arrow">적용 사례: 바코드·중량·비전 출하 검수 자동화 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="t5">
+  <div class="container container-narrow prose">
+    <span class="eyebrow">SECURITY &amp; DELIVERY</span>
+    <h2 id="t5" style="margin-top:0">데이터 보안 · 납품 원칙</h2>
+    <ul class="bullets">
+      <li><strong>온프레미스 우선:</strong> 생산 데이터와 매매 기록은 고객사 내부 PC·서버에 저장합니다.</li>
+      <li><strong>인증 정보 보호:</strong> API 키·토큰·DB 접속 정보는 암호화해 보관하고 화면과 로그에 노출하지 않습니다.</li>
+      <li><strong>권한 분리:</strong> 작업자·관리자 권한을 나누고 설정 변경 이력을 남깁니다.</li>
+      <li><strong>NDA · 소스 제공:</strong> 요청 시 착수 전 비밀유지계약을 맺고, 계약에 따라 소스 코드를 함께 납품합니다.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section section-dark">
+  <div class="container">
+    <span class="eyebrow">DESIGN PRINCIPLES</span>
+    <h2 class="section-title">모든 시스템에 공통으로 적용하는 설계 원칙</h2>
+    <p class="section-lead">현장 시스템은 잘 돌아갈 때보다 문제가 생겼을 때 진가가 드러납니다.</p>
+    <ol class="process">
+      <li><h3>기존 설비 유지</h3><p>장비와 프로그램을 교체하지 않고 연결하는 방식을 우선 검토해 도입 비용과 위험을 줄입니다.</p></li>
+      <li><h3>예외 상황 먼저 설계</h3><p>통신 끊김, 장비 무응답, 잘못된 입력 등 예외 처리를 기능보다 먼저 설계합니다.</p></li>
+      <li><h3>모든 것을 기록</h3><p>판정, 주문, 설정 변경 이력을 남겨 문제 원인을 추적하고 개선 근거로 활용합니다.</p></li>
+      <li><h3>사람은 판단에 집중</h3><p>반복 작업은 자동화하되, 품질과 위험에 관한 최종 판단은 사람이 할 수 있게 설계합니다.</p></li>
+    </ol>
+    <div class="btn-row" style="margin-top:40px"><a href="/#contact" class="btn btn-primary">기술 상담 신청하기 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a><a href="/cases/" class="btn btn-outline">구축 사례 보기</a></div>
+  </div>
+</section>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <a href="/" class="logo"><span class="logo-word"><em>AI</em> BASE LAB</span><span class="logo-sub">AUTOMATION ENGINEERING</span></a>
+        <p>현장 장비, 데이터, AI를 하나로 연결하는<br>자동화 소프트웨어 개발 전문 기업</p>
+      </div>
+      <div>
+        <h2>솔루션 사례</h2>
+        <ul>
+          <li><a href="/hardware-control/">계측 장비 연동 · 자동 기록</a></li>
+          <li><a href="/vision-inspection/">출하 검수 자동화 (바코드·중량·비전)</a></li>
+          <li><a href="/autotube-case/">유튜브 콘텐츠 제작 자동화</a></li>
+          <li><a href="/finance-ai/">키움증권 국내·미국 자동매매</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>회사</h2>
+        <ul>
+          <li><a href="/technology/">핵심 기술</a></li>
+          <li><a href="/about/">기업 소개</a></li>
+          <li><a href="/privacy/">개인정보처리방침</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>문의</h2>
+        <ul>
+          <li><a href="mailto:contact@aibaselab.com">contact@aibaselab.com</a></li>
+          <li><a href="/#contact">온라인 프로젝트 문의 →</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="biz-info">
+      <span>상호: AI BASE LAB</span><span>이메일: contact@aibaselab.com</span>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 AI BASE LAB. All rights reserved.</p>
+      <a href="/privacy/">개인정보처리방침</a>
+    </div>
+  </div>
+</footer>
+<script src="/js/main.js?v=20261010" defer></script>
+</body>
+</html>

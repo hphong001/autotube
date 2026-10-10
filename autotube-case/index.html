@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>유튜브 영상 제작 자동화 사례 — 오토튜브(AutoTube) | AI BASE LAB</title>
+<meta name="description" content="엑셀 대본에서 AI 이미지, AI 음성, 자막, CapCut 편집 프로젝트까지 자동으로 만드는 유튜브 영상 제작 자동화 사례. 편당 제작 시간 9시간 → 2.7시간, 주간 발행량 5편 → 12편.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://aibaselab.com/autotube-case/">
+<meta name="theme-color" content="#0b1121">
+<meta name="format-detection" content="telephone=no">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AI BASE LAB">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="영상 1편 제작 시간을 9시간에서 2시간 40분으로 — 유튜브 콘텐츠 제작 자동화">
+<meta property="og:description" content="엑셀 대본에서 AI 이미지, AI 음성, 자막, CapCut 편집 프로젝트까지 자동으로 만드는 유튜브 영상 제작 자동화 사례. 편당 제작 시간 9시간 → 2.7시간, 주간 발행량 5편 → 12편.">
+<meta property="og:url" content="https://aibaselab.com/autotube-case/">
+<meta property="og:image" content="https://aibaselab.com/image/og-default.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="영상 1편 제작 시간을 9시간에서 2시간 40분으로 — 유튜브 콘텐츠 제작 자동화">
+<meta name="twitter:description" content="엑셀 대본에서 AI 이미지, AI 음성, 자막, CapCut 편집 프로젝트까지 자동으로 만드는 유튜브 영상 제작 자동화 사례. 편당 제작 시간 9시간 → 2.7시간, 주간 발행량 5편 → 12편.">
+<meta name="twitter:image" content="https://aibaselab.com/image/og-default.jpg">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/image/apple-touch-icon.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="/css/style.css?v=20261010">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "홈",
+     "item": "https://aibaselab.com/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "솔루션 사례",
+     "item": "https://aibaselab.com/cases/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 3,
+     "name": "유튜브 콘텐츠 제작 자동화",
+     "item": "https://aibaselab.com/autotube-case/"
+    }
+   ]
+  },
+  {
+   "@type": "Article",
+   "headline": "영상 1편 제작 시간을 9시간에서 2시간 40분으로",
+   "description": "엑셀 대본에서 AI 이미지, AI 음성, 자막, CapCut 편집 프로젝트까지 자동으로 만드는 유튜브 영상 제작 자동화 사례. 편당 제작 시간 9시간 → 2.7시간, 주간 발행량 5편 → 12편.",
+   "datePublished": "2026-09-30",
+   "dateModified": "2026-10-02",
+   "author": {
+    "@type": "Organization",
+    "name": "AI BASE LAB",
+    "url": "https://aibaselab.com/"
+   },
+   "publisher": {
+    "@type": "Organization",
+    "name": "AI BASE LAB",
+    "logo": {
+     "@type": "ImageObject",
+     "url": "https://aibaselab.com/image/logo-512.png"
+    }
+   },
+   "mainEntityOfPage": "https://aibaselab.com/autotube-case/",
+   "inLanguage": "ko-KR",
+   "about": [
+    "유튜브 자동화",
+    "AI 음성",
+    "영상 제작 자동화",
+    "CapCut"
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "우리 채널의 기존 스타일을 그대로 유지할 수 있나요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "네. 캐릭터, 화풍, 자막 폰트·위치, 화면 전환 효과를 채널 설정으로 저장해 모든 영상에 똑같이 적용합니다."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "필요한 PC 사양은 어느 정도인가요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Windows 10/11, NVIDIA 그래픽카드(VRAM 12GB 이상 권장), 메모리 32GB 이상을 권장합니다."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "유튜브 업로드까지 자동으로 되나요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "기본은 편집 프로젝트 생성까지입니다. 예약 업로드는 옵션으로 제공하며, 업로드 전 사람이 최종 검수하는 방식을 권장합니다."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">본문 바로가기</a>
+<header class="site-header">
+  <div class="container nav">
+    <a href="/" class="logo" aria-label="AI BASE LAB 홈"><span class="logo-word"><em>AI</em> BASE LAB</span><span class="logo-sub">AUTOMATION ENGINEERING</span></a>
+    <nav aria-label="주 메뉴">
+      <ul class="nav-menu" id="site-menu">
+        <li><a href="/technology/">핵심 기술</a></li><li><a href="/cases/" aria-current="page">솔루션 사례</a></li><li><a href="/about/">기업 소개</a></li><li class="nav-drawer-cta"><a href="/#contact" class="btn btn-primary">도입 문의하기</a></li>
+      </ul>
+    </nav>
+    <div class="nav-cta">
+      <div class="lang-switch"><a href="#" aria-current="true" lang="ko">KO</a><a href="/en/" lang="en" hreflang="en">EN</a><a href="/cn/" lang="zh-CN" hreflang="zh-CN">CN</a></div>
+      <a href="/#contact" class="btn btn-outline btn-sm">도입 문의</a>
+      <button type="button" class="nav-toggle" aria-controls="site-menu" aria-expanded="false" aria-label="메뉴 열기">
+        <span class="icon-open"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span><span class="icon-close"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
+      </button>
+    </div>
+  </div>
+</header>
+<main id="main">
+<section class="page-hero">
+  <div class="container container-narrow">
+    <nav class="breadcrumb" aria-label="현재 위치"><ol><li><a href="/">홈</a></li><li><a href="/cases/">솔루션 사례</a></li><li aria-current="page">유튜브 콘텐츠 제작 자동화</li></ol></nav>
+    <span class="eyebrow eyebrow-dark">CASE 01 · 콘텐츠 제작 자동화</span>
+    <h1>영상 1편 제작 시간을 9시간에서 2시간 40분으로</h1>
+    <p class="lead">대본을 넣으면 컷별 이미지, AI 음성, 자막, CapCut 편집 프로젝트가 한 번에 만들어집니다.<br class="br-pc"> 자체 개발한 영상 제작 자동화 프로그램 오토튜브(AutoTube)를 고객사 채널 형식에 맞게 설정했습니다.</p>
+    <p class="hero-btn"><a href="/autotube/" class="btn btn-primary">유튜브 영상제작 자동화 프로그램 보기 →</a></p>
+    <p class="case-meta">A사 (교육 콘텐츠 제작사) · 유튜브 채널 4개 · 편집자 3명 · 오토튜브 Pro + 채널 맞춤 설정 · Gemini 이미지 · Qwen3-TTS · Whisper</p>
+    <div class="hero-rel"><p class="hero-rel-label">다른 구축 사례</p><div class="rel-grid m-swipe"><a class="rel-card rel-dark" href="/hardware-control/"><span class="rel-tag">#장비연동</span><span class="rel-title">음향기기 제조사 — 계측 장비 연동 검사 · 실시간 모니터링</span><span class="rel-arrow" aria-hidden="true">→</span></a><a class="rel-card rel-dark" href="/finance-ai/"><span class="rel-tag">#자동매매</span><span class="rel-title">투자법인 — 키움증권 국내·미국 주식 자동매매</span><span class="rel-arrow" aria-hidden="true">→</span></a><a class="rel-card rel-dark" href="/vision-inspection/"><span class="rel-tag">#출하검수</span><span class="rel-title">제조사 출하 라인 — 바코드·중량·비전 출하 검수 · MES 연동</span><span class="rel-arrow" aria-hidden="true">→</span></a></div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container-narrow">
+
+    <div class="prose">
+      <h2><span class="h-num">01</span>이런 문제가 있었습니다</h2>
+      <ul class="pain-list">
+        <li><strong>도구가 5개로 흩어짐</strong>이미지·녹음·자막·편집 도구 사이에서 파일을 옮기고 컷 번호를 맞추는 데 시간이 많이 들었습니다.</li>
+        <li><strong>외부 녹음 비용과 대기</strong>대본 한 줄만 고쳐도 성우 재녹음에 2~3일이 걸렸습니다.</li>
+        <li><strong>자막 수작업</strong>자동 자막의 오탈자를 고치는 데 편당 90분가량 걸렸습니다.</li>
+      </ul>
+
+      <h2><span class="h-num">02</span>이렇게 만들었습니다</h2>
+      <ol class="flow" aria-label="처리 흐름">
+        <li><b>INPUT</b>엑셀 대본 불러오기</li>
+        <li><b>IMAGE</b>컷별 AI 이미지 생성</li>
+        <li><b>VOICE</b>AI 음성 일괄 녹음</li>
+        <li><b>SUBTITLE</b>대본 기준 자막 정렬</li>
+        <li><b>OUTPUT</b>CapCut 프로젝트 조립</li>
+      </ol>
+      <p class="swipe-hint" aria-hidden="true">옆으로 넘겨 보기 →</p>
+      <div class="feature-grid m-swipe">
+        <div class="feature"><h3>캐릭터 고정 이미지</h3><p>채널 캐릭터가 모든 컷에서 같은 얼굴·옷으로 나오도록 생성합니다.</p></div>
+        <div class="feature"><h3>로컬 GPU AI 음성</h3><p>사내 PC에서 문장 단위로 녹음하고, 한 컷만 다시 녹음할 수 있습니다.</p></div>
+        <div class="feature"><h3>오탈자 없는 자막</h3><p>음성의 시간 정보만 추출하고 글자는 원본 대본을 그대로 씁니다.</p></div>
+        <div class="feature"><h3>CapCut 자동 조립</h3><p>이미지·음성·자막을 컷 순서대로 배치해 편집자는 마무리만 합니다.</p></div>
+      </div>
+
+      <h2><span class="h-num">03</span>도입 효과</h2>
+      <div class="stat-grid">
+        <div class="stat"><div class="before">9시간</div><div class="num">2.7<small>시간</small></div><div class="label">영상 1편 제작 시간</div></div>
+        <div class="stat"><div class="before">주 5편</div><div class="num">12<small>편</small></div><div class="label">주간 발행량</div></div>
+        <div class="stat"><div class="before">편당 90분</div><div class="num">10<small>분</small></div><div class="label">자막 수정 시간</div></div>
+        <div class="stat"><div class="before">월 약 250만 원</div><div class="num">0<small>원</small></div><div class="label">외부 녹음 비용</div></div>
+      </div>
+      <p class="note">※ 제작 시간은 대본 확정 후 편집 프로젝트 완성까지의 편집자 작업 시간입니다.</p>
+      <p><a href="/autotube/" class="btn btn-navy">유튜브 영상제작 자동화 프로그램 보기 →</a></p>
+      <p class="extend-note">확장 가능: 제목·설명·태그 자동 작성, 예약 업로드, 채널 추가</p>
+
+      <h2><span class="h-num">04</span>자주 묻는 질문</h2>
+      <div class="faq">
+        <details><summary>우리 채널의 기존 스타일을 그대로 유지할 수 있나요?</summary><p>네. 캐릭터, 화풍, 자막 폰트·위치, 화면 전환 효과를 채널 설정으로 저장해 모든 영상에 똑같이 적용합니다.</p></details>
+        <details><summary>필요한 PC 사양은 어느 정도인가요?</summary><p>Windows 10/11, NVIDIA 그래픽카드(VRAM 12GB 이상 권장), 메모리 32GB 이상을 권장합니다.</p></details>
+        <details><summary>유튜브 업로드까지 자동으로 되나요?</summary><p>기본은 편집 프로젝트 생성까지입니다. 예약 업로드는 옵션으로 제공하며, 업로드 전 사람이 최종 검수하는 방식을 권장합니다.</p></details>
+      </div>
+
+      <div class="cta-band">
+        <div><h2>우리 채널도 자동화할 수 있을까요?</h2><p>현재 제작 과정을 알려주시면 줄일 수 있는 작업부터 정리해 드립니다.</p></div>
+        <a href="/?type=autotube#contact" class="btn btn-primary">제작 자동화 문의하기 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="related">
+        <h2>다른 구축 사례</h2>
+        <div class="rel-grid m-swipe">
+          <a class="rel-card" href="/hardware-control/"><span class="rel-tag">#장비연동</span><span class="rel-title">음향기기 제조사 — 계측 장비 연동 검사 · 실시간 모니터링</span><span class="rel-arrow" aria-hidden="true">→</span></a>
+          <a class="rel-card" href="/finance-ai/"><span class="rel-tag">#자동매매</span><span class="rel-title">투자법인 — 키움증권 국내·미국 주식 자동매매</span><span class="rel-arrow" aria-hidden="true">→</span></a>
+          <a class="rel-card" href="/vision-inspection/"><span class="rel-tag">#출하검수</span><span class="rel-title">제조사 출하 라인 — 바코드·중량·비전 출하 검수 · MES 연동</span><span class="rel-arrow" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <a href="/" class="logo"><span class="logo-word"><em>AI</em> BASE LAB</span><span class="logo-sub">AUTOMATION ENGINEERING</span></a>
+        <p>현장 장비, 데이터, AI를 하나로 연결하는<br>자동화 소프트웨어 개발 전문 기업</p>
+      </div>
+      <div>
+        <h2>솔루션 사례</h2>
+        <ul>
+          <li><a href="/hardware-control/">계측 장비 연동 · 자동 기록</a></li>
+          <li><a href="/vision-inspection/">출하 검수 자동화 (바코드·중량·비전)</a></li>
+          <li><a href="/autotube-case/">유튜브 콘텐츠 제작 자동화</a></li>
+          <li><a href="/finance-ai/">키움증권 국내·미국 자동매매</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>회사</h2>
+        <ul>
+          <li><a href="/technology/">핵심 기술</a></li>
+          <li><a href="/about/">기업 소개</a></li>
+          <li><a href="/privacy/">개인정보처리방침</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>문의</h2>
+        <ul>
+          <li><a href="mailto:contact@aibaselab.com">contact@aibaselab.com</a></li>
+          <li><a href="/#contact">온라인 프로젝트 문의 →</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="biz-info">
+      <span>상호: AI BASE LAB</span><span>이메일: contact@aibaselab.com</span>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 AI BASE LAB. All rights reserved.</p>
+      <a href="/privacy/">개인정보처리방침</a>
+    </div>
+  </div>
+</footer>
+<script src="/js/main.js?v=20261010" defer></script>
+</body>
+</html>

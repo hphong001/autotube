@@ -22,9 +22,23 @@
 /aibaselab                /                              301
 /aibaselab/               /                              301
 /aibaselab/index.html     /                              301
-/aibaselab/autotube.html  /autotube-case            301
-/aibaselab/infrastructure.html  /technology         301
+/aibaselab/autotube.html  /autotube-case/           301
+/aibaselab/infrastructure.html  /technology/         301
 /aibaselab/*              /:splat                        301
 # 이름이 바뀐 페이지
-/autotube.html            /autotube-case            301
-/infrastructure.html      /technology               301
+/autotube.html            /autotube-case/           301
+/infrastructure.html      /technology/               301
+
+# 2026-10 폴더 구조 변경 (예전 .html 주소 → 새 폴더 주소)
+/about.html                   /about/   301
+/cases.html                   /cases/   301
+/technology.html              /technology/   301
+/hardware-control.html        /hardware-control/   301
+/vision-inspection.html       /vision-inspection/   301
+/finance-ai.html              /finance-ai/   301
+/autotube-case.html           /autotube-case/   301
+/privacy.html                 /privacy/   301
+/en/about.html                /en/about/   301
+/en/cases.html                /en/cases/   301
+/en/privacy-policy.html       /en/privacy-policy/   301
+/cn/privacy-policy.html       /cn/privacy-policy/   301
