@@ -665,27 +665,19 @@ select.form-control optgroup { font-weight: 700; color: #475569; }
 @media (max-width: 960px) { .track-list { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 680px) { .track-list { gap: 10px; } .track-list li { padding: 14px; } .track-list .tx { font-size: 14px; } }
 
-/* ===== 2026-10-10 수정 3: 줄바꿈 정리 — 마지막 줄이 짧게 남지 않도록 ===== */
-/* 제목·짧은 설명·카드 문구: 줄 길이를 고르게 */
-h1, h2, h3, h4, summary, legend,
-.section-lead, .hero-lead, .page-hero .lead, .hero-stats dd, .eyebrow,
-.service-card p, .why-card p, .case-body p, .tier-card > p, .tier-list li, .tier-note,
-.partner-who li span, .model-grid p, .info-list dd, .small-band p, .process p,
-.pain-list li, .feature p, .rel-title, .case-cols li, .case-stack, .stat .label,
-.contact-text > p, .contact-points li span, .cta-band p, .faq-list details p, .faq details p,
-.timeline p, .small-list span, .wechat-box p, .consent span, .footer-about p,
-.case-meta, .callout p, .note, .tech-intro, .figure figcaption {
-  text-wrap: balance;
+/* ===== 2026-10-10 수정 3: 줄바꿈 정리 ===== */
+/* PC(1241px 이상): 자동 줄바꿈 보정 없이 의미 단위 수동 줄바꿈(.br-pc)만 사용
+   노트북·태블릿·모바일(1240px 이하): 화면 폭이 제각각이라 브라우저 자동 보정 사용 */
+@media (max-width: 1240px) {
+  p, li, dd, figcaption, .rel-title { text-wrap: pretty; }
+  h1, h2, h3, summary { text-wrap: balance; }
 }
-/* 긴 본문: 마지막 줄에 한 단어만 남는 것을 방지 */
-p, li, dd { text-wrap: pretty; }
-/* 문서형 본문(소개·개인정보처리방침 등): 2~6줄 문단은 줄 길이를 고르게, 더 긴 문단은 마지막 줄만 보정 */
-.prose p, .prose li, .prose dd { text-wrap: balance; }
-@supports not (text-wrap: balance) { .prose p, .prose li { text-wrap: pretty; } }
 
-/* 노트북·태블릿 폭(681~1100px)에서는 PC용 강제 줄바꿈을 빼고 자동 균형 줄바꿈 사용 */
-@media (max-width: 1100px) { .br-pc { display: none; } }
+/* 노트북·태블릿 폭(1240px 이하)에서는 PC용 강제 줄바꿈을 빼고 자동 균형 줄바꿈 사용 */
+@media (max-width: 1240px) { .br-pc { display: none; } }
 /* 좁은 노트북 폭에서 문의 분야 체크박스가 두 줄로 꺾이지 않도록 한 줄씩 */
 @media (min-width: 961px) and (max-width: 1240px) { .check-grid { grid-template-columns: 1fr; } }
 /* 좁은 노트북 폭: 첫 화면 큰 제목이 한두 글자씩 꺾이지 않도록 크기 조정 */
 @media (min-width: 961px) and (max-width: 1240px) { .hero h1 { font-size: clamp(34px, 3.9vw, 50px); } }
+/* 소개 페이지 경력 목록: 제목과 설명을 각각 한 줄로 */
+.prose ul.bullets li .li-head { display: block; }

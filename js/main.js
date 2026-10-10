@@ -283,4 +283,48 @@
     var sel = document.querySelector('#contact-form [name="category"]'); if (!sel || !sel.options) return;
     Array.prototype.forEach.call(sel.options, function (o) { if (o.getAttribute('data-key') === key) sel.value = o.value; });
   }
+
+  /* 짧은 마지막 줄 보정: 마지막 줄이 너무 짧으면 글상자 폭을 조금(보통 7~10%)만 줄여
+     윗줄 단어를 내려 보낸다. 줄 수가 늘거나 앞줄이 일찍 끊기는 경우에는 손대지 않는다. */
+  (function () {
+    var SEL = 'main p, main li, main dd, main td, main figcaption, main summary, main h3, main .rel-title';
+    function lines(el) {
+      var r = document.createRange(); r.selectNodeContents(el);
+      var rs = r.getClientRects(), L = {}, keys = [];
+      for (var i = 0; i < rs.length; i++) {
+        var x = rs[i]; if (x.width < 1 || x.height < 4) continue;
+        var k = Math.round(x.top / 6);
+        if (!L[k]) { L[k] = { l: x.left, r: x.right }; keys.push(k); }
+        else { L[k].l = Math.min(L[k].l, x.left); L[k].r = Math.max(L[k].r, x.right); }
+      }
+      keys.sort(function (a, b) { return a - b; });
+      return keys.map(function (k) { return L[k].r - L[k].l; });
+    }
+    function fix(el) {
+      el.style.maxWidth = '';
+      if (!el.offsetParent || el.querySelector('p,li,div,ul,dd')) return;
+      var d = getComputedStyle(el).display; if (d.indexOf('flex') >= 0 || d.indexOf('grid') >= 0) return;
+      var W = el.clientWidth; if (W < 120) return;
+      var ws = lines(el), n = ws.length; if (n < 2) return;
+      var max = Math.max.apply(null, ws);
+      if (ws[n - 1] >= max * 0.22) return;
+      // 한두 단어(15% 미만)만 떨어질 때만 20%까지, 그 밖에는 7~10%만 줄여 앞줄이 일찍 끊겨 보이지 않게 한다
+      var lo = W * (ws[n - 1] < max * 0.15 ? 0.8 : (n >= 3 ? 0.9 : 0.93)), hi = W, best = 0;
+      for (var it = 0; it < 7; it++) {
+        var w = (lo + hi) / 2; el.style.maxWidth = w + 'px';
+        var v = lines(el);
+        if (v.length === n && v[n - 1] >= Math.max.apply(null, v) * 0.28) { best = w; lo = w; } else hi = w;
+      }
+      el.style.maxWidth = best ? Math.ceil(best) + 'px' : '';
+    }
+    // PC(1241px 이상)는 문장 단위로 직접 다듬어 두었으므로 손대지 않는다
+    function run() { var on = window.innerWidth <= 1240; document.querySelectorAll(SEL).forEach(function (el) { if (on) fix(el); else el.style.maxWidth = ''; }); }
+    var lastW = window.innerWidth, t;
+    window.addEventListener('resize', function () {
+      if (window.innerWidth === lastW) return; lastW = window.innerWidth;
+      clearTimeout(t); t = setTimeout(run, 150);
+    });
+    document.addEventListener('toggle', function (e) { if (e.target.tagName === 'DETAILS' && window.innerWidth <= 1240) e.target.querySelectorAll(SEL).forEach(fix); }, true);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(run); else window.addEventListener('load', run);
+  })();
 })();
