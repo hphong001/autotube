@@ -347,7 +347,11 @@
       <p class="form-section">기본 정보</p>
       <div class="form-row">
         <div class="form-group"><label for="f-company">회사명<span class="req">*</span></label><input class="form-control" id="f-company" name="company" type="text" autocomplete="organization" placeholder="예) ○○전자" required></div>
+        <div class="form-group"><label for="f-website-url">회사 홈페이지</label><input class="form-control" id="f-website-url" name="website_url" type="text" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" placeholder="예) company.co.kr (선택)"></div>
+      </div>
+      <div class="form-row">
         <div class="form-group"><label for="f-name">성함<span class="req">*</span></label><input class="form-control" id="f-name" name="name" type="text" autocomplete="name" placeholder="홍길동" required></div>
+        <div class="form-group"><label for="f-position">직함</label><input class="form-control" id="f-position" name="position" type="text" autocomplete="organization-title" placeholder="예) 생산팀 과장 (선택)"></div>
       </div>
       <div class="form-row">
         <div class="form-group"><label for="f-email">이메일<span class="req">*</span></label><input class="form-control" id="f-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@company.com" required></div>
@@ -374,7 +378,7 @@
       </div>
       <div class="hp-field" aria-hidden="true"><label for="f-website">웹사이트</label><input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
       <input type="hidden" name="_ts" value="">
-      <label class="consent"><input type="checkbox" name="consent" value="동의" required><span>[필수] 문의 답변을 위한 <a href="/privacy/" target="_blank" rel="noopener">개인정보 수집·이용</a>에 동의합니다. (수집 항목: 회사명, 성함, 이메일, 연락처 / 보유 기간: 3년)</span></label>
+      <label class="consent"><input type="checkbox" name="consent" value="동의" required><span>[필수] 문의 답변을 위한 <a href="/privacy/" target="_blank" rel="noopener">개인정보 수집·이용</a>에 동의합니다. (수집 항목: 회사명, 회사 홈페이지, 성함, 직함, 이메일, 연락처 / 보유 기간: 3년)</span></label>
       <button type="submit" class="submit-btn">프로젝트 문의 보내기</button>
       <p class="form-status" role="status" aria-live="polite"></p>
     </form>
