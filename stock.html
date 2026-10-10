@@ -5003,6 +5003,12 @@
             var 현재 = 실시간 ? 실시간.price : w ? w.price : sn ? sn.price : 0;
             if (!(현재 > 0)) return null;
             var rc = getRegClose(t);
+            // 브라우저에 남은 저장 종가(이번 접속에서 받은 값이 아님)가 지금 받은 시세·스냅샷의 정규장 종가와 다르면 저장값을 버림
+            var 비교 = w && !w.stale && w.regPrice > 0 ? w : sn && sn.regPrice > 0 ? sn : null, 세 = sessionCache[t];
+            if (rc && 비교 && !정규 && !(세 && 세.받음) && !/^day/.test(rc.src || '') && Math.abs(rc.regClose - 비교.regPrice) > 0.005)
+                rc = { regClose: 비교.regPrice, prevClose: 비교.regPrevClose || 0, regDate: '', src: '관심비교' };
+            if (rc && 비교 && 정규 && !(세 && 세.받음) && 비교.regPrevClose > 0 && Math.abs(rc.regClose - 비교.regPrevClose) > 0.005)
+                rc = { regClose: 비교.regPrevClose, prevClose: 0, regDate: '', src: '관심비교' };
             if (정규) {
                 var 기준 = rc && rc.regClose > 0 ? rc.regClose : w && w.regPrevClose > 0 ? w.regPrevClose : 0;
                 var 등락 = 기준 > 0 ? (현재 - 기준) / 기준 * 100 : (실시간 && 실시간.changeRate != null ? Number(String(실시간.changeRate).replace('%', '')) : w ? w.changePct : null);
@@ -6274,7 +6280,7 @@
                     var v = snap.val();
                     if (!v) return;
                     sessionCache[ticker] = { regClose: toNum(v.regClose), prevClose: toNum(v.prevClose), regDate: v.regDate || '',
-                                             regVolume: toNum(v.regVolume), source: v.source || '' };
+                                             regVolume: toNum(v.regVolume), source: v.source || '', 받음: true };
                     saveSessionLS();
                     if (fbGen[panelIdx] === myGen && panelTickers[panelIdx] === ticker) renderPanelQuote(panelIdx);
                 });
@@ -6707,13 +6713,15 @@
             if (s.regDate < exp && closeStatus && closeStatus.gaveUp && closeStatus.gaveUp[ticker] === exp) return false;
             if (s.regDate === exp) return true;
             // 휴장일: Worker가 오늘 기준으로 확인을 마쳤는데 날짜가 더 이르면 그 값이 최신
-            return s.regDate < exp && !!closeStatus && closeStatus.expected === exp && closeStatus.ver === 2 &&
+            //   단, 이번 접속에서 Firebase 로 실제 받은 값(받음)일 때만 — 예전에 패널에 있던 종목의 브라우저 저장값은
+            //   새 종가를 구독하지 않아 날짜가 이른 것이지 휴장일이 아님 (관심종목 종가가 며칠 전 값으로 멈추던 원인)
+            return !!s.받음 && s.regDate < exp && !!closeStatus && closeStatus.expected === exp && closeStatus.ver === 2 &&
                    !!closeStatus.done && closeStatus.done[ticker] === exp;
         }
 
         function saveSessionLS() { try { localStorage.setItem(LS_SESSION, JSON.stringify(sessionCache)); } catch (e) { } }
         (function loadSessionLS() {
-            try { var v = JSON.parse(localStorage.getItem(LS_SESSION) || 'null'); if (v) sessionCache = v; } catch (e) { }
+            try { var v = JSON.parse(localStorage.getItem(LS_SESSION) || 'null'); if (v) { Object.keys(v).forEach(function (k) { if (v[k]) delete v[k].받음; }); sessionCache = v; } } catch (e) { }
         })();
 
         // 오늘 정규장이 끝났는데(16:00, 조기 폐장 13:00) 공식 종가가 아직 기록 전(16:10 ET 전 / Worker 기록 전)이면
@@ -9052,7 +9060,7 @@
                 // 정규장 종가·전일 종가 (정규장 외 시간 상단 표시용)
                 firebase.database().ref('tickers/' + ticker + '/session').on('value', function (snap) {
                     var v = snap.val(); if (!v) return;
-                    sessionCache[ticker] = { regClose: toNum(v.regClose), prevClose: toNum(v.prevClose), regDate: v.regDate || '', regVolume: toNum(v.regVolume), source: v.source || '' };
+                    sessionCache[ticker] = { regClose: toNum(v.regClose), prevClose: toNum(v.prevClose), regDate: v.regDate || '', regVolume: toNum(v.regVolume), source: v.source || '', 받음: true };
                     renderHeaderQuotes();
                 });
                 var rtRef = firebase.database().ref('tickers/' + ticker + '/realtime');
