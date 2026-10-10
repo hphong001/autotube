@@ -6,7 +6,10 @@
      [설정] 문의 폼 전송 주소
      Google Apps Script 웹앱 배포 후 받은 URL을 아래에 붙여넣으세요.
      ------------------------------------------------------------ */
-  var FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxX0sveKMe_j1_JfIm-OKC2BrUBWDXgcQGqjNq5gyF6CCE6UdeYZIkdxeNZWN2yjGu9/exec';
+  // 1차: Cloudflare Pages Function(/api/contact) → 접속 국가·네트워크 정보를 붙여 Apps Script로 전달
+  // 2차: Function이 없거나 실패하면 Apps Script로 직접 전송
+  var FORM_ENDPOINT = '/api/contact';
+  var GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxX0sveKMe_j1_JfIm-OKC2BrUBWDXgcQGqjNq5gyF6CCE6UdeYZIkdxeNZWN2yjGu9/exec';
   var CONTACT_EMAIL = 'contact@aibaselab.com';
 
   var body = document.body;
@@ -84,7 +87,8 @@
   /* 3. 메인 히어로 슬라이더 */
   var visual = document.querySelector('.hero-visual');
   if (visual) {
-    var slides = visual.querySelectorAll('img');
+    var slides = visual.querySelectorAll('.slide');
+    if (!slides.length) slides = visual.querySelectorAll('img');
     var dotsWrap = visual.querySelector('.hero-dots');
     var caption = visual.querySelector('.hero-caption');
     var idx = 0, timer = null;
@@ -178,6 +182,10 @@
       if (form.querySelector('[name="website"]').value) return; 
       var data = new FormData(form);
       data.append('page', location.href);
+      try { data.append('tz', Intl.DateTimeFormat().resolvedOptions().timeZone || ''); } catch (err) {}
+      data.append('browser_lang', (navigator.languages && navigator.languages.join(', ')) || navigator.language || '');
+      var csel = form.querySelector('select[name="country"]');
+      if (csel && csel.selectedIndex > 0) data.append('country_code', csel.options[csel.selectedIndex].getAttribute('data-code') || '');
       if (needs.length) {
         data.delete('need');
         data.set('category', Array.prototype.filter.call(needs, function (c) { return c.checked; }).map(function (c) { return c.value; }).join(', '));
@@ -202,8 +210,14 @@
       var old = btn.textContent;
       btn.textContent = T.sending;
       setStatus('', true);
-      fetch(FORM_ENDPOINT, { method: 'POST', body: new URLSearchParams(data) })
-        .then(function (r) { return r.json(); })
+      function post(url) {
+        return fetch(url, { method: 'POST', body: new URLSearchParams(data) }).then(function (r) {
+          if (!r.ok) { var e = new Error('http ' + r.status); e.retry = true; throw e; }
+          return r.json();
+        });
+      }
+      post(FORM_ENDPOINT)
+        .catch(function (err) { if (err && (err.retry || err instanceof TypeError)) return post(GAS_ENDPOINT); throw err; })
         .then(function (res) {
           if (res && res.result === 'success') {
             form.reset();
