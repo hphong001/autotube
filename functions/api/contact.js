@@ -10,7 +10,7 @@
  * 설치: 저장소 루트의 functions/api/contact.js 로 올리면 다음 배포부터 자동 적용 (대시보드 설정 불필요)
  * Apps Script 주소가 바뀌면 아래 GAS_URL만 고치면 된다.
  */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxX0sveKMe_j1_JfIm-OKC2BrUBWDXgcQGqjNq5gyF6CCE6UdeYZIkdxeNZWN2yjGu9/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbx-YlmB2TN3TGKz4VQdpxRJP87FBS_RZ5MsQjzgmlmrdM5LI_tlmDKIBZ3hAm2FBXhu/exec';
 
 // 서버가 채우는 항목 (폼에서 보낸 값은 무시하고 덮어씀)
 const SERVER_KEYS = ['ip', 'ip_country', 'ip_region', 'ip_city', 'ip_asn', 'ip_org', 'ip_tz', 'ua', 'accept_lang'];

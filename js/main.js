@@ -9,7 +9,7 @@
   // 1차: Cloudflare Pages Function(/api/contact) → 접속 국가·네트워크 정보를 붙여 Apps Script로 전달
   // 2차: Function이 없거나 실패하면 Apps Script로 직접 전송
   var FORM_ENDPOINT = '/api/contact';
-  var GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxX0sveKMe_j1_JfIm-OKC2BrUBWDXgcQGqjNq5gyF6CCE6UdeYZIkdxeNZWN2yjGu9/exec';
+  var GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbx-YlmB2TN3TGKz4VQdpxRJP87FBS_RZ5MsQjzgmlmrdM5LI_tlmDKIBZ3hAm2FBXhu/exec';
   var CONTACT_EMAIL = 'contact@aibaselab.com';
 
   var body = document.body;
