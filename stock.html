@@ -969,6 +969,8 @@
         .vp-now { position: absolute; top: -9px; transform: translateX(-50%); font-size: 9px; line-height: 9px; color: #22d3ee; text-shadow: 0 0 3px rgba(0,0,0,.9); pointer-events: none; }
         .vp-out { position: absolute; bottom: 1px; font-size: 9.5px; color: #8b93a7; background: rgba(11,12,20,.8); padding: 0 2px; border-radius: 3px; }
         .vp-out.l { left: 0; } .vp-out.r { right: 0; }
+        .vp-pout { position: absolute; top: 0; font-size: 10px; font-weight: 700; color: #22d3ee; background: rgba(11,12,20,.85); padding: 0 3px; border-radius: 3px; white-space: nowrap; }
+        .vp-pout.l { left: 0; } .vp-pout.r { right: 0; }
         .vp-s { display: flex; align-items: center; gap: 7px; height: 17px; font-size: 11px; color: #9aa3b5; white-space: nowrap; overflow: hidden; }
         .vp-s b { color: #e7e9f0; font-weight: 700; font-variant-numeric: tabular-nums; }
         .vp-s small { color: #f5c542; font-size: 10px; font-weight: 700; }
@@ -1007,7 +1009,9 @@
         .lvs-w { color: #9aa2b5; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
         .lvs-d { text-align: right; color: #a9b1c2; font-size: 12.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
         .lvs-empty .lvs-p { color: #3a4153; font-weight: 400; }
-        @container (max-width: 420px) { .lvs-r { grid-template-columns: 20px 60px 26px 0 52px; } .lvs-w { display: none; } .lv-sum { column-gap: 8px; } }
+        /* 좁은 패널: 근거 칸을 숨기고 글자를 조금 줄임 · 아주 좁으면(구형 휴대폰) 저항·지지를 위아래로 */
+        @container (max-width: 440px) { .lvs-r { grid-template-columns: 16px minmax(0, auto) 20px 0 minmax(0, 1fr); column-gap: 3px; font-size: 12.5px; } .lvs-w { display: none; } .lvs-k { font-size: 11px; } .lvs-d { font-size: 11.5px; } .lv-sum { column-gap: 8px; } .lvs-h { font-size: 11px; } }
+        @container (max-width: 370px) { .lv-sum { grid-template-columns: 1fr; row-gap: 6px; } .lvs-r { grid-template-columns: 20px 64px 26px minmax(0, 1fr) 56px; font-size: 13px; } .lvs-w { display: block; } }
 
         /* ★ 분석 문구 줄바꿈 정리: 단어·항목 단위로만 줄바꿈 */
         .strategy-box { word-break: keep-all; overflow-wrap: break-word; }
@@ -1710,6 +1714,7 @@
         .pc-row button { font: inherit; width: 30px; height: 26px; background: #1a1d2b; color: #e3e7ef; border: 1px solid #2f3446; border-radius: 5px; cursor: pointer; }
         .pc-row button:disabled { opacity: .3; cursor: default; }
         .pc-row input[type=checkbox] { width: 17px; height: 17px; }
+        .pc-row select { font: inherit; font-size: 13px; padding: 3px 6px; background: #151925; color: #e3e7ef; border: 1px solid #2f3446; border-radius: 5px; max-width: 160px; }
         .pc-fixed { color: #7d8596; } .pc-dim { color: #5d6578 !important; }
         .pc-sep { height: 8px; }
         .pc-foot { display: flex; justify-content: space-between; margin-top: 10px; }
@@ -4954,6 +4959,8 @@
                     '<div class="pc-sep"></div>' +
                     '<label class="pc-row"><span>단기 흐름 자세히 보기<br><small>끄면 결론·가격/판단/목표만 (나머지는 [자세히 ▾])</small></span><input type="checkbox" data-a="자세히"' + (패널구성.자세히 ? ' checked' : '') + '></label>' +
                     '<label class="pc-row"><span>옵션 체인: 매매 기준 만기 1개만<br><small>끄면 월·수·다음 주 만기 표까지 모두</small></span><input type="checkbox" data-a="옵션1개"' + (패널구성.옵션1개 ? ' checked' : '') + '></label>' +
+                    '<label class="pc-row"><span>화면 글자 크기 (터치 태블릿·휴대폰)<br><small>' + (화면_터치기기() ? '지금 ' + 화면배율_값() + '배 · 화면 전체가 같은 비율로 커짐' : 'PC·마우스 기기는 브라우저 확대(Ctrl +) 사용') + '</small></span><select data-a="화면배율"' + (화면_터치기기() ? '' : ' disabled') + '>' +
+                        화면배율목록.map(function (o) { return '<option value="' + o[0] + '"' + (화면배율설정 === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></label>' +
                     '<div class="pc-foot"><button type="button" data-a="초기화">처음 상태로</button><button type="button" data-a="닫기">닫기</button></div></div>';
             }
             그리기(); document.body.appendChild(창);
@@ -4972,9 +4979,41 @@
                 if (a === '접기') 패널구성.접기[c.getAttribute('data-k')] = c.checked;
                 else if (a === '자세히') 패널구성.자세히 = c.checked;
                 else if (a === '옵션1개') 패널구성.옵션1개 = c.checked;
+                else if (a === '화면배율') { 화면배율설정 = c.value; try { localStorage.setItem('sz_touch_scale', c.value); } catch (x) { } 화면배율_적용(); return; }
                 패널구성_저장(); 패널구성_적용();
             });
         }
+
+        // ── 화면 글자 배율 (터치 기기만: 안드로이드·아이폰·아이패드 · 윈도우·맥 PC 는 터치가 되어도 제외) ──
+        //   자동: 짧은 변이 760px 이상인 큰 태블릿(10인치급) = 1.2배 · 그 밖 = 1배 (7~8인치·휴대폰은 지금 그대로)
+        //   방법: 화면 폭 설정(viewport)을 배율만큼 좁혀 페이지 전체가 같은 비율로 커짐 (배치도 태블릿용으로)
+        var 화면배율설정 = (function () { try { return localStorage.getItem('sz_touch_scale') || '자동'; } catch (e) { return '자동'; } })();
+        var 화면배율목록 = [['자동', '자동 (10인치급 1.2배)'], ['기본', '기본 (1배)'], ['크게', '크게 (1.15배)'], ['아주 크게', '아주 크게 (1.3배)']];
+        function 화면_터치기기() {
+            try {
+                var ua = navigator.userAgent || '';
+                var 모바일 = /Android|iPhone|iPad|iPod|Mobile/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);   // 아이패드(맥 표시) 포함 · 윈도우 터치 PC 제외
+                return 모바일 && matchMedia('(pointer: coarse)').matches && !(window.chrome && window.chrome.webview);
+            } catch (e) { return false; }
+        }
+        function 화면배율_값() {
+            if (!화면_터치기기()) return 1;
+            if (화면배율설정 === '자동') return Math.min(screen.width, screen.height) >= 760 ? 1.2 : 1;
+            return { '기본': 1, '크게': 1.15, '아주 크게': 1.3 }[화면배율설정] || 1;
+        }
+        function 화면배율_적용() {
+            var meta = document.querySelector('meta[name="viewport"]'); if (!meta) return;
+            var 배 = 화면배율_값(), 기본 = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no', 내용 = 기본;
+            if (배 > 1.001) {
+                var 가로 = window.matchMedia && matchMedia('(orientation: landscape)').matches;
+                var 긴 = Math.max(screen.width, screen.height), 짧 = Math.min(screen.width, screen.height);
+                내용 = 'width=' + Math.round((가로 ? 긴 : 짧) / 배) + ', user-scalable=no';
+            }
+            if (meta.getAttribute('content') !== 내용) meta.setAttribute('content', 내용);
+        }
+        화면배율_적용();
+        window.addEventListener('orientationchange', function () { setTimeout(화면배율_적용, 200); });
+        try { matchMedia('(orientation: landscape)').addEventListener('change', function () { setTimeout(화면배율_적용, 200); }); } catch (e) { }
 
         // ── 폭 조절 ──
         var 폭_최소패널 = 280;
@@ -7862,8 +7901,10 @@
             var u = 칸.단위, 시작 = 칸.시작, n = 량.length;
             var 최대량 = 0, 총 = 0; 량.forEach(function (v) { v = Number(v) || 0; if (v > 최대량) 최대량 = v; 총 += v; });
             // 가격 눈금: 위 지지·저항 막대와 같은 범위(현재가 중심)·같은 여백(5%)
-            var 막대el = document.getElementById(prefix + 'timeline'), 막범 = 막대el && 막대el._범위;
-            var minV = 막범 && 막범.키.split('|')[0] === 종목 ? 막범.최소 : 0, maxV = 막범 && 막범.키.split('|')[0] === 종목 ? 막범.최대 : 0;
+            // 가격 눈금: 매물대 자체 기준 (거래 70% 집중 구간 + 양쪽으로 집중 폭의 60%) → 위 막대 범위가 바뀌어도 모양이 늘었다 줄었다 하지 않음
+            //   현재가가 이 범위 밖이면 가장자리에 ◀ / ▶ 현재가 표시
+            var 집하 = Number(물.집중 && 물.집중.하단) || 0, 집상 = Number(물.집중 && 물.집중.상단) || 0, minV = 0, maxV = 0;
+            if (집하 > 0 && 집상 >= 집하) { var 집폭 = Math.max(집상 - 집하, 집상 * 0.004, u * 4); minV = 집하 - 집폭 * 0.6; maxV = 집상 + 집폭 * 0.6; }
             var 끝가 = 시작 + (n - 1) * u;
             if (!(minV > 0 && maxV > minV)) {   // 막대가 없으면 매물대 범위 + 현재가
                 minV = Math.min(시작, price > 0 ? price : 시작); maxV = Math.max(끝가, price > 0 ? price : 끝가);
@@ -7892,11 +7933,12 @@
                 '<line x1="' + X(하 - u / 2).toFixed(1) + '" x2="' + X(하 - u / 2).toFixed(1) + '" y1="0" y2="' + H + '" stroke="rgba(245,197,66,.45)" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/>' +
                 '<line x1="' + X(상 + u / 2).toFixed(1) + '" x2="' + X(상 + u / 2).toFixed(1) + '" y1="0" y2="' + H + '" stroke="rgba(245,197,66,.45)" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/>' : '';
             var 바닥 = '<line x1="' + (PAD * 1000) + '" x2="' + ((PAD + TRK) * 1000) + '" y1="' + (H - 0.5) + '" y2="' + (H - 0.5) + '" stroke="#2a3042" vector-effect="non-scaling-stroke"/>';
+            var 현밖 = price > 0 && (price < minV || price > maxV) ? '<span class="vp-pout ' + (price < minV ? 'l' : 'r') + '" title="현재가가 매물대 보기 범위 밖">' + (price < minV ? '◀ 현재 ' + price.toFixed(2) : '현재 ' + price.toFixed(2) + ' ▶') + '</span>' : '';
             var 현 = price > 0 && price >= minV && price <= maxV ? '<line x1="' + X(price).toFixed(1) + '" x2="' + X(price).toFixed(1) + '" y1="0" y2="' + H + '" stroke="#22d3ee" stroke-width="2" vector-effect="non-scaling-stroke"/>' : '';
             var 그래프 = '<svg viewBox="0 0 1000 ' + H + '" preserveAspectRatio="none" aria-hidden="true">' + 띠 + 바닥 + 막대 + 현 + '</svg>' +
                 (price > 0 && price >= minV && price <= maxV ? '<span class="vp-now" style="left:' + (X(price) / 10).toFixed(2) + '%">▼</span>' : '') +
-                (밖왼 / 총 >= 0.03 ? '<span class="vp-out l" title="위 막대 범위보다 아래에서 거래된 비중">◀ ' + Math.round(밖왼 / 총 * 100) + '%</span>' : '') +
-                (밖오 / 총 >= 0.03 ? '<span class="vp-out r" title="위 막대 범위보다 위에서 거래된 비중">' + Math.round(밖오 / 총 * 100) + '% ▶</span>' : '');
+                (밖왼 / 총 >= 0.03 ? '<span class="vp-out l" title="보기 범위보다 아래에서 거래된 비중">◀ ' + Math.round(밖왼 / 총 * 100) + '%</span>' : '') +
+                (밖오 / 총 >= 0.03 ? '<span class="vp-out r" title="보기 범위보다 위에서 거래된 비중">' + Math.round(밖오 / 총 * 100) + '% ▶</span>' : '') + 현밖;
             // 머리: 날짜 · 출처
             var 날 = 물.날짜 ? (+물.날짜.slice(5, 7)) + '/' + (+물.날짜.slice(8, 10)) : '';
             var 출처 = 물.출처 === '체결' ? '체결 기준' + (물.시드까지 ? ' · ' + 물.시드까지 + ' 전 1분봉' : '') : '1분봉 기준' + (물.기준시각 ? ' · ' + 물.기준시각 : '');
