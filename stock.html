@@ -1697,6 +1697,12 @@
         .oi-box.oi-one .oi-extra, .oi-box.oi-one .oi-mainhead, .oi-box.oi-one .oi-star { display: none !important; }
         .strategy-box.sg-brief .sg-chg, .strategy-box.sg-brief [id$="-band"], .strategy-box.sg-brief .sg-plan, .strategy-box.sg-brief .sg-pnls,
         .strategy-box.sg-brief .sg-bars, .strategy-box.sg-brief .sg-score, .strategy-box.sg-brief .sg-foot, .strategy-box.sg-brief .sg-situ { display: none !important; }
+        /* 시장 경보: 맨 위 지수 칸 외곽선 */
+        .mk-cell.mk-al { border-width: 2px; }
+        .mk-cell.mk-al.red { border-color: #ff4d4d; box-shadow: 0 0 0 1px rgba(255,77,77,.35), 0 0 10px rgba(255,77,77,.35); }
+        .mk-cell.mk-al.orange { border-color: #ff9f43; box-shadow: 0 0 0 1px rgba(255,159,67,.3), 0 0 8px rgba(255,159,67,.3); }
+        .mk-cell.mk-al.mk-blink { animation: mkCell .45s ease-in-out infinite alternate; }
+        @keyframes mkCell { from { box-shadow: none; border-color: rgba(160,170,200,.25); } to { } }
         /* 시장 경보 띠 */
         #mk-alarm { position: fixed; left: 50%; transform: translateX(-50%); z-index: 9500; width: min(980px, 96vw); box-sizing: border-box; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 8px 40px 8px 14px; border-radius: 10px; font-size: 15px; color: #fff; box-shadow: 0 6px 22px rgba(0,0,0,.55); }
         #mk-alarm.red { background: rgba(150, 18, 18, .96); border: 2px solid #ff5d5d; animation: mkBlink 1s ease-in-out 6 alternate; }
@@ -11261,39 +11267,43 @@
             return 기준 && 기준.v > 0 ? (지금.v - 기준.v) / 기준.v * 100 : null;
         }
         function 시장경보_점검() {
-            if (marketPhase().type !== 'REG') { 시장경보_기록.가격 = { QQQ: [], SPY: [], VIX: [] }; 시장경보_기록.흐름 = []; if (시장경보) { 시장경보 = null; 시장경보_띠(); } return; }
+            if (marketPhase().type !== 'REG') { 시장경보_기록.가격 = { QQQ: [], SPY: [], VIX: [] }; 시장경보_기록.흐름 = []; if (시장경보) { 시장경보 = null; 시장경보_띠(); } 시장경보_지수표시({}); return; }
             var 지금 = Date.now(), 기 = 시장경보_기록;
             ['QQQ', 'SPY', 'VIX'].forEach(function (t) { var v = 시장경보_값(t); if (v > 0) { 기.가격[t].push({ t: 지금, v: v }); 기.가격[t] = 기.가격[t].filter(function (x) { return 지금 - x.t < 20 * 60000; }); } });
-            var 위험 = [], 주의 = [];
+            var 위험 = [], 주의 = [], 칸 = {};   // 칸: 맨 위 지수 칸 id → { 단계, 이유[] } (외곽선 깜빡임)
+            function 표(id, 단계, 글) { var c = 칸[id] = 칸[id] || { 단계: '', 이유: [] }; c.이유.push(글); if (단계 === '위험' || !c.단계) c.단계 = 단계; }
+            function 위(글, ids) { 위험.push(글); (ids || []).forEach(function (id) { 표(id, '위험', 글); }); }
+            function 주(글, ids) { 주의.push(글); (ids || []).forEach(function (id) { 표(id, '주의', 글); }); }
             ['QQQ', 'SPY'].forEach(function (t) {
-                var a5 = 시장경보_변화(기.가격[t], 5), a15 = 시장경보_변화(기.가격[t], 15);
-                if (a5 != null && a5 <= -0.8) 위험.push(t + ' 5분 ' + fmtPct(a5)); else if (a15 != null && a15 <= -1.2) 위험.push(t + ' 15분 ' + fmtPct(a15));
-                else if (a5 != null && a5 <= -0.5) 주의.push(t + ' 5분 ' + fmtPct(a5)); else if (a15 != null && a15 <= -0.8) 주의.push(t + ' 15분 ' + fmtPct(a15));
+                var a5 = 시장경보_변화(기.가격[t], 5), a15 = 시장경보_변화(기.가격[t], 15), id = 'neon-' + t.toLowerCase();
+                if (a5 != null && a5 <= -0.8) 위(t + ' 5분 ' + fmtPct(a5), [id]); else if (a15 != null && a15 <= -1.2) 위(t + ' 15분 ' + fmtPct(a15), [id]);
+                else if (a5 != null && a5 <= -0.5) 주(t + ' 5분 ' + fmtPct(a5), [id]); else if (a15 != null && a15 <= -0.8) 주(t + ' 15분 ' + fmtPct(a15), [id]);
             });
             var vix = 기.가격.VIX, v지금 = vix.length ? vix[vix.length - 1].v : 0, v15 = 시장경보_변화(vix, 15), v전 = vix.length > 1 ? vix[0].v : 0;
-            if (v지금 >= 30) 위험.push('VIX ' + v지금.toFixed(1));
-            else if (v15 != null && v15 >= 10) 위험.push('VIX 15분 ' + fmtPct(v15));
-            else if (v15 != null && v15 >= 5) 주의.push('VIX 15분 ' + fmtPct(v15) + ' (' + v지금.toFixed(1) + ')');
-            else if (v지금 >= 20 && v전 > 0 && [20, 25].some(function (k) { return v전 < k && v지금 >= k; })) 주의.push('VIX ' + v지금.toFixed(1) + ' (넘어섬)');
-            // 엔진 시장 상태
+            if (v지금 >= 30) 위('VIX ' + v지금.toFixed(1), ['neon-vix']);
+            else if (v15 != null && v15 >= 10) 위('VIX 15분 ' + fmtPct(v15), ['neon-vix']);
+            else if (v15 != null && v15 >= 5) 주('VIX 15분 ' + fmtPct(v15) + ' (' + v지금.toFixed(1) + ')', ['neon-vix']);
+            else if (v지금 >= 20 && v전 > 0 && [20, 25].some(function (k) { return v전 < k && v지금 >= k; })) 주('VIX ' + v지금.toFixed(1) + ' (넘어섬)', ['neon-vix']);
+            // 엔진 시장 상태 (특정 지수가 아니므로 QQQ·SPY 칸 함께)
             var 엔상 = typeof 엔진 !== 'undefined' && 엔진_살아있음() && 엔진.meta && 엔진.meta.시장 ? 엔진.meta.시장.상태 : '';
             var 순 = { '상승 우호': 0, '중립': 1, '주의': 2, '위험': 3 };
-            if (엔상 === '위험') 위험.push('엔진 시장 상태 위험');
-            else if (엔상 && 기.엔진상태 && 순[엔상] > 순[기.엔진상태]) 주의.push('엔진 시장 상태 ' + 기.엔진상태 + ' → ' + 엔상);
+            if (엔상 === '위험') 위('엔진 시장 상태 위험', ['neon-qqq', 'neon-spy']);
+            else if (엔상 && 기.엔진상태 && 순[엔상] > 순[기.엔진상태]) 주('엔진 시장 상태 ' + 기.엔진상태 + ' → ' + 엔상, ['neon-qqq', 'neon-spy']);
             if (엔상) 기.엔진상태 = 엔상;
-            // 관심종목 흐름
+            // 관심종목 흐름 (QQQ·SPY 칸 함께)
             var 흐 = 기.흐름.filter(function (x) { return 지금 - x.t < 20 * 60000; }); 기.흐름 = 흐;
             if (흐.length) {
                 var 끝 = 흐[흐.length - 1], 앞 = 흐.filter(function (x) { return 끝.t - x.t >= 14 * 60000; }).pop();
-                if (앞 && 앞.상 != null && 끝.상 != null && 앞.상 - 끝.상 >= 0.3) 주의.push('관심종목 상승 비율 ' + Math.round(앞.상 * 100) + '% → ' + Math.round(끝.상 * 100) + '%');
-                if (끝.앎 >= 5 && 끝.위 != null && 끝.위 < 0.3) 주의.push('VWAP 위 종목 ' + Math.round(끝.위 * 100) + '%');
+                if (앞 && 앞.상 != null && 끝.상 != null && 앞.상 - 끝.상 >= 0.3) 주('관심종목 상승 비율 ' + Math.round(앞.상 * 100) + '% → ' + Math.round(끝.상 * 100) + '%', ['neon-qqq', 'neon-spy']);
+                if (끝.앎 >= 5 && 끝.위 != null && 끝.위 < 0.3) 주('VWAP 위 종목 ' + Math.round(끝.위 * 100) + '%', ['neon-qqq', 'neon-spy']);
             }
+            기.칸 = 칸;
             var 단계 = 위험.length ? '위험' : 주의.length ? '주의' : '';
             var 이유 = 위험.concat(주의);
             if (!단계) {
                 if (시장경보 && !기.조건없음시각) 기.조건없음시각 = 지금;
                 if (시장경보 && 지금 - 기.조건없음시각 >= 10 * 60000) {
-                    시장경보 = null; 기.조건없음시각 = 0; 시장경보_띠();
+                    시장경보 = null; 기.조건없음시각 = 0; 시장경보_띠(); 시장경보_지수표시({});
                     알림_잠깐('✅ 시장 경보 해제 (10분 동안 조건 없음)');
                     알림기록_추가({ t: 지금, 시각: 알림_시각(), 종류: '시장', 종목: '', 글: '시장 경보 해제' });
                     시장경보_윈폼('✅ 시장 경보 해제');
@@ -11303,7 +11313,7 @@
             기.조건없음시각 = 0;
             var 순위 = { '주의': 1, '위험': 2 }, 이전 = 시장경보;
             시장경보 = { 단계: 단계, 이유: 이유, 짧은글: 이유.slice(0, 2).join(' · '), 시각: 이전 && 이전.단계 === 단계 ? 이전.시각 : 지금 };
-            시장경보_띠();
+            시장경보_띠(); 시장경보_지수표시(칸);
             var 키 = 단계, 마지막 = 기.마지막[키] || 0, 올라감 = !이전 || 순위[단계] > 순위[이전.단계];
             if (!올라감 && 지금 - 마지막 < 15 * 60000) return;
             기.마지막[키] = 지금;
@@ -11313,6 +11323,26 @@
                 알림_소리와음성('시장', 단계 === '위험' ? '벨' : '차임', '시장 ' + (단계 === '위험' ? '경보' : '주의') + ', ' + 이유[0]);
                 시장경보_윈폼(글);
             } else 알림기록_추가({ t: 지금, 시각: 알림_시각(), 종류: '시장', 종목: '시장', 글: 글 });
+        }
+        // 맨 위 지수 칸 외곽선: 경보를 일으킨 지수만 (위험 빨강 · 주의 주황) · 처음 10초 빠르게 깜빡임 → 그 뒤 외곽선만 · 해제되면 지움
+        //   조건이 잠깐 빠져도(해제 전 10분) 외곽선은 유지 · 마우스를 올리면 이유
+        var 시장경보_칸상태 = {};
+        function 시장경보_지수표시(칸) {
+            ['neon-qqq', 'neon-spy', 'neon-vix'].forEach(function (id) {
+                var el = document.getElementById(id); if (!el) return;
+                var c = 칸[id], 전 = 시장경보_칸상태[id];
+                if (!c) {
+                    if (시장경보 && 전) return;   // 경보가 아직 안 풀렸으면 마지막 표시 유지
+                    if (전) { el.classList.remove('mk-al', 'red', 'orange', 'mk-blink'); el.title = el._원제목 || ''; delete 시장경보_칸상태[id]; }
+                    return;
+                }
+                if (el._원제목 === undefined) el._원제목 = el.title || '';
+                var 새로 = !전 || (전.단계 !== '위험' && c.단계 === '위험');
+                el.classList.add('mk-al'); el.classList.toggle('red', c.단계 === '위험'); el.classList.toggle('orange', c.단계 !== '위험');
+                el.title = (c.단계 === '위험' ? '🔴 시장 경보 · ' : '🟠 시장 주의 · ') + c.이유.join(' · ');
+                if (새로) { el.classList.remove('mk-blink'); void el.offsetWidth; el.classList.add('mk-blink'); clearTimeout(el._깜빡); el._깜빡 = setTimeout(function () { el.classList.remove('mk-blink'); }, 10000); }
+                시장경보_칸상태[id] = { 단계: c.단계 };
+            });
         }
         // 대시보드1·2 중 한 곳만 소리·카드 (대시보드1 이 보이면 대시보드1)
         function 시장경보_담당() { if (!격자모드) return true; var d1 = 알림_다른창('sz_win_d1'); return !(d1 && d1.v); }
