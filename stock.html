@@ -1694,7 +1694,28 @@
         .oi-box.folded .oi-one-tg { display: none; }
         .oi-box.oi-one .oi-extra, .oi-box.oi-one .oi-mainhead, .oi-box.oi-one .oi-star { display: none !important; }
         .strategy-box.sg-brief .sg-chg, .strategy-box.sg-brief [id$="-band"], .strategy-box.sg-brief .sg-plan, .strategy-box.sg-brief .sg-pnls,
-        .strategy-box.sg-brief .sg-bars, .strategy-box.sg-brief .sg-score, .strategy-box.sg-brief .sg-foot { display: none !important; }
+        .strategy-box.sg-brief .sg-bars, .strategy-box.sg-brief .sg-score, .strategy-box.sg-brief .sg-foot, .strategy-box.sg-brief .sg-situ { display: none !important; }
+        /* ①②③④ 묶음 */
+        .gq { display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; border-radius: 10px; background: #0d1018; border: 1px solid #232838; border-left: 4px solid #5d6578; }
+        .gq-h { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; color: #aab3c5; letter-spacing: .2px; }
+        .gq-tag { font-style: normal; font-size: 11.5px; font-weight: 700; padding: 1px 7px; border-radius: 10px; background: #1a1f2e; color: #9aa3b8; }
+        .gq-now { border-left-color: #8b93a7; } .gq-now .gq-h { color: #c9cedb; }
+        .gq-buy { border-left-color: #3ecf8e; } .gq-buy .gq-h { color: #3ecf8e; }
+        .gq-sell { border-left-color: #ff6b6b; } .gq-sell .gq-h { color: #ff8a8a; }
+        .gq-warn { border-left-color: #ff9f43; background: rgba(255,159,67,.06); } .gq-warn .gq-h { color: #ffb366; }
+        .gq .eg-box { padding: 0; background: transparent; border: 0; }
+        .eg-row.eg-dim { color: #8b93a7; }
+        .gq-now .sg-state, .gq-now .sg-reason, .gq-now .sg-mini { display: none !important; }
+        .gq-now-b, .gq-b { display: flex; flex-direction: column; gap: 5px; font-size: 13.5px; color: #dfe3ec; line-height: 1.45; }
+        .gq-ln { display: grid; grid-template-columns: 48px minmax(0, 1fr); column-gap: 8px; align-items: baseline; }
+        .gq-ln > b { font-size: 12px; font-weight: 700; color: #7d8596; white-space: nowrap; }
+        .gq-ln small { color: #8b93a7; font-size: 12px; }
+        .gq-ln .up { color: #ff7a7a; } .gq-ln .dn { color: #7aa8ff; } .gq-ln .dim { color: #8b93a7; }
+        .gq-ln em { font-style: normal; font-weight: 800; }
+        .gq-b .gq-ln.warn { color: #ffcf99; }
+        @container (max-width: 480px) { .gq-now .sg-top { flex-direction: column; align-items: stretch; } .gq { padding: 9px 10px; } .gq-ln { grid-template-columns: 42px minmax(0, 1fr); } }
+        /* 옵션 체인 머리: 좁은 화면에서 시각 글이 세로로 꺾이지 않게 */
+        @container (max-width: 520px) { .oi-header { flex-wrap: wrap; row-gap: 3px; } .oi-header > div:first-child { flex-wrap: wrap; } .oi-header [id$="-update-time"] { white-space: nowrap; margin-left: 2px !important; flex-basis: 100%; } }
         .sg-mini { display: none; font-size: 12.5px; font-weight: 700; color: #f5c542; margin-top: 3px; }
         .strategy-box.sg-brief .sg-mini:not(:empty) { display: block; }
         .sg-more { align-self: center; font: inherit; font-size: 12px; font-weight: 700; background: #161a27; color: #cfd5e2; border: 1px solid #2f3446; border-radius: 14px; padding: 4px 14px; cursor: pointer; }
@@ -3065,7 +3086,9 @@
                 try { firebase.database().ref('tickers/' + 종목 + '/vp5').on('value', function (snap) { 오일Cache[종목] = snap.val(); }, function () { }); } catch (e) { }
             }
             var v = 오일Cache[종목], 오늘 = etNowParts().date;
-            if (!v || !v.최대 || !(v.최대.가격 > 0) || !v.날짜 || v.날짜 > 오늘 || !(String(v.마지막날 || '') < 오늘)) return null;
+            //   마지막날(계산에 쓴 마지막 정규장)이 오늘 이전·오늘 · 대상 날짜가 너무 오래되지 않음 (장 마감 뒤 저녁에 계산한 다음 날 값도 씀)
+            if (!v || !v.최대 || !(v.최대.가격 > 0) || !v.날짜 || !v.마지막날 || String(v.마지막날) > 오늘) return null;
+            if (marketPhase().type === 'REG' && !(String(v.마지막날) < 오늘)) return null;
             if ((new Date(오늘 + 'T12:00:00Z') - new Date(v.날짜 + 'T12:00:00Z')) / 86400000 >= 5) return null;
             return v;
         }
@@ -3567,8 +3590,9 @@
             //   세분화 근거가 하나도 없으면 예전 옵션 레벨(1·2차 지지·저항)로 대신
             var 레벨VWAP = (s.extVwap > 0 || 일VWAP > 0 || 마감) ? vwap : 0;
             s.레벨세분 = 레벨_세분(s.ticker, price, d, { vwap: 레벨VWAP, 마감: !!마감, 구간: 구간, 안정키: '표시' });          // 화면·AI 분석용 (모든 근거)
-            var 전략세분 = 레벨_세분(s.ticker, price, d, { 마감: !!마감, 구간: 구간, 구간제외: true, 안정키: '전략' });
-            var lvList = 전략세분.지지.concat(전략세분.저항).map(function (x) { return { k: x.k, n: x.n, v: x.v, 강도: x.강도, 근거: x.근거 }; });
+            // 전략(상황·목표 문구)도 화면 지지·저항과 같은 가격표 → 이름은 가까운 순서 (1차지지 = 목록 1번)
+            var 전략세분 = s.레벨세분 && s.레벨세분.고정 ? s.레벨세분 : 레벨_세분(s.ticker, price, d, { 마감: !!마감, 구간: 구간, 구간제외: true, 안정키: '전략' });
+            var lvList = 전략세분.지지.concat(전략세분.저항).map(function (x) { return { k: x.k, n: s.레벨세분 && s.레벨세분.고정 ? x.k.slice(1) + (x.k[0] === 'S' ? '차지지' : '차저항') : x.n, v: x.v, 강도: x.강도, 근거: x.근거 }; });
             if (!lvList.length) lvList = [
                 { k: 'R2', n: '2차저항', v: r2 }, { k: 'R1', n: '1차저항', v: r1 },
                 { k: 'S1', n: '1차지지', v: s1 }, { k: 'S2', n: '2차지지', v: s2 }
@@ -4143,6 +4167,31 @@
             }
             put('state', stateTxt, undefined, stateTxt);
 
+            // ① 지금 상황 요약 (가격 · 흐름 구성 · 매물대 위치 · 시장 · 판단)
+            (function () {
+                var 항목 = [['VWAP', 점수_VWAP], [마감 ? '마감30분' : '3분', 점수_3분], [마감 ? (전일칸 ? '전일 대비' : '장중') : '10분', 점수_10분], ['옵션', 점수_옵션]].filter(function (x) { return x[1]; });
+                var 엇 = 항목.some(function (x) { return x[1] > 0; }) && 항목.some(function (x) { return x[1] < 0; });
+                var 구성 = 항목.length ? 항목.map(function (x) { return x[0] + ' ' + (x[1] > 0 ? '+' : '−') + Math.abs(x[1]); }).join(' · ') + (엇 ? ' (엇갈림)' : '') : '모든 항목 기준 안';
+                var 물 = null; try { 물 = 매물대_가져오기(s.ticker); } catch (e) { }
+                var 물가 = 마감 ? 실시간가 : price, 물글 = '';
+                if (물 && 물.집중 && 물.집중.하단 > 0 && 물가 > 0) {
+                    var 하 = Number(물.집중.하단), 상 = Number(물.집중.상단), 여 = 물가 * 0.0005;
+                    물글 = 물가 > 상 + 여 ? '<em class="up">집중 구간 위</em> · 매수 우위' : 물가 < 하 - 여 ? '<em class="dn">집중 구간 아래</em> · 매도 우위' : '<em>박스권</em> · 집중 구간 안';
+                    물글 += ' <small>(' + 하.toFixed(2) + '~' + 상.toFixed(2) + ')</small>';
+                }
+                function 지수(v) { return String(getIndexStatusHtml(v)).replace(/<[^>]+>/g, ''); }
+                var 시장글 = (typeof globQqq !== 'undefined' && globQqq != null) ? 'QQQ ' + 지수(globQqq) + ' · SPY ' + 지수(globSpy) + (typeof globVixState !== 'undefined' && globVixState ? ' · VIX ' + globVixState : '') : '';
+                var 판 = String(판단줄 || '').trim().replace(/^[^→]*[+−-]\d+\s*→\s*/, '').replace(/^·\s*/, '');   // 흐름 점수 반복 빼기
+                var 흐색 = bias > 0 ? 'up' : bias < 0 ? 'dn' : '';
+                var h = '<div class="gq-ln"><b>가격</b><span>' + 가격줄 + '</span></div>' +
+                        '<div class="gq-ln"><b>흐름</b><span><em class="' + 흐색 + '">' + 점수이름 + ' ' + 점수글 + '</em> <small>' + 구성 + '</small></span></div>' +
+                        (물글 ? '<div class="gq-ln"><b>매물대</b><span>' + 물글 + '</span></div>' : '') +
+                        (시장글 ? '<div class="gq-ln"><b>시장</b><span>' + 시장글 + '</span></div>' : '') +
+                        (판 && 판 !== '─' ? '<div class="gq-ln"><b>판단</b><span>' + 판 + '</span></div>' : '');
+                put('now', h);
+                put('nowtag', 배지.글);
+            })();
+
             VWAP막대표시(panelIdx, vwap, 마감 ? 실시간가 : price, 마감 ? '정규장' : (!(s.extVwap > 0) && !일VWAP && !vwReal));
             try { 엔진_패널표시(panelIdx); } catch (e) { }   // ★ 매매 엔진 칸
         }
@@ -4555,17 +4604,25 @@
                 + '<div class="lv-box psec" data-sec="lv">' + '<div class="sec-bar" data-sec="lv" data-i="' + i + '"><span class="sec-t">지지·저항·매물대</span><span class="sec-s" id="p' + i + '-sec-lv"></span><button type="button" class="sec-tg" title="접기·펼치기 (3개 패널 함께 · 이 기기에 저장)"></button></div>' + '<div class="timeline" id="p' + i + '-timeline"></div><div class="vp" id="p' + i + '-vp"></div><div class="lv-sum" id="p' + i + '-lvsum"></div></div>'
                 + '<div class="strategy-box psec" data-sec="sg">' + '<div class="sec-bar" data-sec="sg" data-i="' + i + '"><span class="sec-t">매수 신호 · 단기 흐름</span><span class="sec-s" id="p' + i + '-sec-sg"></span><button type="button" class="sec-tg" title="접기·펼치기 (3개 패널 함께 · 이 기기에 저장)"></button></div>'
                 + '<div class="sg-card">'
-                + '<div class="eg-box" id="p' + i + '-engine"></div>'      // ★ 매매 엔진 (매수만 · 윈폼 엔진 결과 / 꺼지면 참고 계산)
+                // ① 지금 상황: 흐름 게이지 + 가격·흐름 구성·매물대 위치·시장·판단 요약
+                + '<div class="gq gq-now"><div class="gq-h"><span>① 지금 상황</span><em class="gq-tag" id="p' + i + '-nowtag"></em></div>'
                 + '<div class="sg-top">'
                 + '<div class="sg-gauge" id="p' + i + '-gauge"></div>'
                 + '<div class="sg-head">'
+                + '<div class="gq-now-b" id="p' + i + '-now"></div>'
                 + '<div class="sg-state" id="p' + i + '-sigtitle"><span>관망 중</span></div>'
                 + '<div class="sg-reason" id="p' + i + '-reason">데이터 로딩 중</div>'
                 + '<div class="sg-mini" id="p' + i + '-sgmini"></div>'
-                + '</div></div>'
+                + '</div></div></div>'
+                // ② 매수 관점: 매매 엔진 (윈폼 엔진 결과 / 꺼지면 참고 계산 · 장외 = 다음 장 시나리오)
+                + '<div class="gq gq-buy"><div class="gq-h"><span>② 매수 관점</span></div><div class="eg-box" id="p' + i + '-engine"></div></div>'
+                // ③ 매도·위험 관점: 저항(익절 후보) · 지지 이탈 시 다음 지지 · 보유 관리
+                + '<div class="gq gq-sell"><div class="gq-h"><span>③ 매도·위험 관점</span></div><div class="gq-b" id="p' + i + '-sell"></div></div>'
+                // ④ 주의 (있을 때만)
+                + '<div class="gq gq-warn" id="p' + i + '-warnbox" style="display:none"><div class="gq-h"><span>④ 주의</span></div><div class="gq-b" id="p' + i + '-warn"></div></div>'
+                + '<button type="button" class="sg-more" data-i="' + i + '"></button>'
                 + '<div class="sg-chg" id="p' + i + '-jchg"></div>'
                 + '<div class="sg-situ" id="p' + i + '-situ">' + '<b>가격</b><span>─</span><b>판단</b><span>─</span><b>목표</b><span>─</span>' + '</div>'
-                + '<button type="button" class="sg-more" data-i="' + i + '"></button>'
                 + '<div id="p' + i + '-band"><div class="sg-band cand">방향 없음</div></div>'
                 + '<div class="sg-plan" id="p' + i + '-plan"></div>'
                 + '<div class="sg-pnls" id="p' + i + '-pnl"></div>'
@@ -7440,6 +7497,7 @@
         }
         function 레벨_고정(종목, price, d, opt) {
             var 장 = marketPhase().type, t = etNowParts(), 정규 = 장 === 'REG' && !opt.마감;
+            if (!정규) return 레벨_장외(종목, price, d, opt);   // 장외: 마지막 정규장 가격표 하나 (모든 화면·기기 같은 가격)
             var 표키 = t.date + (정규 ? '|R' : '|X');
             var 표 = 레벨표[종목];
             if (!표 || 표.키 !== 표키) 표 = 레벨표[종목] = { 키: 표키, 목록: [], 범위: 3, 벽: {}, 분: 0 };
@@ -7521,7 +7579,10 @@
             var 목록 = 표.목록, 범위 = 표.범위, 출처 = '대시보드 계산';
             var 엔 = 정규 ? 엔진_레벨표(종목) : null;
             if (엔) { 목록 = 엔.목록; 범위 = 엔.범위; 출처 = '엔진'; }
-            // 보여 줄 레벨: 쪽마다 가장 가까운 것 1개 + 나머지는 강한 순 2개 → 가까운 순으로 1·2·3번
+            return 레벨_보이기(목록, 범위, price, 표.벽, 출처);
+        }
+        // 보여 줄 레벨: 쪽마다 가장 가까운 것 1개 + 나머지는 강한 순 2개 → 가까운 순으로 1·2·3번
+        function 레벨_보이기(목록, 범위, price, 벽, 출처) {
             var R = 범위 / 100 * 1.3, 지 = [], 저 = [];
             목록.forEach(function (L) {
                 if (Math.abs(L.v - price) / price > R) return;
@@ -7538,13 +7599,61 @@
             var 별 = function (n) { return '★★★'.slice(0, Math.max(1, Math.min(3, n))); };
             지 = 고르기(지).map(function (x, i) { return Object.assign(x, { k: 'S' + (i + 1), n: x.이름 + ' ' + 별(x.강도) + (x.확인 ? ' (돌파 후 지지 확인 중)' : '') }); });
             저 = 고르기(저).map(function (x, i) { return Object.assign(x, { k: 'R' + (i + 1), n: x.이름 + ' ' + 별(x.강도) + (x.확인 ? ' (이탈 후 저항 확인 중)' : '') }); });
-            return { 범위: 범위, 지지: 지, 저항: 저, 벽: 표.벽, 기준가: price, 안정: true, 고정: true, 출처: 출처 };
+            return { 범위: 범위, 지지: 지, 저항: 저, 벽: 벽 || {}, 기준가: price, 안정: true, 고정: true, 출처: 출처 };
+        }
+        // ★ 장외 가격표: 마지막 정규장 가격표 하나를 모든 화면·기기가 같이 씀
+        //   ① 윈폼 엔진이 올린 그 날 가격표 (마감 때 모습 그대로 · 엔진이 꺼져 있어도 Firebase 에 남은 값)
+        //   ② 없으면 대시보드 계산: 마감 종가 기준으로 공통 자료(워커 1분봉 마감·구간·옵션·매물대·5일 매물대)를 한 번에 모아 만듦
+        //      (화면을 언제 열었는지와 상관없이 같은 자료면 같은 결과 · 역할 = 마감 종가 아래 지지 / 위 저항)
+        var 레벨장외 = {};
+        function 레벨_월일(날) { return (+날.slice(5, 7)) + '/' + (+날.slice(8, 10)); }
+        function 레벨_장외표(종목, d) {
+            d = d || {};
+            var 기준날 = 구간_기대날짜(), 일 = 일데이터[종목], m = 일 && 일.마감, 공식 = sessionCache[종목];
+            var 기준가 = 공식 && m && 공식.regDate === m.날짜 && 공식.regClose > 0 ? 공식.regClose : m && m.종가 > 0 ? m.종가 : 0;
+            if (!(기준가 > 0)) return null;
+            var 구 = 구간_가져오기(종목), 레 = (일 && 일.레벨) || {}, 옵 = d.optionRows || [], 옵합 = 0;
+            옵.forEach(function (r) { 옵합 += (Number(r.callOI) || 0) + (Number(r.putOI) || 0); });
+            var 물 = 매물대_가져오기(종목), 오 = 오일_가져오기(종목);
+            var 서명 = [기준날, 기준가, 물 ? 물.출처 + 물.날짜 + 물.최대.가격 : '', 구 && 구.기준시각, 구 && 구.상태, 옵.length, Math.round(옵합 / 100), d.maxPain, d.dte,
+                        레.일평균폭, 오 ? 오.날짜 + 오.최대.가격 : '', d.support1, d.resistance1, marketPhase().type === 'PRE' && 레.프리 ? 레.프리.고가 + '/' + 레.프리.저가 : ''].join('|');
+            var c = 레벨장외[종목]; if (c && c.서명 === 서명) return c;
+            var r = 레벨_후보(종목, 기준가, d, { 근접허용: true, vwap: 0, 범위배: 1.6, 마감: true, 구간: 구 });
+            var 후보 = r.후보.slice();
+            [['support1', '옵션 1차 지지'], ['support2', '옵션 2차 지지'], ['resistance1', '옵션 1차 저항'], ['resistance2', '옵션 2차 저항']].forEach(function (q) {
+                var v = Number(d[q[0]]) || 0; if (v > 0 && Math.abs(v - 기준가) / 기준가 <= r.범위 / 100 * 1.6) 후보.push({ v: v, 점: 1, 글: q[1], 옵션: true });
+            });
+            var 허용 = 기준가 * 0.0015, 목록 = [];
+            후보.forEach(function (x) {
+                var id = 레벨_근거키(x.글);
+                var 같은 = 목록.filter(function (L) { return Math.abs(L.v - x.v) <= 허용; }).sort(function (a, b) { return Math.abs(a.v - x.v) - Math.abs(b.v - x.v); })[0];
+                if (같은) {
+                    var 있던 = 같은.근거.filter(function (g) { return g.id === id; })[0];
+                    if (있던) { if (x.점 > 있던.점) { 같은.점 += x.점 - 있던.점; 있던.점 = x.점; 있던.글 = x.글; } }
+                    else { 같은.근거.push({ id: id, 글: x.글, 점: x.점 }); 같은.점 += x.점; if (x.옵션) 같은.옵션 = true; }
+                    return;
+                }
+                목록.push({ v: Math.round(x.v * 100) / 100, 점: x.점, 근거: [{ id: id, 글: x.글, 점: x.점 }], 옵션: !!x.옵션, 확인: 0 });
+            });
+            목록.forEach(function (L) { L.역할 = L.v <= 기준가 ? '지지' : '저항'; });
+            c = 레벨장외[종목] = { 서명: 서명, 목록: 목록, 범위: r.범위, 벽: r.벽, 기준날: 기준날, 기준가: 기준가 };
+            return c;
+        }
+        function 레벨_장외(종목, price, d, opt) {
+            var 기준날 = 구간_기대날짜();
+            var 엔 = 엔진_레벨표(종목, 기준날, false);
+            if (엔) return 레벨_보이기(엔.목록, 엔.범위, price, {}, '엔진 · ' + 레벨_월일(기준날) + ' 마감');
+            var 표 = 레벨_장외표(종목, d);
+            if (!표) return { 범위: 3, 지지: [], 저항: [], 벽: {}, 기준가: price, 안정: true, 고정: true, 출처: '대시보드 계산' };
+            return 레벨_보이기(표.목록, 표.범위, price, 표.벽, '대시보드 계산 · ' + 레벨_월일(표.기준날) + ' 마감');
         }
         // 엔진(윈폼) 기준 가격표 → 대시보드 표 형식 (엔진이 살아 있고 오늘 정규장 표일 때만)
-        function 엔진_레벨표(종목) {
-            if (typeof 엔진 === 'undefined' || !엔진_살아있음()) return null;
+        //   날짜·살아있음필요 를 주면 장외용 (마지막 정규장 날짜의 표 · 엔진이 꺼져 있어도 Firebase 에 남은 값)
+        function 엔진_레벨표(종목, 날짜, 살아있음필요) {
+            if (typeof 엔진 === 'undefined' || !엔진.자료) return null;
+            if (살아있음필요 !== false && !엔진_살아있음()) return null;
             var e = 엔진.자료[종목], L = e && e.레벨;
-            if (!L || L.날짜 !== etNowParts().date || !Array.isArray(L.목록) || !L.목록.length) return null;
+            if (!L || L.날짜 !== (날짜 || etNowParts().date) || !Array.isArray(L.목록) || !L.목록.length) return null;
             return {
                 범위: Number(L.범위) || 3,
                 목록: L.목록.map(function (x) {
@@ -7554,8 +7663,14 @@
             };
         }
         // 지금 쓰는 오늘의 기준 가격표 목록 (엔진 → 없으면 대시보드 자체 표 · 정규장만) · 참고 계산·강한 레벨 알림용
-        function 레벨_표목록(종목) {
-            if (marketPhase().type !== 'REG') return null;
+        function 레벨_표목록(종목, d) {
+            if (marketPhase().type !== 'REG') {
+                var 날 = 구간_기대날짜(), 엔2 = 엔진_레벨표(종목, 날, false);
+                if (엔2) return { 출처: '엔진', 목록: 엔2.목록, 장외: true };
+                if (!d) { var k = panelTickers.indexOf(종목); d = k >= 0 ? panelDataStore[k] : null; }
+                var 표2 = 레벨_장외표(종목, d);
+                return 표2 && 표2.목록.length ? { 출처: '대시보드 계산', 목록: 표2.목록, 장외: true } : null;
+            }
             var 엔 = 엔진_레벨표(종목);
             if (엔) return { 출처: '엔진', 목록: 엔.목록 };
             var 표 = 레벨표[종목];
@@ -7877,7 +7992,7 @@
             var 저 = 세분 ? 세분.저항 : [], 지 = 세분 ? 세분.지지 : [];
             var 열 = function (목록, 지지) { var h = ''; for (var i = 0; i < 3; i++) h += 줄(목록[i], i, 지지); return h; };
             var 범위 = 세분 ? ' · ±' + 세분.범위.toFixed(1) + '%' : '';
-            var 표출처 = 세분 && 세분.출처 ? '<b class="lvs-src' + (세분.출처 === '엔진' ? ' eng' : '') + '" title="' + (세분.출처 === '엔진' ? '윈폼 매매 엔진이 만든 오늘의 기준 가격표 (엔진 신호와 같은 가격)' : '윈폼 엔진이 꺼져 있어 대시보드가 같은 규칙으로 직접 계산한 가격표') + '">' + 세분.출처 + '</b>' : '';
+            var 표출처 = 세분 && 세분.출처 ? '<b class="lvs-src' + (/^엔진/.test(세분.출처) ? ' eng' : '') + '" title="' + (/^엔진/.test(세분.출처) ? '윈폼 매매 엔진이 만든 오늘의 기준 가격표 (엔진 신호와 같은 가격)' : '윈폼 엔진이 꺼져 있어 대시보드가 같은 규칙으로 직접 계산한 가격표') + '">' + 세분.출처 + '</b>' : '';
             el.innerHTML = '<div class="lvs-col"><div class="lvs-h"><span>저항 (콜 쪽)' + 표출처 + '</span><span>현재가 대비</span></div>' + 열(저, false) + '</div>' +
                            '<div class="lvs-col"><div class="lvs-h"><span>지지 (풋 쪽)' + 범위 + '</span><span>현재가 대비</span></div>' + 열(지, true) + '</div>';
         }
@@ -11490,6 +11605,45 @@
             return { 출처: '참고', t: t, 상태: 평.상태, 점수: 평.점수, 상세: 평.상세, 지지: 평.지지, 지지근거: 평.지지근거, 손절: 평.손절, 목표: 평.목표, 목표근거: 평.목표근거,
                      여유: 평.여유, 손익비: 평.손익비, 확인: 평.확인, 막힘: 평.막힘, 글: '', 보유: null, 체결: 오늘체결, 상대강도: 평.상대강도 || null };
         }
+        // ── ③ 매도·위험 관점 · ④ 주의 (화면 지지·저항 = 오늘의 기준 가격표와 같은 가격) ──
+        function 관점_표시(i, z) {
+            var sel = document.getElementById('p' + i + '-sell'), wbox = document.getElementById('p' + i + '-warnbox'), warn = document.getElementById('p' + i + '-warn');
+            if (!sel) return;
+            var t = panelTickers[i], st = RT[i] && RT[i].ticker === t ? RT[i] : null, 세 = st && st.레벨세분;
+            var k = st && st.ticks && st.ticks.length ? st.ticks[st.ticks.length - 1] : null, d = panelDataStore[i] || {};
+            var price = k && Date.now() - k.t < 120000 ? k.p : Number(d.price) || 0;
+            function 퍼(v) { return '<span class="' + (v > 0 ? 'up' : v < 0 ? 'dn' : 'dim') + '">' + fmtPct(v) + '</span>'; }
+            function 근(x) { return (x.근거 || []).map(function (g) { return typeof g === 'string' ? g : g.글; }).join(' · '); }
+            var h = '';
+            if (z && z.보유) {
+                var b = z.보유, 손익 = price > 0 && b.진입가 > 0 ? (price / b.진입가 - 1) * 100 : null;
+                h += '<div class="gq-ln"><b>보유</b><span>' + (b.남은수량 || 0) + '주 · 진입 <em>' + Number(b.진입가).toFixed(2) + '</em>' + (손익 != null ? ' · ' + 퍼(손익) : '') + '</span></div>' +
+                     '<div class="gq-ln"><b>관리</b><span>손절 <em class="dn">' + Number(b.손절).toFixed(2) + '</em>' + (b.일차익절 > 0 ? ' · 1차 익절 <em class="up">' + Number(b.일차익절).toFixed(2) + '</em>' : ' · 1차 익절 완료') + '</span></div>';
+            }
+            if (세 && price > 0) {
+                // 익절 후보 = 현재가 +0.3% 위의 ★★ 이상 저항 중 가장 가까운 것 (없으면 가장 가까운 저항) · 엔진 목표와 같은 규칙
+                var 위쪽 = 세.저항.filter(function (x) { return x.v >= price * 1.003; });
+                var r1 = 위쪽.filter(function (x) { return (x.점 || x.강도) >= 2; })[0] || 위쪽[0] || 세.저항[0], s1 = 세.지지[0], s2 = 세.지지[1];
+                h += r1 ? '<div class="gq-ln"><b>저항</b><span><em class="up">' + r1.v.toFixed(2) + '</em> ' + '★★★'.slice(0, Math.max(1, Math.min(3, r1.강도 || 1))) + ' <small>' + 근(r1) + '</small> ' + 퍼((r1.v - price) / price * 100) + ' → 익절 후보</span></div>'
+                        : '<div class="gq-ln"><b>저항</b><span class="dim">범위 안 저항 없음</span></div>';
+                if (s1) h += '<div class="gq-ln"><b>이탈</b><span><em class="dn">' + s1.v.toFixed(2) + '</em> 아래로 깨지면 → ' +
+                             (s2 ? '다음 지지 <em class="dn">' + s2.v.toFixed(2) + '</em> ' + 퍼((s2.v - price) / price * 100) : '<span class="dim">아래 지지 없음 (범위 밖)</span>') + '</span></div>';
+                else h += '<div class="gq-ln"><b>이탈</b><span class="dim">범위 안 지지 없음</span></div>';
+            }
+            if (!h) h = '<div class="gq-ln"><b>　</b><span class="dim">가격표 준비 중</span></div>';
+            if (sel._html !== h) { sel.innerHTML = h; sel._html = h; }
+            // ④ 주의
+            var 목 = [], 오늘 = etNowParts().date, 장외 = marketPhase().type !== 'REG';
+            if (z && z.막힘 && !장외) 목.push(z.막힘);
+            if (z && z.출처 === '엔진' && /연속 손실/.test(z.글 || '')) 목.push(z.글);
+            var 반응 = (typeof 일정자료 !== 'undefined' && 일정자료.econ && 일정자료.econ.반응) || [];
+            반응.forEach(function (r) { if (r.날짜 === 오늘 && (r.단계 === '발표 전' || r.단계 === '1차 판정 중' || r.단계 === '확정 판정 중')) 목.push('📊 ' + r.시각 + ' ' + r.이름 + ' · ' + (r.글 || r.단계)); });
+            var 실 = typeof 일정자료 !== 'undefined' && 일정자료.실적 && 일정자료.실적.종목 && 일정자료.실적.종목[t];
+            if (실 && 실.날짜 === 오늘) 목.push('📅 오늘 실적 발표 (' + (실.시간 || '미정') + ')');
+            var w = 목.map(function (x) { return '<div class="gq-ln warn"><b>⚠</b><span>' + String(x).replace(/</g, '&lt;') + '</span></div>'; }).join('');
+            if (warn && warn._html !== w) { warn.innerHTML = w; warn._html = w; }
+            if (wbox) wbox.style.display = w ? '' : 'none';
+        }
         var 엔진_상태색 = { '신호': '#3ecf8e', '지지 접근': '#f5c542', '주목': '#9fb4d9', '관망': '#8b93a7', '차단': '#ff9f43', '무효': '#ff6b6b', '보유': '#4d8dff' };
         function 엔진_패널표시(i) {
             var el = document.getElementById('p' + i + '-engine'); if (!el) return;
@@ -11503,14 +11657,24 @@
                 var 막대 = '<div class="eg-bar" title="지지 ' + 상세[0] + '/40 · 환경 ' + 상세[1] + '/20 · 확인 ' + 상세[2] + '/25 · 여유 ' + 상세[3] + '/15">' +
                           '<i style="width:' + 상세[0] + '%;background:#a3e635"></i><i style="width:' + 상세[1] + '%;background:#22d3ee"></i><i style="width:' + 상세[2] + '%;background:#e879f9"></i><i style="width:' + 상세[3] + '%;background:#facc15"></i>' +
                           '<b style="left:75%"></b></div>';
-                h = '<div class="eg-head">' + 배지 + '<span class="eg-st" style="color:' + 색 + '">' + (z.상태 === '신호' ? '▲ ' : '') + (z.상태 || '관망') + '</span>' +
-                    (z.보유 ? '' : '<span class="eg-sc">' + 합 + '<small>/100</small></span>') +
-                    '<span class="eg-sub">' + (z.사용 === false ? '엔진 사용 안 함 종목 (참고 계산)' : '지지 반등') + '</span></div>';
+                var 장외 = marketPhase().type !== 'REG';
+                var 체 = (z.체결 || []).slice(-3).map(function (x) { return (x.종류 === '신호' ? '◆ 신호 ' : x.종류 === '롱진입' ? '▲ 매수 ' : '▼ 매도 ') + String(x.시각 || '').slice(11, 16) + ' ' + Number(x.가격).toFixed(2) + (x.손익률 != null ? ' (' + fmtPct(Number(x.손익률)) + ')' : ''); });
                 if (z.보유) {
-                    var b = z.보유, 현 = (panelDataStore[i] || {}).price || 0, 손익 = 현 > 0 && b.진입가 > 0 ? (현 / b.진입가 - 1) * 100 : null;
-                    h += '<div class="eg-row eg-hold"><b>보유</b> ' + (b.남은수량 || 0) + '주 · 진입 <em>' + Number(b.진입가).toFixed(2) + '</em>' + (손익 != null ? ' · <em style="color:' + (손익 >= 0 ? '#ff5d5d' : '#4d8dff') + '">' + fmtPct(손익) + '</em>' : '') +
-                         ' · 손절 <em style="color:#4d8dff">' + Number(b.손절).toFixed(2) + '</em>' + (b.일차익절 > 0 ? ' · 1차 익절 <em style="color:#ff5d5d">' + Number(b.일차익절).toFixed(2) + '</em>' : '') + '</div>';
+                    // 보유 중: 관리 내용은 ③ 매도·위험 관점에
+                    h = '<div class="eg-head">' + 배지 + '<span class="eg-st" style="color:' + 엔진_상태색['보유'] + '">보유 중</span><span class="eg-sub">관리 = 아래 ③ 매도·위험 관점</span></div>';
+                } else if (장외) {
+                    // 장외: 점수 대신 다음 장 시나리오 (정규장에 실시간 판단)
+                    h = '<div class="eg-head">' + 배지 + '<span class="eg-st" style="color:#9fb4d9">다음 장 시나리오</span><span class="eg-sub">참고 · 정규장에 실시간 판단</span></div>';
+                    if (z.지지 > 0) {
+                        h += '<div class="eg-row"><b>지지</b> <em>' + Number(z.지지).toFixed(2) + '</em> <small>' + (z.지지근거 || '') + '</small> 확인 시 반등 매수 후보</div>';
+                        h += '<div class="eg-row"><b>계획</b> 손절 <em style="color:#4d8dff">' + (z.손절 > 0 ? Number(z.손절).toFixed(2) : '─') + '</em>' +
+                             (z.목표 > 0 ? ' · 목표 <em style="color:#ff5d5d">' + Number(z.목표).toFixed(2) + '</em> <small>' + (z.목표근거 || '') + '</small> · 여유 ' + fmtPct(Number(z.여유) || 0) + ' · 손익비 ' + (Number(z.손익비) || 0).toFixed(1) : ' · 목표 없음') + '</div>';
+                        h += '<div class="eg-row"><b>조건</b> 지지 터치 → 저점 유지 5분 → 5분 고가 돌파</div>';
+                    } else h += '<div class="eg-row eg-dim">가까운 지지 근거 없음 · 정규장에 다시 판단</div>';
                 } else {
+                    h = '<div class="eg-head">' + 배지 + '<span class="eg-st" style="color:' + 색 + '">' + (z.상태 === '신호' ? '▲ ' : '') + (z.상태 || '관망') + '</span>' +
+                        '<span class="eg-sc">' + 합 + '<small>/100</small></span>' +
+                        '<span class="eg-sub">' + (z.사용 === false ? '엔진 사용 안 함 종목 (참고 계산)' : '지지 반등') + '</span></div>';
                     h += 막대;
                     if (z.지지 > 0) h += '<div class="eg-row"><b>지지</b> <em>' + Number(z.지지).toFixed(2) + '</em> <small>' + (z.지지근거 || '') + '</small>' +
                                         (z.손절 > 0 ? ' · 손절 <em style="color:#4d8dff">' + Number(z.손절).toFixed(2) + '</em>' : '') +
@@ -11518,14 +11682,13 @@
                                         (z.목표 > 0 ? '<div class="eg-row"><b>여유</b> ' + fmtPct(Number(z.여유) || 0) + ' · 순손익비 ' + (Number(z.손익비) || 0).toFixed(1) + ' <small>(수수료 반영)</small></div>' : '');
                     if (z.확인) h += '<div class="eg-row"><b>확인</b> ' + z.확인 + '</div>';
                     var rs = z.상대강도;
-                    if (rs && rs.글) h += '<div class="eg-row" title="상대 강도 = 종목 등락률 − QQQ 등락률 (환경 점수에 0 / 3 / 5점)&#10;5점: 오늘 +0.5%p 이상 (그리고 최근 30분도 QQQ 이상) · 0점: 오늘 −1.0%p 이하 또는 최근 30분 −0.5%p 이하"><b>강도</b> ' + rs.글 +
+                    if (rs && rs.글 && rs.오늘차 != null) h += '<div class="eg-row" title="상대 강도 = 종목 등락률 − QQQ 등락률 (환경 점수에 0 / 3 / 5점)&#10;5점: 오늘 +0.5%p 이상 (그리고 최근 30분도 QQQ 이상) · 0점: 오늘 −1.0%p 이하 또는 최근 30분 −0.5%p 이하"><b>강도</b> ' + rs.글 +
                                           ' <small>(' + (rs.점 != null ? rs.점 : 3) + '점)</small></div>';
                 }
-                if (z.막힘) h += '<div class="eg-row eg-warn">' + z.막힘 + '</div>';
-                var 체 = (z.체결 || []).slice(-3).map(function (x) { return (x.종류 === '신호' ? '◆ 신호 ' : x.종류 === '롱진입' ? '▲ 매수 ' : '▼ 매도 ') + String(x.시각 || '').slice(11, 16) + ' ' + Number(x.가격).toFixed(2) + (x.손익률 != null ? ' (' + fmtPct(Number(x.손익률)) + ')' : ''); });
                 if (체.length) h += '<div class="eg-row eg-trades"><b>오늘</b> ' + 체.join(' · ') + '</div>';
             }
             if (el._html !== h) { el.innerHTML = h; el._html = h; }
+            try { 관점_표시(i, z); } catch (e) { console.warn('[관점]', e); }
             // 대시보드2 칸 머리: 엔진 상태 한 줄
             var g = document.getElementById('g' + i + '-eg');
             if (g) {
