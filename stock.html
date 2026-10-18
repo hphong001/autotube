@@ -997,7 +997,8 @@
         }
         .lv-sum { display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px; margin-top: 4px; padding-top: 6px; border-top: 1px solid #1a1e2c; }
         .lvs-col { min-width: 0; }
-        .lvs-h { display: flex; justify-content: space-between; font-size: 12px; color: #7b8396; height: 20px; line-height: 20px; }
+        .lvs-h { display: flex; justify-content: space-between; gap: 6px; font-size: 12px; color: #7b8396; height: 20px; line-height: 20px; white-space: nowrap; overflow: hidden; }
+        .lvs-h > span { overflow: hidden; text-overflow: ellipsis; min-width: 0; } .lvs-h > span:last-child { flex-shrink: 0; }
         .lvs-src { font-weight: 600; margin-left: 6px; padding: 0 5px; border-radius: 3px; background: rgba(139,147,167,.16); color: #9aa3b8; font-size: 11.5px; }
         .lvs-src.eng { background: rgba(77,141,255,.18); color: #8fb4ff; }
         .lvs-r { display: grid; grid-template-columns: 24px 64px 30px minmax(0, 1fr) 56px; align-items: center; height: 25px; font-size: 13.5px; border-top: 1px solid #141824; column-gap: 3px; }
@@ -1205,7 +1206,7 @@
             .sg-vlines small { font-size: 11px; }
                     .sg-sc-head { flex-wrap: wrap; row-gap: 2px; }
         }
-        @container (max-width: 400px) {
+        @container (max-width: 360px) {
             .sg-top { flex-direction: column; align-items: stretch; }
             .sg-gauge { flex-direction: row; width: auto; min-height: 0; gap: 10px; justify-content: flex-start; }
             .sg-gauge { flex-wrap: wrap; row-gap: 2px; } .sg-gtitle { width: 100%; } .sg-gtxt { align-items: flex-start; } .sg-gstd { align-items: flex-start; } .sg-gsub { text-align: left; }
@@ -1692,6 +1693,22 @@
         .sec-bar.sec-in { padding: 0; }
         .oi-one-tg { font: inherit; font-size: 11.5px; font-weight: 700; background: #141826; color: #8b93a7; border: 1px solid #2f3446; border-radius: 5px; padding: 0; line-height: 20px; cursor: pointer; display: inline-flex; overflow: hidden; }
         .oi-one-tg i { font-style: normal; padding: 0 8px; }
+        .oi-sum1 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; font-size: 12.5px; color: #c9cedb; margin: 2px 0 6px; padding: 5px 8px; border-radius: 6px; background: #121624; border: 1px solid #232838; }
+        .oi-sum1:empty { display: none; }
+        .oi-sum1 b { font-weight: 800; color: #eef1f7; } .oi-sum1 b.up { color: #ff7a7a; } .oi-sum1 b.dn { color: #7aa8ff; } .oi-sum1 .oi-sep { font-style: normal; color: #4a5163; }
+        .oi-em { font-size: 12px; color: #aab3c5; margin: 0 0 4px; } .oi-em b { color: #f5c542; }
+        .oi-bar-wrap { position: relative; }
+        .oi-tag { position: absolute; top: 50%; transform: translateY(-50%); font-style: normal; font-size: 9.5px; font-weight: 800; padding: 0 3px; border-radius: 3px; line-height: 13px; white-space: nowrap; pointer-events: auto; }
+        .oi-tag.c { left: 2px; background: rgba(255,93,93,.25); color: #ffb3b3; border: 1px solid #ff5d5d; }
+        .oi-tag.p { right: 2px; background: rgba(77,141,255,.25); color: #b3ccff; border: 1px solid #4d8dff; }
+        .oi-k { display: flex; align-items: center; justify-content: center; gap: 2px; white-space: nowrap; min-width: 0; }
+        .oi-mp { font-style: normal; font-size: 8.5px; font-weight: 800; color: #f5c542; }
+        .oi-pct { display: none; font-style: normal; font-size: 10px; font-weight: 600; color: #8b93a7; } .oi-pct.up { color: #ff8a8a; } .oi-pct.dn { color: #8fb4ff; }
+        /* 행사가 (±%): 휴대폰 제외 (html.oi-pct-on) · 패널 폭이 충분할 때만 (좁으면 숨김) */
+        @container (min-width: 470px) {
+            html.oi-pct-on .oi-pct { display: inline; }
+            html.oi-pct-on .oi-row, html.oi-pct-on .oi-grid-header { grid-template-columns: 1fr 48px 34px 96px 34px 48px 1fr !important; }
+        }
         .oi-one-tg i.on { background: #f5c542; color: #1a1400; }
         .oi-box.folded .oi-one-tg { display: none; }
         .oi-box.oi-one .oi-extra, .oi-box.oi-one .oi-mainhead, .oi-box.oi-one .oi-star { display: none !important; }
@@ -1739,7 +1756,12 @@
         .gq-ln .up { color: #ff7a7a; } .gq-ln .dn { color: #7aa8ff; } .gq-ln .dim { color: #8b93a7; }
         .gq-ln em { font-style: normal; font-weight: 800; }
         .gq-b .gq-ln.warn { color: #ffcf99; }
-        @container (max-width: 480px) { .gq-now .sg-top { flex-direction: column; align-items: stretch; } .gq { padding: 9px 10px; } .gq-ln { grid-template-columns: 42px minmax(0, 1fr); } }
+        .gq-now-b2:empty { display: none; }
+        .gq-now-b2 { padding-top: 6px; border-top: 1px dashed #262b3b; }
+        .gq-now .sg-head { min-width: 0; }
+        .gq-ln > span { min-width: 0; overflow-wrap: anywhere; }
+        /* 패널이 좁으면 게이지를 줄여 옆 칸 확보 → 아주 좁을 때(360px 이하)만 위아래 */
+        @container (max-width: 560px) { .gq-now .sg-gauge { width: 118px; min-height: 104px; } .gq-now .sg-svg { width: 118px; height: 66px; } .gq-now .sg-top { gap: 10px; } .gq { padding: 9px 10px; } .gq-ln { grid-template-columns: 42px minmax(0, 1fr); column-gap: 6px; } .gq-now-b, .gq-b { font-size: 13px; } }
         /* 옵션 체인 머리: 좁은 화면에서 시각 글이 세로로 꺾이지 않게 */
         @container (max-width: 520px) { .oi-header { flex-wrap: wrap; row-gap: 3px; } .oi-header > div:first-child { flex-wrap: wrap; } .oi-header [id$="-update-time"] { white-space: nowrap; margin-left: 2px !important; flex-basis: 100%; } }
         .sg-mini { display: none; font-size: 12.5px; font-weight: 700; color: #f5c542; margin-top: 3px; }
@@ -4215,12 +4237,13 @@
                 else if (세1 && /반락 대기|돌파 대기/.test(판) && 세1.저항[0] && 판.indexOf(세1.저항[0].v.toFixed(2)) < 0) 판 += ' <small>(저항 ' + 세1.저항[0].v.toFixed(2) + ' 근처에서)</small>';
                 s.요약재료 = { 점수이름: 점수이름, bias: bias, 마감: !!마감 };
                 var 흐색 = bias > 0 ? 'up' : bias < 0 ? 'dn' : '';
+                // 게이지 옆 = 핵심 3줄 (가격·흐름·매물대) · 게이지 아래 전체 폭 = 시장·판단 (옆 칸이 좁아도 나란히 유지)
                 var h = '<div class="gq-ln"><b>가격</b><span>' + 가격줄 + '</span></div>' +
                         '<div class="gq-ln"><b>흐름</b><span><em class="' + 흐색 + '">' + 점수이름 + ' ' + 점수글 + '</em> <small>' + 구성 + '</small></span></div>' +
-                        (물글 ? '<div class="gq-ln"><b>매물대</b><span>' + 물글 + '</span></div>' : '') +
-                        (시장글 ? '<div class="gq-ln"><b>시장</b><span>' + 시장글 + '</span></div>' : '') +
-                        (판 && 판 !== '─' ? '<div class="gq-ln"><b>판단</b><span>' + 판 + '</span></div>' : '');
-                put('now', h);
+                        (물글 ? '<div class="gq-ln"><b>매물대</b><span>' + 물글 + '</span></div>' : '');
+                var h2 = (시장글 ? '<div class="gq-ln"><b>시장</b><span>' + 시장글 + '</span></div>' : '') +
+                         (판 && 판 !== '─' ? '<div class="gq-ln"><b>판단</b><span>' + 판 + '</span></div>' : '');
+                put('now', h); put('now2', h2);
                 put('nowtag', 배지.글);
             })();
 
@@ -4646,7 +4669,7 @@
                 + '<div class="sg-state" id="p' + i + '-sigtitle"><span>관망 중</span></div>'
                 + '<div class="sg-reason" id="p' + i + '-reason">데이터 로딩 중</div>'
                 + '<div class="sg-mini" id="p' + i + '-sgmini"></div>'
-                + '</div></div></div>'
+                + '</div></div><div class="gq-now-b gq-now-b2" id="p' + i + '-now2"></div></div>'
                 // ② 매수 관점: 매매 엔진 (윈폼 엔진 결과 / 꺼지면 참고 계산 · 장외 = 다음 장 시나리오)
                 + '<div class="gq gq-buy"><div class="gq-h"><span>② 매수 관점</span></div><div class="eg-box" id="p' + i + '-engine"></div></div>'
                 // ③ 매도·위험 관점: 저항(익절 후보) · 지지 이탈 시 다음 지지 · 보유 관리
@@ -4681,6 +4704,7 @@
                 + '</div>'
                 + '<div class="oi-extra" id="p' + i + '-oi-before"></div>'
                 + '<div class="oi-mainhead" id="p' + i + '-oi-mainhead"></div>'
+                + '<div class="oi-sum1" id="p' + i + '-oi-sum1"></div>'      // ★ 옵션 한 줄 요약: 합산 벽 · MaxPain · 예상 범위 · 🔥 이상 거래
                 + '<div class="oi-summary"><span id="p' + i + '-sum-power">수급 대기중</span><span id="p' + i + '-sum-env">지수 대기중</span></div>'
                 + '<div class="oi-grid-header"><div style="text-align:right;padding-right:2px;">콜</div><div>OI/V</div><div>등락</div><div>행사가</div><div>등락</div><div>OI/V</div><div style="text-align:left;padding-left:2px;">풋</div></div>'
                 + '<div id="p' + i + '-oi-rows"></div>'
@@ -5106,6 +5130,8 @@
             if (meta.getAttribute('content') !== 내용) meta.setAttribute('content', 내용);
         }
         화면배율_적용();
+        // 옵션 행사가 (±%) 표시: 휴대폰(터치 기기 · 화면 짧은 변 600px 미만)에서는 끔 · 태블릿·PC 에서만
+        try { document.documentElement.classList.toggle('oi-pct-on', !(화면_터치기기() && Math.min(screen.width, screen.height) < 600)); } catch (e) { }
         window.addEventListener('orientationchange', function () { setTimeout(화면배율_적용, 200); });
         try { matchMedia('(orientation: landscape)').addEventListener('change', function () { setTimeout(화면배율_적용, 200); }); } catch (e) { }
 
@@ -7307,7 +7333,7 @@
             var dteEl = document.getElementById(p + 'dte'); if (dteEl && d.dteLabel) { var 별 = !!dteEl.querySelector('.oi-star'); dteEl.textContent = '옵션만기 : ' + d.dteLabel; if (별) 옵션_기준표시(panel, true); }
             var oit = document.getElementById(p + 'oi-title'); if (oit) { oit.textContent = (d.ticker || panelTickers[panel]) + ' 옵션 체인'; }
             var timeEl = document.getElementById(p + 'update-time');
-            if (timeEl && d.옵션출처 === 'CBOE') timeEl.textContent = '(CBOE 15분 지연 · ' + (d.cboeET || '') + ' 기준)';
+            if (timeEl && d.옵션출처 === 'CBOE') timeEl.textContent = marketPhase().type === 'REG' ? '(CBOE 15분 지연 · ' + (d.cboeET || '') + ' 기준)' : '(CBOE · ' + 레벨_월일(구간_기대날짜()) + ' 마감 자료)';
             else if (timeEl && d.updatedAt) { var rawTime = d.updatedAt; if (rawTime.length >= 16) timeEl.textContent = '(' + (d.옵션출처 === '야후' ? '야후 15분 지연' : '키움') + ' · 최신 갱신 : ' + rawTime.substring(5, 7) + '월 ' + rawTime.substring(8, 10) + '일 ' + rawTime.substring(11, 16) + ')'; }
             var badgeElem = document.getElementById(p + 'market-badge'); if (badgeElem) { badgeElem.style.display = d.isMarketOpen === false ? 'inline-block' : 'none'; }
             if (d.score !== undefined) {
@@ -7518,6 +7544,10 @@
             });
             var 만기당일 = Number(d.dte) === 0 || /D-0\)/.test(String(d.dteLabel || ''));
             if (만기당일 && d.maxPain > 0) 넣기(d.maxPain, 1, 'MaxPain(만기일)', true);
+            // 합산 벽 (7일 이내 만기 가중 합산 OI · 매매엔진.cs 기준후보 와 같은 규칙): 2점
+            var 합벽 = null; try { 합벽 = 옵션_합산벽(종목, price); } catch (e) { }
+            if (합벽 && 합벽.콜) 넣기(합벽.콜.k, 2, '합산 콜 벽', true);
+            if (합벽 && 합벽.풋) 넣기(합벽.풋.k, 2, '합산 풋 벽', true);
             // 범위 밖 큰 벽
             if (d.callWall > hi) 결과.벽.콜 = d.callWall;
             if (d.putWall > 0 && d.putWall < lo) 결과.벽.풋 = d.putWall;
@@ -7829,25 +7859,27 @@
         //   반폭 R = (1차 지지·1차 저항·당일 고가·저가 중 가장 먼 거리) × 1.25, 최소 1.2%(지수 ETF 0.6%) · 최대 6%
         //   범위 밖 레벨(2차 지지·저항 등)은 막대 끝에 고정해 ◀ / ▶ 로 표시 (가격·% 는 실제 값)
         //   가격이 조금 움직일 때마다 눈금이 출렁이지 않게: 레벨이 같고 현재가가 중심에서 R 의 35% 안이면 그대로 씀
+        // ★ 지지·저항 막대 가격 눈금: 보이는 표시(2차 지지 ~ 1차 저항 · MaxPain · 고가·저가 · 현재가)에 맞춰 위·아래 폭을 따로 잡음
+        //   현재가를 가운데에 고정하지 않음 (한쪽만 멀어 반대쪽이 텅 비지 않게) · 여백 = 전체 폭의 8%
+        //   한쪽은 현재가에서 최대 6% (그 밖 레벨은 막대 끝 ◀ / ▶) · 전체 폭 최소 1.2% (지수 ETF 0.6%)
+        //   (매물대 그래프는 따로 자기 눈금 → 이 범위와 무관)
+        //   출렁임 방지: 레벨이 같고 현재가가 범위 안쪽(가장자리 10% 밖)이면 그대로 씀
         function 막대_범위(host, d, 고저, 종목) {
-            var price = Number(d.price) || 0, s1 = Number(d.support1) || 0, r1 = Number(d.resistance1) || 0;
+            var price = Number(d.price) || 0;
             종목 = 종목 || d.ticker || '';
             var 지수 = /^(QQQ|SPY|IWM|DIA|SPX)$/.test(종목);
-            var 최소 = price * (지수 ? 0.006 : 0.012), 최대 = price * 0.06, 거리 = [];
-            if (s1 > 0 && s1 < price) 거리.push(price - s1);
-            if (r1 > price) 거리.push(r1 - price);
-            function 넣기(v) { if (v > 0) 거리.push(Math.abs(v - price)); }
+            var 한쪽최대 = price * 0.06, lo = price, hi = price;
+            function 넣기(v) { v = Number(v) || 0; if (!(v > 0)) return; if (v < price && price - v <= 한쪽최대) lo = Math.min(lo, v); if (v > price && v - price <= 한쪽최대) hi = Math.max(hi, v); }
+            [d.support1, d.support2, d.resistance1, d.maxPain].forEach(넣기);
+            if (Number(d.support1) > 0 && Number(d.support1) < price - 한쪽최대) lo = price - 한쪽최대;   // 1차 지지가 6% 밖이면 그쪽 끝까지
+            if (Number(d.resistance1) > price + 한쪽최대) hi = price + 한쪽최대;
             if (고저) { 넣기(고저.L); 넣기(고저.H); }
-            // 매물대(마지막 정규장) 거래 집중 구간도 눈금 안에 들어오게 (시외 갭에도 막대 끝에 붙지 않게)
-            var 물 = 종목 ? 매물대_가져오기(종목) : null, 물키 = '';
-            if (물) {
-                if (물.집중 && 물.집중.하단 > 0 && 물.집중.상단 > 0) { 넣기(물.집중.하단); 넣기(물.집중.상단); 물키 = 물.집중.하단 + '~' + 물.집중.상단; }
-                else if (물.최대 && 물.최대.가격 > 0) { 넣기(물.최대.가격); 물키 = String(물.최대.가격); }
-            }
-            var R = Math.min(최대, Math.max(최소, (거리.length ? Math.max.apply(null, 거리) : 0) * 1.25));
-            var 키 = [종목, d.support1, d.support2, d.resistance1, d.resistance2, d.maxPain, 물키].join('|'), 전 = host && host._범위;
-            if (전 && 전.키 === 키 && Math.abs(price - 전.중심) <= 전.R * 0.35 && R <= 전.R * 1.3 && R >= 전.R * 0.6) return 전;
-            var 새 = { 키: 키, 중심: price, R: R, 최소: price - R, 최대: price + R };
+            var 폭 = Math.max(hi - lo, price * (지수 ? 0.006 : 0.012));
+            if (hi - lo < 폭) { var 더 = (폭 - (hi - lo)) / 2; lo -= 더; hi += 더; }
+            var 여백 = 폭 * 0.08; lo -= 여백; hi += 여백;
+            var 키 = [종목, d.support1, d.support2, d.resistance1, d.resistance2, d.maxPain, 고저 ? 고저.L + '/' + 고저.H : ''].join('|'), 전 = host && host._범위;
+            if (전 && 전.키 === 키 && price > 전.최소 + (전.최대 - 전.최소) * 0.1 && price < 전.최대 - (전.최대 - 전.최소) * 0.1) return 전;
+            var 새 = { 키: 키, 중심: price, R: (hi - lo) / 2, 최소: lo, 최대: hi };
             if (host) host._범위 = 새;
             return 새;
         }
@@ -8044,8 +8076,7 @@
                 nmEl.textContent = n.label;
                 host.appendChild(nmEl);
 
-                var diffPctFromCurrent = ((n.val - price) / price) * 100;
-                var totalTargetRate = ((1 + currentChgRate / 100) * (1 + diffPctFromCurrent / 100) - 1) * 100;   // 기준가 대비 (복리: 단순 합 아님)
+                var totalTargetRate = ((n.val - price) / price) * 100;   // 지금 가격 대비 (L·H·VWAP·아래 목록과 같은 기준)
                 var signStr = totalTargetRate > 0 ? '+' : '';
 
                 var pctEl = mkEl({
@@ -8099,7 +8130,9 @@
             var 저 = 세분 ? 세분.저항 : [], 지 = 세분 ? 세분.지지 : [];
             var 열 = function (목록, 지지) { var h = ''; for (var i = 0; i < 3; i++) h += 줄(목록[i], i, 지지); return h; };
             var 범위 = 세분 ? ' · ±' + 세분.범위.toFixed(1) + '%' : '';
-            var 표출처 = 세분 && 세분.출처 ? '<b class="lvs-src' + (/^엔진/.test(세분.출처) ? ' eng' : '') + '" title="' + (/^엔진/.test(세분.출처) ? '윈폼 매매 엔진이 만든 오늘의 기준 가격표 (엔진 신호와 같은 가격)' : '윈폼 엔진이 꺼져 있어 대시보드가 같은 규칙으로 직접 계산한 가격표') + '">' + 세분.출처 + '</b>' : '';
+            // 출처 꼬리표는 짧게 ('엔진' / '계산' + 날짜) · 자세한 설명은 마우스
+            var 짧은출처 = 세분 && 세분.출처 ? (/^엔진/.test(세분.출처) ? '엔진' : '계산') + ((세분.출처.match(/(\d+\/\d+) 마감/) || [])[1] ? ' · ' + 세분.출처.match(/(\d+\/\d+) 마감/)[1] : '') : '';
+            var 표출처 = 세분 && 세분.출처 ? '<b class="lvs-src' + (/^엔진/.test(세분.출처) ? ' eng' : '') + '" title="' + 세분.출처 + ' · ' + (/^엔진/.test(세분.출처) ? '윈폼 매매 엔진이 만든 기준 가격표 (엔진 신호와 같은 가격)' : '윈폼 엔진이 꺼져 있어 대시보드가 같은 규칙으로 직접 계산한 기준 가격표') + '">' + 짧은출처 + '</b>' : '';
             el.innerHTML = '<div class="lvs-col"><div class="lvs-h"><span>저항 (콜 쪽)' + 표출처 + '</span><span>현재가 대비</span></div>' + 열(저, false) + '</div>' +
                            '<div class="lvs-col"><div class="lvs-h"><span>지지 (풋 쪽)' + 범위 + '</span><span>현재가 대비</span></div>' + 열(지, true) + '</div>';
         }
@@ -8218,6 +8251,7 @@
             }).sort(function (a, b) { return a.expiry < b.expiry ? -1 : 1; });
             if (!목록.length) { 비움(); return; }
             var price = d && d.price > 0 ? d.price : v.price, 오늘 = etNowParts().date;
+            if (marketPhase().type !== 'REG') { var 지금1 = 레벨_지금가(t); if (지금1 > 0) price = 지금1; }
             function 표(c) {
                 var ex = c.expiry.split('-'), wd = new Date(Date.UTC(+ex[0], +ex[1] - 1, +ex[2])).getUTCDay(), 요일 = ['일', '월', '화', '수', '목', '금', '토'][wd];
                 var dte = Math.round((Date.UTC(+ex[0], +ex[1] - 1, +ex[2]) - Date.UTC(+오늘.slice(0, 4), +오늘.slice(5, 7) - 1, +오늘.slice(8, 10))) / 86400000);
@@ -8229,8 +8263,9 @@
                     '<span class="oi-dte">' + ex[1] + '/' + ex[2] + ' (D-' + dte + ')' + '</span></div>' +
                     '<div class="oi-summary"><span>수급: ' + (점 != null ? 옵션_수급글(점) + ' (' + 점.toFixed(1) + '점)' : '─') + '</span>' +
                     '<span>MaxPain <b>' + 계산.maxPain + '</b> · 지지 ' + 계산.support1 + ' · 저항 ' + 계산.resistance1 + '</span></div>' +
+                    (function () { var 예 = 옵션_예상범위(c.strikes, price); return 예 ? '<div class="oi-em" title="' + 예.설명 + '">이 만기 예상 범위 <b>±' + 예.퍼.toFixed(1) + '%</b> (' + 예.하.toFixed(1) + ' ~ ' + 예.상.toFixed(1) + ')</div>' : ''; })() +
                     '<div class="oi-xbody"><div class="oi-grid-header"><div style="text-align:right;padding-right:2px;">콜</div><div>OI/V</div><div>등락</div><div>행사가</div><div>등락</div><div>OI/V</div><div style="text-align:left;padding-left:2px;">풋</div></div>' +
-                    옵션표_HTML(계산.optionRows, price) + '</div></div>';
+                    옵션표_HTML(계산.optionRows, price, { mp: Number(계산.maxPain) || 0 }) + '</div></div>';
             }
             // 날짜순: 매매 기준 만기보다 빠른 만기는 위(기준 표 앞), 늦은 만기는 아래
             var 앞 = 목록.filter(function (c) { return 위만기 && c.expiry < 위만기; }), 뒤 = 목록.filter(function (c) { return !위만기 || c.expiry > 위만기; });
@@ -8251,11 +8286,59 @@
                 };
             }); });
         }
+        // ★ 이 만기 예상 범위 (기대 변동폭): 현재가에 가장 가까운 행사가의 콜 + 풋 마지막 체결가 (스트래들) ≈ 만기까지 예상 움직임
+        function 옵션_예상범위(strikes, price) {
+            if (!strikes || !strikes.length || !(price > 0)) return null;
+            var 가까운 = strikes.filter(function (r) { return r.cLast > 0 && r.pLast > 0; }).sort(function (a, b) { return Math.abs(a.k - price) - Math.abs(b.k - price); })[0];
+            if (!가까운 || Math.abs(가까운.k - price) / price > 0.03) return null;
+            var 폭 = 가까운.cLast + 가까운.pLast;
+            if (!(폭 > 0)) return null;
+            return { 폭: 폭, 퍼: 폭 / price * 100, 하: price - 폭, 상: price + 폭, 설명: '행사가 ' + 가까운.k + ' 콜 ' + 가까운.cLast + ' + 풋 ' + 가까운.pLast + ' = ' + 폭.toFixed(2) + ' (스트래들 가격 ≈ 만기까지 예상 움직임 · 마지막 체결가 기준)' };
+        }
+        // ★ 합산 벽: 7일 이내 만기의 행사가별 OI 를 가까운 만기일수록 무겁게 합침 (오늘 ×1.0 · 1~2일 ×0.8 · 3~7일 ×0.6)
+        //   콜 벽 = 현재가 위 가중 콜 OI 최대 · 풋 벽 = 현재가 아래 가중 풋 OI 최대 (현재가 ±10% 안) · MaxPain 은 만기마다 따로
+        function 옵션_가중치(만기) {
+            var 오늘 = etNowParts().date, ex = String(만기 || '').split('-'); if (ex.length < 3) return 0;
+            var dte = Math.round((Date.UTC(+ex[0], +ex[1] - 1, +ex[2]) - Date.UTC(+오늘.slice(0, 4), +오늘.slice(5, 7) - 1, +오늘.slice(8, 10))) / 86400000);
+            if (dte < 0 || dte > 7) return 0;
+            if (dte === 0 && !옵션_당일유효(만기)) return 0;
+            return dte === 0 ? 1.0 : dte <= 2 ? 0.8 : 0.6;
+        }
+        function 옵션_합산벽(t, price) {
+            var v = 옵션_월수[t]; if (!v || !v.strikes || !(price > 0)) return null;
+            var 맵 = {}, 쓴 = [];
+            [{ expiry: v.expiry, strikes: v.strikes }].concat(v.extras || []).forEach(function (c) {
+                var w = c && 옵션_가중치(c.expiry); if (!w || !c.strikes) return;
+                쓴.push(c.expiry.slice(5).replace('-', '/') + '×' + w);
+                c.strikes.forEach(function (r) { if (Math.abs(r.k - price) / price > 0.1) return; var m = 맵[r.k] = 맵[r.k] || { k: r.k, c: 0, p: 0 }; m.c += (r.cOI || 0) * w; m.p += (r.pOI || 0) * w; });
+            });
+            var 콜 = null, 풋 = null;
+            Object.keys(맵).map(function (k) { return 맵[k]; }).sort(function (a, b) { return a.k - b.k; }).forEach(function (m) { if (m.k > price && m.c > 0 && (!콜 || m.c > 콜.c)) 콜 = m; if (m.k < price && m.p > 0 && (!풋 || m.p > 풋.p)) 풋 = m; });
+            return 쓴.length ? { 콜: 콜, 풋: 풋, 쓴: 쓴, 행: 맵 } : null;
+        }
+        // 표 위 한 줄 요약
+        function 옵션_요약표시(idx, price) {
+            var el = document.getElementById('p' + idx + '-oi-sum1'); if (!el) return;
+            var t = panelTickers[idx], d = panelDataStore[idx] || {}, v = 옵션_월수[t], 부분 = [];
+            var 벽 = 옵션_합산벽(t, price);
+            if (벽 && 벽.콜) 부분.push('<span title="7일 이내 만기 합산 (' + 벽.쓴.join(' · ') + ')">합산 콜 벽 <b class="up">' + 벽.콜.k + '</b></span>');
+            if (벽 && 벽.풋) 부분.push('<span title="7일 이내 만기 합산 (' + 벽.쓴.join(' · ') + ')">합산 풋 벽 <b class="dn">' + 벽.풋.k + '</b></span>');
+            if (d.maxPain > 0) 부분.push('<span title="매매 기준 만기의 MaxPain">MP <b>' + d.maxPain + '</b></span>');
+            var 위만기 = d.만기 || d.expiry || (v && v.expiry), 같은 = v ? [{ expiry: v.expiry, strikes: v.strikes }].concat(v.extras || []).filter(function (c) { return c && c.expiry === 위만기; })[0] : null;
+            var 예 = 같은 ? 옵션_예상범위(같은.strikes, price) : null;
+            if (예) 부분.push('<span title="' + 예.설명 + '">예상 <b>' + 예.하.toFixed(1) + '~' + 예.상.toFixed(1) + '</b> (±' + 예.퍼.toFixed(1) + '%)</span>');
+            var 불 = [];
+            (d.optionRows || []).forEach(function (r) { if (r.callVol >= 100 && r.callVol >= r.callOI) 불.push({ k: r.strike, s: '콜', v: r.callVol }); if (r.putVol >= 100 && r.putVol >= r.putOI) 불.push({ k: r.strike, s: '풋', v: r.putVol }); });
+            불.sort(function (a, b) { return b.v - a.v; });
+            if (불.length) 부분.push('<span title="거래량이 OI 이상 = 그날 새 포지션이 몰린 행사가">🔥 ' + 불.slice(0, 2).map(function (x) { return x.k + ' ' + x.s; }).join(' · ') + '</span>');
+            var h = 부분.join('<i class="oi-sep">·</i>');
+            if (el._html !== h) { el.innerHTML = h; el._html = h; }
+        }
         // 다른 만기 표가 함께 보이면 위 머리의 만기 옆에 "★ 매매 기준" 표시
         function 옵션_기준표시(idx, 있음) {
             var el = document.getElementById('p' + idx + '-dte'); if (!el) return;
             var b = el.querySelector('.oi-star');
-            if (있음 && !b) { b = document.createElement('span'); b.className = 'oi-star'; b.textContent = ' ★ 매매 기준'; el.appendChild(b); }
+            if (있음 && !b) { b = document.createElement('span'); b.className = 'oi-star'; b.textContent = ' ★ 매매 기준'; b.title = '매매 기준 만기 자동 선택: 오늘 만기(월·수·금 당일)가 있으면 16:00 ET 전까지 그 만기 · 그 외 = 이번 주 금요일 만기'; el.appendChild(b); }
             else if (!있음 && b) b.remove();
         }
 
@@ -8266,8 +8349,11 @@
             hideInitialLoading();
             // 받을 때 잘라 둔 14행이 아니라, 지금 가격 기준으로 전체 행사가에서 다시 고름 (가격이 움직여도 현재가가 가운데)
             var 전체 = null; try { 전체 = 옵션_전체행사가(panelDataStore[panelIdx]); } catch (e) { }
+            var dd = panelDataStore[panelIdx] || {}, t0 = dd.ticker || panelTickers[panelIdx];
+            if (marketPhase().type !== 'REG' && t0) { var 지금0 = 레벨_지금가(t0); if (지금0 > 0) price = 지금0; }   // 장외: 지금 가격(시외·휴장 마지막) 기준
             if (전체 && price > 0) { var 다시 = 옵션_14줄(전체, price); if (다시.length) rows = 다시; }
-            el.innerHTML = 옵션표_HTML(rows, price);
+            el.innerHTML = 옵션표_HTML(rows, price, { mp: Number(dd.maxPain) || 0 });
+            try { 옵션_요약표시(panelIdx, price); } catch (e) { console.warn('[옵션 요약]', e); }
             옵션_월수예약(panelIdx);
         }
         // 가격이 바뀔 때마다 다시 그리지 않도록 최대 2초에 한 번
@@ -8277,8 +8363,11 @@
             if (남 <= 0) { 옵션_월수시각[idx] = Date.now(); try { 옵션_월수표시(idx); } catch (e) { } return; }
             if (!옵션_월수타이머[idx]) 옵션_월수타이머[idx] = setTimeout(function () { 옵션_월수타이머[idx] = null; 옵션_월수시각[idx] = Date.now(); try { 옵션_월수표시(idx); } catch (e) { } }, 남);
         }
-        function 옵션표_HTML(rows, price) {
+        //   opt.mp = MaxPain (그 행에 'MP' 꼬리표) · 콜 벽 = 현재가 위 콜 OI 최대 행 · 풋 벽 = 현재가 아래 풋 OI 최대 행
+        //   🔥 = 거래량이 OI 이상 (그날 새 포지션이 몰림) · 행사가 옆 (±%) = 지금 가격 대비 (태블릿·PC 의 넓은 패널만)
+        function 옵션표_HTML(rows, price, opt) {
             if (!rows || !rows.length) return '';
+            opt = opt || {};
             var isMobile = window.innerWidth <= 800;
 
             var atmItem = rows.reduce(function (pv, cv) {
@@ -8301,6 +8390,11 @@
                 return Math.max(r.callOI + r.callVol, r.putOI + r.putVol, 1);
             }));
             var fmt = function (v) { return v >= 1000 ? (v / 1000).toFixed(1) + 'K' : (v === 0 ? '-' : v); };
+            var 콜벽 = null, 풋벽 = null;
+            displayRows.forEach(function (r) { if (r.strike > price && r.callOI > 0 && (!콜벽 || r.callOI > 콜벽.callOI)) 콜벽 = r; if (r.strike < price && r.putOI > 0 && (!풋벽 || r.putOI > 풋벽.putOI)) 풋벽 = r; });
+            var mpK = opt.mp > 0 ? displayRows.reduce(function (a, r) { return !a || Math.abs(r.strike - opt.mp) < Math.abs(a.strike - opt.mp) ? r : a; }, null) : null;
+            if (mpK && Math.abs(mpK.strike - opt.mp) > 0.01) mpK = null;
+            function 불(v, oi) { return v >= 100 && v >= oi ? ' 🔥' : ''; }
 
             return displayRows.map(function (r) {
                 var cw = Math.max(1, ((r.callOI + r.callVol) / mx) * 100);
@@ -8311,14 +8405,19 @@
                 var cvTxt = isMobile ? fmt(r.callOI + r.callVol) : (fmt(r.callOI) + '/' + fmt(r.callVol));
                 var pvTxt = isMobile ? fmt(r.putOI + r.putVol) : (fmt(r.putOI) + '/' + fmt(r.putVol));
 
+                var 퍼 = price > 0 ? (r.strike - price) / price * 100 : 0;
+                var 퍼글 = '<i class="oi-pct ' + (퍼 > 0.005 ? 'up' : 퍼 < -0.005 ? 'dn' : '') + '">(' + (퍼 > 0 ? '+' : 퍼 < 0 ? '−' : '') + Math.abs(퍼).toFixed(1) + '%)</i>';
+                var 콜표 = r === 콜벽 ? '<i class="oi-tag c" title="현재가 위 콜 OI 최대 = 저항 벽">콜 벽</i>' : '';
+                var 풋표 = r === 풋벽 ? '<i class="oi-tag p" title="현재가 아래 풋 OI 최대 = 지지 벽">풋 벽</i>' : '';
+                var mp표 = r === mpK ? '<i class="oi-mp" title="MaxPain (이 만기)">MP</i>' : '';
                 return '<div class="oi-row">' +
-                    '<div class="oi-bar-wrap left"><div class="oi-bar call" style="width:' + cw + '%"></div></div>' +
-                    '<div class="oi-vol">' + cvTxt + '</div>' +
+                    '<div class="oi-bar-wrap left"><div class="oi-bar call" style="width:' + cw + '%"></div>' + 콜표 + '</div>' +
+                    '<div class="oi-vol">' + cvTxt + 불(r.callVol, r.callOI) + '</div>' +
                     '<div class="' + cc + '">' + (r.callChg > 0 ? '+' : '') + Math.round(r.callChg) + '%</div>' +
-                    '<div><span class="strike-box ' + ia + '">' + r.strike.toFixed(1) + '</span></div>' +
+                    '<div class="oi-k"><span class="strike-box ' + ia + '">' + r.strike.toFixed(1) + '</span>' + mp표 + 퍼글 + '</div>' +
                     '<div class="' + pc + '">' + (r.putChg > 0 ? '+' : '') + Math.round(r.putChg) + '%</div>' +
-                    '<div class="oi-vol">' + pvTxt + '</div>' +
-                    '<div class="oi-bar-wrap right"><div class="oi-bar put" style="width:' + pw + '%"></div></div>' +
+                    '<div class="oi-vol">' + pvTxt + 불(r.putVol, r.putOI) + '</div>' +
+                    '<div class="oi-bar-wrap right"><div class="oi-bar put" style="width:' + pw + '%"></div>' + 풋표 + '</div>' +
                     '</div>';
             }).join('');
         }
@@ -11660,7 +11759,7 @@
             (L.근거 || []).forEach(function (g) {
                 var t = g.글 || '', 점 = 0, 종류 = '', m = /^구간 (\d+)회/.exec(t);
                 if (m) { var c = +m[1]; if (n.근거_반등구간) { 점 = c >= 4 ? 8 : c >= 3 ? 15 : c >= 2 ? 10 : 0; 종류 = '구간'; } }
-                else if (t.indexOf(' OI ') >= 0 || /^옵션 /.test(t)) { if (n.근거_풋OI) { 점 = 6 + (만기 ? 2 : 0); 종류 = '옵션'; } }
+                else if (t.indexOf(' OI ') >= 0 || /^옵션 |^합산 /.test(t)) { if (n.근거_풋OI) { 점 = 6 + (만기 ? 2 : 0); 종류 = '옵션'; } }
                 else if (/^MaxPain/.test(t)) { if (n.근거_MaxPain && 만기 && 정오후) { 점 = 4; 종류 = '옵션'; } }
                 else if (/^전일 고가/.test(t)) { if (n.근거_전일고가) { 점 = 4; 종류 = '일봉'; } }
                 else if (/^전일 /.test(t)) { if (n.근거_전일종가) { 점 = 4; 종류 = '일봉'; } }
