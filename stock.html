@@ -1693,14 +1693,18 @@
         .sec-bar.sec-in { padding: 0; }
         .oi-one-tg { font: inherit; font-size: 11.5px; font-weight: 700; background: #141826; color: #8b93a7; border: 1px solid #2f3446; border-radius: 5px; padding: 0; line-height: 20px; cursor: pointer; display: inline-flex; overflow: hidden; }
         .oi-one-tg i { font-style: normal; padding: 0 8px; }
-        .oi-sum1 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; font-size: 12.5px; color: #c9cedb; margin: 2px 0 6px; padding: 5px 8px; border-radius: 6px; background: #121624; border: 1px solid #232838; }
+        .oi-sum1 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin: 4px 0 8px; }
+        .oi-sum1 .os-c.e { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+        .oi-sum1 .os-c.e .os-l { display: inline; }
         .oi-sum1:empty { display: none; }
-        .oi-sum1 b { font-weight: 800; color: #eef1f7; } .oi-sum1 b.up { color: #ff7a7a; } .oi-sum1 b.dn { color: #7aa8ff; } .oi-sum1 .oi-sep { font-style: normal; color: #4a5163; }
+        .oi-sum1 .os-c { background: #121624; border: 1px solid #262c3d; border-radius: 8px; padding: 6px 9px 7px; min-width: 0; }
+        .oi-sum1 .os-c.c { border-left: 3px solid #ff5d5d; } .oi-sum1 .os-c.p { border-left: 3px solid #4d8dff; } .oi-sum1 .os-c.e { border-left: 3px solid #e0b84a; }
+        .oi-sum1 .os-l { display: block; font-size: 12px; color: #8f97aa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .oi-sum1 .os-v { display: block; font-size: 18px; color: #eef1f7; white-space: nowrap; line-height: 1.35; }
+        .oi-sum1 .os-v b { font-weight: 800; } .oi-sum1 .os-v b.up { color: #ff7a7a; } .oi-sum1 .os-v b.dn { color: #7aa8ff; }
+        .oi-sum1 .os-v small { font-size: 13px; font-weight: 700; color: #aab2c5; } .oi-sum1 .os-v small.up { color: #ff8f8f; } .oi-sum1 .os-v small.dn { color: #8fb4ff; }
         .oi-em { font-size: 12px; color: #aab3c5; margin: 0 0 4px; } .oi-em b { color: #f5c542; }
         .oi-bar-wrap { position: relative; }
-        .oi-tag { position: absolute; top: 50%; transform: translateY(-50%); font-style: normal; font-size: 9.5px; font-weight: 800; padding: 0 3px; border-radius: 3px; line-height: 13px; white-space: nowrap; pointer-events: auto; }
-        .oi-tag.c { left: 2px; background: rgba(255,93,93,.25); color: #ffb3b3; border: 1px solid #ff5d5d; }
-        .oi-tag.p { right: 2px; background: rgba(77,141,255,.25); color: #b3ccff; border: 1px solid #4d8dff; }
         .oi-k { display: flex; align-items: center; justify-content: center; gap: 2px; white-space: nowrap; min-width: 0; }
         .oi-mp { font-style: normal; font-size: 8.5px; font-weight: 800; color: #f5c542; }
         .oi-pct { display: none; font-style: normal; font-size: 10px; font-weight: 600; color: #8b93a7; } .oi-pct.up { color: #ff8a8a; } .oi-pct.dn { color: #8fb4ff; }
@@ -4704,7 +4708,7 @@
                 + '</div>'
                 + '<div class="oi-extra" id="p' + i + '-oi-before"></div>'
                 + '<div class="oi-mainhead" id="p' + i + '-oi-mainhead"></div>'
-                + '<div class="oi-sum1" id="p' + i + '-oi-sum1"></div>'      // ★ 옵션 한 줄 요약: 합산 벽 · MaxPain · 예상 범위 · 🔥 이상 거래
+                + '<div class="oi-sum1" id="p' + i + '-oi-sum1"></div>'      // ★ 옵션 한 줄 요약: 합산 벽 · MaxPain · 예상 범위
                 + '<div class="oi-summary"><span id="p' + i + '-sum-power">수급 대기중</span><span id="p' + i + '-sum-env">지수 대기중</span></div>'
                 + '<div class="oi-grid-header"><div style="text-align:right;padding-right:2px;">콜</div><div>OI/V</div><div>등락</div><div>행사가</div><div>등락</div><div>OI/V</div><div style="text-align:left;padding-left:2px;">풋</div></div>'
                 + '<div id="p' + i + '-oi-rows"></div>'
@@ -8319,19 +8323,17 @@
         // 표 위 한 줄 요약
         function 옵션_요약표시(idx, price) {
             var el = document.getElementById('p' + idx + '-oi-sum1'); if (!el) return;
-            var t = panelTickers[idx], d = panelDataStore[idx] || {}, v = 옵션_월수[t], 부분 = [];
-            var 벽 = 옵션_합산벽(t, price);
-            if (벽 && 벽.콜) 부분.push('<span title="7일 이내 만기 합산 (' + 벽.쓴.join(' · ') + ')">합산 콜 벽 <b class="up">' + 벽.콜.k + '</b></span>');
-            if (벽 && 벽.풋) 부분.push('<span title="7일 이내 만기 합산 (' + 벽.쓴.join(' · ') + ')">합산 풋 벽 <b class="dn">' + 벽.풋.k + '</b></span>');
-            if (d.maxPain > 0) 부분.push('<span title="매매 기준 만기의 MaxPain">MP <b>' + d.maxPain + '</b></span>');
+            var t = panelTickers[idx], d = panelDataStore[idx] || {}, v = 옵션_월수[t], 칸 = [];
+            function 퍼(k) { if (!(price > 0)) return ''; var x = (k - price) / price * 100; return ' <small class="' + (x > 0 ? 'up' : x < 0 ? 'dn' : '') + '">' + (x > 0 ? '+' : x < 0 ? '−' : '') + Math.abs(x).toFixed(1) + '%</small>'; }
+            function 넣기(이름, 값, 풀이, 꼴) { 칸.push('<div class="os-c' + (꼴 ? ' ' + 꼴 : '') + '" title="' + 풀이 + '"><span class="os-l">' + 이름 + '</span><span class="os-v">' + 값 + '</span></div>'); }
+            var 벽 = 옵션_합산벽(t, price), 쓴 = 벽 && 벽.쓴 ? ' (' + 벽.쓴.join(' · ') + ')' : '';
+            if (벽 && 벽.콜) 넣기('저항 · 합산 콜 벽', '<b class="up">' + 벽.콜.k + '</b>' + 퍼(벽.콜.k), '7일 이내 만기 콜 OI 합산 최대' + 쓴, 'c');
+            if (벽 && 벽.풋) 넣기('지지 · 합산 풋 벽', '<b class="dn">' + 벽.풋.k + '</b>' + 퍼(벽.풋.k), '7일 이내 만기 풋 OI 합산 최대' + 쓴, 'p');
+            if (d.maxPain > 0) 넣기('MaxPain', '<b>' + d.maxPain + '</b>' + 퍼(d.maxPain), '매매 기준 만기의 MaxPain');
             var 위만기 = d.만기 || d.expiry || (v && v.expiry), 같은 = v ? [{ expiry: v.expiry, strikes: v.strikes }].concat(v.extras || []).filter(function (c) { return c && c.expiry === 위만기; })[0] : null;
             var 예 = 같은 ? 옵션_예상범위(같은.strikes, price) : null;
-            if (예) 부분.push('<span title="' + 예.설명 + '">예상 <b>' + 예.하.toFixed(1) + '~' + 예.상.toFixed(1) + '</b> (±' + 예.퍼.toFixed(1) + '%)</span>');
-            var 불 = [];
-            (d.optionRows || []).forEach(function (r) { if (r.callVol >= 100 && r.callVol >= r.callOI) 불.push({ k: r.strike, s: '콜', v: r.callVol }); if (r.putVol >= 100 && r.putVol >= r.putOI) 불.push({ k: r.strike, s: '풋', v: r.putVol }); });
-            불.sort(function (a, b) { return b.v - a.v; });
-            if (불.length) 부분.push('<span title="거래량이 OI 이상 = 그날 새 포지션이 몰린 행사가">🔥 ' + 불.slice(0, 2).map(function (x) { return x.k + ' ' + x.s; }).join(' · ') + '</span>');
-            var h = 부분.join('<i class="oi-sep">·</i>');
+            if (예) 넣기('예상 범위 (만기까지)', '<b>' + 예.하.toFixed(1) + ' ~ ' + 예.상.toFixed(1) + '</b> <small>±' + 예.퍼.toFixed(1) + '%</small>', 예.설명, 'e');
+            var h = 칸.join('');
             if (el._html !== h) { el.innerHTML = h; el._html = h; }
         }
         // 다른 만기 표가 함께 보이면 위 머리의 만기 옆에 "★ 매매 기준" 표시
@@ -8364,7 +8366,7 @@
             if (!옵션_월수타이머[idx]) 옵션_월수타이머[idx] = setTimeout(function () { 옵션_월수타이머[idx] = null; 옵션_월수시각[idx] = Date.now(); try { 옵션_월수표시(idx); } catch (e) { } }, 남);
         }
         //   opt.mp = MaxPain (그 행에 'MP' 꼬리표) · 콜 벽 = 현재가 위 콜 OI 최대 행 · 풋 벽 = 현재가 아래 풋 OI 최대 행
-        //   🔥 = 거래량이 OI 이상 (그날 새 포지션이 몰림) · 행사가 옆 (±%) = 지금 가격 대비 (태블릿·PC 의 넓은 패널만)
+        //   행사가 옆 (±%) = 지금 가격 대비 (태블릿·PC 의 넓은 패널만) · 등락 % 는 부호 없이 색으로 (빨강 오름 · 파랑 내림)
         function 옵션표_HTML(rows, price, opt) {
             if (!rows || !rows.length) return '';
             opt = opt || {};
@@ -8394,30 +8396,28 @@
             displayRows.forEach(function (r) { if (r.strike > price && r.callOI > 0 && (!콜벽 || r.callOI > 콜벽.callOI)) 콜벽 = r; if (r.strike < price && r.putOI > 0 && (!풋벽 || r.putOI > 풋벽.putOI)) 풋벽 = r; });
             var mpK = opt.mp > 0 ? displayRows.reduce(function (a, r) { return !a || Math.abs(r.strike - opt.mp) < Math.abs(a.strike - opt.mp) ? r : a; }, null) : null;
             if (mpK && Math.abs(mpK.strike - opt.mp) > 0.01) mpK = null;
-            function 불(v, oi) { return v >= 100 && v >= oi ? ' 🔥' : ''; }
+            function 등락(chg, vol) { return vol > 0 ? Math.abs(Math.round(chg)) + '%' : '—'; }   // 부호 없이 (색으로 구분) · 오늘 거래 없으면 —
 
             return displayRows.map(function (r) {
                 var cw = Math.max(1, ((r.callOI + r.callVol) / mx) * 100);
                 var pw = Math.max(1, ((r.putOI + r.putVol) / mx) * 100);
                 var ia = r.strike === atm ? 'atm' : '';
-                var cc = r.callChg > 0 ? 'up' : r.callChg < 0 ? 'dn' : 'neu';
-                var pc = r.putChg > 0 ? 'up' : r.putChg < 0 ? 'dn' : 'neu';
+                var cc = !(r.callVol > 0) ? 'neu' : r.callChg > 0 ? 'up' : r.callChg < 0 ? 'dn' : 'neu';
+                var pc = !(r.putVol > 0) ? 'neu' : r.putChg > 0 ? 'up' : r.putChg < 0 ? 'dn' : 'neu';
                 var cvTxt = isMobile ? fmt(r.callOI + r.callVol) : (fmt(r.callOI) + '/' + fmt(r.callVol));
                 var pvTxt = isMobile ? fmt(r.putOI + r.putVol) : (fmt(r.putOI) + '/' + fmt(r.putVol));
 
                 var 퍼 = price > 0 ? (r.strike - price) / price * 100 : 0;
                 var 퍼글 = '<i class="oi-pct ' + (퍼 > 0.005 ? 'up' : 퍼 < -0.005 ? 'dn' : '') + '">(' + (퍼 > 0 ? '+' : 퍼 < 0 ? '−' : '') + Math.abs(퍼).toFixed(1) + '%)</i>';
-                var 콜표 = r === 콜벽 ? '<i class="oi-tag c" title="현재가 위 콜 OI 최대 = 저항 벽">콜 벽</i>' : '';
-                var 풋표 = r === 풋벽 ? '<i class="oi-tag p" title="현재가 아래 풋 OI 최대 = 지지 벽">풋 벽</i>' : '';
                 var mp표 = r === mpK ? '<i class="oi-mp" title="MaxPain (이 만기)">MP</i>' : '';
                 return '<div class="oi-row">' +
-                    '<div class="oi-bar-wrap left"><div class="oi-bar call" style="width:' + cw + '%"></div>' + 콜표 + '</div>' +
-                    '<div class="oi-vol">' + cvTxt + 불(r.callVol, r.callOI) + '</div>' +
-                    '<div class="' + cc + '">' + (r.callChg > 0 ? '+' : '') + Math.round(r.callChg) + '%</div>' +
+                    '<div class="oi-bar-wrap left"><div class="oi-bar call" style="width:' + cw + '%"></div></div>' +
+                    '<div class="oi-vol">' + cvTxt + '</div>' +
+                    '<div class="' + cc + '">' + 등락(r.callChg, r.callVol) + '</div>' +
                     '<div class="oi-k"><span class="strike-box ' + ia + '">' + r.strike.toFixed(1) + '</span>' + mp표 + 퍼글 + '</div>' +
-                    '<div class="' + pc + '">' + (r.putChg > 0 ? '+' : '') + Math.round(r.putChg) + '%</div>' +
-                    '<div class="oi-vol">' + pvTxt + 불(r.putVol, r.putOI) + '</div>' +
-                    '<div class="oi-bar-wrap right"><div class="oi-bar put" style="width:' + pw + '%"></div>' + 풋표 + '</div>' +
+                    '<div class="' + pc + '">' + 등락(r.putChg, r.putVol) + '</div>' +
+                    '<div class="oi-vol">' + pvTxt + '</div>' +
+                    '<div class="oi-bar-wrap right"><div class="oi-bar put" style="width:' + pw + '%"></div></div>' +
                     '</div>';
             }).join('');
         }
