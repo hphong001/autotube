@@ -2774,6 +2774,28 @@
         #lv-top .lv-card.brk.dn { background: #0f1a33; border-color: #2f6bff; color: #cfe0ff; }
         #lv-top .lv-card.flash { animation: lvTop .5s ease-in-out infinite alternate; }
         @keyframes lvTop { from { box-shadow: 0 6px 22px rgba(0, 0, 0, .55); } to { box-shadow: 0 0 0 3px rgba(255, 255, 255, .35), 0 6px 22px rgba(0, 0, 0, .55); } }
+        /* ── 표시 [추천]·[자세히] · 차트 오른쪽 클릭 메뉴 · 대시보드2 가격 알림 카드 ── */
+        .kc-mode { display: flex; align-items: center; gap: 6px; margin: 6px 0 4px; }
+        .kc-mode button { font: inherit; font-size: 12.5px; font-weight: 800; padding: 4px 14px; border-radius: 6px; border: 1px solid #3a4153; background: #151a26; color: #cfd5e2; cursor: pointer; }
+        .kc-mode button.on { background: #ffdf00; border-color: #ffdf00; color: #111; }
+        .kc-mode span { font-size: 11.5px; color: #e0b84a; font-weight: 700; }
+        .kc-ctx { position: fixed; z-index: 9800; min-width: 240px; background: #161b28; border: 1px solid #343b50; border-radius: 9px; padding: 5px; box-shadow: 0 8px 26px rgba(0, 0, 0, .55); color: #e7e9f0; }
+        .kc-ctx-t { font-size: 12px; color: #8b93a7; padding: 4px 8px 6px; border-bottom: 1px solid #262d40; margin-bottom: 3px; }
+        .kc-ctx-t small { margin-left: 6px; }
+        .kc-ctx button { display: block; width: 100%; text-align: left; font: inherit; font-size: 13.5px; padding: 7px 10px; border: 0; border-radius: 6px; background: none; color: inherit; cursor: pointer; white-space: nowrap; }
+        .kc-ctx button:hover:not([disabled]) { background: #232a3c; }
+        .kc-ctx button[disabled] { opacity: .4; cursor: default; }
+        .kc-ctx button small { color: #8b93a7; margin-left: 6px; font-size: 11.5px; }
+        .kc-ctx button[data-a="add"] b { color: #ffdf00; }
+        .kc-ctx button[data-a="clear"]:not([disabled]) { color: #ff8a8a; }
+        .kc-ctx .sep { display: block; height: 1px; background: #262d40; margin: 4px 2px; }
+        #lv-top .lv-card.al { background: #2b250e; border-color: #ffdf00; color: #fff1b0; }
+        #lv-top .lv-ok { font: inherit; font-size: 12px; font-weight: 800; border-radius: 5px; padding: 2px 10px; cursor: pointer; border: 1px solid #6b5b1a; background: #1a170a; color: #ffe680; }
+        #lv-top .lv-ok.def { background: #ffdf00; border-color: #ffdf00; color: #111; }
+        .g-al { animation: gAl .6s ease-in-out infinite alternate; }
+        @keyframes gAl { from { box-shadow: 0 0 0 2px rgba(255, 223, 0, .25); } to { box-shadow: 0 0 0 3px #ffdf00, 0 0 14px rgba(255, 223, 0, .55); } }
+        .px-bell.al-ring { animation: alRing .5s ease-in-out infinite alternate; }
+        @keyframes alRing { from { transform: rotate(-12deg); filter: none; } to { transform: rotate(12deg); filter: drop-shadow(0 0 4px #ffdf00); } }
     </style>
 </head>
 <body>
@@ -3598,12 +3620,12 @@
                 추가('진입 위치', 방식 === '박스' ? (롱 ? '박스 하단' : '박스 상단') : (방식 === '눌림' || 방식 === '반등') ? (롱 ? '눌림 (지지 근접)' : '반등 (저항 근접)') : 방식, 15, 15, true);
             else if (방식 === '돌파' || 방식 === '이탈' || 방식 === '저항돌파' || 방식 === '지지이탈')
                 추가('진입 위치', '돌파 추종', 8, 15, true);
-            else 추가('진입 위치', p ? '레벨 사이 추격' : c.근접대기 ? '지지 여부 확인 필요 (반등 대기)' : '레벨 사이 중간', 0, 15, false);
+            else 추가('진입 위치', p ? '지지·저항 사이 추격' : c.근접대기 ? '지지 여부 확인 필요 (반등 대기)' : '지지·저항 사이 중간', 0, 15, false);
 
             // 4) 지지/저항 강도 (진입 기준 레벨이 오늘 검증된 구간인가 + 다른 레벨과 겹치는가)
             var 강도이름 = 롱 ? '지지 강도' : '저항 강도';
             if (c.구간.상태 !== '정상') 추가(강도이름, c.구간.상태 === '계산중' ? '지지·저항 구간 계산 중' : '지지·저항 구간 데이터 없음', 0, 10, null);
-            else if (!p || !(p.기준가 > 0)) 추가(강도이름, '진입 레벨 없음', 0, 10, false);
+            else if (!p || !(p.기준가 > 0)) 추가(강도이름, '진입 기준 없음', 0, 10, false);
             else {
                 var 목록 = 롱 ? c.구간.지지 : c.구간.저항, 허용 = Math.max(c.구간.허용폭, p.기준가 * 겹침_거리 / 100);
                 var 맞는 = 목록.filter(function (z) { return Math.abs(z.v - p.기준가) <= 허용; }).sort(function (a, b2) { return b2.횟수 - a.횟수; })[0];
@@ -3615,7 +3637,7 @@
                     if (옵션레벨) 점 = Math.max(점, 4);
                 }
                 점 = Math.min(10, 점);
-                var 설명 = 맞는 ? 맞는.횟수 + (롱 ? '번 지지 반등' : '번 막힌 저항') + (겹침.length ? ' + ' + 겹침[0].n : '') : 점 > 0 ? '옵션 레벨' + (겹침.length ? ' + ' + 겹침[0].n : '') : '검증 안 된 레벨';
+                var 설명 = 맞는 ? 맞는.횟수 + (롱 ? '번 지지 반등' : '번 막힌 저항') + (겹침.length ? ' + ' + 겹침[0].n : '') : 점 > 0 ? '옵션 지지·저항' + (겹침.length ? ' + ' + 겹침[0].n : '') : '검증 안 된 지지·저항';
                 추가(강도이름, 설명, 점, 10, 점 > 0);
             }
 
@@ -3641,7 +3663,7 @@
 
             // 8) 체결 수급 (윈폼 키움 체결 기준 최근 60초 매수/매도 비율 · 윈폼 꺼짐이면 제외)
             var f = c.체결;
-            if (!f) 추가('체결', c.윈폼 ? '체결 수급 — 이 종목 체결 정보 없음' : '체결 수급 — 윈폼 꺼짐 (점수 제외)', 0, 10, null);
+            if (!f) 추가('체결', c.윈폼 ? '체결 수급 — 이 종목 체결 정보 없음' : '체결 수급 — 실시간 체결 없음 (점수 제외)', 0, 10, null);
             else if (f.비율60 == null || (Number(f.건수60) || 0) < 10) 추가('체결', '체결 수급 — 최근 1분 체결 적음', 0, 10, null);
             else {
                 var 우 = 롱 ? f.비율60 : 1 - f.비율60, 퍼 = Math.round(f.비율60 * 100);
@@ -3996,13 +4018,13 @@
                 // 거래량이 확인되지 않은 돌파/이탈은 휩소가 잦으므로 매매 계획을 만들지 않음 (문구만 안내)
                 if (ev.dir === 'up') {
                     if (confirmed && !chasing) { plan = rtPlan('long', price, s.levels[ev.key] ? s.levels[ev.key].lv * 0.998 : (below[0] && below[0].v), above[0] && above[0].v); if (plan) { plan.방식 = '돌파'; plan.기준가 = evLv; } }
-                    line3 = confirmed && chasing ? '이미 레벨에서 멀어짐. 추격 금지, 눌림 대기'
-                          : confirmed ? '돌파 추종 가능. 레벨 아래로 다시 밀리면 즉시 청산'
+                    line3 = confirmed && chasing ? '이미 지지·저항에서 멀어짐. 추격 금지, 눌림 대기'
+                          : confirmed ? '돌파 추종 가능. 지지·저항 아래로 다시 밀리면 즉시 청산'
                                       : '거래량 없는 돌파는 되밀림 잦음. 리테스트(되돌림 후 지지) 확인 후 진입';
                 } else {
                     if (confirmed && !chasing) { plan = rtPlan('short', price, s.levels[ev.key] ? s.levels[ev.key].lv * 1.002 : (above[0] && above[0].v), below[0] && below[0].v); if (plan) { plan.방식 = '이탈'; plan.기준가 = evLv; } }
-                    line3 = confirmed && chasing ? '이미 레벨에서 멀어짐. 추격 금지, 반등 대기'
-                          : confirmed ? '이탈 추종 가능. 레벨 위로 재탈환하면 즉시 청산'
+                    line3 = confirmed && chasing ? '이미 지지·저항에서 멀어짐. 추격 금지, 반등 대기'
+                          : confirmed ? '이탈 추종 가능. 지지·저항 위로 재탈환하면 즉시 청산'
                                       : '거래량 없는 이탈은 재탈환(휩소) 잦음. 저가 매도 추격 금지';
                 }
                 // 추세 반대 방향 추격 진입 금지 (레벨 근접 분기와 같은 규칙)
@@ -4085,7 +4107,7 @@
                     // 추세지만 눌림 계획을 만들 수 없음 (후보 없음 또는 목표 없음) → 관망
                     var 방향 = 추세방향;
                     if (눌림결과 && 눌림결과.선택) {
-                        line3 = (방향 === 'long' ? '눌림' : '반등') + ' 후보 ' + 눌림결과.선택.n + ' $' + 눌림결과.선택.v.toFixed(2) + ' — ' + (방향 === 'long' ? '위' : '아래') + '쪽 목표 레벨 없음, 관망';
+                        line3 = (방향 === 'long' ? '눌림' : '반등') + ' 후보 ' + 눌림결과.선택.n + ' $' + 눌림결과.선택.v.toFixed(2) + ' — ' + (방향 === 'long' ? '위' : '아래') + '쪽 목표 가격 없음, 관망';
                     } else {
                         line3 = (방향 === 'long' ? '눌림 대기 — 현재가 아래 ' : '반등 대기 — 현재가 위 ') + 눌림범위 + '% 안에 ' + (방향 === 'long' ? '지지' : '저항') + ' 없음';
                     }
@@ -4097,7 +4119,7 @@
                                           : '박스 상단 매도 — ' + 박스.상단.횟수 + '번 막힌 저항 $' + 박스.상단.v.toFixed(2))
                                  : '박스권 — 진입 계획을 만들 수 없음';
                 } else {
-                    line3 = '레벨 사이 중간 구간. 다음 레벨 도달 전까지 관망';
+                    line3 = '지지·저항 사이 중간 구간. 다음 지지·저항 도달 전까지 관망';
                 }
             }
             // 마감 기준 모드: 실시간 가격을 상황 줄 앞에 표시
@@ -4181,7 +4203,7 @@
             s.AI = { at: Date.now(), 모드: 마감 ? '마감 기준 (' + 마감.날짜 + ' 정규장)' : '실시간', 마감: 마감 || null, 판단가: price, 실시간가: 실시간가,
                      vwap: vwap, VWAP확정: VWAP확정, vwLabel: vwLabel, vwDist: vwDist, m1: m1, m3: m3, m10: m10, 변동: 변동 ? 변동.값 : null,
                      surge: surge, 순간출처: rtVolSurge(s) != null ? '최근 1분 ÷ 직전 10분 평균' : '최근 3분 · 과거 같은 시각 대비, 1분봉',
-                     volRatio: 거래량배수값, 배수출처: 마감 ? '마감 하루 전체 · 과거 평균 대비 (1분봉)' : d.volRatio > 0 ? '윈폼(키움) · 과거 같은 시각 대비' : '야후 1분봉 · 과거 같은 시각 대비',
+                     volRatio: 거래량배수값, 배수출처: 마감 ? '마감 하루 전체 · 과거 평균 대비 (1분봉)' : d.volRatio > 0 ? '키움 실시간 · 과거 같은 시각 대비' : '1분봉 · 과거 같은 시각 대비',
                      레벨: s.레벨세분, bias: bias, 방향점수: { VWAP: 점수_VWAP, 흐름1: 점수_3분, 흐름2: 점수_10분, 옵션: 점수_옵션 },
                      추세: s.추세 ? { 방향: s.추세.부호 > 0 ? '상승' : '하락', 시작: s.추세.시작 } : null,
                      결론: 결론.글, 이유: jd.이유, 계획: jd.계획 ? { dir: jd.계획.dir, entry: jd.계획.entry, stop: jd.계획.stop, target: jd.계획.target, rr: jd.계획.rr } : null,
@@ -4344,8 +4366,8 @@
             // ⑥ 지표 막대 (가운데 0 기준 좌우) + 옵션 눈금 + 거래량 2줄
             // 체결 줄: 매수(빨강)·매도(파랑) 비율 막대 + 매수 % · 체결강도 · 속도 (윈폼 꺼짐이면 흐리게)
             function 체결줄HTML(f) {
-                if (!f) return '<div class="sg-row sg-wide" title="윈폼(키움) 실시간 체결로 계산 — 웹만 쓸 때는 체결 방향을 알 수 없어 표시하지 않음"><span class="sg-rl">체결</span><div class="sg-split"></div><span class="sg-rv" style="color:' + 흐림 + '">' +
-                                   (체결_윈폼켜짐() ? '체결 정보 없음' : '윈폼 실행 시 표시') + '</span></div>';
+                if (!f) return '<div class="sg-row sg-wide" title="키움 실시간 체결로 계산 — 실시간 체결이 연결되지 않으면 표시하지 않음"><span class="sg-rl">체결</span><div class="sg-split"></div><span class="sg-rv" style="color:' + 흐림 + '">' +
+                                   (체결_윈폼켜짐() ? '체결 정보 없음' : '실시간 체결 연결 시 표시') + '</span></div>';
                 var r = f.비율60, 배 = Number(f.배수), 단 = f.단계 || '';
                 var 막 = r == null ? '' : '<i style="width:' + (r * 100).toFixed(1) + '%;background:' + 빨강 + 'cc"></i><i style="width:' + ((1 - r) * 100).toFixed(1) + '%;background:' + 파랑 + 'cc"></i><b></b>';
                 var 색 = r == null ? 흐림 : r >= 0.55 ? 빨강 : r <= 0.45 ? 파랑 : '#c9cedb';
@@ -4414,7 +4436,7 @@
                 note ? note : '정규장',
                 정규장VWAP > 0 ? '정규장 VWAP $' + 정규장VWAP.toFixed(2) + ' (현재가 ' + fmtPct((price - 정규장VWAP) / 정규장VWAP * 100) + ')' : '',
                 '시세 ' + (s.src === 'kiwoom' ? '키움' : s.src === 'yahoo' ? '야후' : '─'),
-                s.extVwap > 0 ? 'VWAP 키움 계산' : 일VWAP ? 'VWAP 야후 1분봉 정규장 (' + (일오늘.마감.마지막봉 || '') + ' 기준)' : vwReal ? 'VWAP 페이지 수집값' : 'VWAP 추정치',
+                s.extVwap > 0 ? 'VWAP 키움 계산' : 일VWAP ? 'VWAP 1분봉 정규장 (' + (일오늘.마감.마지막봉 || '') + ' 기준)' : vwReal ? 'VWAP 페이지 수집값' : 'VWAP 추정치',
                 구간.상태 === '정상' ? '지지·저항 구간 ' + 구간.기준시각 + ' 기준 (' + 구간.출처 + ')' : '',
                 s.ticks.length < 20 ? '실시간 수집 중' : ''
             ].filter(Boolean).join(' · ');
@@ -4441,7 +4463,7 @@
             var 흐름 = s.흐름.글, 흐름색 = /상승/.test(흐름) ? '#ff6b6b' : /하락/.test(흐름) ? '#5b9bff' : '#f2c14e';
             var 흐름아이콘 = /상승/.test(흐름) ? '↗' : /하락/.test(흐름) ? '↘' : '→';
             put('sigtitle', '<span>' + 흐름아이콘 + ' ' + 흐름 + '</span><em class="sg-sess sg-sess-' + 배지.종류 + '">' + 배지.글 + '</em>', 흐름색,
-                '단기 흐름 (참고) · 매수 판단은 위 엔진 칸 · ' + 배지.글);
+                '단기 흐름 (참고) · 매수 판단은 위 분석 칸 · ' + 배지.글);
             // 이유: 핵심 레벨(이름 + 가격)을 노란색으로
             var 이유글 = String(jd.이유 || '');
             var 이유HTML = 이유글.replace(/((\d+번 (지지 반등|막힌 저항))|[12]차(지지|저항)|MaxPain|VWAP|박스(상단|하단)) \$[\d.]+/, function (m) { return '<span class="sg-lv">' + m + '</span>'; });
@@ -4455,7 +4477,7 @@
                 var 변 = jd.변경, 변글 = '';
                 if (변) { var 변et = new Date(new Date(변.시각).toLocaleString('en-US', { timeZone: 'America/New_York' }));
                     변글 = '↻ ' + ('0' + 변et.getHours()).slice(-2) + ':' + ('0' + 변et.getMinutes()).slice(-2) + ':' + ('0' + 변et.getSeconds()).slice(-2) + ' ET · <b>' + 변.전 + ' → ' + 변.후 + '</b> · ' + 변.사유; }
-                else 변글 = '결론 유지 기준: 20초 확인 · 최소 60초 유지 (큰 가격 변화·레벨 돌파 시 즉시)';
+                else 변글 = '결론 유지 기준: 20초 확인 · 최소 60초 유지 (큰 가격 변화·지지·저항 돌파 시 즉시)';
                 if (변경칸._html !== 변글) { 변경칸.innerHTML = 변글; 변경칸._html = 변글; }
             }
 
@@ -4480,7 +4502,7 @@
                 목표줄 = (목표레벨 ? 목표레벨.n + ' ' : '') + '$' + 계획.target.toFixed(2) + ' <span class="' + 색(목표비) + '">(진입가 대비 ' + fmtPct(목표비) + ')</span>';
             } else {
                 var 다음 = bias >= 0 ? above[0] : below[0];
-                목표줄 = 다음 ? '<span class="dim">다음 레벨</span> ' + 다음.n + ' $' + 다음.v.toFixed(2) + ' <span class="' + 색(다음.v - price) + '">(' + fmtPct((다음.v - price) / price * 100) + ')</span>' : '<span class="dim">─</span>';
+                목표줄 = 다음 ? '<span class="dim">다음 지지·저항</span> ' + 다음.n + ' $' + 다음.v.toFixed(2) + ' <span class="' + 색(다음.v - price) + '">(' + fmtPct((다음.v - price) / price * 100) + ')</span>' : '<span class="dim">─</span>';
             }
             put('situ', '<b>가격</b><span title="' + paperPlain(가격줄) + '">' + 가격줄 + '</span>' +
                         '<b>상황</b><span title="' + 판단줄.replace(/"/g, '') + '">' + 판단줄 + '</span>' +
@@ -4653,8 +4675,8 @@
         // 진입을 막는 사유 (대기주문을 걸 때 + 실제 체결 순간 두 번 확인)
         function 가상_진입막힘사유(종목, 방향, 레벨키, 레벨이름) {
             var 기록 = 가상매매.레벨기록[레벨키];
-            if (기록 && 기록.시도 >= 가상_레벨최대시도) return '같은 레벨(' + 레벨이름 + ') ' + 방향 + ' 오늘 ' + 기록.시도 + '회 시도 — 하루 최대 ' + 가상_레벨최대시도 + '회';
-            if (기록 && 기록.마지막손절 && (Date.now() - 기록.마지막손절) / 60000 < 가상_레벨손절대기분) return '같은 레벨(' + 레벨이름 + ') 손절 후 ' + 가상_레벨손절대기분 + '분 대기 중';
+            if (기록 && 기록.시도 >= 가상_레벨최대시도) return '같은 지지·저항(' + 레벨이름 + ') ' + 방향 + ' 오늘 ' + 기록.시도 + '회 시도 — 하루 최대 ' + 가상_레벨최대시도 + '회';
+            if (기록 && 기록.마지막손절 && (Date.now() - 기록.마지막손절) / 60000 < 가상_레벨손절대기분) return '같은 지지·저항(' + 레벨이름 + ') 손절 후 ' + 가상_레벨손절대기분 + '분 대기 중';
             if (!가상매매.보유[종목] && 가상매매.마지막청산[종목] && (Date.now() - 가상매매.마지막청산[종목]) / 1000 < 가상_재진입대기초) return '청산 후 ' + 가상_재진입대기초 + '초 재진입 대기';
             return '';
         }
@@ -5703,7 +5725,7 @@
                     if (rs && rs.오늘차 != null) {
                         글 = 'RS' + (rs.오늘차 > 0 ? '+' : rs.오늘차 < 0 ? '−' : '') + Math.abs(rs.오늘차).toFixed(1);
                         류 = rs.점 >= 5 ? ' st' : rs.점 <= 0 ? ' wk' : '';
-                        설 = '상대 강도 ' + rs.글 + ' → 환경 ' + rs.점 + '점 (' + (rs.점 >= 5 ? '강함' : rs.점 <= 0 ? '약함' : '보통') + ')\n= 종목 등락률 − QQQ 등락률 · 5점: +0.5%p 이상 · 0점: −1.0%p 이하' + (rs.출처 === '엔진' ? ' (엔진: 최근 30분도 비교)' : '');
+                        설 = '상대 강도 ' + rs.글 + ' → 환경 ' + rs.점 + '점 (' + (rs.점 >= 5 ? '강함' : rs.점 <= 0 ? '약함' : '보통') + ')\n= 종목 등락률 − QQQ 등락률 · 5점: +0.5%p 이상 · 0점: −1.0%p 이하' + (rs.출처 === '엔진' ? ' (분석: 최근 30분도 비교)' : '');
                     }
                     var rh = 글 ? '<span class="wl-rs-b' + 류 + '">' + 글 + '</span>' : '';
                     if (rsEl._html !== rh) { rsEl.innerHTML = rh; rsEl._html = rh; rsEl.title = 설; }
@@ -5734,7 +5756,7 @@
                 });
                 if (수 > 0) {
                     글 = '상승 ' + 상 + '/' + 수 + (앎 > 0 ? ' · VWAP 위 ' + 위 + '/' + 앎 : '');
-                    설 = '관심종목 흐름 (정규장)\n상승 = 오늘 등락률이 0 보다 큰 종목 수 / 전체\nVWAP 위 = 현재가가 VWAP 이상인 종목 수 / VWAP 을 아는 종목 수 (엔진·패널 실시간)';
+                    설 = '관심종목 흐름 (정규장)\n상승 = 오늘 등락률이 0 보다 큰 종목 수 / 전체\nVWAP 위 = 현재가가 VWAP 이상인 종목 수 / VWAP 을 아는 종목 수 (실시간)';
                     류 += 상 / 수 >= 0.6 ? ' up' : 상 / 수 <= 0.4 ? ' dn' : '';
                     try { var 흐기 = 시장경보_기록.흐름, 막 = 흐기[흐기.length - 1]; if (!막 || Date.now() - 막.t >= 30000) 흐기.push({ t: Date.now(), 상: 상 / 수, 위: 앎 > 0 ? 위 / 앎 : null, 앎: 앎 }); } catch (e) { }
                 }
@@ -6431,7 +6453,7 @@
             function 빈안내() {
                 var 하나 = 보기날짜().length === 1 ? 보기날짜()[0] : '';
                 if (Object.keys(자료).length) return '조건에 맞는 뉴스가 없습니다' + (뉴스_설정().제외 || 설.출처끔.length || 설.분류끔.length ? '<br><small>⚙ 설정의 출처·분류·제외 단어로 숨긴 뉴스가 있을 수 있습니다</small>' : '');
-                if (하나 && 있는날 && !있는날[하나]) return '이 날짜(' + 하나 + ')는 수집 기록이 없습니다' + (수집.from ? '<br><small>윈폼 수집 범위: ' + 뉴스_한국날짜(수집.from) + ' ' + 뉴스_한국시각(수집.from) + ' 이후 (보관 3일)</small>' : '<br><small>윈폼 수집기를 켠 뒤부터 저장됩니다 (보관 3일)</small>');
+                if (하나 && 있는날 && !있는날[하나]) return '이 날짜(' + 하나 + ')는 수집 기록이 없습니다' + (수집.from ? '<br><small>수집 범위: ' + 뉴스_한국날짜(수집.from) + ' ' + 뉴스_한국시각(수집.from) + ' 이후 (보관 3일)</small>' : '<br><small>수집을 시작한 뒤부터 저장됩니다 (보관 3일)</small>');
                 return 처음남음 > 0 ? '뉴스를 불러오는 중…' : '뉴스가 없습니다';
             }
             function 그리기() {
@@ -6466,7 +6488,7 @@
                 날들.forEach(function (d) {
                     var ref = firebase.database().ref('news/' + d).orderByChild('t'), 처음 = true;
                     참조들.push(ref);
-                    ref.once('value').then(function () { 처음 = false; 처음남음--; 그리기(); }).catch(function (e) { document.getElementById('nw-list').innerHTML = '<div class="nw-empty">뉴스를 읽지 못했습니다: ' + 뉴스_글(e && e.message) + '<br>Firebase 규칙에 news 읽기 허용이 필요합니다</div>'; });
+                    ref.once('value').then(function () { 처음 = false; 처음남음--; 그리기(); }).catch(function (e) { document.getElementById('nw-list').innerHTML = '<div class="nw-empty">뉴스를 읽지 못했습니다' + (본인기기() ? ': ' + 뉴스_글(e && e.message) + '<br>Firebase 규칙에 news 읽기 허용이 필요합니다' : ' · 잠시 후 다시 시도합니다') + '</div>'; });
                     ref.on('child_changed', function (s) { var x = s.val(); if (!x) return; x.id = s.key; 자료[s.key] = x; if (!처음) 나중에그리기(); });   // 제목 번역 갱신
                     ref.on('child_added', function (s) {
                         var x = s.val(); if (!x) return; x.id = s.key; 자료[s.key] = x;
@@ -6541,7 +6563,7 @@
                 var v = s.val() || {}, el = document.getElementById('nw-st'), 살아 = v.at && Date.now() - v.at < 3 * 60000 && v.on !== false;
                 수집 = v;
                 el.className = 'nw-st ' + (살아 ? 'ok' : 'off');
-                el.textContent = 살아 ? '● 수집 중' + (v.pc ? ' (' + v.pc + ')' : '') + ' · 마지막 ' + 뉴스_한국시각(v.at) : '⏸ 수집 멈춤' + (v.at ? ' (마지막 ' + 뉴스_한국날짜(v.at).slice(5).replace('-', '/') + ' ' + 뉴스_한국시각(v.at) + ')' : '') + ' · 수집 PC 의 윈폼이 꺼졌거나 체크박스7 이 꺼져 있음';
+                el.textContent = 살아 ? '● 수집 중' + (v.pc && 본인기기() ? ' (' + v.pc + ')' : '') + ' · 마지막 ' + 뉴스_한국시각(v.at) : '⏸ 수집 멈춤' + (v.at ? ' (마지막 ' + 뉴스_한국날짜(v.at).slice(5).replace('-', '/') + ' ' + 뉴스_한국시각(v.at) + ')' : '') + (본인기기() ? ' · 수집 PC 의 윈폼이 꺼졌거나 체크박스7 이 꺼져 있음' : '');
             });
             q.addEventListener('input', function () { 상태.보일수 = 200; 나중에그리기(); try { var u = new URL(location.href); if (q.value.trim()) u.searchParams.set('q', q.value.trim()); else u.searchParams.delete('q'); history.replaceState(null, '', u.pathname + u.search); } catch (e) { } });
             document.addEventListener('click', function (e) {
@@ -7549,7 +7571,7 @@
                     if (l1) l1.textContent = (rc.regDate ? 월일(rc.regDate) + ' ' : '') + '종가';
                     if (regLbl) {
                         regLbl.textContent = rc.src === 'yahoo' ? '✓' : rc.src === 'day-provisional' ? '잠정' : '';
-                        regLbl.title = rc.src === 'yahoo' ? '자동 기록된 공식 종가 (Worker)' : rc.src === 'day' || rc.src === 'day-provisional' ? '오늘 정규장 마지막 가격 (공식 종가 기록 전)' : '야후 장외 시세에서 계산한 종가';
+                        regLbl.title = rc.src === 'yahoo' ? '자동 기록된 공식 종가' : rc.src === 'day' || rc.src === 'day-provisional' ? '오늘 정규장 마지막 가격 (공식 종가 기록 전)' : '장외 시세에서 계산한 종가';
                     }
                 } else { 칸(el('c1px'), el('c1df'), el('c1cg'), 0, null, null); if (l1) l1.textContent = '종가'; if (regLbl) regLbl.textContent = ''; }
                 // ② 시간외 현재가 (종가 대비)
@@ -7614,7 +7636,7 @@
             var oit = document.getElementById(p + 'oi-title'); if (oit) { oit.textContent = (d.ticker || panelTickers[panel]) + ' 옵션 체인'; }
             var timeEl = document.getElementById(p + 'update-time');
             if (timeEl && d.옵션출처 === 'CBOE') timeEl.textContent = marketPhase().type === 'REG' ? '(CBOE 15분 지연 · ' + (d.cboeET || '') + ' 기준)' : '(CBOE · ' + 레벨_월일(구간_기대날짜()) + ' 마감 자료)';
-            else if (timeEl && d.updatedAt) { var rawTime = d.updatedAt; if (rawTime.length >= 16) timeEl.textContent = '(' + (d.옵션출처 === '야후' ? '야후 15분 지연' : '키움') + ' · 최신 갱신 : ' + rawTime.substring(5, 7) + '월 ' + rawTime.substring(8, 10) + '일 ' + rawTime.substring(11, 16) + ')'; }
+            else if (timeEl && d.updatedAt) { var rawTime = d.updatedAt; if (rawTime.length >= 16) timeEl.textContent = '(' + (d.옵션출처 === '야후' ? '15분 지연' : '키움') + ' · 최신 갱신 : ' + rawTime.substring(5, 7) + '월 ' + rawTime.substring(8, 10) + '일 ' + rawTime.substring(11, 16) + ')'; }
             var badgeElem = document.getElementById(p + 'market-badge'); if (badgeElem) { badgeElem.style.display = d.isMarketOpen === false ? 'inline-block' : 'none'; }
             if (d.score !== undefined) {
                 var spEl = document.getElementById(p + 'sum-power');
@@ -7696,7 +7718,7 @@
             요소.점.style.top = (눈.막대Y - 3) + 'px';
             // % = 현재가 대비 (다른 레벨과 같은 기준: VWAP 이 현재가보다 위면 +)
             요소.글.textContent = 'VWAP ' + vwap.toFixed(1) + (추정 ? '(추정)' : 정규장값 ? '(정규장)' : '') + ' (' + (차이 >= 0 ? '+' : '') + 차이.toFixed(2) + '%)';
-            요소.글.title = 'VWAP ' + vwap.toFixed(2) + ' · 현재가 ' + 현재가.toFixed(2) + ' 대비 ' + (차이 >= 0 ? '+' : '') + 차이.toFixed(2) + '% (위 레벨들과 같은 기준)';
+            요소.글.title = 'VWAP ' + vwap.toFixed(2) + ' · 현재가 ' + 현재가.toFixed(2) + ' 대비 ' + (차이 >= 0 ? '+' : '') + 차이.toFixed(2) + '% (위 지지·저항과 같은 기준)';
             요소.글.style.top = (눈.막대Y + 눈.막대높이 + 2 + (눈.띠 || 0)) + 'px';
             // 라벨이 좌우 끝에서 잘리지 않게 위치 보정
             요소.글.style.left = Math.max(12, Math.min(88, 위치)) + '%';
@@ -8349,7 +8371,7 @@
                 if (!nodes.some(function (n) { return n.밖 === 쪽; })) return;
                 var w = mkEl({ position: 'absolute', zIndex: '6', top: (BOT_TRACK_Y - 6) + 'px', left: (쪽 < 0 ? PAD_L * 100 + 3.2 : (1 - PAD_R) * 100 - 3.2) + '%', transform: 'translateX(-50%)',
                                fontSize: '13px', fontWeight: '900', color: '#8b93a7', lineHeight: '13px' });
-                w.textContent = '≈'; w.title = '이 너머 레벨은 막대 끝에 모아 표시 (실제 거리는 % 참고)';
+                w.textContent = '≈'; w.title = '이 너머 지지·저항은 막대 끝에 모아 표시 (실제 거리는 % 참고)';
                 host.appendChild(w);
             });
 
@@ -8406,7 +8428,7 @@
             if (물표 && 물표.최대.가격 >= minV && 물표.최대.가격 <= maxV) {
                 var 마름 = mkEl({ position: 'absolute', zIndex: '4', top: (BOT_TRACK_Y + BOT_TRACK_H / 2 - 5) + 'px', left: pct(물표.최대.가격) + '%', width: '9px', height: '9px',
                                   background: '#c9cedb', border: '1px solid #11141d', transform: 'translate(-50%,0) rotate(45deg)' });
-                마름.title = '당일 매물대 최대 ' + 물표.최대.가격.toFixed(2) + ' (' + 물표.최대.비중 + '% · ' + (물표.출처 === '체결' ? '윈폼 체결 기준' : '1분봉 기준') + ')';
+                마름.title = '당일 매물대 최대 ' + 물표.최대.가격.toFixed(2) + ' (' + 물표.최대.비중 + '% · ' + (물표.출처 === '체결' ? '실시간 체결 기준' : '1분봉 기준') + ')';
                 host.appendChild(마름);
             }
             // 가격 알람 위치 (노란 점선 눈금)
@@ -8446,7 +8468,7 @@
             var 범위 = 세분 ? ' · ±' + 세분.범위.toFixed(1) + '%' : '';
             // 출처 꼬리표는 짧게 ('엔진' / '계산' + 날짜) · 자세한 설명은 마우스
             var 짧은출처 = 세분 && 세분.출처 ? (/^엔진/.test(세분.출처) ? '엔진' : '계산') + ((세분.출처.match(/(\d+\/\d+) 마감/) || [])[1] ? ' · ' + 세분.출처.match(/(\d+\/\d+) 마감/)[1] : '') : '';
-            var 표출처 = 세분 && 세분.출처 ? '<b class="lvs-src' + (/^엔진/.test(세분.출처) ? ' eng' : '') + '" title="' + 세분.출처 + ' · ' + (/^엔진/.test(세분.출처) ? '윈폼 매매 엔진이 만든 기준 가격표 (엔진 신호와 같은 가격)' : '윈폼 엔진이 꺼져 있어 대시보드가 같은 규칙으로 직접 계산한 기준 가격표') + '">' + 짧은출처 + '</b>' : '';
+            var 표출처 = 세분 && 세분.출처 && 본인기기() ? '<b class="lvs-src' + (/^엔진/.test(세분.출처) ? ' eng' : '') + '" title="' + 세분.출처 + ' · ' + (/^엔진/.test(세분.출처) ? '윈폼 매매 엔진이 만든 기준 가격표 (엔진 신호와 같은 가격)' : '윈폼 엔진이 꺼져 있어 대시보드가 같은 규칙으로 직접 계산한 기준 가격표') + '">' + 짧은출처 + '</b>' : '';
             el.innerHTML = '<div class="lvs-col"><div class="lvs-h"><span>저항 (콜 쪽)' + 표출처 + '</span><span>현재가 대비</span></div>' + 열(저, false) + '</div>' +
                            '<div class="lvs-col"><div class="lvs-h"><span>지지 (풋 쪽)' + 범위 + '</span><span>현재가 대비</span></div>' + 열(지, true) + '</div>';
         }
@@ -8768,7 +8790,7 @@
         var 키움_LWC약속 = null;
         var 키움_분봉표 = { '1': '1분', '3': '3분', '5': '5분', '10': '10분', '15': '15분', '30': '30분', '60': '1시간', 'D': '일봉' };
         var 키움_봉초표 = { '1': 60, '3': 180, '5': 300, '10': 600, '15': 900, '30': 1800, '60': 3600, 'D': 86400 };
-        var 키움_표시항목 = [['sr1', '지지·저항 가까운 1개씩'], ['sr2', '지지·저항 2번째'], ['sr3', '지지·저항 3번째'], ['plan', '엔진 신호·보유'], ['vwap', 'VWAP'], ['vp', '매물대'], ['zone', '반등·막힘 구간'], ['opt', '옵션 (MaxPain·콜벽·풋벽)'], ['pc', '전일 종가'], ['hh', '최고가 (보이는 구간)'], ['news', '뉴스 ▼'], ['pj', '판정 레이블 (마지막 캔들 위)']];
+        var 키움_표시항목 = [['sr1', '지지·저항 가까운 1개씩'], ['sr2', '지지·저항 2번째'], ['sr3', '지지·저항 3번째'], ['plan', '매매 신호·보유'], ['vwap', 'VWAP'], ['vp', '매물대'], ['zone', '반등·막힘 구간'], ['opt', '옵션 (MaxPain·콜벽·풋벽)'], ['pc', '전일 종가'], ['hh', '최고가 (보이는 구간)'], ['news', '뉴스 ▼'], ['pj', '판정 레이블 (마지막 캔들 위)']];
         var 키움_우선 = { plan: 0, sr: 1, sr1: 1, sr2: 1, sr3: 1, vwap: 2, vp: 3, zone: 4, opt: 5, pc: 6 };
         var 키움_기본개수 = 격자모드 ? 90 : 120;
         var 키움설정키 = 격자모드 ? 'sz_grid_kchart' : 'sz_kchart';
@@ -8787,13 +8809,21 @@
             return c;
         }
         // 대시보드2 기본 표시: 핵심 선만 (지지·저항·진입/손절/목표·VWAP·뉴스) → 나머지는 [표시 ▾] 에서 켬
-        var 키움_격자기본 = { vp: false, zone: false, opt: false, pc: false, sr2: false, sr3: false };   // 대시보드2 기본 = 1차 지지·저항만
+        // [추천] = 겹치는 선을 뺀 핵심만 (매물대·구간·옵션·전일 종가는 지지·저항 이름에 이미 합쳐져 나옴) · 손대지 않은 차트의 기본값
+        //   대시보드1 = 지지·저항 2개씩 (판정은 결론 박스가 있어 끔) · 대시보드2 = 1개씩 + 판정 레이블
+        var 키움_추천 = 격자모드 ? { sr1: 1, sr2: 0, sr3: 0, plan: 1, vwap: 1, vp: 0, zone: 0, opt: 0, pc: 0, hh: 1, news: 1, pj: 1 }
+                                 : { sr1: 1, sr2: 1, sr3: 0, plan: 1, vwap: 1, vp: 0, zone: 0, opt: 0, pc: 0, hh: 1, news: 1, pj: 0 };
         function 키움_표시켬(i, k) {
             var 표 = 키움설정_칸(i).표시, v = 표[k];
             if (v === undefined && /^sr[123]$/.test(k) && 표.sr === false) return false;   // 예전 '지지·저항(1~3차)' 끔 설정 이어받기
-            if (v === undefined && k === 'pj') return 격자모드;   // 판정 레이블: 대시보드2 기본 켬 · 대시보드1 키움 차트는 기본 끔 (결론 박스가 있음)
-            if (v === undefined) return !(격자모드 && 키움_격자기본[k] === false);
+            if (v === undefined && k === 'pj') return !!격자모드;   // 판정 레이블: 대시보드2 기본 켬 · 대시보드1 은 결론 박스가 있어 끔
+            if (v === undefined) return !!키움_추천[k];
             return v !== false;
+        }
+        function 키움_표시모드(i) {   // '추천' | '자세히' | '사용자 설정'
+            var 추 = true, 자 = true;
+            키움_표시항목.forEach(function (x) { var 켬 = 키움_표시켬(i, x[0]); if (켬 !== !!키움_추천[x[0]]) 추 = false; if (!켬) 자 = false; });
+            return 추 ? '추천' : 자 ? '자세히' : '사용자 설정';
         }
         // ── 차트 색 (대시보드1 = 기본 / 대시보드2 = 다크 카드(A) · 밝은(C)) ──
         var 키움_테마 = {
@@ -8960,6 +8990,8 @@
             st.vwap = st.chart.addLineSeries({ color: 색.vwap, lineWidth: 2, lineStyle: L.LineStyle.Dotted, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false,
                                                visible: 키움_표시켬(st.i, 'vwap') && !st.일봉, autoscaleInfoProvider: function () { return null; } });   // 자동 범위에서 뺌
             st.chart.timeScale().subscribeVisibleLogicalRangeChange(function () { 키움차트_라벨예약(st); 키움차트_개수기록(st); });
+            // 오른쪽 클릭 = 그 가로선 가격으로 가격 알림 메뉴
+            st.상자.addEventListener('contextmenu', function (e) { if (키움_오른메뉴(st, e)) e.preventDefault(); });
             // 뉴스 ▼ 봉에 마우스 → 그 시점 뉴스 제목
             st.chart.subscribeCrosshairMove(function (p) {
                 var 팁 = st.상자.querySelector('.kc-tip'); if (!팁) return;
@@ -8970,6 +9002,54 @@
                 var w = st.상자.clientWidth; 팁.style.left = Math.max(4, Math.min(w - 290, p.point.x + 12)) + 'px'; 팁.style.top = Math.max(4, p.point.y - 10) + 'px';
             });
         }
+        // ════════════════════════════════════════════════════════
+        // ★ 차트 오른쪽 클릭 메뉴 (대시보드1·2): 마우스 가로선 가격으로 가격 알림
+        //   · {가격} 도달 시 알림 (현재가보다 위 = 이상 도달 / 아래 = 이하 도달) · 울림·끈 다음·알림음은 알림 설정의 기본값
+        //   · {가격} 가격 알림 자세히… (가격 알림 창을 그 가격으로) · 이 종목 알림 목록 · 이 종목 알림 모두 지우기 (확인 1번)
+        // ════════════════════════════════════════════════════════
+        function 키움_오른메뉴닫기() { var m = document.getElementById('kc-ctx'); if (m) m.remove(); }
+        function 키움_오른메뉴(st, e) {
+            var 종목 = panelTickers[st.i]; if (!종목 || 종목 !== st.종목 || !st.캔들) return false;
+            var 판 = st.상자.querySelector('.kc-c'), r = 판 && 판.getBoundingClientRect(); if (!r) return false;
+            var 폭 = st.chart.paneSize ? st.chart.paneSize().width : r.width;
+            if (e.clientX - r.left > 폭) return false;   // 가격축 위는 브라우저 기본 메뉴
+            var 값 = st.캔들.coordinateToPrice(e.clientY - r.top); if (!(값 > 0)) return false;
+            var 정 = st.정밀 || 2, p = Number(Number(값).toFixed(정)), 지금 = 알람_현재가(종목), 위 = !(지금 > 0) || p >= 지금, n = 알람_목록(종목).length, 글 = p.toFixed(정);
+            키움_오른메뉴닫기();
+            var m = document.createElement('div'); m.id = 'kc-ctx'; m.className = 'kc-ctx';
+            m.innerHTML = '<div class="kc-ctx-t">' + 종목 + ' · ' + 글 + (지금 > 0 ? ' <small>현재 ' + 지금.toFixed(정) + '</small>' : '') + '</div>' +
+                '<button type="button" data-a="add"><b>' + 글 + '</b> 도달 시 알림 <small>' + (위 ? '위로 · 이상 도달' : '아래로 · 이하 도달') + '</small></button>' +
+                '<button type="button" data-a="open">' + 글 + ' 가격 알림 자세히…</button>' +
+                '<i class="sep"></i>' +
+                '<button type="button" data-a="list">' + 종목 + ' 가격 알림 목록 <small>' + n + '개</small></button>' +
+                '<button type="button" data-a="clear"' + (n ? '' : ' disabled') + '>' + 종목 + ' 가격 알림 모두 지우기</button>';
+            document.body.appendChild(m);
+            var w = m.offsetWidth, h = m.offsetHeight;
+            m.style.left = Math.max(4, Math.min(window.innerWidth - w - 4, e.clientX + 2)) + 'px';
+            m.style.top = Math.max(4, Math.min(window.innerHeight - h - 4, e.clientY + 2)) + 'px';
+            m.addEventListener('click', function (ev) {
+                ev.stopPropagation();
+                var b = ev.target.closest('button[data-a]'); if (!b || b.disabled) return;
+                var a = b.getAttribute('data-a'); 키움_오른메뉴닫기();
+                if (a === 'add') { if (알람_추가(종목, p, { 방향: 위 ? '상향' : '하향' })) 알림_잠깐(종목 + ' ' + 글 + ' 가격 알림 등록 (' + (위 ? '이상 도달' : '이하 도달') + ')'); }
+                else if (a === 'open' || a === 'list') {
+                    알람_창열기(st.i, null, '알람');
+                    if (a === 'open') { var 입 = document.querySelector('#al-pop .al-price'); if (입) { 입.value = 글; 입.focus(); 입.select(); } }
+                }
+                else if (a === 'clear') {
+                    var 수 = 알람_목록(종목).length; if (!수) return;
+                    if (!confirm(종목 + ' 가격 알림 ' + 수 + '개를 모두 지울까요?')) return;
+                    if (알람_계속중[st.i]) 알람_띠닫기(st.i);
+                    delete 알람_모음[종목]; 알람_저장(); 알람_화면갱신(종목);
+                    알림_잠깐(종목 + ' 가격 알림 ' + 수 + '개를 지웠습니다');
+                }
+            });
+            return true;
+        }
+        document.addEventListener('mousedown', function (e) { var m = document.getElementById('kc-ctx'); if (m && !m.contains(e.target)) 키움_오른메뉴닫기(); }, true);
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') 키움_오른메뉴닫기(); });
+        window.addEventListener('blur', 키움_오른메뉴닫기);
+        document.addEventListener('wheel', 키움_오른메뉴닫기, { passive: true });
         // 테마 바꾸기 (대시보드2): 열린 차트 색만 바꿈 (다시 받지 않음)
         function 키움차트_테마적용() {
             var 색 = 키움_색();
@@ -9136,7 +9216,7 @@
         //   매물대 최대 14.7% → 매물최대 · 거래 집중 상단 → 집중상단 · 콜 OI 3.0K → 콜벽 3.0K · 겹친 근거는 + 로 이음
         function 레벨_짧은이름(글) {
             글 = String(글 || '').replace(/ \(1분봉\)/g, '').replace(/\s*\([^)]*확인 중\)/g, '').replace(/\s*★+\s*$/, '').trim();
-            if (/[·+]/.test(글)) { var 목 = []; 글.split(/\s*[·+]\s*/).forEach(function (x) { var y = 레벨_짧은이름(x); if (y && 목.indexOf(y) < 0) 목.push(y); }); return 목.slice(0, 3).join('+'); }
+            if (/[·+]/.test(글)) { var 목 = []; 글.split(/\s*[·+]\s*/).forEach(function (x) { var y = 레벨_짧은이름(x); if (y && 목.indexOf(y) < 0) 목.push(y); }); return 목.slice(0, 2).join('+') + (목.length > 2 ? ' 외' + (목.length - 2) : ''); }
             var m;
             if (/^5일 매물대 최대/.test(글)) return '5일매물';
             if (/^매물대 최대/.test(글)) return '매물최대';
@@ -9190,7 +9270,14 @@
                 넣('sr1', '옵션 지지1', d.support1, C.지지 + 'bb', 0, 1); 넣('sr2', '옵션 지지2', d.support2, C.지지 + '99', 2, 1);
                 넣('sr1', '옵션 저항1', d.resistance1, C.저항 + 'bb', 0, 1); 넣('sr2', '옵션 저항2', d.resistance2, C.저항 + '99', 2, 1);
             }
-            try { 엔진_차트선(i, 넣, C); } catch (e) { }   // ★ 엔진 지지 신호선 · 보유(진입·손절·1차 익절)
+            try { 엔진_차트선(i, 넣, C); } catch (e) { }   // ★ 매매 신호선 · 보유(진입·손절·1차 익절)
+            // 매물대·구간·옵션·전일 종가 선이 지지·저항 선과 0.3% 안이면 따로 그리지 않음 (지지·저항 이름에 이미 '매물최대'·'2회' 등으로 나옴)
+            var 넣0 = 넣;
+            넣 = function (k, 이름, v, 색, 모양, 굵기, 원) {
+                v = Number(v);
+                if (/^(vp|zone|opt|pc)$/.test(k) && v > 0 && 목.some(function (x) { return /^sr/.test(x.k) && Math.abs(x.v - v) / v <= 0.003; })) return;
+                넣0(k, 이름, v, 색, 모양, 굵기, 원);
+            };
             var 물 = null; try { 물 = 매물대_가져오기(종목); } catch (e) { }
             if (물 && 물.최대) {
                 넣('vp', '매물최대', 물.최대.가격, C.매물, 0, 2, '매물대 최대 (오늘 가장 많이 거래된 가격' + (물.최대.비중 ? ' · ' + 물.최대.비중 + '%' : '') + ')');
@@ -9218,8 +9305,12 @@
             }
             st.선키 = 모양키;
             (st.선 || []).forEach(function (x) { try { st.캔들.removePriceLine(x.줄); } catch (e) { } });
+            var 꼬리값 = [];
             st.선 = 목.map(function (x) {
-                x.줄 = st.캔들.createPriceLine({ price: x.v, color: x.색, lineWidth: x.굵기, lineStyle: x.모양, axisLabelVisible: true, axisLabelColor: x.색.slice(0, 7), axisLabelTextColor: '#ffffff', title: '', lineVisible: true });   // 가격은 오른쪽 축 꼬리표 (이름표에는 이름만)
+                // 가격 꼬리표: 가장 가까운 지지·저항(sr1) · 매매 신호선만 (나머지 가격은 이름표에 마우스) · 0.05% 안에 이미 있으면 생략
+                var 꼬리 = /^(sr1|plan)$/.test(x.k) && !꼬리값.some(function (v) { return Math.abs(v - x.v) / x.v <= 0.0005; });
+                if (꼬리) 꼬리값.push(x.v);
+                x.줄 = st.캔들.createPriceLine({ price: x.v, color: x.색, lineWidth: x.굵기, lineStyle: x.모양, axisLabelVisible: 꼬리, axisLabelColor: x.색.slice(0, 7), axisLabelTextColor: '#ffffff', title: '', lineVisible: true });
                 return x;
             });
             if (st.vwap) st.vwap.applyOptions({ visible: 키움_표시켬(st.i, 'vwap') && !st.일봉 });
@@ -9275,7 +9366,7 @@
             function 이름합(목) {
                 목 = 목.slice().sort(function (a, b) { return (키움_우선[a.k] || 0) - (키움_우선[b.k] || 0); });
                 var 이름 = []; 목.forEach(function (x) { if (이름.indexOf(x.n) < 0) 이름.push(x.n); });
-                return { 대표: 목[0], 글: 이름.join(' · ') };
+                return { 대표: 목[0], 글: 이름.slice(0, 2).join(' · ') + (이름.length > 2 ? ' 외 ' + (이름.length - 2) : '') };   // 2개까지 · 나머지는 마우스로
             }
             var h = '', 아래끝 = -99;
             묶음.forEach(function (g) {
@@ -9284,8 +9375,9 @@
                 if (y > 높 - 16) y = 높 - 16;
                 아래끝 = y + 15;
                 var 제목 = g.목.map(function (x) { return (x.원 || x.n) + ' ' + 키움_가격글(x.v, 정밀); }).join('\n').replace(/"/g, '&quot;').replace(/</g, '&lt;');
-                var vw = g.목.some(function (x) { return x.k === 'vwap'; });   // VWAP 만 가격까지 (나머지 가격은 오른쪽 축 꼬리표)
-                h += '<div class="kc-l" style="top:' + y + 'px;right:' + 오른 + 'px;' + 꾸밈(합.대표.색) + '" title="' + 제목 + '">' + 합.글 + (vw ? ' ' + 키움_가격글(g.목.filter(function (x) { return x.k === 'vwap'; })[0].v, 정밀) : '') + '</div>';
+                var 축 = g.목.some(function (x) { return /^(sr1|plan)$/.test(x.k); }), vw = g.목.filter(function (x) { return x.k === 'vwap'; })[0];   // 가격: 축 꼬리표가 있으면 생략 · VWAP 은 항상
+                var 값 = vw ? ' ' + 키움_가격글(vw.v, 정밀) : 축 ? '' : ' ' + 키움_가격글(합.대표.v, 정밀);
+                h += '<div class="kc-l" style="top:' + y + 'px;right:' + 오른 + 'px;' + 꾸밈(합.대표.색) + '" title="' + 제목 + '">' + 합.글 + 값 + '</div>';
             });
             function 끝표(목, 위쪽) {
                 if (!목.length) return '';
@@ -9298,7 +9390,7 @@
             h += 끝표(위, true) + 끝표(아래, false);
             h += 키움차트_최고가글(st, 판, 오른, 정밀, C);
             h += 키움차트_판정글(st, 판, C);
-            if (층._h !== h) { 층.innerHTML = h; 층._h = h; }
+            if (층._h !== h) { 층.innerHTML = h; 층._h = h; 키움차트_라벨비킴(층); }
             // 오른쪽 빈 공간 = 가장 긴 이름표 폭 (실시간 끝을 보고 있을 때만 맞춤 → 지난 봉을 보는 중에는 화면을 움직이지 않음)
             var 최대 = 0; Array.prototype.forEach.call(층.children, function (e) { if (!e.classList.contains('kc-hh') && e.offsetWidth > 최대) 최대 = e.offsetWidth; });   // 판정 레이블도 마지막 캔들 오른쪽 공간에 들어가게
             var ts = st.chart.timeScale(), r = ts.getVisibleLogicalRange(); if (!r) return;
@@ -9306,6 +9398,16 @@
             var 끝보는중 = r.to >= st.봉.length - 1, 지금 = Date.now();
             var 늘림 = 필요 > st.오른쪽, 줄임 = 필요 < st.오른쪽 - 6 && 지금 - (st.오른쪽시각 || 0) > 10000;
             if (끝보는중 && (늘림 || 줄임)) { st.오른쪽 = 늘림 ? 필요 + 2 : 필요 + 2; st.오른쪽시각 = 지금; ts.applyOptions({ rightOffset: st.오른쪽 }); }
+        }
+        // 판정 레이블이 우선: 겹치는 선 이름표는 판정 레이블 왼쪽 끝에 맞춰 비켜 섬 (같은 줄이면 서로 가리지 않게)
+        function 키움차트_라벨비킴(층) {
+            var pj = 층.querySelector('.kc-pj'); if (!pj) return;
+            var pr = pj.getBoundingClientRect(), lr = 층.getBoundingClientRect(); if (!pr.width) return;
+            Array.prototype.forEach.call(층.querySelectorAll('.kc-l'), function (e) {
+                var r = e.getBoundingClientRect();
+                if (r.bottom <= pr.top + 1 || r.top >= pr.bottom - 1 || r.right <= pr.left + 1 || r.left >= pr.right - 1) return;
+                e.style.right = Math.round(lr.right - pr.left + 4) + 'px';
+            });
         }
         // ── 판정 레이블: 마지막 캔들 고가 조금 위 (위가 모자라면 저가 아래) · 캔들을 따라 오르내림 · 마지막 캔들이 화면 밖이면 오른쪽 끝에 붙임
         //   판정이 바뀌면 4초 깜빡임 · 마우스를 올리면 지지·저항·횟수·이유 · [표시 ▾] 의 '판정 레이블' 로 켜고 끔
@@ -9382,9 +9484,12 @@
                      '<div class="kc-gn">진행 중인 봉의 시가 대비 · 봉마다 방향별 1번 (다음 봉에서 다시)</div></div>';
             }
             if (!격자모드) h += '<div class="kc-src"><span>차트</span><button type="button" data-src="키움" class="' + (키움설정.출처 !== '트레이딩뷰' ? 'on' : '') + '">키움 실시간</button><button type="button" data-src="트레이딩뷰" class="' + (키움설정.출처 === '트레이딩뷰' ? 'on' : '') + '">트레이딩뷰</button></div>';
+            var 모드 = 키움_표시모드(i);
+            h += '<div class="kc-mode"><button type="button" data-a="추천" class="' + (모드 === '추천' ? 'on' : '') + '" title="겹치는 선을 뺀 핵심만 (지지·저항 ' + (격자모드 ? '1개씩' : '2개씩') + ' · VWAP · 매매 신호 · 최고가 · 뉴스' + (격자모드 ? ' · 판정' : '') + ')">추천</button>' +
+                 '<button type="button" data-a="자세히" class="' + (모드 === '자세히' ? 'on' : '') + '" title="모든 선 (분석할 때)">자세히</button><span>' + (모드 === '사용자 설정' ? '사용자 설정' : '') + '</span></div>';
             h += '<div class="kc-chk">' + 키움_표시항목.map(function (x) { return '<label><input type="checkbox" data-k="' + x[0] + '"' + (키움_표시켬(i, x[0]) ? ' checked' : '') + '> ' + x[1] + '</label>'; }).join('') + '</div>';
             h += '<div class="kc-pb"><button type="button" data-a="모두">모두 켜기</button><button type="button" data-a="끄기">모두 끄기</button><button type="button" data-a="같게">다른 차트도 같게</button></div>';
-            if (키움.판정 !== true) h += '<div class="kc-pn">윈폼 연결 전 · 키움 차트를 쓸 수 없어 트레이딩뷰로 표시 중</div>';
+            if (키움.판정 !== true) h += '<div class="kc-pn">실시간 차트 연결 전 · 트레이딩뷰로 표시 중</div>';
             h += '<div class="kc-cr">차트: <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView</a> Lightweight Charts™ · 데이터: 키움</div>';
             창.innerHTML = h;
             창.addEventListener('change', function (e) {
@@ -9403,11 +9508,12 @@
             창.addEventListener('click', function (e) {
                 e.stopPropagation();
                 var t = e.target;
-                if (t.matches('input[data-k]')) { 키움설정_칸(i).표시[t.getAttribute('data-k')] = t.checked; 키움설정_저장(); 키움차트_설정반영(i); return; }
+                if (t.matches('input[data-k]')) { 키움설정_칸(i).표시[t.getAttribute('data-k')] = t.checked; 키움설정_저장(); 키움차트_설정반영(i); 키움_창열기(i, 단추); return; }
                 var src = t.getAttribute && t.getAttribute('data-src');
                 if (src) { 키움설정.출처 = src; 키움설정_저장(); 키움_창닫기(); 키움차트_모두다시(); return; }
                 var a = t.getAttribute && t.getAttribute('data-a');
-                if (a === '모두' || a === '끄기') { 키움_표시항목.forEach(function (x) { 키움설정_칸(i).표시[x[0]] = a === '모두'; }); 키움설정_저장(); 키움차트_설정반영(i); 키움_창열기(i, 단추); }
+                if (a === '모두' || a === '끄기' || a === '자세히') { 키움_표시항목.forEach(function (x) { 키움설정_칸(i).표시[x[0]] = a !== '끄기'; }); 키움설정_저장(); 키움차트_설정반영(i); 키움_창열기(i, 단추); }
+                else if (a === '추천') { 키움_표시항목.forEach(function (x) { 키움설정_칸(i).표시[x[0]] = !!키움_추천[x[0]]; }); 키움설정_저장(); 키움차트_설정반영(i); 키움_창열기(i, 단추); }
                 else if (a === '개수') { var 입 = 창.querySelector('input[data-f="개수"]'); if (입) 키움_개수바꿈(i, 입.value); }
                 else if (a === '듣기') 격자_소리(급등_설정(i).소리);
                 else if (a === '같게') {   // 표시 항목 · 분봉 · 캔들 개수를 모든 차트에 일괄 적용
@@ -9736,7 +9842,7 @@
                 '<div class="ga-tbw"><table class="ga-tb"><thead><tr><th>종목</th><th>수량</th><th>평균가</th><th>현재가</th><th>손익</th><th>%</th></tr></thead><tbody>' + 줄('TSLA') + 줄('NVDA') + '</tbody></table></div>' +
                 '<div class="ga-ord"><select disabled><option>종목</option></select><input disabled placeholder="수량"><input disabled placeholder="가격 (지정가)">' +
                 '<button type="button" class="ga-buy" disabled>매수</button><button type="button" class="ga-sell" disabled>매도</button></div>' +
-                '<div class="ga-note">키움 계좌 API 연동 후 동작 (모의투자 먼저 · 주문은 윈폼에서만, 안전 한도 적용)</div>';
+                '<div class="ga-note">키움 계좌 API 연동 후 동작 (모의투자 먼저 · 주문은 PC 프로그램에서만, 안전 한도 적용)</div>';
         }
         // ════════════════════════════════════════════════════════
         // ★ 대시보드2 뉴스
@@ -10000,7 +10106,7 @@
                 })
                 .catch(function (e) {
                     console.warn('[야후] 서버 종목 목록 수신 실패 (' + e.message + ') → 관심종목으로 대체. '
-                        + 'Firebase 규칙에서 tickers 읽기 권한을 확인하세요.');
+                        + '잠시 후 다시 시도합니다.');
                 });
         }
 
@@ -10612,7 +10718,7 @@
                        ' / 저항 ' + (구.저항.map(function (z) { return z.v.toFixed(2) + '×' + z.횟수 + '회' + AI_거리(z.v, 기준가); }).join(', ') || '없음'));
             } else L.push('- 가격 반응 구간: ' + (구 ? 구.상태 : '데이터 없음'));
             // 옵션
-            var 출처 = d.옵션출처 === 'CBOE' ? 'CBOE 15분 지연, ' + (d.cboeET || '') + ' 기준' : d.updatedAt ? (d.옵션출처 === '야후' ? '야후 15분 지연' : '키움') + ', ' + d.updatedAt + ' KST 갱신' : '';
+            var 출처 = d.옵션출처 === 'CBOE' ? 'CBOE 15분 지연, ' + (d.cboeET || '') + ' 기준' : d.updatedAt ? (d.옵션출처 === '야후' ? '15분 지연' : '키움') + ', ' + d.updatedAt + ' KST 갱신' : '';
             if (d.optionRows && d.optionRows.length) {
                 var 행 = d.optionRows.slice().sort(function (x, y) { return Math.abs(x.strike - 현재) - Math.abs(y.strike - 현재); }).slice(0, 6)
                     .sort(function (x, y) { return y.strike - x.strike; })
@@ -10923,6 +11029,7 @@
         function 알람_띠닫기(i) {
             알람_계속멈춤(i, true);
             try { 알림_닫기('가격|' + panelTickers[i]); } catch (e) { }
+            if (격자모드) 알람_격자닫기(i);
             var 띠 = document.getElementById('p' + i + '-alban'); if (띠) 띠.className = 'al-ban';
         }
         // [확인] 처리: 울림 멈춤 + 끈 다음(다시 대기 / 알람 끝) 적용
@@ -10968,6 +11075,41 @@
             if (띠._마지막 !== 글) { 띠.innerHTML = 글; 띠._마지막 = 글; }
         }
 
+        // ── 대시보드2 가격 알림 표시: 위 가운데 카드 ([확인 · 다시 대기] [확인 · 알람 끝]) + 칸 외곽선·🔔 깜빡임 ──
+        function 알람_격자카드(종목, i, a, 가격, 확인까지, 유지) {
+            var 판 = document.getElementById('lv-top');
+            if (!판) { 판 = document.createElement('div'); 판.id = 'lv-top'; document.body.appendChild(판); }
+            var 바 = document.querySelector('.top-bar'), 아래 = 바 ? 바.getBoundingClientRect().bottom : 0;
+            판.style.top = Math.max(4, Math.round(아래 + 6)) + 'px';
+            var 키 = '가격|' + 종목;
+            Array.prototype.forEach.call(판.querySelectorAll('.lv-card'), function (c) { if (c._키 === 키) c.remove(); });
+            var c = document.createElement('div'); c.className = 'lv-card al flash'; c._키 = 키; c._i = i;
+            c.innerHTML = '<div class="lv-1"></div><div class="lv-2"></div><div class="lv-3"><span>' + (a.도달 || 알림_시각()) + ' ET</span>' + (i >= 0 ? '<span class="lv-pn">' + (i + 1) + '번 칸</span>' : '') +
+                          '<button type="button" class="lv-ok' + (a.끝다음 === '대기' ? ' def' : '') + '" data-end="대기">확인 · 다시 대기</button><button type="button" class="lv-ok' + (a.끝다음 === '끝' ? ' def' : '') + '" data-end="끝">확인 · 알람 끝</button></div><button type="button" class="lv-x" title="닫기">×</button>';
+            c.querySelector('.lv-1').textContent = 종목 + ' 가격 도달 ' + a.가격.toFixed(2) + ' (' + (a.방향 === '상향' ? '위로 · 이상' : '아래로 · 이하') + ')';
+            c.querySelector('.lv-2').textContent = '현재 ' + 가격.toFixed(2) + (확인까지 ? ' · [확인]을 누를 때까지 울림 (최대 ' + 알람_울림최대분 + '분)' : '');
+            판.insertBefore(c, 판.firstChild);
+            while (판.children.length > 3) 판.removeChild(판.lastChild);
+            var id = a.id, 끝다음 = a.끝다음;
+            c.addEventListener('click', function (ev) {
+                var b = ev.target.closest('.lv-ok');
+                if (b || ev.target.closest('.lv-x')) { ev.stopPropagation(); 알람_확인처리(종목, id, b ? b.getAttribute('data-end') : 끝다음); return; }
+                if (i >= 0) 알림_패널로가기(종목);
+            });
+            setTimeout(function () { c.classList.remove('flash'); }, 5000);
+            clearTimeout(c._닫기); c._닫기 = setTimeout(function () { if (!알람_계속중[i] || 알람_계속중[i].id !== id) 알람_격자닫기(i, 종목); }, 유지);
+            if (i >= 0) {
+                var 칸 = document.getElementById('panel-' + i); if (칸) 칸.classList.add('g-al');
+                Array.prototype.forEach.call(document.querySelectorAll('.px-bell[data-i="' + i + '"]'), function (b) { b.classList.add('al-ring'); });
+            }
+        }
+        function 알람_격자닫기(i, 종목) {
+            종목 = 종목 || panelTickers[i];
+            var 판 = document.getElementById('lv-top');
+            if (판) Array.prototype.forEach.call(판.querySelectorAll('.lv-card.al'), function (c) { if (c._키 === '가격|' + 종목) { clearTimeout(c._닫기); c.remove(); } });
+            var 칸 = document.getElementById('panel-' + i); if (칸) 칸.classList.remove('g-al');
+            Array.prototype.forEach.call(document.querySelectorAll('.px-bell[data-i="' + i + '"]'), function (b) { b.classList.remove('al-ring'); });
+        }
         function 알람_울림(종목, a, 가격) {
             var 글 = '🔔 ' + 종목 + ' ' + a.가격.toFixed(2) + ' ' + 알람_방향이름(a.방향) + ' · 현재 ' + 가격.toFixed(2) + ' (' + a.도달 + ' ET)';
             var i = panelTickers.indexOf(종목), 띠 = i >= 0 ? document.getElementById('p' + i + '-alban') : null;
@@ -10985,6 +11127,12 @@
                 };
                 clearTimeout(띠._닫기); 띠._닫기 = setTimeout(function () { if (!알람_계속중[i] || 알람_계속중[i].id !== id) 알람_띠닫기(i); }, 유지);
             }
+            // 대시보드2: 화면 위 가운데 카드 + 그 칸 외곽선·🔔 깜빡임 (확인할 때까지 / 한 번만이면 30초)
+            if (격자모드) {
+                알림기록_추가({ t: Date.now(), 시각: a.도달 || 알림_시각(), 종류: '가격', 종목: 종목, 글: 글 });
+                try { 탭_깜빡임('🔔 ' + 종목 + ' ' + a.가격.toFixed(2)); } catch (e) { }
+                if (알림_허용('가격', '창')) 알람_격자카드(종목, i, a, 가격, 확인까지, 확인까지 ? 유지 : 30000);
+            } else
             // 화면 위 공통 알림창 (+ 기록 · 탭 제목 · 탭이 숨겨져 있으면 윈도우 알림)
             알림_띄우기({ 종류: '가격', 종목: 종목, 시각: a.도달 || 알림_시각(), 계속: 확인까지, 유지ms: 유지,
                          글: a.가격.toFixed(2) + ' ' + 알람_방향이름(a.방향) + ' · 현재 ' + 가격.toFixed(2), 짧은글: (a.방향 === '상향' ? '돌파 ' : '이탈 ') + a.가격.toFixed(2),
@@ -11034,9 +11182,10 @@
         }
         function 음성_고른것() { var 목록 = 음성_한국어목록(); return 목록.filter(function (v) { return v.name === 음성설정.음성; })[0] || 목록[0] || null; }
         function 윈폼창() { return !!(window.chrome && window.chrome.webview); }
+        function 본인기기() { try { return typeof 통계_본인 === 'function' ? !!통계_본인() : 윈폼창(); } catch (e) { return false; } }   // 내부 정보(출처·오류 원인·수집 PC)는 본인 기기에서만
         function 음성_없음안내() {
             if (!음성_지원()) return '이 브라우저는 음성 안내를 지원하지 않아 음성 대신 알림음이 울립니다';
-            if (윈폼창()) return '윈폼 창에서는 음성 대신 알림음이 울립니다 (음성 안내는 크롬에서 사용)';
+            if (윈폼창()) return 'PC 프로그램 창에서는 음성 대신 알림음이 울립니다 (음성 안내는 크롬에서 사용)';
             if (window.innerWidth > 1200 || !/Android|iPhone|iPad|Mobile/i.test(navigator.userAgent)) return '음성 안내는 크롬에서 사용할 수 있습니다 · 지금은 음성 대신 알림음이 울립니다';
             return '이 기기에 한국어 음성이 없어 음성 대신 알림음이 울립니다';
         }
@@ -11264,8 +11413,8 @@
                 음성줄 +
                 '<label class="ns-chk"><input type="checkbox" id="ns-ext"' + (알림설정.장외무음 ? ' checked' : '') + '> 정규장 외에는 소리·음성 끄기 <small>(알림창·기록은 남음)</small></label>' +
                 '<div class="ns-c">체결 급증 기준 <select id="fl-k">' + [2, 2.5, 3, 4].map(function (k) { return '<option value="' + k + '"' + (Number(체결알림설정.기준) === k ? ' selected' : '') + '>' + k + '배</option>'; }).join('') + '</select>' +
-                '<span class="al-flst' + (체결_윈폼켜짐() ? ' on' : '') + '">' + (체결_윈폼켜짐() ? '윈폼 켜짐 · 동작 중' : '윈폼 꺼짐 → 대기 중') + '</span></div>' +
-                '<div class="ns-note al-flnote">평소(과거 5일 같은 시각) 대비 최근 1분 체결량. 급증 = 기준 이상 10초 유지 · 폭주 = ' + 체결_폭주기준().toFixed(1) + '배 이상. 체결 급증·대형 체결은 윈폼(키움 체결)이 켜져 있을 때만 동작</div>' +
+                '<span class="al-flst' + (체결_윈폼켜짐() ? ' on' : '') + '">' + (체결_윈폼켜짐() ? '실시간 체결 연결됨 · 동작 중' : '실시간 체결 없음 → 대기 중') + '</span></div>' +
+                '<div class="ns-note al-flnote">평소(과거 5일 같은 시각) 대비 최근 1분 체결량. 급증 = 기준 이상 10초 유지 · 폭주 = ' + 체결_폭주기준().toFixed(1) + '배 이상. 체결 급증·대형 체결은 키움 실시간 체결이 연결돼 있을 때만 동작</div>' +
                 (통계_본인() ? '<div class="ns-note ns-me">📊 이 기기는 접속 통계에서 본인으로 표시됨</div>' : '');
         }
         function 알림설정_연결(창, 다시) {
@@ -11499,9 +11648,9 @@
             fetch(CLOSE_WORKER_URL.replace(/\/+$/, '') + '/me?k=' + encodeURIComponent(m), { cache: 'no-store' }).then(function (r) { return r.json(); })
                 .then(function (j) {
                     if (j && j.ok === true) { 통계_저장소('sz_me', '1'); 통계_기록({ me: true, u: 통계_사용자() }); 통계_표시(); 알림_잠깐('📊 이 기기를 접속 통계에서 본인으로 표시합니다'); }
-                    else 알림_잠깐('📊 본인 표시 실패: 비밀단어가 맞지 않거나 Worker 에 ME_KEY 가 없습니다');
+                    else 알림_잠깐('📊 본인 표시 실패: 비밀단어가 맞지 않습니다');
                 })
-                .catch(function () { 알림_잠깐('📊 본인 확인 실패: Worker 에 연결하지 못했습니다 (잠시 뒤 다시)'); }).then(주소정리);
+                .catch(function () { 알림_잠깐('📊 본인 확인 실패: 서버에 연결하지 못했습니다 (잠시 뒤 다시)'); }).then(주소정리);
         }
         function 통계_시작() {
             통계_본인확인(); 통계_표시();
@@ -11670,7 +11819,7 @@
                    : t + ' ▲ 저항 돌파 ' + v + ' ' + 별 + ' · ' + (분종가 ? '1분봉 종가 ' : '현재 ') + 가격.toFixed(2);
             var 근거목 = (L.근거 || []).map(function (g) { return typeof g === 'string' ? g : g.글; }).filter(Boolean);
             var 근거 = 근거목.map(레벨_짧은이름).filter(function (x, k, a) { return x && a.indexOf(x) === k; }).join(' · ');
-            var 둘 = '근거: ' + (근거 || '─') + (e && e.상태 ? ' · 엔진: ' + (e.보유 ? '보유' : e.상태 + (e.점수 ? ' ' + e.점수 + '점' : '')) : '');
+            var 둘 = '근거: ' + (근거 || '─') + (e && e.상태 ? ' · 분석: ' + (e.보유 ? '보유' : e.상태 + (e.점수 ? ' ' + e.점수 + '점' : '')) : '');
             var 풀이 = '근거: ' + (근거목.join(' · ') || '─');
             var 쪽 = 종류 === '지지접근' ? 'sup' : 종류 === '저항접근' ? 'res' : 종류 === '이탈' ? 'brk dn' : 'brk up';
             var 시각 = 알림_시각();
@@ -11791,8 +11940,8 @@
             // 엔진 시장 상태 (특정 지수가 아니므로 QQQ·SPY 칸 함께)
             var 엔상 = typeof 엔진 !== 'undefined' && 엔진_살아있음() && 엔진.meta && 엔진.meta.시장 ? 엔진.meta.시장.상태 : '';
             var 순 = { '상승 우호': 0, '중립': 1, '주의': 2, '위험': 3 };
-            if (엔상 === '위험') 위('엔진 시장 상태 위험', []);
-            else if (엔상 && 기.엔진상태 && 순[엔상] > 순[기.엔진상태]) 주('엔진 시장 상태 ' + 기.엔진상태 + ' → ' + 엔상, []);
+            if (엔상 === '위험') 위('시장 분석 위험', []);
+            else if (엔상 && 기.엔진상태 && 순[엔상] > 순[기.엔진상태]) 주('시장 분석 ' + 기.엔진상태 + ' → ' + 엔상, []);
             if (엔상) 기.엔진상태 = 엔상;
             // 관심종목 흐름 (QQQ·SPY 칸 함께)
             var 흐 = 기.흐름.filter(function (x) { return 지금 - x.t < 20 * 60000; }); 기.흐름 = 흐;
@@ -12313,7 +12462,7 @@
             else if (필터막힘 && f.사용) { 평.상태 = 평.점수 >= 40 ? '주목' : '관망'; 평.막힘 = 필터막힘; }
             else if (!근처) { 평.상태 = 평.점수 >= 40 ? '주목' : '관망'; 평.막힘 = '지지 ' + 평.지지.toFixed(2) + ' 까지 ' + ((price - 평.지지) / price * 100).toFixed(1) + '% 위'; }
             else 평.상태 = 평.점수 >= (n.신호점수 || 75) && 저점유지 && 돌파 ? '신호' : 평.점수 >= 60 ? '지지 접근' : 평.점수 >= 40 ? '주목' : '관망';
-            if (atr추정) 평.막힘 = (평.막힘 ? 평.막힘 + ' · ' : '') + 'ATR 추정치 (윈폼 일봉 없음)';
+            if (atr추정) 평.막힘 = (평.막힘 ? 평.막힘 + ' · ' : '') + 'ATR 추정치 (일봉 자료 없음)';
             // 출렁임 방지: 올라갈 때 바로 · 내려갈 때 10점 더 · 바뀐 뒤 2분 유지
             var 순 = { '신호': 3, '지지 접근': 2, '주목': 1 }, 전 = s.참고표시 || { 상태: '관망', 시각: 0 };
             var 새 = 평.상태, 지금순 = 순[전.상태] || 0, 새순 = 순[새] || 0, 유지중 = Date.now() - 전.시각 < 120000;
@@ -12374,7 +12523,7 @@
                              (s2 ? '다음 지지 <em class="dn">' + s2.v.toFixed(2) + '</em> ' + 퍼((s2.v - price) / price * 100) : '<span class="dim">아래 지지 없음 (범위 밖)</span>') + '</span></div>';
                 else h += '<div class="gq-ln"><b>이탈</b><span class="dim">범위 안 지지 없음</span></div>';
             }
-            if (!h) h = '<div class="gq-ln"><b>　</b><span class="dim">가격표 준비 중</span></div>';
+            if (!h) h = '<div class="gq-ln"><b>　</b><span class="dim">지지·저항 계산 중</span></div>';
             if (sel._html !== h) { sel.innerHTML = h; sel._html = h; }
             // ④ 주의
             var 목 = [], 오늘 = etNowParts().date, 장외 = marketPhase().type !== 'REG';
@@ -12487,7 +12636,7 @@
                 return 결과('장외', 'neu', 0, { 꼬리: 급 ? (급.쪽 > 0 ? '시간외 급등' : '시간외 급락') : '', 풀이: 풀이.concat(급 ? [급.글] : []).concat(['정규장에 실시간 판정']) });
             }
             if (!연결) return 결과('분석 서버 연결 끊김', 'neu', 0, { 꼬리: 기.마지막연결 ? '마지막 분석 ' + 판정_시각(기.마지막연결) : '', 풀이: ['실시간 분석 자료가 들어오지 않습니다 (참고 흐름만 표시 중)'] });
-            if (et.m < 9 * 60 + 35 || (!지.length && !저.length)) return 결과('데이터 모으는 중', 'neu', 0, { 풀이: ['개장 직후 · 지지·저항 가격표 준비 중'] });
+            if (et.m < 9 * 60 + 35 || (!지.length && !저.length)) return 결과('데이터 모으는 중', 'neu', 0, { 풀이: ['개장 직후 · 지지·저항 계산 중'] });
 
             // 4. 이탈·돌파 시도 (확인 중)
             var 시도 = Object.keys(기.확인).map(function (k) { return 기.확인[k]; }).sort(function (a, b) { return Math.abs(a.v - price) - Math.abs(b.v - price); })[0];
@@ -12599,11 +12748,11 @@
         function 엔진_패널표시(i) {
             var el = document.getElementById('p' + i + '-engine'); if (!el) return;
             var z = 엔진_패널자료(i), h;
-            if (!z) h = '<div class="eg-head"><span class="eg-badge off">엔진</span><span class="eg-st" style="color:#8b93a7">자료 없음</span><span class="eg-sub">윈폼 엔진 · 시세 기다리는 중</span></div>';
+            if (!z) h = '<div class="eg-head"><span class="eg-badge off">분석</span><span class="eg-st" style="color:#8b93a7">자료 없음</span><span class="eg-sub">시세 기다리는 중</span></div>';
             else {
                 var 색 = 엔진_상태색[z.상태] || '#8b93a7';
-                var 배지 = z.출처 === '엔진' ? '<span class="eg-badge on" title="윈폼(키움) 매매 엔진 결과 · 가상매매 기록 대상">엔진 · 키움</span>'
-                                             : '<span class="eg-badge ref" title="윈폼 엔진이 꺼져 있어 대시보드가 같은 기준으로 직접 계산한 참고 신호입니다 (가상매매 기록 없음 · 시장 환경은 중립으로 봄)">참고 · 대시보드 계산</span>';
+                var 배지 = z.출처 === '엔진' ? '<span class="eg-badge on" title="키움 실시간 자동 분석 결과">분석 · 키움</span>'
+                                             : '<span class="eg-badge ref" title="같은 기준으로 화면에서 직접 계산한 참고 신호입니다 (시장 환경은 중립으로 봄)">참고 계산</span>';
                 var 상세 = z.상세 || [0, 0, 0, 0], 합 = Number(z.점수) || 0;
                 var 막대 = '<div class="eg-bar" title="지지 ' + 상세[0] + '/40 · 환경 ' + 상세[1] + '/20 · 확인 ' + 상세[2] + '/25 · 여유 ' + 상세[3] + '/15">' +
                           '<i style="width:' + 상세[0] + '%;background:#a3e635"></i><i style="width:' + 상세[1] + '%;background:#22d3ee"></i><i style="width:' + 상세[2] + '%;background:#e879f9"></i><i style="width:' + 상세[3] + '%;background:#facc15"></i>' +
@@ -12625,7 +12774,7 @@
                 } else {
                     h = '<div class="eg-head">' + 배지 + '<span class="eg-st" style="color:' + 색 + '">' + (z.상태 === '신호' ? '▲ ' : '') + (z.상태 || '관망') + '</span>' +
                         '<span class="eg-sc">' + 합 + '<small>/100</small></span>' +
-                        '<span class="eg-sub">' + (z.사용 === false ? '엔진 사용 안 함 종목 (참고 계산)' : '지지 반등') + '</span></div>';
+                        '<span class="eg-sub">' + (z.사용 === false ? '자동 분석 대상 아님 (참고 계산)' : '지지 반등') + '</span></div>';
                     h += 막대;
                     if (z.지지 > 0) h += '<div class="eg-row"><b>지지</b> <em>' + Number(z.지지).toFixed(2) + '</em> <small>' + (z.지지근거 || '') + '</small>' +
                                         (z.손절 > 0 ? ' · 손절 <em style="color:#4d8dff">' + Number(z.손절).toFixed(2) + '</em>' : '') +
@@ -12644,7 +12793,7 @@
             var g = document.getElementById('g' + i + '-eg');
             if (g) {
                 var 글 = !z ? '' : z.보유 ? '보유' : (z.상태 || '관망') + (z.점수 ? ' ' + z.점수 : '') + (z.출처 === '참고' ? ' (참고)' : '');
-                if (g.textContent !== 글) { g.textContent = 글; g.style.color = z ? (z.보유 ? 엔진_상태색['보유'] : 엔진_상태색[z.상태] || '') : ''; g.title = z ? (z.출처 === '엔진' ? '엔진 · 키움' : '참고 · 대시보드 계산') + (z.막힘 ? ' · ' + z.막힘 : '') : ''; }
+                if (g.textContent !== 글) { g.textContent = 글; g.style.color = z ? (z.보유 ? 엔진_상태색['보유'] : 엔진_상태색[z.상태] || '') : ''; g.title = z ? (z.출처 === '엔진' ? '분석 · 키움' : '참고 계산') + (z.막힘 ? ' · ' + z.막힘 : '') : ''; }
             }
         }
 
@@ -12714,7 +12863,7 @@
                 var v = 실[t]; if (!v || v.날짜 !== 오늘 || !관심[t]) return;
                 var 장전 = v.시간 === '장전', 장후 = v.시간 === '장후';
                 줄.push({ 순: 장전 ? '08:00' : 장후 ? '16:00' : '12:00', 시각: 장전 ? '장전' : 장후 ? '장후' : '미정', 이름: t + ' 실적' + (v.예상 ? ' (예상)' : ''), 상태: 장전 ? '45분 진입 금지' : 장후 ? '스윙 금지' : '시간 모름', 깜빡: false, 지남: 장전 && 지금분 > 9 * 60 + 30 + 45, 색: '', 종류: '실적',
-                         설명: t + ' 실적 발표 ' + (v.시간 || '미정') + (v.예상 ? ' · 날짜 예상치' : '') + ' (야후)' });
+                         설명: t + ' 실적 발표 ' + (v.시간 || '미정') + (v.예상 ? ' · 날짜 예상치' : '') + '' });
             });
             (ec.이벤트 || []).filter(function (v) { return v.날짜 === 오늘 && 관심[v.종목]; }).forEach(function (v) {
                 var hm = /^(\d{2}):(\d{2})$/.exec(v.시각 || ''), 분 = hm ? +hm[1] * 60 + +hm[2] : 720, 남은 = 분 - 지금분;
@@ -12724,7 +12873,7 @@
             return 줄.sort(function (a, b) { return (a.지남 - b.지남) || (a.순 < b.순 ? -1 : a.순 > b.순 ? 1 : 0); });
         }
         function 일정_안내() {
-            if (일정자료.안내닫음 || !일정자료.econ받음 || !일정자료.실적받음) return [];
+            if (일정자료.안내닫음 || !일정자료.econ받음 || !일정자료.실적받음 || !본인기기()) return [];   // 갱신 안내는 본인 기기에서만
             var 안 = [], ec = 일정자료.econ, 오늘 = 엔진_오늘();
             if (!ec) 안.push('경제 일정이 없습니다 — 윈폼을 실행하면 FRED·FOMC 일정을 올립니다');
             else {
@@ -12742,7 +12891,7 @@
         function 일정_표시() {
             var 상자 = document.getElementById('ev-box'); if (!상자) return;
             var 줄 = 일정_줄들(), 안 = 일정_안내();
-            var h = '<div class="ev-head" title="오늘 = 미국 동부 날짜 · 시각 = 한국 시각 (줄에 마우스를 올리면 미국 시각과 자세한 내용)"><b>📅 오늘 일정</b><small>한국 시각</small>' + (엔진_살아있음() ? '<span class="ev-eng on" title="윈폼 매매 엔진 실행 중">엔진 ●</span>' : '<span class="ev-eng" title="윈폼 매매 엔진 꺼짐 → 카드는 대시보드 참고 계산">엔진 ○</span>') + '</div>';
+            var h = '<div class="ev-head" title="오늘 = 미국 동부 날짜 · 시각 = 한국 시각 (줄에 마우스를 올리면 미국 시각과 자세한 내용)"><b>📅 오늘 일정</b><small>한국 시각</small>' + (엔진_살아있음() ? '<span class="ev-eng on" title="실시간 자동 분석 동작 중">분석 ●</span>' : '<span class="ev-eng" title="실시간 자동 분석 꺼짐 → 참고 계산">분석 ○</span>') + '</div>';
             if (안.length) h += '<div class="ev-note" title="' + 안.join('\n') + '">⚠ ' + 안[0] + (안.length > 1 ? ' 외 ' + (안.length - 1) + '건' : '') + '<button type="button" class="ev-x" title="이번에는 그만 보기">✕</button></div>';
             h += '<div class="ev-list">' + (줄.length ? 줄.map(function (r) {
                 return '<div class="ev-row' + (r.깜빡 ? ' ev-blink' : '') + (r.지남 ? ' ev-past' : '') + ' ev-' + r.종류 + '" title="' + String(r.설명).replace(/"/g, '&quot;') + '">' +
@@ -13559,8 +13708,21 @@
         function 뉴스검색(q, d) {
             q = String(q || '').trim(); if (!q) return;
             상태.뉴스검색 = { q: q, d: d, 결과: null, 받는중: true }; 뉴스검색그리기();
-            var 코드 = /^\d{6}$/.test(q) ? q : null, 이름 = 코드 ? (이름맵[코드] || q) : q;
-            받기('/kr/newsq?q=' + encodeURIComponent(이름) + '&d=' + d, function (j) { if (!상태.뉴스검색 || 상태.뉴스검색.q !== q) return; 상태.뉴스검색.결과 = j; 상태.뉴스검색.받는중 = false; 뉴스검색그리기(); });
+            // 종목 이름(관심·보유·주도주·업종 핵심 종목)이나 6자리 코드면 그 종목 뉴스도 함께 찾음
+            var 코드 = /^\d{6}$/.test(q) ? q : null;
+            if (!코드) {
+                var 이름코드 = {}; Object.keys(이름맵).forEach(function (c) { 이름코드[이름맵[c]] = c; });
+                (상태.보유.kr || []).forEach(function (x) { if (x.n) 이름코드[x.n] = x.c; });
+                var g = 상태.groups; if (g) { (g.주도 || []).forEach(function (x) { if (/^\d{6}$/.test(x.c)) 이름코드[x.n] = x.c; }); (g.업종 || []).concat(g.테마 || []).forEach(function (x) { (x.핵심 || []).forEach(function (y) { if (/^\d{6}$/.test(y.c)) 이름코드[y.n] = y.c; }); }); }
+                var 줄임 = q.replace(/\s+/g, '').toUpperCase();
+                Object.keys(이름코드).forEach(function (n) { if (!코드 && n.replace(/\s+/g, '').toUpperCase() === 줄임) 코드 = 이름코드[n]; });
+            }
+            var 이름 = 코드 ? (이름맵[코드] || q) : q;
+            function 끝(j) { if (!상태.뉴스검색 || 상태.뉴스검색.q !== q) return; 상태.뉴스검색.결과 = j; 상태.뉴스검색.받는중 = false; 뉴스검색그리기(); }
+            var u = URL0(); if (!u) { 끝({ 오류: '서버 주소 없음', 목록: [] }); return; }
+            fetch(u + '/kr/newsq?q=' + encodeURIComponent(이름) + '&d=' + d + (코드 ? '&code=' + 코드 : ''), { cache: 'no-store' }).then(function (r) { return r.json(); })
+                .then(function (j) { 끝(j && Array.isArray(j.목록) ? j : { 오류: (j && (j.error || j.오류)) || '알 수 없는 응답 (서버를 새로 배포했는지 확인)', 목록: [] }); })
+                .catch(function (e) { 끝({ 오류: '연결 실패', 목록: [] }); });
         }
         function 뉴스검색그리기() {
             var el = document.getElementById('kr-nsr'); if (!el) return;
@@ -13570,7 +13732,8 @@
             else {
                 var r = 검.결과 || {}, 목 = r.목록 || [];
                 var 강 = new RegExp('(' + 검.q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').split(/\s+/).filter(Boolean).join('|') + ')', 'gi');
-                h = '<div class="kr-sub">"' + esc(검.q) + '" · 최근 ' + 검.d + '일 · ' + 목.length + '건' + (r.오류 ? ' · 받기 실패 (' + esc(r.오류) + ')' : '') + ' <button type="button" class="kr-nclr" data-a="nclr">지우기</button></div>' +
+                var 출 = r.출처 && 본인() ? ' · <small>' + Object.keys(r.출처).map(function (k) { return k + ' ' + esc(r.출처[k]); }).join(' · ') + '</small>' : '';
+                h = '<div class="kr-sub">"' + esc(검.q) + '" · 최근 ' + 검.d + '일 · ' + 목.length + '건' + (r.오류 || r.error ? ' · 받기 실패' + (본인() ? ' (' + esc(r.오류 || r.error) + ')' : '') : '') + 출 + ' <button type="button" class="kr-nclr" data-a="nclr">지우기</button></div>' +
                     '<div class="kr-nlist short">' + (목.length ? 목.map(function (x) { return 뉴스줄(x).replace(/<span class="ti">([\s\S]*?)<\/span>/, function (a, t) { return '<span class="ti">' + t.replace(강, '<mark>$1</mark>') + '</span>'; }); }).join('') : '<div class="kr-empty">찾은 뉴스가 없습니다</div>') + '</div>';
             }
             넣기(el, h);
