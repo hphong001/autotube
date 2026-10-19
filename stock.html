@@ -2609,7 +2609,13 @@
         .kr-sort button { white-space: nowrap; }
         @container (max-width: 520px) { .kr-fx .b span { display: none; } .kr-tbl { font-size: 12.5px; } .kr-tbl .nm small { display: none; } .kr-tbl td, .kr-tbl th { padding: 5px 4px; } .kr-card { padding: 9px 9px; } }
         @container (max-width: 720px) { .kr-tbl .c-strip, .kr-tbl .c-pos { display: none; } .kr-mk2 { grid-template-columns: 1fr; } .kr-sec { grid-template-columns: 20px minmax(60px, 1fr) 56px minmax(0, 1.6fr); } .kr-sec .ud { display: none; } }
-        @media screen and (max-width: 1200px) { .mkt-sw { order: 1; } }
+        @media screen and (max-width: 1200px) {   /* 세로 배치(태블릿·휴대폰): 전환 단추 = 로고 아래 한 줄 가운데 (시황 칸 폭을 줄이지 않게) */
+            .mkt-sw { order: 2; flex: 0 0 100%; justify-content: center; border: 0; background: transparent; border-radius: 0; }
+            .mkt-sw button { padding: 7px 26px; font-size: 13.5px; border: 1px solid #2f3446; background: #0d1018; }
+            .mkt-sw button:first-child { border-radius: 8px 0 0 8px; } .mkt-sw button + button { border-left: 0; border-radius: 0 8px 8px 0; }
+            .mkt-sw button.on { background: #ffdf00; border-color: #ffdf00; }
+        }
+        @media screen and (max-width: 900px) { .kr-grid .kr-flow { white-space: normal; line-height: 1.35; } .kr-grid .mk-cell .krs { white-space: normal; } }
     </style>
 </head>
 <body>
