@@ -2753,6 +2753,27 @@
         .kr-hform button[disabled] { opacity: .4; cursor: default; }
         .kr-htbl tr.editing td { background: rgba(127, 220, 198, .10); }
         .kr-htbl .act button.on { color: #111; background: #7fdcc6; border-color: #7fdcc6; }
+        /* ── 지수 칸 급변 깜빡임 · 대시보드2 위 가운데 지지·저항 알림 ── */
+        .mk-cell.mk-fx { outline: 2px solid var(--fxc); outline-offset: -2px; }
+        .mk-cell.fx-up { --fxc: #ff5d5d; } .mk-cell.fx-dn { --fxc: #4d8dff; } .mk-cell.fx-rev { --fxc: #ffd34d; }
+        .mk-cell.mk-fx.fx-blink { animation: mkFx .5s ease-in-out infinite alternate; }
+        @keyframes mkFx { from { outline-color: transparent; background: rgba(255, 255, 255, .03); } to { outline-color: var(--fxc); background: rgba(255, 255, 255, .10); } }
+        .mk-fxt { margin-left: 5px; font-size: 10.5px; font-weight: 800; padding: 0 4px; border-radius: 3px; color: #111; background: var(--fxc); white-space: nowrap; line-height: 15px; }
+        #lv-top { position: fixed; left: 50%; transform: translateX(-50%); z-index: 9400; width: min(760px, 94vw); display: flex; flex-direction: column; gap: 6px; pointer-events: none; }
+        #lv-top .lv-card { pointer-events: auto; position: relative; cursor: pointer; border-radius: 10px; padding: 9px 38px 8px 14px; border: 2px solid; box-shadow: 0 6px 22px rgba(0, 0, 0, .55); background: #141822; transition: opacity .25s, transform .25s; }
+        #lv-top .lv-card.out { opacity: 0; transform: translateY(-8px); }
+        #lv-top .lv-1 { font-size: 18px; font-weight: 800; line-height: 1.35; word-break: keep-all; }
+        #lv-top .lv-2 { font-size: 13.5px; font-weight: 600; opacity: .9; margin-top: 2px; }
+        #lv-top .lv-3 { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: #8b93a7; margin-top: 4px; }
+        #lv-top .lv-pn { color: #e7e9f0; font-weight: 800; background: rgba(255, 255, 255, .1); border-radius: 4px; padding: 0 6px; }
+        #lv-top .lv-go { font: inherit; font-size: 12px; font-weight: 800; color: #111; background: #ffdf00; border: 0; border-radius: 5px; padding: 2px 10px; cursor: pointer; }
+        #lv-top .lv-x { position: absolute; top: 6px; right: 8px; font-size: 18px; line-height: 1; background: none; border: 0; color: inherit; opacity: .7; cursor: pointer; }
+        #lv-top .lv-card.sup { background: #12203a; border-color: #4d8dff; color: #cfe0ff; }
+        #lv-top .lv-card.res { background: #2a1616; border-color: #ff9f43; color: #ffd9b8; }
+        #lv-top .lv-card.brk.up { background: #2e1414; border-color: #ff5d5d; color: #ffd3d3; }
+        #lv-top .lv-card.brk.dn { background: #0f1a33; border-color: #2f6bff; color: #cfe0ff; }
+        #lv-top .lv-card.flash { animation: lvTop .5s ease-in-out infinite alternate; }
+        @keyframes lvTop { from { box-shadow: 0 6px 22px rgba(0, 0, 0, .55); } to { box-shadow: 0 0 0 3px rgba(255, 255, 255, .35), 0 6px 22px rgba(0, 0, 0, .55); } }
     </style>
 </head>
 <body>
@@ -6520,7 +6541,7 @@
                 var v = s.val() || {}, el = document.getElementById('nw-st'), 살아 = v.at && Date.now() - v.at < 3 * 60000 && v.on !== false;
                 수집 = v;
                 el.className = 'nw-st ' + (살아 ? 'ok' : 'off');
-                el.textContent = 살아 ? '● 수집 중 · 마지막 ' + 뉴스_한국시각(v.at) : '⏸ 수집 멈춤' + (v.at ? ' (마지막 ' + 뉴스_한국날짜(v.at).slice(5).replace('-', '/') + ' ' + 뉴스_한국시각(v.at) + ')' : '') + ' · 윈폼이 꺼져 있음';
+                el.textContent = 살아 ? '● 수집 중' + (v.pc ? ' (' + v.pc + ')' : '') + ' · 마지막 ' + 뉴스_한국시각(v.at) : '⏸ 수집 멈춤' + (v.at ? ' (마지막 ' + 뉴스_한국날짜(v.at).slice(5).replace('-', '/') + ' ' + 뉴스_한국시각(v.at) + ')' : '') + ' · 수집 PC 의 윈폼이 꺼졌거나 체크박스7 이 꺼져 있음';
             });
             q.addEventListener('input', function () { 상태.보일수 = 200; 나중에그리기(); try { var u = new URL(location.href); if (q.value.trim()) u.searchParams.set('q', q.value.trim()); else u.searchParams.delete('q'); history.replaceState(null, '', u.pathname + u.search); } catch (e) { } });
             document.addEventListener('click', function (e) {
@@ -9111,15 +9132,40 @@
             키움차트_라벨예약(st);
         }
 
+        // ── 지지·저항 근거 짧은 이름 (차트 이름표·알림용 · 마우스를 올리면 원래 이름) ──
+        //   매물대 최대 14.7% → 매물최대 · 거래 집중 상단 → 집중상단 · 콜 OI 3.0K → 콜벽 3.0K · 겹친 근거는 + 로 이음
+        function 레벨_짧은이름(글) {
+            글 = String(글 || '').replace(/ \(1분봉\)/g, '').replace(/\s*\([^)]*확인 중\)/g, '').replace(/\s*★+\s*$/, '').trim();
+            if (/[·+]/.test(글)) { var 목 = []; 글.split(/\s*[·+]\s*/).forEach(function (x) { var y = 레벨_짧은이름(x); if (y && 목.indexOf(y) < 0) 목.push(y); }); return 목.slice(0, 3).join('+'); }
+            var m;
+            if (/^5일 매물대 최대/.test(글)) return '5일매물';
+            if (/^매물대 최대/.test(글)) return '매물최대';
+            if (/^5일 집중 상단/.test(글)) return '5일상단';
+            if (/^5일 집중 하단/.test(글)) return '5일하단';
+            if (/^(거래 ?집중|매물대 집중) 상단/.test(글)) return '집중상단';
+            if (/^(거래 ?집중|매물대 집중) 하단/.test(글)) return '집중하단';
+            if (/^매물대/.test(글)) return '매물';
+            if ((m = /^콜 ?OI (\S+)/.exec(글))) return '콜벽 ' + m[1];
+            if ((m = /^풋 ?OI (\S+)/.exec(글))) return '풋벽 ' + m[1];
+            if (/^합산 콜 벽/.test(글)) return '합산콜벽';
+            if (/^합산 풋 벽/.test(글)) return '합산풋벽';
+            if (/^MaxPain/i.test(글)) return '맥스페인';
+            if (/VWAP/.test(글)) return 'VWAP';
+            if ((m = /^(전일|프리장|개장15분|오늘|정규장) (고가|저가|종가)/.exec(글))) return { 전일: '전일', 프리장: '프리', 개장15분: '개장15', 오늘: '당일', 정규장: '정규' }[m[1]] + m[2].charAt(0);
+            if ((m = /^(\d+\/\d+) (고가|저가|종가)/.exec(글))) return m[1] + m[2].charAt(0);
+            if ((m = /^구간 (\d+)회/.exec(글))) return '구간' + m[1] + '회';
+            if ((m = /^옵션 ([12])차/.exec(글))) return '옵션' + m[1];
+            return { 프리장: '프리', 오늘: '당일' }[글] || 글;
+        }
         // ── 선 (패널 엔진 값) ──
         function 키움차트_선목록(st) {
             var i = st.i, 목 = [], 종목 = st.종목, C = 키움_색();
             if (panelTickers[i] !== 종목) return 목;
             var s = RT[i] && RT[i].ticker === 종목 ? RT[i] : null, d = panelDataStore[i] || {};
             if (d.ticker && d.ticker !== 종목) d = {};
-            function 넣(k, 이름, v, 색, 모양, 굵기) {
+            function 넣(k, 이름, v, 색, 모양, 굵기, 원) {
                 v = Number(v);
-                if (v > 0 && isFinite(v) && 키움_표시켬(i, k)) 목.push({ k: k, n: 이름, v: v, 색: 색, 모양: 모양 || 0, 굵기: 굵기 || 1 });
+                if (v > 0 && isFinite(v) && 키움_표시켬(i, k)) 목.push({ k: k, n: 이름, v: v, 색: 색, 모양: 모양 || 0, 굵기: 굵기 || 1, 원: 원 || 이름 });
             }
             var 세 = s && s.레벨세분;
             if (세 && ((세.지지 || []).length || (세.저항 || []).length)) {
@@ -9130,16 +9176,16 @@
                     var 순 = 강.concat(약).slice(0, 3).sort(function (a, b) { return Math.abs(a.v - 세.기준가) - Math.abs(b.v - 세.기준가); }), 묶 = [];
                     순.forEach(function (x) {
                         var g = 묶[묶.length - 1];
-                        if (g && Math.abs(x.v - g.v) / g.v <= 0.003) { g.이름 += '·' + (x.이름 || '').split(' ')[0]; g.강도 = Math.max(g.강도, x.강도); g.확인 = g.확인 || x.확인; return; }
-                        묶.push({ v: x.v, 이름: x.이름 || x.n, 강도: x.강도, 확인: x.확인 });
+                        if (g && Math.abs(x.v - g.v) / g.v <= 0.003) { g.이름 += '·' + (x.이름 || x.n || ''); g.원 += ' / ' + (x.n || x.이름 || ''); g.강도 = Math.max(g.강도, x.강도); g.확인 = g.확인 || x.확인; return; }
+                        묶.push({ v: x.v, 이름: x.이름 || x.n, 원: (x.n || x.이름 || '') + (x.근거 && x.근거.length > 1 ? ' (' + x.근거.join(' · ') + ')' : ''), 강도: x.강도, 확인: x.확인 });
                     });
                     return 묶;
                 }
-                var 별 = function (n) { return '★★★'.slice(0, Math.max(1, Math.min(3, n))); };
+                var 별 = function (n) { return '★' + Math.max(1, Math.min(3, n)); };
                 var 구0 = null; try { 구0 = 구간_가져오기(종목); } catch (e) { }
-                function 회(v) { var n = 판정_터치(구0, v); return n ? ' · ' + n + '회' : ''; }
-                차트레벨(세.지지 || []).forEach(function (x, k) { 넣('sr' + (k + 1), x.이름 + ' ' + 별(x.강도) + 회(x.v), x.v, k ? C.지지 + '99' : C.지지 + 'cc', x.확인 ? 1 : (k ? 2 : 0), 1); });
-                차트레벨(세.저항 || []).forEach(function (x, k) { 넣('sr' + (k + 1), x.이름 + ' ' + 별(x.강도) + 회(x.v), x.v, k ? C.저항 + '99' : C.저항 + 'cc', x.확인 ? 1 : (k ? 2 : 0), 1); });
+                function 회(v) { var n = 판정_터치(구0, v); return n ? ' ' + n + '회' : ''; }
+                차트레벨(세.지지 || []).forEach(function (x, k) { 넣('sr' + (k + 1), 레벨_짧은이름(x.이름) + ' ' + 별(x.강도) + 회(x.v), x.v, k ? C.지지 + '99' : C.지지 + 'cc', x.확인 ? 1 : (k ? 2 : 0), 1, '지지 · ' + x.원 + 회(x.v)); });
+                차트레벨(세.저항 || []).forEach(function (x, k) { 넣('sr' + (k + 1), 레벨_짧은이름(x.이름) + ' ' + 별(x.강도) + 회(x.v), x.v, k ? C.저항 + '99' : C.저항 + 'cc', x.확인 ? 1 : (k ? 2 : 0), 1, '저항 · ' + x.원 + 회(x.v)); });
             } else {
                 넣('sr1', '옵션 지지1', d.support1, C.지지 + 'bb', 0, 1); 넣('sr2', '옵션 지지2', d.support2, C.지지 + '99', 2, 1);
                 넣('sr1', '옵션 저항1', d.resistance1, C.저항 + 'bb', 0, 1); 넣('sr2', '옵션 저항2', d.resistance2, C.저항 + '99', 2, 1);
@@ -9147,8 +9193,8 @@
             try { 엔진_차트선(i, 넣, C); } catch (e) { }   // ★ 엔진 지지 신호선 · 보유(진입·손절·1차 익절)
             var 물 = null; try { 물 = 매물대_가져오기(종목); } catch (e) { }
             if (물 && 물.최대) {
-                넣('vp', '매물대 최대', 물.최대.가격, C.매물, 0, 2);
-                if (물.집중) { 넣('vp', '거래집중 상단', 물.집중.상단, C.매물2, 1, 1); 넣('vp', '거래집중 하단', 물.집중.하단, C.매물2, 1, 1); }
+                넣('vp', '매물최대', 물.최대.가격, C.매물, 0, 2, '매물대 최대 (오늘 가장 많이 거래된 가격' + (물.최대.비중 ? ' · ' + 물.최대.비중 + '%' : '') + ')');
+                if (물.집중) { 넣('vp', '집중상단', 물.집중.상단, C.매물2, 1, 1, '거래 집중 구간 상단 (오늘 거래 대부분이 몰린 범위의 위 끝)'); 넣('vp', '집중하단', 물.집중.하단, C.매물2, 1, 1, '거래 집중 구간 하단 (오늘 거래 대부분이 몰린 범위의 아래 끝)'); }
             }
             var 구 = null; try { 구 = 구간_가져오기(종목); } catch (e) { }
             if (구 && 구.상태 === '정상') {
@@ -9157,7 +9203,7 @@
             }
             넣('opt', 'MaxPain', d.maxPain, C.맥스, 1, 1); 넣('opt', '콜벽', d.callWall, C.콜벽, 1, 1); 넣('opt', '풋벽', d.putWall, C.풋벽, 1, 1);
             var 세션 = typeof sessionCache !== 'undefined' ? sessionCache[종목] : null, 정규 = marketPhase().type === 'REG';
-            if (세션) 넣('pc', 정규 ? '전일 종가' : '종가', 정규 ? 세션.prevClose : (세션.regClose || 세션.prevClose), C.종가, 2, 1);
+            if (세션) 넣('pc', 정규 ? '전일종' : '종가', 정규 ? 세션.prevClose : (세션.regClose || 세션.prevClose), C.종가, 2, 1, 정규 ? '전일 종가' : '정규장 종가');
             return 목;
         }
         function 키움차트_선갱신(st, 강제) {
@@ -9173,7 +9219,7 @@
             st.선키 = 모양키;
             (st.선 || []).forEach(function (x) { try { st.캔들.removePriceLine(x.줄); } catch (e) { } });
             st.선 = 목.map(function (x) {
-                x.줄 = st.캔들.createPriceLine({ price: x.v, color: x.색, lineWidth: x.굵기, lineStyle: x.모양, axisLabelVisible: false, title: '', lineVisible: true });
+                x.줄 = st.캔들.createPriceLine({ price: x.v, color: x.색, lineWidth: x.굵기, lineStyle: x.모양, axisLabelVisible: true, axisLabelColor: x.색.slice(0, 7), axisLabelTextColor: '#ffffff', title: '', lineVisible: true });   // 가격은 오른쪽 축 꼬리표 (이름표에는 이름만)
                 return x;
             });
             if (st.vwap) st.vwap.applyOptions({ visible: 키움_표시켬(st.i, 'vwap') && !st.일봉 });
@@ -9215,8 +9261,8 @@
             var 층 = st.상자.querySelector('.kc-lb'); if (!층 || !st.chart || !st.봉.length) { if (층) 층.innerHTML = ''; return; }
             var 판 = st.chart.paneSize(), 높 = 판.height, 전체폭 = st.상자.clientWidth, 오른 = Math.max(0, 전체폭 - 판.width) + 4, 정밀 = st.정밀 || 2, C = 키움_색();
             function 꾸밈(색) { return C.밝음 ? 'color:#fff;background:' + 색.slice(0, 7) + ';border-color:' + 색.slice(0, 7) : 'color:' + 색.slice(0, 7) + ';border-color:' + 색; }
-            var 항목 = st.선.map(function (x) { return { k: x.k, n: x.n, v: x.v, 색: x.색 }; });
-            if (st.vw끝 > 0 && !st.일봉 && 키움_표시켬(st.i, 'vwap')) 항목.push({ k: 'vwap', n: 'VWAP', v: st.vw끝, 색: C.vwap });
+            var 항목 = st.선.map(function (x) { return { k: x.k, n: x.n, 원: x.원 || x.n, v: x.v, 색: x.색 }; });
+            if (st.vw끝 > 0 && !st.일봉 && 키움_표시켬(st.i, 'vwap')) 항목.push({ k: 'vwap', n: 'VWAP', 원: 'VWAP (거래량 가중 평균가)', v: st.vw끝, 색: C.vwap });
             var 안 = [], 위 = [], 아래 = [];
             항목.forEach(function (x) {
                 var y = st.캔들.priceToCoordinate(x.v); if (y == null || !isFinite(y)) return;
@@ -9237,14 +9283,15 @@
                 if (y < 아래끝 + 1) y = 아래끝 + 1;
                 if (y > 높 - 16) y = 높 - 16;
                 아래끝 = y + 15;
-                var 제목 = g.목.map(function (x) { return x.n + ' ' + 키움_가격글(x.v, 정밀); }).join('\n');
-                h += '<div class="kc-l" style="top:' + y + 'px;right:' + 오른 + 'px;' + 꾸밈(합.대표.색) + '" title="' + 제목 + '">' + 합.글 + ' ' + 키움_가격글(합.대표.v, 정밀) + '</div>';
+                var 제목 = g.목.map(function (x) { return (x.원 || x.n) + ' ' + 키움_가격글(x.v, 정밀); }).join('\n').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+                var vw = g.목.some(function (x) { return x.k === 'vwap'; });   // VWAP 만 가격까지 (나머지 가격은 오른쪽 축 꼬리표)
+                h += '<div class="kc-l" style="top:' + y + 'px;right:' + 오른 + 'px;' + 꾸밈(합.대표.색) + '" title="' + 제목 + '">' + 합.글 + (vw ? ' ' + 키움_가격글(g.목.filter(function (x) { return x.k === 'vwap'; })[0].v, 정밀) : '') + '</div>';
             });
             function 끝표(목, 위쪽) {
                 if (!목.length) return '';
                 목.sort(function (a, b) { return 위쪽 ? a.v - b.v : b.v - a.v; });     // 가까운 선 먼저
                 var x = 목[0], 더 = 목.length - 1;
-                var 제목 = 목.map(function (z) { return z.n + ' ' + 키움_가격글(z.v, 정밀); }).join('\n');
+                var 제목 = 목.map(function (z) { return (z.원 || z.n) + ' ' + 키움_가격글(z.v, 정밀); }).join('\n').replace(/"/g, '&quot;').replace(/</g, '&lt;');
                 return '<div class="kc-l kc-edge" style="' + (위쪽 ? 'top:2px' : 'top:' + Math.max(0, 높 - 17) + 'px') + ';right:' + 오른 + 'px;' + 꾸밈(x.색) + '" title="' + 제목 + '">' +
                        (위쪽 ? '▲ ' : '▼ ') + x.n + ' ' + 키움_가격글(x.v, 정밀) + (더 > 0 ? ' 외 ' + 더 : '') + '</div>';
             }
@@ -9290,12 +9337,11 @@
             for (var k = a; k <= b; k++) if (st.봉[k].h > 최고) { 최고 = st.봉[k].h; 곳 = k; }
             if (곳 < 0) return '';
             var y = st.캔들.priceToCoordinate(최고); if (y == null || y < 0 || y > 판.height) return '';
-            var 종 = st.봉[st.봉.length - 1].c, 차 = (최고 - 종) / 최고 * 100, d = new Date(st.봉[곳].t * 1000), p2 = function (n) { return (n < 10 ? '0' : '') + n; };
-            var 때 = p2(d.getUTCMonth() + 1) + '/' + p2(d.getUTCDate()) + (st.일봉 ? '' : ' ' + p2(d.getUTCHours()) + ':' + p2(d.getUTCMinutes()));
+            var 종 = st.봉[st.봉.length - 1].c, 차 = (최고 - 종) / 최고 * 100;
             var 색 = 'rgba(200,0,0,.65)';
             return '<div class="kc-hh kc-hh-line" style="top:' + Math.round(y) + 'px;width:' + 판.width + 'px;border-color:' + 색 + '"></div>' +
                    '<div class="kc-hh kc-hh-tag" style="top:' + Math.max(0, Math.round(y) - 15) + 'px;' + 'left:6px">최고 ' + 키움_가격글(최고, 정밀) +
-                   ' (' + (차 > 0 ? '-' : '') + Math.abs(차).toFixed(2) + '%, ' + 때 + ')</div>';
+                   ' (' + (차 > 0 ? '-' : '') + Math.abs(차).toFixed(2) + '%)</div>';
         }
         function 키움차트_개수기록(st) {
             if (!st.준비 || Date.now() < (st.개수무시 || 0)) return;
@@ -11541,9 +11587,10 @@
         //   대상: 이 화면 패널(칸) 종목 + 윈폼 엔진 종목 · 레벨 = 오늘의 기준 가격표 (엔진 → 없으면 대시보드 계산)
         //   🎯 접근: 현재가가 레벨까지 min(0.3%, 0.2 ATR) 안 + 최근 5분 동안 그쪽으로 움직임 (지지 = 하락하며 / 저항 = 상승하며)
         //   ⚠ 이탈 / 🚀 돌파: 레벨의 역할이 바뀔 때 (= 1분봉 종가가 0.2% 넘게 넘어감 · 기준 가격표 규칙)
-        //   같은 레벨·같은 종류는 30분에 한 번 · 대시보드1·2 중 한 곳만 알림 · 자동으로 종목을 바꾸지 않음
-        //   표시: 패널에 있는 종목 = 그 패널 띠 (18px · 처음 5초 깜빡임 · 30초 뒤 사라짐 · 누르면 닫힘)
-        //         패널에 없는 종목 = 화면 위 공통 알림 카드 + 관심종목 줄 깜빡임 · 단추로 직접 불러오기
+        //   같은 레벨·같은 종류는 30분에 한 번 · 소리·기록은 대시보드1·2 중 한 곳만 · 표시는 두 곳 모두 · 자동으로 종목을 바꾸지 않음
+        //   표시: 대시보드1 패널 종목 = 그 패널 띠 (18px · 처음 5초 깜빡임 · 30초 뒤 사라짐 · 누르면 닫힘)
+        //         대시보드1 패널에 없는 종목 = 화면 위 공통 알림 카드 + 관심종목 줄 깜빡임 · 단추로 직접 불러오기
+        //         대시보드2 = 모든 종목 화면 위 가운데 카드 + 그 칸 강조
         //   알림 기록 · 윈폼 알림 목록에 같은 글 · 소리는 알림 설정 '지지·저항' (기본 끔)
         // ════════════════════════════════════════════════════════
         var 레벨알림 = { 가격: {}, 역할: {}, 최근: {}, 근접여유: 0.003, ATR배: 0.2, 반복ms: 30 * 60000, 띠ms: 30000 };
@@ -11611,44 +11658,79 @@
             var 키 = t + '|' + L.v.toFixed(2) + '|' + 종류, 지금 = Date.now();
             if (레벨알림.최근[키] && 지금 - 레벨알림.최근[키] < 레벨알림.반복ms) return;
             레벨알림.최근[키] = 지금;
-            if (!레벨알림_담당(t)) return;
-            var 별 = '★★★'.slice(0, Math.max(1, Math.min(3, Number(L.점) || 0))), v = L.v.toFixed(2), 거리 = (L.v - 가격) / 가격 * 100;
+            var 담당 = 레벨알림_담당(t), i = 레벨알림_패널(t);
+            // 표시: 대시보드2 = 모든 종목 화면 위 가운데 · 대시보드1 = 패널 종목은 패널 띠 / 그 밖은 (담당일 때) 공통 카드
+            //   소리·음성·알림 기록·윈폼 알림은 담당 한 곳만 (두 번 울리지 않게)
+            if (!격자모드 && i < 0 && !담당) return;
+            var 별 = '★' + Math.max(1, Math.min(3, Number(L.점) || 0)), v = L.v.toFixed(2), 거리 = (L.v - 가격) / 가격 * 100;
             var 거리글 = (거리 > 0 ? '+' : 거리 < 0 ? '−' : '') + Math.abs(거리).toFixed(2) + '%';
-            var 첫 = 종류 === '지지접근' ? '🎯 ' + t + ' ▼ 하락하며 지지 접근 · ' + v + ' ' + 별 + ' · 현재 ' + 가격.toFixed(2) + ' (지지까지 ' + 거리글 + ')'
-                   : 종류 === '저항접근' ? '🎯 ' + t + ' ▲ 상승하며 저항 접근 · ' + v + ' ' + 별 + ' · 현재 ' + 가격.toFixed(2) + ' (저항까지 ' + 거리글 + ')'
-                   : 종류 === '이탈' ? '⚠ ' + t + ' ▼ 지지 이탈 · ' + v + ' ' + 별 + ' · ' + (분종가 ? '1분봉 종가 ' : '현재 ') + 가격.toFixed(2)
-                   : '🚀 ' + t + ' ▲ 저항 돌파 · ' + v + ' ' + 별 + ' · ' + (분종가 ? '1분봉 종가 ' : '현재 ') + 가격.toFixed(2);
-            var 근거 = (L.근거 || []).map(function (g) { return typeof g === 'string' ? g : g.글; }).filter(Boolean).join(' · ');
+            var 첫 = 종류 === '지지접근' ? t + ' ▼ 지지 접근 ' + v + ' ' + 별 + ' · 현재 ' + 가격.toFixed(2) + ' (' + 거리글 + ')'
+                   : 종류 === '저항접근' ? t + ' ▲ 저항 접근 ' + v + ' ' + 별 + ' · 현재 ' + 가격.toFixed(2) + ' (' + 거리글 + ')'
+                   : 종류 === '이탈' ? t + ' ▼ 지지 이탈 ' + v + ' ' + 별 + ' · ' + (분종가 ? '1분봉 종가 ' : '현재 ') + 가격.toFixed(2)
+                   : t + ' ▲ 저항 돌파 ' + v + ' ' + 별 + ' · ' + (분종가 ? '1분봉 종가 ' : '현재 ') + 가격.toFixed(2);
+            var 근거목 = (L.근거 || []).map(function (g) { return typeof g === 'string' ? g : g.글; }).filter(Boolean);
+            var 근거 = 근거목.map(레벨_짧은이름).filter(function (x, k, a) { return x && a.indexOf(x) === k; }).join(' · ');
             var 둘 = '근거: ' + (근거 || '─') + (e && e.상태 ? ' · 엔진: ' + (e.보유 ? '보유' : e.상태 + (e.점수 ? ' ' + e.점수 + '점' : '')) : '');
+            var 풀이 = '근거: ' + (근거목.join(' · ') || '─');
             var 쪽 = 종류 === '지지접근' ? 'sup' : 종류 === '저항접근' ? 'res' : 종류 === '이탈' ? 'brk dn' : 'brk up';
-            var 시각 = 알림_시각(), i = 레벨알림_패널(t);
-            // 윈폼 알림 목록에도 같은 글
-            try { if (window.chrome && window.chrome.webview) window.chrome.webview.postMessage(JSON.stringify({ 종류: '레벨알림', 종목: t, 글: 첫 + '\n' + 둘 })); } catch (x) { }
-            var 말 = tickerName(t) + ', ' + (종류 === '지지접근' ? '지지 접근' : 종류 === '저항접근' ? '저항 접근' : 종류 === '이탈' ? '지지 이탈' : '저항 돌파') + ' ' + 알림_말가격(L.v);
-            알림_소리와음성('레벨', '차임', 말);
-            if (i >= 0) {
-                // 패널에 있는 종목: 그 패널(칸) 띠 + 알림 기록
-                알림기록_추가({ t: 지금, 시각: 시각, 종류: '레벨', 종목: t, 글: 첫 + ' / ' + 둘 });
+            var 시각 = 알림_시각();
+            if (담당) {
+                try { if (window.chrome && window.chrome.webview) window.chrome.webview.postMessage(JSON.stringify({ 종류: '레벨알림', 종목: t, 글: 첫 + '\n' + 둘 })); } catch (x) { }
+                var 말 = tickerName(t) + ', ' + (종류 === '지지접근' ? '지지 접근' : 종류 === '저항접근' ? '저항 접근' : 종류 === '이탈' ? '지지 이탈' : '저항 돌파') + ' ' + 알림_말가격(L.v);
+                알림_소리와음성('레벨', '차임', 말);
+            }
+            if (격자모드) {
+                if (담당) 알림기록_추가({ t: 지금, 시각: 시각, 종류: '레벨', 종목: t, 글: 첫 + ' / ' + 둘 });
                 if (!알림_허용('레벨', '창')) return;
-                var 띠 = 격자모드 ? document.getElementById('g' + i + '-lvban') : document.getElementById('p' + i + '-lvban');
-                if (!띠) return;
-                띠.innerHTML = '<div class="lv-1"></div><div class="lv-2"></div><button type="button" class="lv-x" title="닫기">×</button>';
-                띠.querySelector('.lv-1').textContent = 첫; 띠.querySelector('.lv-2').textContent = 둘;
-                띠.className = (격자모드 ? 'g-lv' : 'lv-ban') + ' show flash ' + 쪽;
-                clearTimeout(띠._깜빡); clearTimeout(띠._닫기);
-                띠._깜빡 = setTimeout(function () { 띠.classList.remove('flash'); }, 5000);
-                띠._닫기 = setTimeout(function () { 띠.className = 격자모드 ? 'g-lv' : 'lv-ban'; }, 레벨알림.띠ms);
-                띠.onclick = function (ev) { ev.stopPropagation(); clearTimeout(띠._닫기); 띠.className = 격자모드 ? 'g-lv' : 'lv-ban'; };
-                if (!격자모드) { 이동_알림[i] = 지금; try { 이동_그리기(); } catch (x) { } }
+                레벨탑_띄우기({ t: t, 키: t + '|' + 종류, 첫: 첫, 둘: 둘, 풀이: 풀이, 쪽: 쪽, 시각: 시각, 패널: i });
+                if (i >= 0) 알림_패널로가기(t);
                 return;
             }
-            // 패널에 없는 종목: 화면 위 공통 알림 카드 (최대 3개) + 관심종목 줄 깜빡임 · 단추로 직접 불러오기 (자동 전환 없음)
-            var 단추 = 격자모드
-                ? [{ 글: '종목 보기', 기본: true, 할일: function () { 레벨알림_칸에넣기(t); } }]
-                : [0, 1, 2].map(function (k) { return { 글: '[' + (k + 1) + '] 패널에', 할일: function () { 관심_패널지정(k, t); if (패널_숨김(k)) 패널_보이기설정(k, true); 관심_패널로이동(k); } }; });
-            알림_띄우기({ 종류: '레벨', 종목: t, 시각: 시각, 글: 첫 + '\n' + 둘, 짧은글: 첫.replace(/^\S+ \S+ /, ''), 유지ms: 레벨알림.띠ms, 단추들: 단추.concat([{ 글: '닫기', 할일: function () { } }]) });
+            if (i >= 0) {
+                // 패널에 있는 종목: 그 패널 띠 + 알림 기록
+                if (담당) 알림기록_추가({ t: 지금, 시각: 시각, 종류: '레벨', 종목: t, 글: 첫 + ' / ' + 둘 });
+                if (!알림_허용('레벨', '창')) return;
+                var 띠 = document.getElementById('p' + i + '-lvban');
+                if (!띠) return;
+                띠.innerHTML = '<div class="lv-1"></div><div class="lv-2"></div><button type="button" class="lv-x" title="닫기">×</button>';
+                띠.querySelector('.lv-1').textContent = 첫; 띠.querySelector('.lv-2').textContent = 둘; 띠.title = 풀이;
+                띠.className = 'lv-ban show flash ' + 쪽;
+                clearTimeout(띠._깜빡); clearTimeout(띠._닫기);
+                띠._깜빡 = setTimeout(function () { 띠.classList.remove('flash'); }, 5000);
+                띠._닫기 = setTimeout(function () { 띠.className = 'lv-ban'; }, 레벨알림.띠ms);
+                띠.onclick = function (ev) { ev.stopPropagation(); clearTimeout(띠._닫기); 띠.className = 'lv-ban'; };
+                이동_알림[i] = 지금; try { 이동_그리기(); } catch (x) { }
+                return;
+            }
+            // 패널에 없는 종목 (대시보드1): 화면 위 공통 알림 카드 (최대 3개) + 관심종목 줄 깜빡임 · 단추로 직접 불러오기 (자동 전환 없음)
+            var 단추 = [0, 1, 2].map(function (k) { return { 글: '[' + (k + 1) + '] 패널에', 할일: function () { 관심_패널지정(k, t); if (패널_숨김(k)) 패널_보이기설정(k, true); 관심_패널로이동(k); } }; });
+            알림_띄우기({ 종류: '레벨', 종목: t, 시각: 시각, 글: 첫 + '\n' + 둘, 짧은글: 첫.replace(/^\S+ /, ''), 유지ms: 레벨알림.띠ms, 단추들: 단추.concat([{ 글: '닫기', 할일: function () { } }]) });
             var 줄 = document.getElementById('wl-' + t);
             if (줄) { 줄.classList.remove('wl-lv'); void 줄.offsetWidth; 줄.classList.add('wl-lv'); clearTimeout(줄._lv); 줄._lv = setTimeout(function () { 줄.classList.remove('wl-lv'); }, 레벨알림.띠ms); }
+        }
+        // 대시보드2: 지지·저항 알림 = 화면 위 가운데 카드 (최대 3장 · 새 것이 위 · 5초 깜빡임 · 30초 뒤 사라짐 · ✕ 닫기)
+        //   카드를 누르면 그 종목 칸 강조 (칸에 없으면 [종목 보기] 로 빈 칸에 불러옴)
+        function 레벨탑_띄우기(x) {
+            var 판 = document.getElementById('lv-top');
+            if (!판) { 판 = document.createElement('div'); 판.id = 'lv-top'; document.body.appendChild(판); }
+            var 바 = document.querySelector('.top-bar'), 아래 = 바 ? 바.getBoundingClientRect().bottom : 0;
+            판.style.top = Math.max(4, Math.round(아래 + 6)) + 'px';
+            Array.prototype.forEach.call(판.querySelectorAll('.lv-card'), function (c) { if (c._키 === x.키) c.remove(); });
+            var c = document.createElement('div');
+            c.className = 'lv-card flash ' + x.쪽; c._키 = x.키; c.title = x.풀이;
+            c.innerHTML = '<div class="lv-1"></div><div class="lv-2"></div><div class="lv-3"></div><button type="button" class="lv-x" title="닫기">×</button>';
+            c.querySelector('.lv-1').textContent = x.첫; c.querySelector('.lv-2').textContent = x.둘;
+            c.querySelector('.lv-3').innerHTML = '<span>' + x.시각 + ' ET</span>' + (x.패널 >= 0 ? '<span class="lv-pn">' + (x.패널 + 1) + '번 칸</span>' : '<button type="button" class="lv-go">종목 보기</button>');
+            판.insertBefore(c, 판.firstChild);
+            while (판.children.length > 3) 판.removeChild(판.lastChild);
+            function 닫기() { clearTimeout(c._닫기); c.classList.add('out'); setTimeout(function () { c.remove(); }, 250); }
+            c.addEventListener('click', function (ev) {
+                if (ev.target.closest('.lv-x')) { ev.stopPropagation(); 닫기(); return; }
+                if (ev.target.closest('.lv-go')) { ev.stopPropagation(); 레벨알림_칸에넣기(x.t); 닫기(); return; }
+                if (panelTickers.indexOf(x.t) >= 0) 알림_패널로가기(x.t);
+            });
+            setTimeout(function () { c.classList.remove('flash'); }, 5000);
+            c._닫기 = setTimeout(닫기, 레벨알림.띠ms);
         }
         // 대시보드2 [종목 보기]: 고른 칸 → 없으면 10번 칸부터 앞으로, 보유·신호 중인 칸은 건너뜀
         function 레벨알림_칸에넣기(t) {
@@ -11709,20 +11791,21 @@
             // 엔진 시장 상태 (특정 지수가 아니므로 QQQ·SPY 칸 함께)
             var 엔상 = typeof 엔진 !== 'undefined' && 엔진_살아있음() && 엔진.meta && 엔진.meta.시장 ? 엔진.meta.시장.상태 : '';
             var 순 = { '상승 우호': 0, '중립': 1, '주의': 2, '위험': 3 };
-            if (엔상 === '위험') 위('엔진 시장 상태 위험', ['neon-qqq', 'neon-spy']);
-            else if (엔상 && 기.엔진상태 && 순[엔상] > 순[기.엔진상태]) 주('엔진 시장 상태 ' + 기.엔진상태 + ' → ' + 엔상, ['neon-qqq', 'neon-spy']);
+            if (엔상 === '위험') 위('엔진 시장 상태 위험', []);
+            else if (엔상 && 기.엔진상태 && 순[엔상] > 순[기.엔진상태]) 주('엔진 시장 상태 ' + 기.엔진상태 + ' → ' + 엔상, []);
             if (엔상) 기.엔진상태 = 엔상;
             // 관심종목 흐름 (QQQ·SPY 칸 함께)
             var 흐 = 기.흐름.filter(function (x) { return 지금 - x.t < 20 * 60000; }); 기.흐름 = 흐;
             if (흐.length) {
                 var 끝 = 흐[흐.length - 1], 앞 = 흐.filter(function (x) { return 끝.t - x.t >= 14 * 60000; }).pop();
-                if (앞 && 앞.상 != null && 끝.상 != null && 앞.상 - 끝.상 >= 0.3) 주('관심종목 상승 비율 ' + Math.round(앞.상 * 100) + '% → ' + Math.round(끝.상 * 100) + '%', ['neon-qqq', 'neon-spy']);
-                if (끝.앎 >= 5 && 끝.위 != null && 끝.위 < 0.3) 주('VWAP 위 종목 ' + Math.round(끝.위 * 100) + '%', ['neon-qqq', 'neon-spy']);
+                if (앞 && 앞.상 != null && 끝.상 != null && 앞.상 - 끝.상 >= 0.3) 주('관심종목 상승 비율 ' + Math.round(앞.상 * 100) + '% → ' + Math.round(끝.상 * 100) + '%', []);
+                if (끝.앎 >= 5 && 끝.위 != null && 끝.위 < 0.3) 주('VWAP 위 종목 ' + Math.round(끝.위 * 100) + '%', []);
             }
             기.칸 = 칸;
             var 단계 = 위험.length ? '위험' : 주의.length ? '주의' : '';
             var 이유 = 위험.concat(주의);
             if (!단계) {
+                시장경보_지수표시({});   // 지수 칸 외곽선은 그 지수 조건이 사라지고 2분 뒤 지움 (경보 해제 10분과 따로)
                 if (시장경보 && !기.조건없음시각) 기.조건없음시각 = 지금;
                 if (시장경보 && 지금 - 기.조건없음시각 >= 10 * 60000) {
                     시장경보 = null; 기.조건없음시각 = 0; 시장경보_띠(); 시장경보_지수표시({});
@@ -11746,16 +11829,18 @@
                 시장경보_윈폼(글);
             } else 알림기록_추가({ t: 지금, 시각: 알림_시각(), 종류: '시장', 종목: '시장', 글: 글 });
         }
-        // 맨 위 지수 칸 외곽선: 경보를 일으킨 지수만 (위험 빨강 · 주의 주황) · 처음 10초 빠르게 깜빡임 → 그 뒤 외곽선만 · 해제되면 지움
-        //   조건이 잠깐 빠져도(해제 전 10분) 외곽선은 유지 · 마우스를 올리면 이유
+        // 맨 위 지수 칸 외곽선: 그 지수 자체 조건만 (위험 빨강 · 주의 주황) · 처음 10초 빠르게 깜빡임 → 그 뒤 외곽선만
+        //   그 지수의 조건이 사라지면 2분 뒤 지움 (엔진 상태·관심종목 비율 같은 이유는 위 띠·알림에만) · 마우스를 올리면 이유
         var 시장경보_칸상태 = {};
         function 시장경보_지수표시(칸) {
             ['neon-qqq', 'neon-spy', 'neon-vix'].forEach(function (id) {
                 var el = document.getElementById(id); if (!el) return;
                 var c = 칸[id], 전 = 시장경보_칸상태[id];
                 if (!c) {
-                    if (시장경보 && 전) return;   // 경보가 아직 안 풀렸으면 마지막 표시 유지
-                    if (전) { el.classList.remove('mk-al', 'red', 'orange', 'mk-blink'); el.title = el._원제목 || ''; delete 시장경보_칸상태[id]; }
+                    if (!전) return;
+                    if (!전.없어짐) 전.없어짐 = Date.now();
+                    if (Date.now() - 전.없어짐 < 120000) return;   // 조건이 사라지고 2분 동안만 남김
+                    el.classList.remove('mk-al', 'red', 'orange', 'mk-blink'); el.title = el._원제목 || ''; delete 시장경보_칸상태[id];
                     return;
                 }
                 if (el._원제목 === undefined) el._원제목 = el.title || '';
@@ -13604,6 +13689,90 @@
         }
         window.국장 = { 상태: 상태, 모드바꾸기: 모드바꾸기, 반영: 반영, 그리기: 그리기, 종목: KR종목, 수급통계: 수급통계, 단계: 단계, 누적비율: 누적비율 };
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', 시작); else 시작();
+    })();
+    </script>
+    <script>
+    // ════════════════════════════════════════════════════════
+    // ★ 지수 칸 급변 깜빡임 (시장 경보와 따로): 최근 1분·3분·5분 변화가 기준을 넘으면
+    //   급등 = 빨강 · 급락 = 파랑 · 반전(5분 안에 한쪽으로 크게 간 뒤 되돌림) = 노랑 외곽선 + 칸 안 꼬리표
+    //   처음 10초 깜빡임 → 조건이 이어지는 동안 외곽선 → 끝나고 90초 뒤 지움
+    //   미장: QQQ·SPY·나스닥선물·VIX (정규장 09:31 부터) · 국장: 코스피·코스닥·선물·원/달러 (09:01 ~ 15:30)
+    // ════════════════════════════════════════════════════════
+    (function () {
+        if (/[?&]news=1(&|$)/.test(location.search)) return;
+        var 설정 = {
+            'neon-qqq': { 장: 'us', 기: [0.25, 0.4, 0.6] }, 'neon-spy': { 장: 'us', 기: [0.25, 0.4, 0.6] }, 'neon-nq': { 장: 'us', 기: [0.25, 0.4, 0.6] }, 'neon-vix': { 장: 'us', 기: [3, 5, 7] },
+            'kr-kospi': { 장: 'kr', 키: 'KOSPI', 기: [0.25, 0.4, 0.6] }, 'kr-kosdaq': { 장: 'kr', 키: 'KOSDAQ', 기: [0.3, 0.5, 0.7] }, 'kr-fut': { 장: 'kr', 키: 'FUT', 기: [0.3, 0.45, 0.65] },
+            'kr-usd': { 장: 'kr', 키: '환율', 기: [2, 3, 5], 원: 1 }
+        };
+        var 분들 = [1, 3, 5], 기록 = {}, 표시 = {};
+        function 값(id) {
+            var c = 설정[id];
+            if (c.장 === 'us') { var x = typeof 시황_값 !== 'undefined' ? 시황_값[id] : null; return x && x.p > 0 ? x.p : 0; }
+            var v = window.국장 && 국장.상태 && 국장.상태.live; if (!v) return 0;
+            if (c.키 === '환율') return v.환율 && v.환율.p > 0 ? v.환율.p : 0;
+            var j = v.지수 && v.지수[c.키]; return j && j.p > 0 ? j.p : 0;
+        }
+        function 열림(장) {
+            try {
+                if (장 === 'us') { if (marketPhase().type !== 'REG') return false; var e = etNowParts().et; return e.getHours() * 60 + e.getMinutes() >= 9 * 60 + 31; }
+                if (!window.국장) return false;
+                var 단 = 국장.단계(), d = new Date(Date.now() + 9 * 3600e3), m = d.getUTCHours() * 60 + d.getUTCMinutes();
+                return (단 === '초반' || 단 === '본장' || 단 === '마감앞') && m >= 9 * 60 + 1 && m <= 15 * 60 + 30;
+            } catch (e) { return false; }
+        }
+        function 차(c, a, b) { return c.원 ? b - a : (b - a) / a * 100; }
+        function 글(c, x) { return (x > 0 ? '+' : x < 0 ? '−' : '') + (c.원 ? Math.abs(x).toFixed(1) + '원' : Math.abs(x).toFixed(2) + '%'); }
+        function 판단(id) {
+            var c = 설정[id], 목 = 기록[id] || [], 지금 = Date.now(); if (목.length < 2) return null;
+            var p = 목[목.length - 1].p, 최선 = null;
+            분들.forEach(function (n, k) {
+                var 기준 = null; for (var i = 목.length - 1; i >= 0; i--) { if (지금 - 목[i].t >= n * 60000 - 8000) { 기준 = 목[i]; break; } }
+                if (!기준 || !(기준.p > 0)) return;
+                var x = 차(c, 기준.p, p), 비 = Math.abs(x) / c.기[k];
+                if (비 >= 1 && (!최선 || 비 > 최선.비)) 최선 = { 종류: x > 0 ? 'up' : 'dn', 글: n + '분 ' + 글(c, x), 비: 비 };
+            });
+            // 반전: 5분 안에서 고점·저점 순서와 되돌림 크기
+            var 창 = 목.filter(function (x) { return 지금 - x.t <= 5 * 60000 + 8000; });
+            if (창.length >= 3) {
+                var iM = 0, im = 0; 창.forEach(function (x, i) { if (x.p > 창[iM].p) iM = i; if (x.p < 창[im].p) im = i; });
+                var M = 창[iM].p, m = 창[im].p;
+                if (iM < im && im < 창.length - 1 && Math.abs(차(c, M, m)) >= c.기[2] * 0.8 && 차(c, m, p) >= c.기[1]) 최선 = { 종류: 'rev', 글: '반전 ▲ ' + 글(c, 차(c, m, p)), 비: 9 };
+                else if (im < iM && iM < 창.length - 1 && 차(c, m, M) >= c.기[2] * 0.8 && -차(c, M, p) >= c.기[1]) 최선 = { 종류: 'rev', 글: '반전 ▼ ' + 글(c, 차(c, M, p)), 비: 9 };
+            }
+            return 최선;
+        }
+        function 그리기(id, r) {
+            var el = document.getElementById(id); if (!el) return;
+            var 전 = 표시[id], 지금 = Date.now();
+            if (r) {
+                var 새 = !전 || 전.종류 !== r.종류;
+                표시[id] = { 종류: r.종류, 글: r.글, 끝: 지금, 시작: 새 ? 지금 : 전.시작 };
+                el.classList.add('mk-fx'); ['fx-up', 'fx-dn', 'fx-rev'].forEach(function (k) { el.classList.toggle(k, k === 'fx-' + r.종류); });
+                if (새) { el.classList.remove('fx-blink'); void el.offsetWidth; el.classList.add('fx-blink'); clearTimeout(el._fx); el._fx = setTimeout(function () { el.classList.remove('fx-blink'); }, 10000); }
+            } else if (전) {
+                if (지금 - 전.끝 < 90000) return;
+                delete 표시[id]; el.classList.remove('mk-fx', 'fx-up', 'fx-dn', 'fx-rev', 'fx-blink');
+                var t0 = el.querySelector('.mk-fxt'); if (t0) t0.remove();
+                return;
+            } else return;
+            var 표 = 표시[id], nm = el.querySelector('.mk-nm'); if (!nm) return;
+            var t = nm.querySelector('.mk-fxt'); if (!t) { t = document.createElement('span'); t.className = 'mk-fxt'; nm.appendChild(t); }
+            if (t.textContent !== 표.글) t.textContent = 표.글;
+            t.title = (표.종류 === 'rev' ? '방향 급변 (5분 안에 크게 움직인 뒤 되돌림)' : 표.종류 === 'up' ? '급등' : '급락') + ' · ' + 표.글;
+        }
+        function 점검() {
+            var 지금 = Date.now();
+            Object.keys(설정).forEach(function (id) {
+                var c = 설정[id];
+                if (!열림(c.장)) { 기록[id] = []; if (표시[id]) { 표시[id].끝 = 0; 그리기(id, null); } return; }
+                var p = 값(id);
+                if (p > 0) { var 목 = 기록[id] = (기록[id] || []).filter(function (x) { return 지금 - x.t <= 6 * 60000; }); 목.push({ t: 지금, p: p }); }
+                그리기(id, 판단(id));
+            });
+        }
+        setInterval(function () { try { 점검(); } catch (e) { console.warn('[급변]', e); } }, 5000);
+        window.급변표시 = { 기록: 기록, 표시: 표시, 판단: 판단, 점검: 점검, 그리기: 그리기, 설정: 설정 };
     })();
     </script>
 </body>
