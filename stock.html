@@ -7495,8 +7495,11 @@
             if (m && m.고가 > 0 && m.저가 > 0 && m.날짜) return { H: m.고가, L: m.저가, 제목: 월일(m.날짜) + ' 정규장', 정규장외: true };
             return null;
         }
-        // 지지·저항 막대 위 H/L 전용: 시외에는 지금 세션(오늘 프리장 / 애프터 / 오버나이트) 고가·저가를 따라감
-        //   (전략·AI·dayHigh 등 다른 곳은 고저_가져오기 = 정규장 기준 그대로)
+        // 지지·저항 막대 위 H/L 전용
+        //   정규장 = 오늘 실시간 고가·저가 / 시외(프리·애프터·오버나이트) = 직전 정규장 고가·저가 (그 변동폭 안에서 지금 위치를 보게)
+        //   시외 급변: 지금 가격이 직전 정규장 범위 밖이거나 시외 변동폭이 직전 정규장 변동폭의 30% 이상 → 시외 범위를 주황 띠로 겹치고 한 줄 경고
+        //     (튀는 체결 방지: 3분 전 가격도 같은 쪽 범위 밖일 때만 '범위 밖'으로 봄 · 3분 전 자료가 없으면 지금 가격만)
+        //   직전 정규장 자료가 없으면 예전처럼 지금 시외 세션 고가·저가
         function 고저_막대(종목, 가격) {
             var 기본 = 고저_가져오기(종목, 가격), 장 = marketPhase();
             if (장.type !== 'PRE' && 장.type !== 'POST' && 장.type !== 'NIGHT') return 기본;
@@ -7507,9 +7510,23 @@
             var 시 = 시외고저[종목];
             if (시 && 시.키 === 키) 넓힘(시.H, 시.L);
             if (가격 > 0) 넓힘(가격, 가격);
-            if (!(H > 0 && L > 0)) return 기본;
             var 제목 = 장.type === 'PRE' ? '오늘 프리장' : 장.type === 'POST' ? '애프터' : '오버나이트';
-            return { H: H, L: L, 제목: 제목, 정규장외: true, 시외: true, 정규: 기본 };
+            if (!(기본 && 기본.H > 0 && 기본.L > 0)) return H > 0 && L > 0 ? { H: H, L: L, 제목: 제목, 정규장외: true, 시외: true, 정규: 기본 } : 기본;
+            var 결 = Object.assign({}, 기본, { 시외범위: H > 0 && L > 0 ? { H: H, L: L, 제목: 제목 } : null, 급변: null });
+            if (!결.시외범위 || !(가격 > 0)) return 결;
+            var 정폭 = 기본.H - 기본.L, 시폭 = H - L;
+            var k = panelTickers.indexOf(종목), st = k >= 0 && RT[k] && RT[k].ticker === 종목 ? RT[k] : null;
+            var 전 = st && st.ticks && st.ticks.length && st.ticks[0].t <= Date.now() - 180000 ? rtPriceAt(st, Date.now() - 180000) : null;
+            function 같은쪽(p) { return p > 기본.H ? 1 : p < 기본.L ? -1 : 0; }
+            var 쪽 = 같은쪽(가격); if (쪽 && 전 && 전.p > 0 && 같은쪽(전.p) !== 쪽) 쪽 = 0;
+            if (!쪽 && !(정폭 > 0 && 시폭 >= 정폭 * 0.3)) return 결;
+            var 종 = 일데이터[종목] && 일데이터[종목].마감 && 일데이터[종목].마감.종가 > 0 ? 일데이터[종목].마감.종가 : (sessionCache[종목] && sessionCache[종목].regClose) || 0;
+            var 등 = 종 > 0 ? (가격 - 종) / 종 * 100 : 0;
+            var 글 = 쪽 > 0 ? '시간외 급등 ' + fmtPct(등) + ' · 직전 고가 ' + 기본.H.toFixed(2) + ' 위 ' + fmtPct((가격 - 기본.H) / 기본.H * 100)
+                   : 쪽 < 0 ? '시간외 급락 ' + fmtPct(등) + ' · 직전 저가 ' + 기본.L.toFixed(2) + ' 아래 ' + fmtPct((가격 - 기본.L) / 기본.L * 100)
+                   : '시간외 변동 큼 · 폭 ' + (시폭 / L * 100).toFixed(2) + '% (직전 정규장 ' + (정폭 / 기본.L * 100).toFixed(2) + '%)';
+            결.급변 = { 쪽: 쪽 || (등 >= 0 ? 1 : -1), 밖: !!쪽, 글: 글, 등락: 등 };
+            return 결;
         }
 
         // ════════════════════════════════════════════════════════
@@ -7982,8 +7999,10 @@
                 position: 'absolute', zIndex: '5', top: (TOP_BASE_Y - 4) + 'px', left: (pctL + 0.8) + '%', transform: 'translateX(calc(-100% - 48px))',
                 fontSize: '9.5px', fontWeight: 'bold', color: '#8899aa', whiteSpace: 'nowrap'
             });
-            titleEl.textContent = 고저 ? 고저.제목 : '';
-            if (고저) { titleEl.style.transform = 'translateX(calc(-100% - ' + (고저.정규장외 ? 58 : 48) + 'px))'; titleEl.title = 고저.시외 ? '지금 시외 세션 고가·저가 (매물대는 마지막 정규장 기준)' : 고저.정규장외 ? '마지막 정규장 고가·저가 (지금 가격은 범위 밖일 수 있음)' : '오늘 정규장 고가·저가'; host.appendChild(titleEl); }
+            titleEl.textContent = 고저 ? 고저.제목 + (고저.시외범위 && 고저.L > 0 ? ' · 변동 ' + ((고저.H - 고저.L) / 고저.L * 100).toFixed(1) + '%' : '') : '';
+            if (고저 && pctL < 28 && pctH < 70) { titleEl.style.left = (pctH + 1.6) + '%'; titleEl.style.transform = 'translateX(52px)'; }   // 막대가 왼쪽 끝이면 제목은 H 오른쪽에 (잘리지 않게)
+            else if (고저) titleEl.style.transform = 'translateX(calc(-100% - ' + (고저.정규장외 ? 58 : 48) + 'px))';
+            if (고저) { titleEl.title = 고저.시외범위 ? '직전 정규장 고가·저가와 변동폭 (지금 가격이 그 범위 어디쯤인지)' + (고저.시외범위 ? '\n지금 ' + 고저.시외범위.제목 + ' ' + 고저.시외범위.L.toFixed(2) + ' ~ ' + 고저.시외범위.H.toFixed(2) : '') : 고저.시외 ? '지금 시외 세션 고가·저가 (매물대는 마지막 정규장 기준)' : 고저.정규장외 ? '마지막 정규장 고가·저가 (지금 가격은 범위 밖일 수 있음)' : '오늘 정규장 고가·저가'; host.appendChild(titleEl); }
 
             var hlTrackBg = mkEl({
                 position: 'absolute', zIndex: '1', top: TOP_BASE_Y + 'px', height: TOP_TRACK_H + 'px',
@@ -7992,6 +8011,17 @@
                 borderRadius: '3px',
             });
             if (고저) host.appendChild(hlTrackBg);
+            if (고저 && 고저.급변 && 고저.시외범위) {
+                var 시범 = 고저.시외범위, sl = pct(시범.L), sh = pct(시범.H);
+                var 시띠 = mkEl({ position: 'absolute', zIndex: '2', top: (TOP_BASE_Y + TOP_TRACK_H + 4) + 'px', height: '3px', left: sl + '%', width: Math.max(0.8, sh - sl) + '%',
+                                  background: '#ff9f43', borderRadius: '2px', opacity: '0.9' });
+                시띠.title = 시범.제목 + ' ' + 시범.L.toFixed(2) + ' ~ ' + 시범.H.toFixed(2);
+                host.appendChild(시띠);
+                var 경고 = mkEl({ position: 'absolute', zIndex: '13', top: '0px', fontSize: '10px', fontWeight: '800', color: '#ffb366', whiteSpace: 'nowrap' });
+                if (고저.급변.쪽 > 0) 경고.style.left = (PAD_L * 100) + '%'; else 경고.style.right = (PAD_R * 100) + '%';
+                경고.textContent = 고저.급변.글; 경고.className = 'tl-ext';
+                host.appendChild(경고);
+            }
 
             var hEl = mkEl({
                 position: 'absolute', zIndex: '6', top: (TOP_BASE_Y - 4) + 'px', left: (pctH + 1.6) + '%', transform: 'translateX(0%)',
@@ -12132,7 +12162,11 @@
             }
 
             // 1~3. 상태
-            if (장 !== 'REG') return 결과('장외', 'neu', 0, { 풀이: 풀이.concat(['정규장에 실시간 판정']) });
+            if (장 !== 'REG') {
+                var 고0 = null; try { 고0 = 고저_막대(t, price); } catch (e) { }
+                var 급 = 고0 && 고0.급변 && 고0.급변.밖 ? 고0.급변 : null;
+                return 결과('장외', 'neu', 0, { 꼬리: 급 ? (급.쪽 > 0 ? '시간외 급등' : '시간외 급락') : '', 풀이: 풀이.concat(급 ? [급.글] : []).concat(['정규장에 실시간 판정']) });
+            }
             if (!연결) return 결과('분석 서버 연결 끊김', 'neu', 0, { 꼬리: 기.마지막연결 ? '마지막 분석 ' + 판정_시각(기.마지막연결) : '', 풀이: ['실시간 분석 자료가 들어오지 않습니다 (참고 흐름만 표시 중)'] });
             if (et.m < 9 * 60 + 35 || (!지.length && !저.length)) return 결과('데이터 모으는 중', 'neu', 0, { 풀이: ['개장 직후 · 지지·저항 가격표 준비 중'] });
 
