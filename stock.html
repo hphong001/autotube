@@ -2660,11 +2660,9 @@
         @container (min-width: 1150px) { .kr-pane[data-t="시장"].on { align-items: stretch !important; } }
         .kr-pane[data-t="신호"].on, .kr-pane[data-t="뉴스"].on { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: stretch; }
         @container (max-width: 900px) { .kr-pane[data-t="신호"].on, .kr-pane[data-t="뉴스"].on { grid-template-columns: minmax(0, 1fr); } }
-        /* 업종 묶음: 제목 + 종목 줄 전체를 민트 / 앰버로 번갈아 (어두운 화면에 맞게 아주 옅게) */
-        .kr-tbl tbody.g0 td { background: rgba(72, 206, 178, .075); }
-        .kr-tbl tbody.g1 td { background: rgba(232, 186, 92, .07); }
-        .kr-tbl tbody.g0 .grp td { background: rgba(72, 206, 178, .15); color: #7fdcc6; }
-        .kr-tbl tbody.g1 .grp td { background: rgba(232, 186, 92, .14); color: #ebc36e; }
+        /* 업종 묶음: 제목 줄만 민트 / 앰버로 옅게 + 왼쪽 가는 줄 (종목 줄 배경 없음) */
+        .kr-tbl tbody.g0 .grp td { background: rgba(72, 206, 178, .10); color: #7fdcc6; }
+        .kr-tbl tbody.g1 .grp td { background: rgba(232, 186, 92, .09); color: #ebc36e; }
         .kr-tbl tbody.g0 tr td:first-child { box-shadow: inset 3px 0 0 rgba(72, 206, 178, .8); }
         .kr-tbl tbody.g1 tr td:first-child { box-shadow: inset 3px 0 0 rgba(232, 186, 92, .8); }
         .kr-tbl tbody.g0 + tbody.g1 .grp td, .kr-tbl tbody.g1 + tbody.g0 .grp td { border-top: 2px solid #0b0d14; }
@@ -2826,6 +2824,32 @@
         .kr-nhead { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 6px; margin-bottom: 6px; } .kr-nhead .kr-nf { margin-bottom: 0; flex: 1 1 auto; }
         .kr-nref { margin-left: 4px; padding: 1px 8px; }
         .kr-pane[data-t="뉴스"] .kr-sub { font-size: calc(13px * var(--nf)); color: #aab2c4; }
+
+        /* ── 보유현황: 국내 · 미국 따로 상자 · 종목 추가 창 ── */
+        .kr-hbox { border: 1px solid #262c3b; border-left: 3px solid #4a6aa8; border-radius: 10px; padding: 12px 14px 8px; margin: 0 0 22px; background: #10131b; }
+        .kr-hbox-us { border-left-color: #3f8f88; }
+        .kr-hbox h5 { margin: 0 0 10px; font-size: 16px; font-weight: 800; color: #eef1f7; display: flex; align-items: baseline; gap: 8px; }
+        .kr-hbox h5 small { font-size: 12.5px; color: #8e96aa; font-weight: 600; }
+        .kr-hbox .kr-hsum { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); margin-bottom: 10px; }
+        .kr-hs small.w { display: block; font-size: 12.5px; color: #9aa2b5; font-weight: 700; }
+        .kr-hs b small.w { font-size: 12.5px; }
+        .kr-htot { font-size: 13.5px; color: #cfd5e2; padding: 2px 4px 10px; } .kr-htot b { font-weight: 800; }
+        .kr-hnew { font: inherit; font-size: 13.5px; font-weight: 800; padding: 5px 14px; border-radius: 7px; border: 0; background: #ffdf00; color: #111; cursor: pointer; }
+        .kr-modal { position: fixed; inset: 0; z-index: 99999; background: rgba(4, 6, 10, .62); display: flex; align-items: center; justify-content: center; padding: 16px; }
+        .kr-mbox { width: 100%; max-width: 440px; background: #141824; border: 1px solid #2f3647; border-radius: 12px; padding: 16px 18px; box-shadow: 0 18px 50px rgba(0, 0, 0, .55); color: #e7e9f0; font-size: 14px; }
+        .kr-mhead { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; } .kr-mhead b { font-size: 17px; font-weight: 800; }
+        .kr-mhead .kr-seg button { font: inherit; font-size: 13px; font-weight: 700; padding: 3px 12px; border-radius: 6px; border: 1px solid #2a3042; background: #121624; color: #9aa2b5; cursor: pointer; }
+        .kr-mx { margin-left: auto; font: inherit; font-size: 22px; line-height: 1; background: none; border: 0; color: #9aa2b5; cursor: pointer; padding: 0 4px; }
+        .kr-mform { display: grid; gap: 10px; }
+        .kr-mf span { display: block; font-size: 13px; color: #aab2c4; margin-bottom: 4px; font-weight: 700; }
+        .kr-mf input { width: 100%; box-sizing: border-box; font: inherit; font-size: 16px; background: #0d1018; color: #eef1f7; border: 1px solid #2a3042; border-radius: 8px; padding: 9px 11px; }
+        .kr-mf input:focus { outline: none; border-color: #ffdf00; }
+        .kr-mmsg { min-height: 18px; margin-top: 8px; font-size: 13px; color: #ffb366; }
+        .kr-mbtn { display: flex; gap: 8px; align-items: center; margin-top: 6px; } .kr-mbtn span { flex: 1; }
+        .kr-mbtn button { font: inherit; font-size: 14.5px; font-weight: 800; padding: 8px 18px; border-radius: 8px; border: 1px solid #2a3042; background: #121624; color: #cfd5e2; cursor: pointer; }
+        .kr-mbtn button.pri { background: #ffdf00; border-color: #ffdf00; color: #111; }
+        .kr-mbtn button.del { color: #ff8a8a; border-color: #5a2a33; }
+        @media (max-width: 560px) { .kr-modal { align-items: flex-end; padding: 0; } .kr-mbox { max-width: none; border-radius: 14px 14px 0 0; padding-bottom: calc(18px + env(safe-area-inset-bottom)); } }
     </style>
 </head>
 <body>
@@ -13858,18 +13882,14 @@
         }
         // 검색 결과가 떠 있는 동안 5분마다 다시 찾음 (뉴스 탭이 보일 때만)
         setInterval(function () { var 검 = 상태.뉴스검색; if (검 && !검.받는중 && 상태.모드 === 'kr' && 지금탭() === '뉴스' && document.visibilityState === 'visible' && Date.now() - (검.시각 || 0) >= 5 * 60000) 뉴스검색(검.q, 검.d, true); }, 30000);
-        function 보유저장() { var x = Object.assign({}, 상태.보유); delete x.편집; 저장('sz_kr_hold', x); }
+        function 보유저장() { var x = Object.assign({}, 상태.보유); delete x.편집; delete x.창; 저장('sz_kr_hold', x); }
         function 보유이벤트(el) {
             if (!el) return;
             el.addEventListener('click', function (e) {
                 var b = e.target.closest('button'); if (!b) return;
                 var 일 = b.getAttribute('data-a'), 곳 = b.getAttribute('data-k'), i = +b.getAttribute('data-i');
-                if (일 === 'add') 보유추가(false);
-                else if (일 === 'save') 보유추가(true);
-                else if (일 === 'del') { var 목 = 상태.보유[곳], x = 목[i]; if (x && confirm((x.n || x.c || x.t) + ' 을(를) 보유 목록에서 지울까요?')) { 목.splice(i, 1); 상태.보유.편집 = null; 보유저장(); el._h = ''; 보유(); } }
-                else if (일 === 'edit') { 상태.보유.편집 = { k: 곳, i: i }; 상태.보유.입력 = 곳; el._h = ''; 보유(); var f = el.querySelector('.kr-hform input'); if (f) { f.scrollIntoView({ block: 'nearest' }); } }
-                else if (일 === 'cancel') { 상태.보유.편집 = null; el._h = ''; 보유(); }
-                else if (일 === 'mk') { 상태.보유.입력 = b.getAttribute('data-v'); 상태.보유.편집 = null; el._h = ''; 보유(); }
+                if (일 === 'new') 보유창열기(상태.보유.입력 || 'kr', -1);
+                else if (일 === 'edit') 보유창열기(곳, i);
                 else if (일 === 'cur') { 상태.보유.통화 = b.getAttribute('data-v'); 보유저장(); 보유(); }
             });
             el.addEventListener('change', function (e) {
@@ -13877,18 +13897,60 @@
                 if (t.getAttribute('data-o') === '비용') { 상태.보유.비용 = t.checked; 보유저장(); 보유(); }
                 if (t.getAttribute('data-o') === '국비' || t.getAttribute('data-o') === '미비') { var v = parseFloat(t.value); if (isFinite(v) && v >= 0 && v < 5) { 상태.보유[t.getAttribute('data-o')] = v; 보유저장(); 보유(); } }
             });
-            el.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.closest('.kr-hform')) 보유추가(!!상태.보유.편집); });
         }
-        function 보유추가(수정) {
-            var el = document.getElementById('kr-hold'), f = el && el.querySelector('.kr-hform'); if (!f) return;
-            var 곳 = f.getAttribute('data-k');
-            function 값(n) { var i = f.querySelector('[name="' + n + '"]'); return i ? i.value.trim() : ''; }
+        // ── 종목 추가 · 수정 창 (화면 위에 뜨는 창 · 휴대폰은 아래에서 올라옴) ──
+        function 보유이름코드() {
+            var o = {}; Object.keys(이름맵).forEach(function (c) { if (/^\d{6}$/.test(c) && 이름맵[c]) o[이름맵[c]] = c; });
+            (상태.보유.kr || []).forEach(function (x) { if (x.n) o[x.n] = x.c; });
+            var g = 상태.groups; if (g) { (g.주도 || []).forEach(function (x) { if (/^\d{6}$/.test(x.c)) o[x.n] = x.c; }); (g.업종 || []).concat(g.테마 || []).forEach(function (x) { (x.핵심 || []).forEach(function (y) { if (/^\d{6}$/.test(y.c)) o[y.n] = y.c; }); }); }
+            return o;
+        }
+        function 보유창열기(곳, i) {
+            보유창닫기();
+            var 목 = 상태.보유[곳] || [], e = i >= 0 ? 목[i] : null;
+            상태.보유.입력 = 곳; 상태.보유.창 = { k: 곳, i: e ? i : -1 };
+            var 이코 = 보유이름코드(), 이름들 = Object.keys(이코).sort();
+            var 칸 = function (이름, 제목, 값, 힌트, 모드) { return '<label class="kr-mf"><span>' + 제목 + '</span><input name="' + 이름 + '"' + (모드 ? ' inputmode="' + 모드 + '"' : '') + ' placeholder="' + 힌트 + '" value="' + esc(값 == null ? '' : 값) + '" autocomplete="off"' + (이름 === 'c' ? ' list="kr-mlist"' : '') + '></label>'; };
+            var 폼 = 곳 === 'kr'
+                ? 칸('c', '종목', e ? (e.n || e.c) : '', '이름 또는 코드 6자리 (예: 삼성전자)') + 칸('가', '매수가 (원)', e ? e.가 : '', '예: 210000', 'decimal') + 칸('수', '수량', e ? e.수 : '', '예: 10', 'decimal') +
+                  '<datalist id="kr-mlist">' + 이름들.map(function (n) { return '<option value="' + esc(n) + '">'; }).join('') + '</datalist>'
+                : 칸('t', '티커', e ? e.t : '', '예: TSLA') + 칸('가', '매수가 ($)', e ? e.가 : '', '예: 330', 'decimal') + 칸('수', '수량', e ? e.수 : '', '예: 10', 'decimal') + 칸('환', '매수 환율 (선택)', e && e.환 ? e.환 : '', '예: 1330 · 넣으면 환차손익 계산', 'decimal');
+            var w = document.createElement('div'); w.className = 'kr-modal'; w.id = 'kr-hmodal';
+            w.innerHTML = '<div class="kr-mbox" role="dialog" aria-modal="true"><div class="kr-mhead"><b>' + (e ? '수정 · ' + esc(e.n || e.c || e.t) : '종목 추가') + '</b>' +
+                (e ? '' : '<span class="kr-seg">' + [['kr', '국내'], ['us', '미국']].map(function (o) { return '<button type="button" data-m="mk" data-v="' + o[0] + '" class="' + (곳 === o[0] ? 'on' : '') + '">' + o[1] + '</button>'; }).join('') + '</span>') +
+                '<button type="button" class="kr-mx" data-m="close" aria-label="닫기">×</button></div>' +
+                '<div class="kr-mform">' + 폼 + '</div><div class="kr-mmsg"></div>' +
+                '<div class="kr-mbtn">' + (e ? '<button type="button" data-m="del" class="del">삭제</button>' : '') + '<span></span><button type="button" data-m="close">취소</button><button type="button" data-m="save" class="pri">' + (e ? '수정 저장' : '추가') + '</button></div></div>';
+            document.body.appendChild(w);
+            w.addEventListener('click', function (ev) {
+                if (ev.target === w) { 보유창닫기(); return; }
+                var b = ev.target.closest('button[data-m]'); if (!b) return;
+                var m = b.getAttribute('data-m');
+                if (m === 'close') 보유창닫기();
+                else if (m === 'mk') 보유창열기(b.getAttribute('data-v'), -1);
+                else if (m === 'save') 보유창저장();
+                else if (m === 'del') { var 창 = 상태.보유.창, 목2 = 상태.보유[창.k], x = 목2 && 목2[창.i]; if (x && confirm((x.n || x.c || x.t) + ' 을(를) 보유 목록에서 지울까요?')) { 목2.splice(창.i, 1); 보유저장(); 보유창닫기(); var el = document.getElementById('kr-hold'); if (el) el._h = ''; 보유(); } }
+            });
+            w.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' && ev.target.tagName === 'INPUT') { ev.preventDefault(); 보유창저장(); } });
+            var 첫 = w.querySelector('input'); if (첫) setTimeout(function () { try { 첫.focus(); } catch (er) { } }, 30);
+        }
+        document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && document.getElementById('kr-hmodal')) 보유창닫기(); });
+        function 보유창닫기() { var w = document.getElementById('kr-hmodal'); if (w) w.remove(); if (상태.보유) 상태.보유.창 = null; }
+        function 보유창저장() {
+            var w = document.getElementById('kr-hmodal'), 창 = 상태.보유.창; if (!w || !창) return;
+            var 곳 = 창.k, msg = w.querySelector('.kr-mmsg'), 항;
+            function 값(n) { var i = w.querySelector('[name="' + n + '"]'); return i ? i.value.trim() : ''; }
             function 수(n) { var v = parseFloat(값(n).replace(/[,\s$원]/g, '')); return isFinite(v) ? v : NaN; }
-            var 편 = 상태.보유.편집, msg = f.querySelector('.msg'), 항;
             if (곳 === 'kr') {
-                var c = 값('c').replace(/\D/g, '');
-                if (!/^\d{6}$/.test(c)) { msg.textContent = '종목코드 6자리를 넣어 주세요 (예: 005930)'; return; }
+                var 글 = 값('c'), c = 글.replace(/\D/g, '');
+                if (!/^\d{6}$/.test(c) || 글.replace(/[\d\s]/g, '').length) {
+                    var 이코 = 보유이름코드(), 줄 = 글.replace(/\s+/g, '').toUpperCase(); c = '';
+                    Object.keys(이코).forEach(function (n) { if (!c && n.replace(/\s+/g, '').toUpperCase() === 줄) c = 이코[n]; });
+                    if (!c && /^\d{6}$/.test(글.replace(/\D/g, ''))) c = 글.replace(/\D/g, '');
+                }
+                if (!/^\d{6}$/.test(c)) { msg.textContent = '종목을 찾지 못했습니다 · 이름을 목록에서 고르거나 코드 6자리를 넣어 주세요'; return; }
                 항 = { c: c, n: 이름맵[c] || '', 가: 수('가'), 수: 수('수') };
+                if (!항.n) { var 이코2 = 보유이름코드(); Object.keys(이코2).forEach(function (n) { if (이코2[n] === c) 항.n = n; }); }
             } else {
                 var t = 값('t').toUpperCase().replace(/[^A-Z0-9.\-]/g, '');
                 if (!t) { msg.textContent = '티커를 넣어 주세요 (예: TSLA)'; return; }
@@ -13897,14 +13959,12 @@
             }
             if (!(항.가 > 0) || !(항.수 > 0)) { msg.textContent = '매수가와 수량을 숫자로 넣어 주세요'; return; }
             var 목 = 상태.보유[곳] = 상태.보유[곳] || [];
-            if (수정 && 편 && 편.k === 곳 && 목[편.i]) { if (항.c === 목[편.i].c) 항.n = 항.n || 목[편.i].n || ''; 목[편.i] = 항; }
-            else 목.push(항);
-            상태.보유.편집 = null;
-            보유저장(); el._h = ''; 보유(); 보유시세받기(true);
+            if (창.i >= 0 && 목[창.i]) { if (항.c && 항.c === 목[창.i].c) 항.n = 항.n || 목[창.i].n || ''; 목[창.i] = 항; } else 목.push(항);
+            보유저장(); 보유창닫기(); var el = document.getElementById('kr-hold'); if (el) el._h = ''; 보유(); 보유시세받기(true);
         }
         function 보유() {
             var el = document.getElementById('kr-hold'); if (!el) return;
-            var H = 상태.보유, 환 = 상태.live && 상태.live.환율 && 상태.live.환율.p > 0 ? 상태.live.환율.p : null, 통 = H.통화 || '둘다', 편 = H.편집 || null, 입곳 = H.입력 || 'kr';
+            var H = 상태.보유, 환 = 상태.live && 상태.live.환율 && 상태.live.환율.p > 0 ? 상태.live.환율.p : null, 통 = H.통화 || '둘다';
             var 국비 = H.비용 ? (H.국비 || 0) / 100 : 0, 미비 = H.비용 ? (H.미비 || 0) / 100 : 0;
             var 맵 = {}; ((상태.live && 상태.live.종목) || []).forEach(function (q) { 맵[q.c] = q; }); Object.keys(상태.보유시세).forEach(function (c) { if (!맵[c] || (상태.보유시세[c].p > 0 && 상태.보유시세[c].t >= (맵[c].t || ''))) 맵[c] = 상태.보유시세[c]; });
             var kr = (H.kr || []).map(function (x, i) {
@@ -13921,35 +13981,33 @@
                          환차: x.환 > 0 && 환 && 평 != null ? 평 * (환 - x.환) : null };
             });
             function 합계(목, 키) { var ok = 목.filter(function (r) { return r[키] != null; }); return ok.length ? 합(ok.map(function (r) { return r[키]; })) : null; }
-            var k매 = 합계(kr, '매'), k평 = 합계(kr, '평'), k오 = 합계(kr, '오늘'), u매 = 합계(us, '매'), u평 = 합계(us, '평'), u오 = 합계(us, '오늘'), u매원 = 합계(us, '매원'), u평원 = 합계(us, '평원');
+            var k매 = 합계(kr, '매'), k평 = 합계(kr, '평'), k오 = 합계(kr, '오늘'), u매 = 합계(us, '매'), u평 = 합계(us, '평'), u오 = 합계(us, '오늘'), u매원 = 합계(us, '매원'), u평원 = 합계(us, '평원'), u환차 = 합계(us, '환차');
+            var k손 = k평 != null && k매 != null ? k평 - k매 : null;
             var 전매 = (k매 || 0) + (u매원 || 0), 전평 = (k평 || 0) + (u평원 || 0), 전손 = 전평 - 전매, 전오 = (k오 || 0) + (u오 != null && 환 ? u오 * 환 : 0);
-            function 칸(제목, 값, 클, 작) { return '<div class="kr-hs"><span>' + 제목 + '</span><b class="' + (클 || '') + '">' + 값 + '</b>' + (작 ? '<small class="' + (클 || '') + '">' + 작 + '</small>' : '') + '</div>'; }
-            var h = '<div class="kr-hbar"><span class="kr-seg">' + [['둘다', '원화+달러'], ['달러', '달러'], ['원화', '원화']].map(function (o) { return '<button type="button" data-a="cur" data-v="' + o[0] + '" class="' + (통 === o[0] ? 'on' : '') + '">' + o[1] + '</button>'; }).join('') + '</span>' +
+            function 칸(제목, 값, 클, 작, 작클) { return '<div class="kr-hs"><span>' + 제목 + '</span><b class="' + (클 || '') + '">' + 값 + '</b>' + (작 ? '<small class="' + (작클 != null ? 작클 : 클 || '') + '">' + 작 + '</small>' : '') + '</div>'; }
+            var h = '<div class="kr-hbar"><button type="button" class="kr-hnew" data-a="new">+ 종목 추가</button><span class="kr-seg">' + [['둘다', '원화+달러'], ['달러', '달러'], ['원화', '원화']].map(function (o) { return '<button type="button" data-a="cur" data-v="' + o[0] + '" class="' + (통 === o[0] ? 'on' : '') + '">' + o[1] + '</button>'; }).join('') + '</span>' +
                     '<label><input type="checkbox" data-o="비용"' + (H.비용 ? ' checked' : '') + '> 매도 비용 반영</label>' +
                     (H.비용 ? '<label>국내 <input type="number" step="0.01" data-o="국비" value="' + (H.국비 || 0) + '">%</label><label>미국 <input type="number" step="0.01" data-o="미비" value="' + (H.미비 || 0) + '">%</label>' : '') +
                     '<span class="kr-0">원/달러 ' + (환 ? 콤(환, 2) : '─') + '</span></div>';
-            if (kr.length || us.length) h += '<div class="kr-hsum">' + 칸('전체 매수금', 원(전매)) + 칸('전체 평가금', 원(전평)) + 칸('손익', 원(전손, 1), 쪽(전손), 전매 > 0 ? 퍼(전손 / 전매 * 100) : '') + 칸('오늘 손익', 원(전오, 1), 쪽(전오)) + '</div>';
-            else h += '<div class="kr-empty">아래 "종목 추가"에서 보유 종목을 넣으면 현재 시세로 손익이 계산됩니다</div>';
-            function 단추(곳, i) { var on = 편 && 편.k === 곳 && 편.i === i; return '<td class="act"><button type="button" data-a="edit" data-k="' + 곳 + '" data-i="' + i + '" class="' + (on ? 'on' : '') + '">수정</button><button type="button" data-a="del" data-k="' + 곳 + '" data-i="' + i + '">삭제</button></td>'; }
-            function 행클(곳, i) { return 편 && 편.k === 곳 && 편.i === i ? ' class="editing"' : ''; }
-            if (kr.length) h += '<div class="kr-hsec"><h5>국내 주식 <small>' + kr.length + '종목 · 매수 ' + 원(k매) + ' → 평가 ' + 원(k평) + ' · 손익 <b class="' + 쪽(k평 - k매) + '">' + 원(k평 - k매, 1) + ' (' + 퍼(k매 ? (k평 - k매) / k매 * 100 : null) + ')</b></small></h5>' +
+            if (!kr.length && !us.length) h += '<div class="kr-empty">[+ 종목 추가]로 보유 종목을 넣으면 현재 시세로 손익이 계산됩니다</div>';
+            function 단추(곳, i) { return '<td class="act"><button type="button" data-a="edit" data-k="' + 곳 + '" data-i="' + i + '">수정</button></td>'; }
+            if (kr.length) h += '<section class="kr-hbox kr-hbox-kr"><h5>국내 주식 <small>' + kr.length + '종목</small></h5>' +
+                '<div class="kr-hsum">' + 칸('매수금', 원(k매)) + 칸('평가금', 원(k평)) + 칸('손익', 원(k손, 1), 쪽(k손), 퍼(k매 ? k손 / k매 * 100 : null)) + 칸('오늘 손익', 원(k오, 1), 쪽(k오), k평 && k오 != null ? 퍼(k오 / (k평 - k오) * 100) : '') + '</div>' +
                 '<div class="kr-hwrap"><table class="kr-tbl kr-htbl"><thead><tr><th class="l">종목</th><th>수량</th><th>매수가</th><th>현재가</th><th class="c-hm">매수금</th><th class="c-hm">평가금</th><th>손익</th><th>수익률</th><th class="c-hw">비중</th><th class="c-hw">오늘 손익</th><th></th></tr></thead><tbody>' +
-                kr.map(function (r) { return '<tr' + 행클('kr', r.i) + '><td class="l nm"><b>' + esc(r.x.n || (r.q ? r.q.n : '') || '이름 확인 중') + '</b><small>' + r.x.c + '</small></td><td>' + 콤(r.x.수) + '</td><td>' + 콤(r.x.가) + '</td><td class="' + 쪽(r.q && r.q.r) + '">' + (r.p ? 콤(r.p) + '<small> ' + 퍼(r.q.r) + '</small>' : '─') + '</td><td class="c-hm">' + 콤(r.매) + '</td><td class="c-hm">' + 콤(r.평) + '</td><td class="' + 쪽(r.손) + '"><b>' + (r.손 != null ? (r.손 > 0 ? '+' : '') + 콤(r.손) : '─') + '</b></td><td class="' + 쪽(r.률) + '"><b>' + 퍼(r.률) + '</b></td><td class="c-hw">' + (전평 > 0 && r.평 != null ? (r.평 / 전평 * 100).toFixed(1) + '%' : '─') + '</td><td class="c-hw ' + 쪽(r.오늘) + '">' + (r.오늘 != null ? (r.오늘 > 0 ? '+' : '') + 콤(r.오늘) : '─') + '</td>' + 단추('kr', r.i) + '</tr>'; }).join('') + '</tbody></table></div></div>';
+                kr.map(function (r) { return '<tr><td class="l nm"><b>' + esc(r.x.n || (r.q ? r.q.n : '') || '이름 확인 중') + '</b><small>' + r.x.c + '</small></td><td>' + 콤(r.x.수) + '</td><td>' + 콤(r.x.가) + '</td><td class="' + 쪽(r.q && r.q.r) + '">' + (r.p ? 콤(r.p) + '<small> ' + 퍼(r.q.r) + '</small>' : '─') + '</td><td class="c-hm">' + 콤(r.매) + '</td><td class="c-hm">' + 콤(r.평) + '</td><td class="' + 쪽(r.손) + '"><b>' + (r.손 != null ? (r.손 > 0 ? '+' : '') + 콤(r.손) : '─') + '</b></td><td class="' + 쪽(r.률) + '"><b>' + 퍼(r.률) + '</b></td><td class="c-hw">' + (k평 > 0 && r.평 != null ? (r.평 / k평 * 100).toFixed(1) + '%' : '─') + '</td><td class="c-hw ' + 쪽(r.오늘) + '">' + (r.오늘 != null ? (r.오늘 > 0 ? '+' : '') + 콤(r.오늘) : '─') + '</td>' + 단추('kr', r.i) + '</tr>'; }).join('') + '</tbody></table></div></section>';
             var 달러 = 통 !== '원화', 원화 = 통 !== '달러';
             function 둘(d, w, 부) { return (달러 ? 달(d, 부) : '') + (달러 && 원화 ? '<small class="w">' + 원(w, 부) + '</small>' : 원화 ? 원(w, 부) : ''); }
             var u손 = u평 != null && u매 != null ? u평 - u매 : null, u손원 = u평원 != null && u매원 != null ? u평원 - u매원 : null;
             var 양 = u손원 != null && u손원 > 2500000 ? (u손원 - 2500000) * 0.22 : 0;
-            if (us.length) h += '<div class="kr-hsec"><h5>미국 주식 <small>' + us.length + '종목 · 손익 <b class="' + 쪽(u손) + '">' + 둘(u손, u손원, 1) + '</b>' + (H.비용 && 양 > 0 ? ' · 양도세 예상 ' + 원(양) + ' (250만 공제 · 22%) → 세후 ' + 원(u손원 - 양, 1) : '') + '</small></h5>' +
+            if (us.length) h += '<section class="kr-hbox kr-hbox-us"><h5>미국 주식 <small>' + us.length + '종목</small></h5>' +
+                '<div class="kr-hsum">' + 칸('매수금', 둘(u매, u매원)) + 칸('평가금', 둘(u평, u평원)) +
+                    칸('손익 (달러)', 달(u손, 1), 쪽(u손), 퍼(u매 ? u손 / u매 * 100 : null)) +
+                    칸('손익 (원화)', 원(u손원, 1), 쪽(u손원), 퍼(u매원 ? u손원 / u매원 * 100 : null) + (u환차 != null ? ' · 환차 ' + 원(u환차, 1) : '')) +
+                    칸('오늘 손익', 둘(u오, u오 != null && 환 ? u오 * 환 : null, 1), 쪽(u오), u평 && u오 != null ? 퍼(u오 / (u평 - u오) * 100) : '') + '</div>' +
+                (H.비용 && 양 > 0 ? '<div class="kr-sub">양도세 예상 ' + 원(양) + ' (250만 공제 · 22%) → 세후 ' + 원(u손원 - 양, 1) + '</div>' : '') +
                 '<div class="kr-hwrap"><table class="kr-tbl kr-htbl"><thead><tr><th class="l">종목</th><th>수량</th><th>매수가</th><th>현재가</th><th class="c-hm">매수금</th><th class="c-hm">평가금</th><th>손익</th><th>수익률</th><th class="c-hw" title="매수 환율을 넣은 종목만 · 환율 변화로 생긴 손익">환차손익</th><th class="c-hw">오늘 손익</th><th></th></tr></thead><tbody>' +
-                us.map(function (r) { var ch = r.q ? r.q.changePct : null; return '<tr' + 행클('us', r.i) + '><td class="l nm"><b>' + esc(r.x.t) + '</b>' + (r.x.환 ? '<small>매수 환율 ' + 콤(r.x.환, 1) + '</small>' : '') + '</td><td>' + 콤(r.x.수, r.x.수 % 1 ? 4 : 0) + '</td><td>' + 달(r.x.가) + '</td><td class="' + 쪽(ch) + '">' + (r.p ? 달(r.p) + '<small> ' + 퍼(ch) + '</small>' : '─') + '</td><td class="c-hm">' + 둘(r.매, r.매원) + '</td><td class="c-hm">' + 둘(r.평, r.평원) + '</td><td class="' + 쪽(r.손) + '"><b>' + 둘(r.손, r.손원, 1) + '</b></td><td class="' + 쪽(r.률) + '"><b>' + 퍼(r.률) + '</b>' + (r.손원 != null && r.매원 ? '<small class="w">원화 ' + 퍼(r.손원 / r.매원 * 100) + '</small>' : '') + '</td><td class="c-hw ' + 쪽(r.환차) + '">' + (r.환차 != null ? 원(r.환차, 1) : '─') + '</td><td class="c-hw ' + 쪽(r.오늘) + '">' + (r.오늘 != null ? 둘(r.오늘, 환 ? r.오늘 * 환 : null, 1) : '─') + '</td>' + 단추('us', r.i) + '</tr>'; }).join('') + '</tbody></table></div></div>';
-            // 추가 · 수정 (따로)
-            var e = 편 && 편.k === 입곳 ? (H[입곳] || [])[편.i] : null;
-            var 폼 = 입곳 === 'kr'
-                ? '<input name="c" inputmode="numeric" maxlength="6" placeholder="종목코드 6자리 (예: 005930)" value="' + (e ? e.c : '') + '"><input name="가" inputmode="decimal" placeholder="매수가 (원)" value="' + (e ? e.가 : '') + '"><input name="수" inputmode="decimal" placeholder="수량" value="' + (e ? e.수 : '') + '">'
-                : '<input name="t" placeholder="티커 (예: TSLA)" value="' + (e ? e.t : '') + '"><input name="가" inputmode="decimal" placeholder="매수가 ($)" value="' + (e ? e.가 : '') + '"><input name="수" inputmode="decimal" placeholder="수량" value="' + (e ? e.수 : '') + '"><input name="환" inputmode="decimal" placeholder="매수 환율 (선택)" value="' + (e && e.환 ? e.환 : '') + '">';
-            h += '<div class="kr-hadd"><h5>' + (e ? '수정 중 · ' + esc(e.n || e.c || e.t) : '종목 추가') + ' <span class="kr-seg">' + [['kr', '국내'], ['us', '미국']].map(function (o) { return '<button type="button" data-a="mk" data-v="' + o[0] + '" class="' + (입곳 === o[0] ? 'on' : '') + '">' + o[1] + '</button>'; }).join('') + '</span></h5>' +
-                 '<div class="kr-hform" data-k="' + 입곳 + '">' + 폼 + '<button type="button" data-a="add" class="pri">추가</button><button type="button" data-a="save" class="' + (e ? 'pri2' : '') + '"' + (e ? '' : ' disabled title="표에서 [수정]을 누르면 쓸 수 있습니다"') + '>수정 저장</button>' + (e ? '<button type="button" data-a="cancel">취소</button>' : '') + '<span class="msg"></span></div>' +
-                 '<div class="kr-sub">표의 [수정]을 누르면 값이 여기로 옵니다 → 고친 뒤 [수정 저장] · [추가]는 새 줄로 넣기</div></div>';
+                us.map(function (r) { var ch = r.q ? r.q.changePct : null; return '<tr><td class="l nm"><b>' + esc(r.x.t) + '</b>' + (r.x.환 ? '<small>매수 환율 ' + 콤(r.x.환, 1) + '</small>' : '') + '</td><td>' + 콤(r.x.수, r.x.수 % 1 ? 4 : 0) + '</td><td>' + 달(r.x.가) + '</td><td class="' + 쪽(ch) + '">' + (r.p ? 달(r.p) + '<small> ' + 퍼(ch) + '</small>' : '─') + '</td><td class="c-hm">' + 둘(r.매, r.매원) + '</td><td class="c-hm">' + 둘(r.평, r.평원) + '</td><td class="' + 쪽(r.손) + '"><b>' + 둘(r.손, r.손원, 1) + '</b></td><td class="' + 쪽(r.률) + '"><b>' + 퍼(r.률) + '</b>' + (r.손원 != null && r.매원 ? '<small class="w">원화 ' + 퍼(r.손원 / r.매원 * 100) + '</small>' : '') + '</td><td class="c-hw ' + 쪽(r.환차) + '">' + (r.환차 != null ? 원(r.환차, 1) : '─') + '</td><td class="c-hw ' + 쪽(r.오늘) + '">' + (r.오늘 != null ? 둘(r.오늘, 환 ? r.오늘 * 환 : null, 1) : '─') + '</td>' + 단추('us', r.i) + '</tr>'; }).join('') + '</tbody></table></div></section>';
+            if (kr.length && us.length) h += '<div class="kr-htot">합계 (원화) · 매수 ' + 원(전매) + ' → 평가 ' + 원(전평) + ' · 손익 <b class="' + 쪽(전손) + '">' + 원(전손, 1) + ' (' + 퍼(전매 > 0 ? 전손 / 전매 * 100 : null) + ')</b> · 오늘 <b class="' + 쪽(전오) + '">' + 원(전오, 1) + '</b></div>';
             h += '<div class="kr-sub">이 기기(브라우저)에만 저장됩니다 · 국내 시세 ' + (본인() && 장시간() ? '7초' : '30초') + ' · 미국 시세 15초마다 · 원화 환산은 실시간 원/달러 · 양도세는 미국 주식 손익 합계로 단순 계산한 예상치</div>';
             var 입력중 = document.activeElement && el.contains(document.activeElement) && document.activeElement.tagName === 'INPUT' && document.activeElement.type !== 'checkbox';
             if (!입력중) 넣기(el, h);
