@@ -2942,7 +2942,7 @@
         /* ── 계산기 ── */
         .cz-top { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px 12px; align-items: end; padding-bottom: 10px; border-bottom: 1px solid #242a38; }
         .cz-f { display: block; min-width: 0; } .cz-f > span:first-child { display: block; font-size: 12.5px; color: #9aa2b5; font-weight: 700; margin-bottom: 4px; }
-        .cz-t { grid-column: span 2; }
+        .cz-t { grid-column: span 2; } .cz-t .cz-tq { flex: 0 0 38%; } .cz-t select { flex: 1 1 auto; }
         .cz-in { display: flex; gap: 4px; }
         .cz-f input, .cz-f select, .cz-man input { width: 100%; min-width: 0; box-sizing: border-box; font: inherit; font-size: 15.5px; font-variant-numeric: tabular-nums; background: #0d1018; color: #eef1f7; border: 1px solid #2a3042; border-radius: 7px; padding: 7px 10px; }
         .cz-f input:focus, .cz-man input:focus { outline: none; border-color: #ffdf00; }
@@ -14314,7 +14314,7 @@
         function 미관심() {
             var 목 = (typeof WATCH_LIST !== 'undefined' ? WATCH_LIST : []).map(function (w) { return w.ticker; }).filter(function (t) { return /^[A-Z][A-Z.\-]{0,9}$/.test(t) && t !== 'SPX'; });
             (상태.보유.us || []).forEach(function (x) { if (x.t && 목.indexOf(x.t) < 0) 목.push(x.t); });
-            return 목.slice(0, 40);
+            return 목.slice(0, 90);   // 관심 종목 전체 (지수·섹터 ETF 포함 50여 개) · 순서 = 관심 종목 목록과 같음
         }
         function 미이름(t) {
             var n = typeof TICKER_NAMES !== 'undefined' && TICKER_NAMES[t]; if (n) return n;
@@ -14421,7 +14421,7 @@
                 if (강제 && Date.now() - 미.board받음 > 15000 || Date.now() - 미.board받음 >= 간격) {
                     미.board받음 = Date.now();
                     var 목 = []; 미섹터.concat(미테마).forEach(function (x) { 목.push(x[0]); }); 미관심().forEach(function (x) { if (목.indexOf(x) < 0) 목.push(x); });
-                    받기('/us/board?s=' + encodeURIComponent(목.slice(0, 60).join(',')), function (j) {
+                    받기('/us/board?s=' + encodeURIComponent(목.slice(0, 90).join(',')), function (j) {
                         if (j && j.종목 && Object.keys(j.종목).length) { 미.board = j; 미.board오류 = null; var 작게 = { ms: j.ms, 종목: {} }; Object.keys(j.종목).forEach(function (t) { var o = Object.assign({}, j.종목[t]); delete o.sp; 작게.종목[t] = o; }); 저장('sz_us_board', 작게); }
                         else 미.board오류 = (j && (j.오류 || j.error)) || '자료 없음';
                         미그리기();
@@ -14750,7 +14750,10 @@
         }
         function 계저장(m) { 저장('sz_calc_' + m, 계[m]); }
         function 계종목들(m) {
-            if (m === 'us') return 미관심().map(function (t) { return [t, t + ' ' + 미이름(t)]; });
+            if (m === 'us') {   // 보유 종목을 맨 앞에 · 나머지는 관심 종목 순서 그대로
+                var 보 = (상태.보유.us || []).map(function (x) { return x.t; }), 관 = 미관심();
+                return 보.concat(관.filter(function (t) { return 보.indexOf(t) < 0; })).map(function (t) { return [t, t + ' ' + 미이름(t) + (보.indexOf(t) >= 0 ? ' (보유)' : '')]; });
+            }
             var 목 = KR종목.map(function (x) { return [x[1], x[2]]; }), 본 = {}; 목.forEach(function (x) { 본[x[0]] = 1; });
             (상태.보유.kr || []).forEach(function (x) { if (x.c && !본[x.c]) { 목.unshift([x.c, (x.n || x.c) + ' (보유)']); 본[x.c] = 1; } });
             return 목;
@@ -14821,7 +14824,7 @@
             function 칸(k, 제목, 힌트, 따라) { return '<label class="cz-f"><span>' + 제목 + '</span>' + (계원칸[m].indexOf(k) >= 0 ? '<small class="cz-han" data-han="' + k + '"></small>' : '') + '<span class="cz-in"><input data-k="' + k + '" inputmode="decimal" autocomplete="off" placeholder="' + (힌트 || '') + '">' + (따라 ? '<button type="button" data-a="live" data-k="' + k + '" title="현재가(실시간)로 되돌림">' + (k === 'fx' ? '실시간' : '현재가') + '</button>' : '') + '</span></label>'; }
             function 결(r, 제목, 큰) { return '<div class="cz-r' + (큰 ? ' big' : '') + '"><span>' + 제목 + '</span><b data-r="' + r + '">─</b><small data-r="' + r + 's"></small></div>'; }
             var h = '<div class="cz-top">' +
-                '<label class="cz-f cz-t"><span>종목</span><select data-k="t">' + 목.map(function (x) { return '<option value="' + esc(x[0]) + '">' + esc(x[1]) + '</option>'; }).join('') + '</select></label>' +
+                '<label class="cz-f cz-t"><span>종목 <small class="kr-0">' + 목.length + '개</small></span><span class="cz-in"><input data-k="tq" class="cz-tq" placeholder="찾기 (예: ' + (m === 'us' ? 'TSLL, 테슬라' : '삼성, 005930') + ')" autocomplete="off"><select data-k="t">' + 목.map(function (x) { return '<option value="' + esc(x[0]) + '">' + esc(x[1]) + '</option>'; }).join('') + '</select></span></label>' +
                 칸('p', '현재가 (' + 단 + ')', '', 1) + (미 ? 칸('fx', '환율 (원/달러)', '', 1) : '') +
                 칸('fee', '수수료 (%, 사고팔 때 각각)', '') + (미 ? '' : 칸('tax', '매도 세금 (%)', '')) +
                 '<div class="cz-src" data-r="src"></div></div>' +
@@ -14854,6 +14857,12 @@
             if (el._이벤트) return; el._이벤트 = 1;
             el.addEventListener('input', function (e) {
                 var i = e.target, k = i.getAttribute('data-k'), S2 = 계상태(el._m); if (!k || k === 't') return;
+                if (k === 'tq') {   // 종목 찾기: 코드 · 이름 일부로 첫 번째 맞는 종목 고름
+                    var 말 = i.value.trim().toUpperCase().replace(/\s+/g, ''); if (!말) return;
+                    var 셀 = el.querySelector('select[data-k="t"]'), 맞 = Array.prototype.filter.call(셀.options, function (o) { return (o.value + o.text).toUpperCase().replace(/\s+/g, '').indexOf(말) >= 0; })[0];
+                    if (맞 && 셀.value !== 맞.value) { 셀.value = 맞.value; 셀.dispatchEvent(new Event('change', { bubbles: true })); }
+                    return;
+                }
                 쉼표입력(i); if (k === 'pct') return;
                 S2[k] = i.value; if (계따라감.indexOf(k) >= 0) S2.고정[k] = i.value !== ''; 계저장(el._m); 계산기갱신(el._m);
             });
