@@ -3054,6 +3054,18 @@
         .sbp-l .sb-i i { transform: translateY(-1px); }
         .sbp-l em { font-style: normal; font-size: 11px; font-weight: 800; border: 1px solid currentColor; border-radius: 4px; padding: 0 4px; opacity: .85; flex: 0 0 auto; }
         @media (max-width: 640px) { .us-tabbar .sz-brief, .kr-tabs .sz-brief { flex: 1 1 100%; order: 10; margin: 4px 0 0; height: 40px; flex-direction: column; align-items: stretch; justify-content: center; gap: 2px; cursor: pointer; } .sz-brief .sb-i { display: block; height: 18px; line-height: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .sz-brief .sb-i i { display: inline-block; margin-right: 5px; vertical-align: 1px; } .sz-brief .sb-i + .sb-i::before { display: none; } .us-tabbar .sz-brief .sb-more, .kr-tabs .sz-brief .sb-more { display: none; } .sz-ver { display: none; } }
+
+        /* 단타: 큰 글자 */
+        .cz-big .cz-f > span:first-child { font-size: 14.5px; }
+        .cz-big .cz-f input { font-size: 20px; padding: 9px 12px; font-weight: 700; }
+        .cz-big .cz-han { font-size: 13.5px; }
+        .cz-big .cz-r b { font-size: 24px; } .cz-big .cz-r.big b { font-size: 30px; } .cz-big .cz-r small { font-size: 13.5px; }
+        .cz-wide { grid-column: 1 / -1; }
+        .cz-tbl { width: 100%; border-collapse: collapse; font-size: 14.5px; font-variant-numeric: tabular-nums; }
+        .cz-tbl th { font-size: 12px; color: #8b93a7; font-weight: 700; text-align: right; padding: 5px 8px; border-bottom: 1px solid #262c3b; }
+        .cz-tbl td { text-align: right; padding: 6px 8px; border-bottom: 1px solid #1a1f2c; font-weight: 700; }
+        .cz-tbl th:first-child, .cz-tbl td:first-child { text-align: left; }
+        .cz-tbl tr.on td { background: rgba(255, 223, 0, .10); } .cz-tbl tr.손 td { background: rgba(77, 141, 255, .05); }
     </style>
 </head>
 <body>
@@ -3122,6 +3134,28 @@
     </div>
 
     <script>
+        // ★ 작업 감시 (화면 멈춤 원인 찾기): 타이머 · 이벤트 · 화면 그리기 콜백이 0.2초 넘게 걸리면 그 이름을 남김 → 화면 멈춤 기록에 표시
+        (function () {
+            if (window.__작업감시) return; window.__작업감시 = 1;
+            var 느린 = window.__느린 = { 이름: '', ms: 0, at: 0 };
+            function 이름(fn, 종류) { var n = fn && fn.name; if (!n) { try { n = String(fn).replace(/\s+/g, ' ').slice(0, 70); } catch (e) { n = '?'; } } return 종류 + ' · ' + n; }
+            function 감싸(fn, 종류) {
+                if (typeof fn !== 'function') return fn;
+                try { if (fn.__감) return fn.__감; } catch (e) { return fn; }
+                var w = function () { var t0 = performance.now(); try { return fn.apply(this, arguments); } finally { var d = performance.now() - t0; if (d > 200) { 느린.이름 = 이름(fn, 종류); 느린.ms = Math.round(d); 느린.at = Date.now(); } } };
+                try { Object.defineProperty(fn, '__감', { value: w }); } catch (e) { }
+                return w;
+            }
+            try {
+                var st = window.setTimeout, si = window.setInterval, raf = window.requestAnimationFrame;
+                window.setTimeout = function (fn) { var a = Array.prototype.slice.call(arguments); a[0] = 감싸(fn, '타이머'); return st.apply(window, a); };
+                window.setInterval = function (fn) { var a = Array.prototype.slice.call(arguments); a[0] = 감싸(fn, '반복'); return si.apply(window, a); };
+                if (raf) window.requestAnimationFrame = function (fn) { return raf.call(window, 감싸(fn, '그리기')); };
+                var ae = EventTarget.prototype.addEventListener, re = EventTarget.prototype.removeEventListener;
+                EventTarget.prototype.addEventListener = function (t, fn, o) { return ae.call(this, t, 감싸(fn, t), o); };
+                EventTarget.prototype.removeEventListener = function (t, fn, o) { var w; try { w = fn && fn.__감; } catch (e) { } return re.call(this, t, w || fn, o); };
+            } catch (e) { }
+        })();
         // 뉴스 창(주소 ?news=1): 대시보드 본체는 실행하지 않고 뉴스 목록만 그림 (아래 오류는 의도한 중단)
         if (/[?&]news=1(&|$)/.test(location.search)) { 뉴스창_시작(); throw new Error('[뉴스 창] 대시보드 본체는 실행하지 않음 (정상)'); }
         // 대시보드2 (윈폼 버튼11 창, 주소 ?grid=1): 차트 10개 화면 · 윈폼 창에서만 (웹 브라우저는 보통 대시보드)
@@ -11451,10 +11485,15 @@
         (function () { try { var v = JSON.parse(localStorage.getItem('sz_voice') || 'null'); if (v) { 음성설정.음성 = v.음성 || ''; 음성설정.속도 = Number(v.속도) || 1; } } catch (e) { } })();
         function 음성설정저장() { try { localStorage.setItem('sz_voice', JSON.stringify(음성설정)); } catch (e) { } }
         function 음성_지원() { return !!(window.speechSynthesis && window.SpeechSynthesisUtterance); }
+        // ★ 음성 목록은 처음 한 번 + 목록이 바뀔 때만 받음 (알림마다 윈도우 음성 엔진에 묻지 않음 → 엔진이 늦으면 화면이 통째로 멈추던 문제)
+        //   윈폼 창은 음성을 쓰지 않으므로 음성 엔진을 아예 건드리지 않음
+        var 음성_목록캐시 = null;
+        function 음성_목록받기() { if (!음성_지원() || 윈폼창()) { 음성_목록캐시 = []; return; } try { 음성_목록캐시 = speechSynthesis.getVoices() || []; } catch (e) { 음성_목록캐시 = []; } }
         function 음성_한국어목록() {
-            if (!음성_지원()) return [];
+            if (!음성_지원() || 윈폼창()) return [];
+            if (음성_목록캐시 == null) 음성_목록받기();
             try {
-                return speechSynthesis.getVoices().filter(function (v) { return /^ko/i.test(v.lang) && !/microsoft/i.test(v.name); })
+                return 음성_목록캐시.slice().filter(function (v) { return /^ko/i.test(v.lang) && !/microsoft/i.test(v.name); })
                     .sort(function (a, b) { return (/google/i.test(b.name) ? 1 : 0) - (/google/i.test(a.name) ? 1 : 0); });
             } catch (e) { return []; }
         }
@@ -11467,7 +11506,7 @@
             if (window.innerWidth > 1200 || !/Android|iPhone|iPad|Mobile/i.test(navigator.userAgent)) return '음성 안내는 크롬에서 사용할 수 있습니다 · 지금은 음성 대신 알림음이 울립니다';
             return '이 기기에 한국어 음성이 없어 음성 대신 알림음이 울립니다';
         }
-        if (음성_지원()) { try { speechSynthesis.onvoiceschanged = function () { var p = document.getElementById('al-pop'); if (p && p._탭 === '설정') 알람_창그리기(p); }; speechSynthesis.getVoices(); } catch (e) { } }
+        if (음성_지원() && !윈폼창()) { try { speechSynthesis.onvoiceschanged = function () { 음성_목록받기(); var p = document.getElementById('al-pop'); if (p && p._탭 === '설정') 알람_창그리기(p); }; 음성_목록받기(); } catch (e) { } }
         var 음성_최근 = {};
         // 글을 읽음 (같은 글은 10초 안에 다시 읽지 않음) · 반환: 읽기 시작했으면 true
         //   실패시: 2초 안에 말이 시작되지 않으면(인터넷 끊김 등) 대신 할 일 (알림음)
@@ -11489,7 +11528,7 @@
             } catch (e) { return false; }
         }
         // 처음 화면을 누를 때 음성도 미리 켜 둠 (아이폰 등은 화면을 누르기 전 소리를 막음)
-        ['pointerdown', 'keydown'].forEach(function (ev) { document.addEventListener(ev, function () { try { if (음성_지원()) { var u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } } catch (e) { } }, { once: true, capture: true }); });
+        ['pointerdown', 'keydown'].forEach(function (ev) { document.addEventListener(ev, function () { try { if (음성_지원() && !윈폼창()) { var u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } } catch (e) { } }, { once: true, capture: true }); });
 
         // ── 받을 알림 설정 (이 브라우저에 저장): 종류(가격·급증·큰) × 알림창 + 알림 방식(끔·소리·음성·소리+음성) / 방해 금지 / 장외 무음 ──
         var 알림방식목록 = [['끔', '끔'], ['소리', '소리'], ['음성', '음성'], ['둘다', '소리+음성']];
@@ -14705,6 +14744,8 @@
             if (앞 && 지금 - 앞.at < 2500) { 앞.ms = Math.max(앞.ms, Math.round(ms)); if (종류 && 앞.종류.indexOf(종류) < 0) 앞.종류 += '·' + 종류; 저장(멈춤.키, 멈춤.목록); return; }
             var 깜 = document.querySelectorAll('.g-spk-up, .g-spk-dn, .g-al, .g-nw, .fx-blink, .mk-blink, .flash, .wl-hot-blink, .wl-lv, .ev-blink').length;
             var 알 = 멈춤.최근알림 && 지금 - 멈춤.최근알림.at < 10000 ? 멈춤.최근알림 : null;
+            var 느 = window.__느린 && 지금 - window.__느린.at < ms + 5000 && window.__느린.ms > 150 ? window.__느린 : null;
+            if (느) 덧 = (덧 ? 덧 + ' · ' : '') + '오래 걸린 작업 ' + (느.ms / 1000).toFixed(1) + '초: ' + 느.이름;
             멈춤.목록.unshift({ at: 지금, ms: Math.round(ms), 종류: 종류, 화면: (상태.모드 === 'kr' ? '국장 ' + 지금탭() : '미장 ' + 미.탭), 깜빡: 깜, 알림: 알 ? ((알.종목 ? 알.종목 + ' ' : '') + String(알.글 || '').slice(0, 40) + ' (' + Math.round((지금 - 알.at) / 1000) + '초 전)') : '', 덧: 덧 || '' });
             if (멈춤.목록.length > 60) 멈춤.목록.length = 60;
             저장(멈춤.키, 멈춤.목록);
@@ -14739,10 +14780,10 @@
         // ════════════════════════════════════════════════════════
         var 계 = { us: null, kr: null, 받음: {} };
         var 계기본 = {
-            us: { t: '', fee: 0.07, tax: 0, 탭: '1', c1모드: 'amt', c1amt: 10000000, c1sh: 50, c2roi: 10, c3nq: 100, c4q: 100, c4tp: 3 },
-            kr: { t: '', fee: 0.015, tax: 0.20, 탭: '1', c1모드: 'amt', c1amt: 10000000, c1sh: 50, c2roi: 10, c3nq: 100, c4q: 100, c4tp: 3 }
+            us: { t: '', fee: 0.07, tax: 0, 탭: '1', c1모드: 'amt', c1amt: 10000000, c1sh: 50, c2roi: 10, c3nq: 100, c4amt: 50000000, c4tp: 5 },
+            kr: { t: '', fee: 0.015, tax: 0.20, 탭: '1', c1모드: 'amt', c1amt: 10000000, c1sh: 50, c2roi: 10, c3nq: 100, c4amt: 50000000, c4tp: 5 }
         };
-        var 계따라감 = ['p', 'fx', 'c2sp', 'c3np', 'c4bp', 'c4sp'];      // 직접 고치기 전까지 현재가(환율)를 따라가는 칸
+        var 계따라감 = ['p', 'fx', 'c2sp', 'c3np', 'c4bp'];      // 직접 고치기 전까지 현재가(환율)를 따라가는 칸
         var 계종목칸 = ['c2bp', 'c2q', 'c3op', 'c3oq', 'c3ta', 'c3tb', 'c3np', 'c4bp', 'c4sp', 'c2sp'];   // 종목을 바꾸면 비우는 칸
         function 계상태(m) {
             if (!계[m]) { var v = 읽기('sz_calc_' + m, true); 계[m] = Object.assign({}, 계기본[m], v && typeof v === 'object' ? v : {}); 계[m].고정 = 계[m].고정 || {}; }
@@ -14810,7 +14851,7 @@
             i.value = 새; var n = 0, pos = 0; while (pos < 새.length && n < 앞) { if (/[0-9.\-]/.test(새[pos])) n++; pos++; }
             try { i.setSelectionRange(pos, pos); } catch (e) { }
         }
-        var 계원칸 = { us: ['c1amt'], kr: ['c1amt', 'p', 'c2bp', 'c2sp', 'c3op', 'c3np', 'c3ta', 'c3tb', 'c4bp', 'c4sp'] };   // 아래에 한글 금액을 보여 줄 원화 입력 칸
+        var 계원칸 = { us: ['c1amt', 'c4amt'], kr: ['c1amt', 'c4amt', 'p', 'c2bp', 'c2sp', 'c3op', 'c3np', 'c3ta', 'c3tb', 'c4bp'] };   // 아래에 한글 금액을 보여 줄 원화 입력 칸
         function 계값(S, k, 기본) { var v = parseFloat(String(S[k] == null ? '' : S[k]).replace(/[,\s$원₩]/g, '')); return isFinite(v) ? v : 기본; }
         function 계산기(m) {
             var el = 찾기(m + '-calc'); if (!el) return;
@@ -14843,8 +14884,11 @@
                     '<div class="cz-sub">목표 평단 역산</div>' + 칸('c3ta', '원하는 평단가 (' + 단 + ')') + 칸('c3tb', '추가로 살 단가 (' + 단 + ')') + '</div>' +
                     '<div class="cz-col">' + 결('c3avg', '새 평균 단가', 1) + 결('c3q', '총 보유 수량') + 결('c3tot', '총 매수 금액') + 결('c3pl', '현재가 기준 손익') + 결('c3req', '목표 평단까지 더 살 수량') + '</div></div>' +
                 // ④ 단타
-                '<div class="cz-p" data-c="4"><div class="cz-col">' + 칸('c4bp', '매수 단가 (' + 단 + ')', '', 1) + 칸('c4q', '수량 (주)') + 칸('c4sp', '매도 단가 (' + 단 + ')', '', 1) + 칸('c4tp', '목표 수익률 (%)') + '</div>' +
-                    '<div class="cz-col">' + 결('c4bep', '손익 분기점 (이 가격 넘게 팔아야 이익)', 1) + 결('c4net', '예상 순이익') + 결('c4mg', '수익률') + 결('c4tgt', '목표 수익률 매도가') + '</div></div>' +
+                // 단타: 투자 금액 → 살 수 있는 수량 · 목표 수익률 → 그 가격(목표가)과 그때 수익(원화 · 달러) · 단계별 목표가 · 손절가
+                '<div class="cz-p cz-big" data-c="4"><div class="cz-col">' + 칸('c4amt', '투자 금액 (원)', '예: 50,000,000') + 칸('c4bp', '매수 단가 (' + 단 + ')', '', 1) + 칸('c4tp', '목표 수익률 (%)', '예: 5') +
+                    결('c4q', '매수 가능 수량', 1) + '</div>' +
+                    '<div class="cz-col">' + 결('c4tgt', '목표가 (이 가격이 되면 목표 수익률)', 1) + 결('c4net', '그때 수익') + 결('c4bep', '손익 분기점 (이 가격 넘게 팔아야 이익)') + 결('c4now', '지금 현재가로 팔면') + '</div>' +
+                    '<div class="cz-col cz-wide"><div class="cz-sub">단계별 목표가 · 손절가 (비용 뺀 뒤 수익률 기준)</div><div data-r="c4tbl"></div></div></div>' +
                 // ⑤ 일반 계산기
                 '<div class="cz-p" data-c="5"><div class="cz-calc"><div class="cz-disp"><small data-r="ex"></small><b data-r="dp">0</b></div>' +
                     '<div class="cz-pct">' + [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (x) { return '<button type="button" data-pct="' + x + '" class="' + (x < 0 ? 'dn' : 'up') + '">' + (x > 0 ? '+' : '') + x + '%</button>'; }).join('') + '</div>' +
@@ -14868,6 +14912,7 @@
             });
             el.addEventListener('change', function (e) {
                 var i = e.target; if (i.getAttribute('data-k') !== 't') return;
+                var 찾 = el.querySelector('input[data-k="tq"]'); if (찾 && 찾.ownerDocument.activeElement !== 찾) 찾.value = '';
                 var S2 = 계상태(el._m); S2.t = i.value; 계종목칸.forEach(function (k) { delete S2[k]; delete S2.고정[k]; }); delete S2.고정.p;
                 Array.prototype.forEach.call(el.querySelectorAll('input[data-k]'), function (x) { var k = x.getAttribute('data-k'); if (계종목칸.indexOf(k) >= 0 || k === 'p') x.value = ''; });
                 계저장(el._m); 계산기갱신(el._m);
@@ -14908,7 +14953,7 @@
             // 따라가는 칸: 고정이 아니면 현재가(환율) 표시 (입력 중인 칸은 건드리지 않음)
             function 보여(k, v) { var i = el.querySelector('input[data-k="' + k + '"]'); if (i && i.ownerDocument.activeElement !== i && !S.고정[k]) i.value = v > 0 ? 콤(+v, 미 && k !== 'fx' ? 2 : k === 'fx' ? 2 : 0) : ''; if (i) i.classList.toggle('fixed', !!S.고정[k]); }
             보여('p', p); if (미) 보여('fx', fx);
-            ['c2sp', 'c3np', 'c4bp', 'c4sp'].forEach(function (k) { 보여(k, p); });
+            ['c2sp', 'c3np', 'c4bp'].forEach(function (k) { 보여(k, p); });
             function 기본(k, v) { var i = el.querySelector('input[data-k="' + k + '"]'); if (i) i.placeholder = v > 0 ? 콤(+v, 미 && k !== 'c2q' && k !== 'c3oq' ? 2 : 0) + (보 && (k === 'c2bp' || k === 'c3op' || k === 'c2q' || k === 'c3oq') ? ' (보유)' : '') : ''; }
             var 보가 = 보 ? 보.가 : p, 보수 = 보 ? 보.수 : 0;
             기본('c2bp', 보가); 기본('c2q', 보수 || 10); 기본('c3op', 보가); 기본('c3oq', 보수 || 10); 기본('c3ta', 보가 && p ? (보가 + p) / 2 : 0); 기본('c3tb', p);
@@ -14963,11 +15008,30 @@
                 else 넣('c3req', '계산 불가', '목표 평단은 지금 평단과 추가 단가 사이여야 합니다', 'kr-0');
             }
             // ④ 단타
-            var b4 = S.고정.c4bp ? 계값(S, 'c4bp', p) : p, q4 = 계값(S, 'c4q', 100), s4 = S.고정.c4sp ? 계값(S, 'c4sp', p) : p, tp = 계값(S, 'c4tp', 3) / 100;
-            if (b4 > 0 && 1 - f - tx > 0) {
+            var b4 = S.고정.c4bp ? 계값(S, 'c4bp', p) : p, 금4 = 계값(S, 'c4amt', 50000000), tp = 계값(S, 'c4tp', 5) / 100;
+            if (미 && !(fx > 0)) 넣('c4q', '환율 필요', '위 환율 칸에 원/달러를 넣어 주세요', 'kr-0');
+            if (b4 > 0 && fx > 0 && 1 - f - tx > 0) {
+                var 한주4 = b4 * (1 + f), q4 = Math.floor(금4 / fx / 한주4), 투4 = b4 * q4, 실투 = 투4 * (1 + f);   // 미장: 원 → 달러 (fx) · 국장: fx = 1
+                function 돈둘(v, 부) { return 미 ? 돈(v, 부) : 원(v, 부); }
+                function 원둘(v, 부) { return 미 ? 원(v * fx, 부) : ''; }
+                넣('c4q', 콤(q4) + '주', '매수 금액 ' + (미 ? 돈(실투) + ' = ' + 원(실투 * fx) : 원(실투)) + ' (수수료 포함) · 남는 돈 ' + 원(금4 - 실투 * fx), 'cz-g');
+                var 목가 = b4 * (1 + tp + f) / (1 - f - tx), 목순 = 투4 * tp;
+                넣('c4tgt', 올림가(목가), '매수가 대비 ' + 퍼((목가 / b4 - 1) * 100) + ' 오르면 · 비용 뺀 수익률 ' + 퍼(tp * 100), 'cz-b');
+                넣('c4net', (미 ? 돈(목순, 1) + ' · ' + 원(목순 * fx, 1) : 원(목순, 1)), '수익률 ' + 퍼(tp * 100) + ' (수수료' + (미 ? '' : ' · 세금') + ' 뺀 뒤) · ' + 한글금액(목순 * fx), 쪽(목순));
                 var bep = b4 * (1 + f) / (1 - f - tx); 넣('c4bep', 올림가(bep), '매수가 대비 ' + 퍼((bep / b4 - 1) * 100), 'cz-r2');
-                var 투4 = b4 * q4, 순4 = s4 * q4 - 투4 - 투4 * f - s4 * q4 * (f + tx); 넣('c4net', 돈(순4, 1), 미 && fx > 0 ? 원화(순4 * fx, 1) : '', 쪽(순4)); 넣('c4mg', 퍼(투4 > 0 ? 순4 / 투4 * 100 : null), '', 쪽(순4));
-                넣('c4tgt', 올림가(b4 * (1 + tp + f) / (1 - f - tx)), '수익률 ' + 퍼(tp * 100) + ' (비용 뺀 뒤)', 'cz-b');
+                var 지순 = p > 0 ? p * q4 - 투4 - 투4 * f - p * q4 * (f + tx) : null;
+                넣('c4now', 지순 == null ? '─' : (미 ? 돈(지순, 1) + ' · ' + 원(지순 * fx, 1) : 원(지순, 1)), 지순 != null && 투4 > 0 ? '현재가 ' + 단가(p) + ' · 수익률 ' + 퍼(지순 / 투4 * 100) : '', 쪽(지순));
+                var 표 = el.querySelector('[data-r="c4tbl"]');
+                if (표) {
+                    var 단계들 = [1, 2, 3, 5, 7, 10, 15, 20, -1, -2, -3, -5];
+                    if (단계들.indexOf(tp * 100) < 0 && tp > 0) 단계들.push(+(tp * 100).toFixed(2));
+                    단계들.sort(function (a, b) { return b - a; });
+                    var h4 = '<table class="cz-tbl"><thead><tr><th>수익률</th><th>목표가</th><th>매수가 대비</th><th>수익' + (미 ? ' (달러)' : '') + '</th>' + (미 ? '<th>수익 (원화)</th>' : '') + '</tr></thead><tbody>' + 단계들.map(function (r) {
+                        var 가 = b4 * (1 + r / 100 + f) / (1 - f - tx), 순 = 투4 * r / 100, on = Math.abs(r / 100 - tp) < 1e-9;
+                        return '<tr class="' + (on ? 'on' : '') + (r < 0 ? ' 손' : '') + '"><td class="' + 쪽(r) + '">' + (r > 0 ? '+' : '') + r + '%' + (r < 0 ? ' 손절' : '') + '</td><td>' + (r >= 0 ? 올림가(가) : 단가(미 ? Math.floor(가 * 100) / 100 : Math.floor(가))) + '</td><td>' + 퍼((가 / b4 - 1) * 100) + '</td><td class="' + 쪽(순) + '">' + 돈둘(순, 1) + '</td>' + (미 ? '<td class="' + 쪽(순) + '">' + 원둘(순, 1) + '</td>' : '') + '</tr>';
+                    }).join('') + '</tbody></table>';
+                    if (표._h !== h4) { 표.innerHTML = h4; 표._h = h4; }
+                }
             }
             var 화 = el.querySelector('[data-r="dp"]'), 식칸 = el.querySelector('[data-r="ex"]'); if (화) 화.textContent = 쉼표글(S.화면 || '0'); if (식칸) 식칸.textContent = 쉼표글(S.식 || S.위 || '');
         }
@@ -15023,8 +15087,9 @@
             });
             if (이름 === '보유') 보유이벤트(w.querySelector('#sz-hold'));
             창내용(이름);
-            // PC: 탭을 누르면 바로 밖으로 (마지막에 [안으로]를 눌렀으면 대시보드 안에서)
-            if (window.innerWidth > 640 && 읽기('sz_win_out') !== '0') 밖으로(이름);
+            // PC 브라우저: 탭을 누르면 바로 밖으로 (마지막에 [안으로]를 눌렀으면 대시보드 안에서)
+            //   윈폼 창은 [밖으로]를 직접 한 번 누르기 전까지는 대시보드 안에서 (윈폼 새 창 연결이 확인될 때까지)
+            var 밖 = 읽기('sz_win_out'); if (window.innerWidth > 640 && (밖 === '1' || (밖 == null && !(window.chrome && window.chrome.webview)))) 밖으로(이름);
         }
         function 창저장(이름) { var w = 창들[이름]; if (!w || w._외 || window.innerWidth <= 640) return; var r = w.getBoundingClientRect(); 저장('sz_win_' + 이름, { x: Math.round(r.left), y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height) }); }
         function 창닫기(이름) {
