@@ -2984,6 +2984,14 @@
         .sz-wbody { flex: 1; min-height: 0; overflow: auto; padding: 10px 14px 14px; container-type: inline-size; }
         .sz-wpart { display: none; } .sz-wpart.on { display: block; }
         @media (max-width: 640px) { .sz-win { left: 0 !important; right: 0; top: auto !important; bottom: 0; width: 100% !important; height: 92vh !important; border-radius: 14px 14px 0 0; resize: none; } .sz-whead { cursor: default; } .sz-wbody { padding-bottom: calc(14px + env(safe-area-inset-bottom)); } }
+
+        /* 밖으로 꺼낸 창: 바깥 창 전체를 채움 */
+        .sz-wout { font: inherit; font-size: 12.5px; font-weight: 800; padding: 4px 11px; border-radius: 6px; border: 1px solid #2f3a55; background: #172038; color: #a9c2ff; cursor: pointer; margin-left: auto; }
+        .sz-wout + .sz-wx { margin-left: 4px; }
+        .sz-win .sz-win-in { display: none; } .sz-win.sz-ext .sz-win-in { display: inline-block; } .sz-win.sz-ext .sz-wout:not(.sz-win-in) { display: none; }
+        .sz-win.sz-ext { position: static !important; left: auto !important; top: auto !important; width: 100% !important; height: 100vh !important; border: 0; border-radius: 0; resize: none; box-shadow: none; max-width: none; max-height: none; }
+        .sz-win.sz-ext .sz-whead { cursor: default; }
+        @media (max-width: 640px) { .sz-win:not(.sz-ext) .sz-wout { display: none; } .sz-win:not(.sz-ext) .sz-wx { margin-left: auto; } }
     </style>
 </head>
 <body>
@@ -14073,7 +14081,7 @@
                 '<button type="button" class="kr-mx" data-m="close" aria-label="닫기">×</button></div>' +
                 '<div class="kr-mform">' + 폼 + '</div><div class="kr-mmsg"></div>' +
                 '<div class="kr-mbtn">' + (e ? '<button type="button" data-m="del" class="del">삭제</button>' : '') + '<span></span><button type="button" data-m="close">취소</button><button type="button" data-m="save" class="pri">' + (e ? '수정 저장' : '추가') + '</button></div></div>';
-            document.body.appendChild(w);
+            ((창들.보유 && 창들.보유.isConnected && 창들.보유.ownerDocument) || document).body.appendChild(w);
             w.addEventListener('click', function (ev) {
                 if (ev.target === w) { 보유창닫기(); return; }
                 var b = ev.target.closest('button[data-m]'); if (!b) return;
@@ -14087,9 +14095,9 @@
             var 첫 = w.querySelector('input'); if (첫) setTimeout(function () { try { 첫.focus(); } catch (er) { } }, 30);
         }
         document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && document.getElementById('kr-hmodal')) { ev.preventDefault(); 보유창닫기(); } });
-        function 보유창닫기() { var w = document.getElementById('kr-hmodal'); if (w) w.remove(); if (상태.보유) 상태.보유.창 = null; }
+        function 보유창닫기() { var w = 찾기('kr-hmodal'); if (w) w.remove(); if (상태.보유) 상태.보유.창 = null; }
         function 보유창저장() {
-            var w = document.getElementById('kr-hmodal'), 창 = 상태.보유.창; if (!w || !창) return;
+            var w = 찾기('kr-hmodal'), 창 = 상태.보유.창; if (!w || !창) return;
             var 곳 = 창.k, msg = w.querySelector('.kr-mmsg'), 항;
             function 값(n) { var i = w.querySelector('[name="' + n + '"]'); return i ? i.value.trim() : ''; }
             function 수(n) { var v = parseFloat(값(n).replace(/[,\s$원]/g, '')); return isFinite(v) ? v : NaN; }
@@ -14124,7 +14132,7 @@
                 return { price: Number(pk.q.price), change: Number(pk.q.change) || 0, changePct: isFinite(c) ? c : null, 실시간: true };
             } catch (e) { return null; }
         }
-        function 보유칸들() { return ['sz-hold'].map(function (id) { return document.getElementById(id); }).filter(Boolean); }
+        function 보유칸들() { return [찾기('sz-hold')].filter(Boolean); }
         function 보유다시() { 보유칸들().forEach(function (el) { el._h = ''; }); 보유(); }
         function 보유() {
             var 칸들 = 보유칸들(); if (!칸들.length) return;
@@ -14177,7 +14185,7 @@
             h += '<div class="kr-sub">이 기기(브라우저)에만 저장됩니다 · 국내 시세 장중 3초마다 · 미국 시세 실시간 (관심 종목에 없는 종목은 15초마다) · 원화 환산은 실시간 원/달러 · 양도세는 미국 주식 손익 합계로 단순 계산한 예상치</div>';
             칸들.forEach(function (el) {
                 el.style.setProperty('--hf', 보유글자단계[보유글자]);
-                var 입력중 = document.activeElement && el.contains(document.activeElement) && document.activeElement.tagName === 'INPUT' && document.activeElement.type !== 'checkbox';
+                var 활 = el.ownerDocument.activeElement, 입력중 = 활 && el.contains(활) && 활.tagName === 'INPUT' && 활.type !== 'checkbox';
                 if (!입력중) 넣기(el, h);
             });
         }
@@ -14687,7 +14695,7 @@
         }
         function 계값(S, k, 기본) { var v = parseFloat(String(S[k] == null ? '' : S[k]).replace(/[,\s$원₩]/g, '')); return isFinite(v) ? v : 기본; }
         function 계산기(m) {
-            var el = document.getElementById(m + '-calc'); if (!el) return;
+            var el = 찾기(m + '-calc'); if (!el) return;
             var S = 계상태(m), 목 = 계종목들(m);
             if (!S.t || !목.some(function (x) { return x[0] === S.t; })) S.t = 목.length ? 목[0][0] : '';
             if (el._m !== m || el._목 !== 목.map(function (x) { return x[0]; }).join()) { 계만들기(el, m, 목); el._m = m; el._목 = 목.map(function (x) { return x[0]; }).join(); }
@@ -14768,12 +14776,12 @@
             });
         }
         function 계산기갱신(m) {
-            var el = document.getElementById(m + '-calc'); if (!el || !el._m) return;
+            var el = 찾기(m + '-calc'); if (!el || !el._m) return;
             var S = 계상태(m), 미 = m === 'us', 현 = 계현재가(m, S.t), 환실 = 미 ? 계환율() : 1, 보 = 계보유(m, S.t);
             var p = S.고정.p ? 계값(S, 'p', 0) : (현 ? 현.p : 계값(S, 'p', 0)), fx = 미 ? (S.고정.fx ? 계값(S, 'fx', 0) : (환실 || 계값(S, 'fx', 0))) : 1;
             var f = 계값(S, 'fee', 0) / 100, tx = 미 ? 0 : 계값(S, 'tax', 0) / 100;
             // 따라가는 칸: 고정이 아니면 현재가(환율) 표시 (입력 중인 칸은 건드리지 않음)
-            function 보여(k, v) { var i = el.querySelector('input[data-k="' + k + '"]'); if (i && document.activeElement !== i && !S.고정[k]) i.value = v > 0 ? +(+v).toFixed(미 ? 2 : 0) : ''; if (i) i.classList.toggle('fixed', !!S.고정[k]); }
+            function 보여(k, v) { var i = el.querySelector('input[data-k="' + k + '"]'); if (i && i.ownerDocument.activeElement !== i && !S.고정[k]) i.value = v > 0 ? +(+v).toFixed(미 ? 2 : 0) : ''; if (i) i.classList.toggle('fixed', !!S.고정[k]); }
             보여('p', p); if (미) 보여('fx', fx);
             ['c2sp', 'c3np', 'c4bp', 'c4sp'].forEach(function (k) { 보여(k, p); });
             function 기본(k, v) { var i = el.querySelector('input[data-k="' + k + '"]'); if (i) i.placeholder = v > 0 ? String(+(+v).toFixed(미 ? 2 : 0)) + (보 && (k === 'c2bp' || k === 'c3op' || k === 'c2q' || k === 'c3oq') ? ' (보유)' : '') : ''; }
@@ -14834,7 +14842,10 @@
         // ════════════════════════════════════════════════════════
         var 창들 = {}, 창순서 = 9990;
         var 창기본 = { 보유: { w: 1040, h: 660 }, 계산기: { w: 560, h: 680 } };
-        function 창열림(이름) { return !!(창들[이름] && document.body.contains(창들[이름])); }
+        var 외창 = {};   // 이름 → { win, 종류: 'pip'(항상 위 떠 있는 창) | 'popup'(일반 새 창) }
+        function 창문서들() { var a = [document]; Object.keys(외창).forEach(function (k) { var x = 외창[k]; try { if (x && x.win && !x.win.closed) a.push(x.win.document); } catch (e) { } }); return a; }
+        function 찾기(id) { var d = 창문서들(); for (var i = 0; i < d.length; i++) { var e = d[i].getElementById(id); if (e) return e; } return null; }
+        function 창열림(이름) { var w = 창들[이름]; return !!(w && w.isConnected); }
         function 창앞으로(w) { w.style.zIndex = ++창순서; }
         function 창열기(이름) {
             if (창열림(이름)) { 창앞으로(창들[이름]); 창내용(이름); return; }
@@ -14850,14 +14861,14 @@
             var 머리 = 이름 === '계산기'
                 ? '<b>계산기</b><span class="kr-seg sz-wseg">' + [['us', '미장'], ['kr', '국장']].map(function (o) { return '<button type="button" data-wm="' + o[0] + '">' + o[1] + '</button>'; }).join('') + '</span>'
                 : '<b>보유현황</b><small>이 기기에만 저장 · 국내 · 미국 실시간 손익</small>';
-            w.innerHTML = '<div class="sz-whead">' + 머리 + '<button type="button" class="sz-wx" data-wa="close" title="닫기 (Esc)">×</button></div>' +
+            w.innerHTML = '<div class="sz-whead">' + 머리 + '<button type="button" class="sz-wout" data-wa="out" title="대시보드 밖으로 꺼내기 (다른 모니터 · 다른 프로그램 위)">밖으로</button><button type="button" class="sz-wout sz-win-in" data-wa="in" title="대시보드 안으로 되돌리기">안으로</button><button type="button" class="sz-wx" data-wa="close" title="닫기 (Esc)">×</button></div>' +
                 '<div class="sz-wbody">' + (이름 === '계산기' ? '<div id="us-calc" class="sz-wpart"></div><div id="kr-calc" class="sz-wpart"></div>' : '<div id="sz-hold" class="sz-wpart on"></div>') + '</div>';
             document.body.appendChild(w); 창들[이름] = w; 창앞으로(w);
             if (이름 === '계산기') { var 저m = 읽기('sz_win_calc_m'); w._m = 저m === 'kr' || 저m === 'us' ? 저m : 상태.모드; }
             // 끌어 옮기기 (머리) · 크기 저장 (ResizeObserver)
             var 머리칸 = w.querySelector('.sz-whead');
             머리칸.addEventListener('pointerdown', function (e) {
-                if (e.target.closest('button') || window.innerWidth <= 640) return;
+                if (e.target.closest('button') || window.innerWidth <= 640 || w._외) return;
                 var r = w.getBoundingClientRect(), dx = e.clientX - r.left, dy = e.clientY - r.top;
                 머리칸.setPointerCapture(e.pointerId); 창앞으로(w);
                 function 움(ev) { w.style.left = Math.max(-r.width + 120, Math.min(window.innerWidth - 120, ev.clientX - dx)) + 'px'; w.style.top = Math.max(0, Math.min(window.innerHeight - 40, ev.clientY - dy)) + 'px'; }
@@ -14869,13 +14880,67 @@
             w.addEventListener('click', function (e) {
                 var b = e.target.closest('button'); if (!b) return;
                 if (b.getAttribute('data-wa') === 'close') { 창닫기(이름); return; }
+                if (b.getAttribute('data-wa') === 'out') { 밖으로(이름); return; }
+                if (b.getAttribute('data-wa') === 'in') { 안으로(이름); return; }
                 if (b.hasAttribute('data-wm')) { w._m = b.getAttribute('data-wm'); 저장('sz_win_calc_m', w._m); 창내용(이름); }
             });
             if (이름 === '보유') 보유이벤트(w.querySelector('#sz-hold'));
             창내용(이름);
         }
-        function 창저장(이름) { var w = 창들[이름]; if (!w || window.innerWidth <= 640) return; var r = w.getBoundingClientRect(); 저장('sz_win_' + 이름, { x: Math.round(r.left), y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height) }); }
-        function 창닫기(이름) { var w = 창들[이름]; if (!w) return; try { w._관찰 && w._관찰.disconnect(); } catch (e) { } w.remove(); 창들[이름] = null; }
+        function 창저장(이름) { var w = 창들[이름]; if (!w || w._외 || window.innerWidth <= 640) return; var r = w.getBoundingClientRect(); 저장('sz_win_' + 이름, { x: Math.round(r.left), y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height) }); }
+        function 창닫기(이름) {
+            var w = 창들[이름]; if (!w) return;
+            try { w._관찰 && w._관찰.disconnect(); } catch (e) { }
+            var x = 외창[이름]; 외창[이름] = null; w.remove(); 창들[이름] = null;
+            if (x && x.win) { try { 외창저장(이름, x); x.win.close(); } catch (e) { } }
+        }
+        // ── 대시보드 밖으로 꺼내기 ──
+        //   ① 크롬·엣지 PC: 항상 위에 떠 있는 창 (Document Picture-in-Picture · 한 번에 1개) ② 그 밖·두 번째: 일반 새 창 (팝업)
+        //   창 안의 화면(노드)을 그대로 옮김 → 계산·이벤트·실시간 시세는 대시보드가 계속 처리 (따로 시세를 받지 않음)
+        //   대시보드를 닫으면 같이 닫힘 · 바깥 창 자체 타이머로 0.5초마다 갱신 (대시보드 창이 가려져도 계속)
+        function 외창저장(이름, x) { try { var v = x.win; 저장('sz_ext_' + 이름, x.종류 === 'popup' ? { x: v.screenX, y: v.screenY, w: v.innerWidth, h: v.innerHeight } : { w: v.innerWidth, h: v.innerHeight }); } catch (e) { } }
+        function 밖으로(이름) {
+            var w = 창들[이름]; if (!w || 외창[이름]) return;
+            var r = w.getBoundingClientRect(), 저 = 읽기('sz_ext_' + 이름, true) || {}, W = 저.w || Math.round(r.width), H = 저.h || Math.round(r.height);
+            var pip쓰는중 = Object.keys(외창).some(function (k) { return 외창[k] && 외창[k].종류 === 'pip'; });
+            function 옮기기(win, 종류) {
+                var d = win.document;
+                d.title = 'STRIKEZONE ' + 이름 + (이름 === '계산기' ? '' : '현황');
+                Array.prototype.forEach.call(document.querySelectorAll('style, link[rel="stylesheet"]'), function (n) { d.head.appendChild(n.cloneNode(true)); });
+                d.body.style.cssText = 'margin:0;background:#10131b;color:#e7e9f0;font-family:' + getComputedStyle(document.body).fontFamily + ';';
+                w._외 = true; w.classList.add('sz-ext'); try { w._관찰 && w._관찰.disconnect(); } catch (e) { }
+                d.body.appendChild(w);
+                외창[이름] = { win: win, 종류: 종류 };
+                d.addEventListener('keydown', function (e) { if (e.key !== 'Escape') return; if (d.getElementById('kr-hmodal')) { 보유창닫기(); return; } 안으로(이름); });
+                d.addEventListener('pointerdown', function () { 창누름 = true; }, true);
+                d.addEventListener('pointerup', function () { setTimeout(function () { 창누름 = false; }, 150); }, true);
+                try { win.setInterval(function () { 창갱신(이름, true); }, 500); } catch (e) { }
+                win.addEventListener('pagehide', function () {
+                    var x = 외창[이름]; if (!x || x.win !== win) return;
+                    외창저장(이름, x); 외창[이름] = null;
+                    if (w.ownerDocument === d) { w.remove(); 창들[이름] = null; }
+                });
+                창내용(이름);
+            }
+            function 팝업() {
+                var L = 저.x != null ? 저.x : Math.round(window.screenX + r.left + 40), T = 저.y != null ? 저.y : Math.round(window.screenY + r.top + 60);
+                var win = window.open('', 'sz_ext_' + (이름 === '보유' ? 'hold' : 'calc'), 'popup=yes,width=' + W + ',height=' + H + ',left=' + L + ',top=' + T);
+                if (!win) { try { 알림_잠깐('새 창이 막혔습니다 · 주소창 오른쪽의 팝업 차단을 "허용"으로 바꿔 주세요'); } catch (e) { } return; }
+                try { win.document.open(); win.document.write('<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>STRIKEZONE</title></head><body></body></html>'); win.document.close(); } catch (e) { }
+                옮기기(win, 'popup');
+            }
+            if (window.documentPictureInPicture && !pip쓰는중 && !documentPictureInPicture.window) {
+                documentPictureInPicture.requestWindow({ width: W, height: H }).then(function (win) { 옮기기(win, 'pip'); }).catch(팝업);
+            } else 팝업();
+        }
+        function 안으로(이름) {
+            var w = 창들[이름], x = 외창[이름]; if (!w || !x) return;
+            외창저장(이름, x); 외창[이름] = null;
+            w._외 = false; w.classList.remove('sz-ext'); document.body.appendChild(w); 창앞으로(w);
+            try { x.win.close(); } catch (e) { }
+            창내용(이름);
+        }
+        window.addEventListener('pagehide', function () { Object.keys(외창).forEach(function (k) { var x = 외창[k]; if (x && x.win) { 외창저장(k, x); try { x.win.close(); } catch (e) { } } }); });
         function 창내용(이름) {
             var w = 창들[이름]; if (!w) return;
             if (이름 === '보유') { 보유시세받기(true); 보유다시(); return; }
@@ -14885,18 +14950,18 @@
         }
         document.addEventListener('keydown', function (e) {
             if (e.key !== 'Escape' || e.defaultPrevented || document.getElementById('kr-hmodal')) return;
-            var 위 = Object.keys(창들).filter(창열림).sort(function (a, b) { return (+창들[b].style.zIndex || 0) - (+창들[a].style.zIndex || 0); })[0];
+            var 위 = Object.keys(창들).filter(function (k) { return 창열림(k) && !외창[k]; }).sort(function (a, b) { return (+창들[b].style.zIndex || 0) - (+창들[a].style.zIndex || 0); })[0];
             if (위) 창닫기(위);
         });
         // 열린 창: 0.5초마다 다시 계산 (미장 = 차트와 같은 실시간 시세 · 국장 = 장중 3초마다 받음)
         var 창누름 = false;
         document.addEventListener('pointerdown', function (e) { 창누름 = !!(e.target.closest && e.target.closest('.sz-win, #kr-hmodal')); }, true);
         document.addEventListener('pointerup', function () { setTimeout(function () { 창누름 = false; }, 150); }, true);
-        setInterval(function () {
-            if (document.visibilityState !== 'visible' || 창누름) return;   // 누르는 중에는 다시 그리지 않음 (단추가 바뀌어 눌림이 빠지지 않게)
-            if (창열림('보유')) { 보유시세받기(false); 보유(); }
-            if (창열림('계산기')) 계산기갱신(창들['계산기']._m);
-        }, 500);
+        function 창갱신(이름, 바깥) {
+            if (창누름 || !창열림(이름) || !!외창[이름] !== !!바깥) return;   // 누르는 중에는 다시 그리지 않음 (단추가 바뀌어 눌림이 빠지지 않게)
+            if (이름 === '보유') { 보유시세받기(false); 보유(); } else 계산기갱신(창들['계산기']._m);
+        }
+        setInterval(function () { if (document.visibilityState !== 'visible') return; 창갱신('보유', false); 창갱신('계산기', false); }, 500);
         window.미장탭 = { 상태: 미, 탭바꾸기: 미탭바꾸기, 그리기: 미그리기, 자료: 미자료, 단계: 미단계, 멈춤: 멈춤남기기, 계산기: 계산기 };
         window.국장 = { 상태: 상태, 모드바꾸기: 모드바꾸기, 반영: 반영, 그리기: 그리기, 종목: KR종목, 수급통계: 수급통계, 단계: 단계, 누적비율: 누적비율 };
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', 시작); else 시작();
