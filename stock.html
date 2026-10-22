@@ -2863,6 +2863,7 @@
         .grid-mode .top-bar .us-tabbar { display: grid; grid-template-columns: repeat(4, auto); gap: 3px; padding: 0; align-self: center; flex-shrink: 0; }
         .grid-mode .top-bar .us-tabbar button { padding: 3px 8px; font-size: 12px; border-radius: 6px; }
         .grid-mode .top-bar .us-stat { display: none; }
+        .grid-mode .top-bar .us-tabbar .sz-ver { display: none; }
         .grid-mode .us-view { grid-column: 1 / -1; grid-row: 2; padding-right: 0; }
         @container (min-width: 1150px) { .us-view .kr-pane[data-t="시장"].on { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; } .us-view .kr-pane[data-t="시장"] .kr-wide { grid-column: 1 / -1; } }
         .us-view .kr-pane[data-t="뉴스"].on { display: grid; grid-template-columns: minmax(0, 1fr); }
@@ -2992,6 +2993,67 @@
         .sz-win.sz-ext { position: static !important; left: auto !important; top: auto !important; width: 100% !important; height: 100vh !important; border: 0; border-radius: 0; resize: none; box-shadow: none; max-width: none; max-height: none; }
         .sz-win.sz-ext .sz-whead { cursor: default; }
         @media (max-width: 640px) { .sz-win:not(.sz-ext) .sz-wout { display: none; } .sz-win:not(.sz-ext) .sz-wx { margin-left: auto; } }
+
+        /* ── 보유현황: 요약 줄(원화 · 달러) · 상세 표 칸 구분 ── */
+        .hs-pick { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+        .kr-hbox-all { border-left-color: #8a7a3f; }
+        .hs-tbl { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+        .hs-row { display: grid; grid-template-columns: calc(54px * var(--hf, 1)) repeat(5, minmax(0, 1fr)); gap: 6px; align-items: stretch; }
+        .hs-6 .hs-row { grid-template-columns: calc(54px * var(--hf, 1)) repeat(6, minmax(0, 1fr)); }
+        .hs-lb { display: flex; align-items: center; justify-content: center; font-size: calc(13px * var(--hf, 1)); font-weight: 800; color: #111; background: #c9d2e6; border-radius: 7px; }
+        .hs-row + .hs-row .hs-lb { background: #8fd3c2; }
+        .hs-c { background: #151a26; border: 1px solid #2a3042; border-radius: 7px; padding: 6px 10px; min-width: 0; }
+        .hs-c span { display: block; font-size: calc(11.5px * var(--hf, 1)); color: #8b93a7; min-height: 1em; }
+        .hs-c b { display: block; font-size: calc(17px * var(--hf, 1)); font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .hs-c small { display: block; font-size: calc(12px * var(--hf, 1)); font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .hs-c.hs-blank { background: transparent; border-color: transparent; }
+        @container (max-width: 720px) { .hs-row, .hs-6 .hs-row { grid-template-columns: repeat(3, minmax(0, 1fr)); } .hs-lb { grid-column: 1 / -1; padding: 3px 0; } }
+        @container (max-width: 420px) { .hs-row, .hs-6 .hs-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        .kr-htbl { border-collapse: separate; border-spacing: 0; }
+        .kr-htbl thead th { position: sticky; top: 0; background: #141927; z-index: 1; padding: 6px 10px; }
+        .kr-htbl thead tr.hg th { font-size: calc(11px * var(--hf, 1)); color: #aab2c4; text-align: center; border-bottom: 0; padding: 4px 10px 2px; }
+        .kr-htbl tbody td { padding: calc(8px * var(--hf, 1)) 10px; border-bottom: 1px solid #1d2230; }
+        .kr-htbl tbody tr:nth-child(even) td { background: rgba(255, 255, 255, .025); }
+        .kr-htbl tbody tr:hover td { background: rgba(255, 223, 0, .05); }
+        .kr-htbl .g-buy, .kr-htbl .g-ev, .kr-htbl .g-pl, .kr-htbl .g-etc { border-left: 1px solid #2c3346; }
+        .kr-htbl .g-pl, .kr-htbl .g-plc { background: rgba(127, 220, 198, .035); }
+        .kr-htbl tbody tr:nth-child(even) td.g-pl, .kr-htbl tbody tr:nth-child(even) td.g-plc { background: rgba(127, 220, 198, .06); }
+        .kr-htbl thead tr.hg th.g-buy { color: #c9d2e6; } .kr-htbl thead tr.hg th.g-ev { color: #ffd27a; } .kr-htbl thead tr.hg th.g-pl { color: #8fd3c2; }
+        .kr-htbl td.nm b { font-size: calc(14px * var(--hf, 1)); } .kr-htbl td.nm small { display: block; color: #8b93a7; }
+
+        .cz-f { position: relative; }
+        .cz-han { display: block; min-height: 15px; margin: -2px 0 3px; font-size: 12.5px; font-weight: 800; color: #ffd27a; }
+        .cz-han.big { color: #ff9f6b; }
+        .cz-r small { line-height: 1.45; }
+
+        /* ── 시황 한 줄 평가 ── */
+        .sz-brief { flex: 1 1 0; min-width: 0; display: flex; align-items: center; gap: 14px; overflow: hidden; white-space: nowrap; font-size: 13px; font-weight: 700; color: #cfd5e2; margin: 0 6px 0 10px; }
+        .sz-brief .sb-i { display: inline-flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; text-overflow: ellipsis; flex: 0 1 auto; }
+        .sz-brief .sb-i + .sb-i::before { content: ''; width: 1px; height: 14px; background: #343b50; margin-right: 8px; flex: 0 0 auto; }
+        .sb-i i { width: 8px; height: 8px; border-radius: 50%; background: #8b93a7; flex: 0 0 auto; }
+        .sb-i.lv-위험 { color: #ff9a9a; } .sb-i.lv-위험 i { background: #ff5d5d; }
+        .sb-i.lv-주의 { color: #ffc27a; } .sb-i.lv-주의 i { background: #ffb366; }
+        .sb-i.lv-좋음 { color: #8fe3cf; } .sb-i.lv-좋음 i { background: #3fc9a8; }
+        .sb-i.lv-정보 i { background: #8b93a7; }
+        .sb-more { flex: 0 0 auto; font: inherit; font-size: 12px; font-weight: 800; padding: 2px 9px; border-radius: 6px; border: 1px solid #2f3a55; background: #172038; color: #a9c2ff; cursor: pointer; margin-left: auto; }
+        .sz-ver { flex: 0 0 auto; font-size: 10.5px; color: #5d6578; margin-left: 6px; white-space: nowrap; }
+        .us-tabbar .us-stat { flex: 0 1 auto; max-width: 300px; }
+        .us-tabbar, .kr-tabs { flex-wrap: nowrap; } @media (max-width: 640px) { .us-tabbar, .kr-tabs { flex-wrap: wrap; } .us-tabbar .us-stat, .kr-tabs .kr-stat { flex: 1 1 100%; max-width: none; margin-left: 0; order: 11; } }
+        .sz-brief-g { flex: 0 0 auto !important; display: flex; flex-direction: column; align-items: stretch; gap: 3px; margin: 0 0 6px; padding: 6px 8px; white-space: normal; background: #0e1119; border: 1px solid #1d2230; border-radius: 8px; font-size: 12.5px; }
+        .sz-brief-g .sb-i { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.35; }
+        .sz-brief-g .sb-i + .sb-i::before { display: none; }
+        .sz-brief-g .sb-i i { display: inline-block; margin-right: 5px; vertical-align: 1px; }
+        .sz-brief-g .sb-more { align-self: flex-end; margin: 0; padding: 0 8px; font-size: 11.5px; }
+        body.mkt-kr .sz-brief-g { display: none; }
+        body.grid-mode:not(.mkt-kr) .sidebar:has(> .sz-brief-g) { grid-template-rows: auto minmax(0, 1fr) clamp(190px, 21vh, 260px); }
+        .sz-brief-pop { position: fixed; z-index: 99990; width: min(720px, calc(100vw - 16px)); max-height: 70vh; overflow: auto; background: #121624; border: 1px solid #343b50; border-radius: 10px; box-shadow: 0 14px 40px rgba(0, 0, 0, .55); padding: 10px 14px; color: #e7e9f0; }
+        .sbp-h { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; } .sbp-h b { font-size: 15px; } .sbp-h small { color: #8b93a7; font-size: 12px; }
+        .sbp-h button { margin-left: auto; font: inherit; font-size: 20px; background: none; border: 0; color: #9aa2b5; cursor: pointer; }
+        .sbp-l { display: flex; flex-direction: column; gap: 2px; }
+        .sbp-l .sb-i { display: flex; align-items: baseline; gap: 8px; white-space: normal; font-size: 14px; font-weight: 700; line-height: 1.5; padding: 5px 4px; border-bottom: 1px solid #1d2230; }
+        .sbp-l .sb-i i { transform: translateY(-1px); }
+        .sbp-l em { font-style: normal; font-size: 11px; font-weight: 800; border: 1px solid currentColor; border-radius: 4px; padding: 0 4px; opacity: .85; flex: 0 0 auto; }
+        @media (max-width: 640px) { .us-tabbar .sz-brief, .kr-tabs .sz-brief { flex: 1 1 100%; order: 10; margin: 4px 0 0; height: 40px; flex-direction: column; align-items: stretch; justify-content: center; gap: 2px; cursor: pointer; } .sz-brief .sb-i { display: block; height: 18px; line-height: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .sz-brief .sb-i i { display: inline-block; margin-right: 5px; vertical-align: 1px; } .sz-brief .sb-i + .sb-i::before { display: none; } .us-tabbar .sz-brief .sb-more, .kr-tabs .sz-brief .sb-more { display: none; } .sz-ver { display: none; } }
     </style>
 </head>
 <body>
@@ -12292,7 +12354,8 @@
                 '<div class="wk-note">배터리 소모가 커서 충전 중 사용을 권장 · 다른 앱으로 가면 풀리고 돌아오면 다시 켜짐</div>';
             document.body.appendChild(창);
             var r = 단추.getBoundingClientRect();
-            창.style.top = (r.bottom + 6) + 'px';
+            // 단추가 화면 밖(스크롤로 위로 올라감)이면 화면 위쪽에 띄움
+            창.style.top = Math.max(8, Math.min(window.innerHeight - 260, r.bottom + 6)) + 'px';
             창.style.left = Math.max(8, Math.min(window.innerWidth - 236, r.right - 228)) + 'px';
             Array.prototype.forEach.call(창.querySelectorAll('button[data-m]'), function (b) { b.onclick = function () { var m = b.getAttribute('data-m'); 화면_설정(m === 'close' ? 'close' : Number(m)); 화면_창닫기(); }; });
         }
@@ -13259,7 +13322,7 @@
             if (cw && !document.getElementById('kr-view')) {
                 var v = document.createElement('div'); v.className = 'kr-view'; v.id = 'kr-view';
                 function 카드(id, 제목, 작은, 넓게) { return '<div class="kr-card' + (넓게 ? ' kr-wide' : '') + '"><h4><span id="' + id + '-h">' + 제목 + '</span> <small id="' + id + '-t">' + (작은 || '') + '</small></h4><div id="' + id + '"></div></div>'; }
-                v.innerHTML = '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<span class="kr-stat" id="kr-stat"></span></div>' +
+                v.innerHTML = '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<div class="sz-brief" id="kr-brief"></div><span class="kr-stat" id="kr-stat"></span><span class="sz-ver">판 2026.10.22</span></div>' +
                     '<div class="kr-two" id="kr-two">' +
                     '<div class="kr-pane" data-t="시장">' +
                         카드('kr-pj', '오늘 장 판정', '', 1) +
@@ -14049,7 +14112,7 @@
                 var 일 = b.getAttribute('data-a'), 곳 = b.getAttribute('data-k'), i = +b.getAttribute('data-i');
                 if (일 === 'new') 보유창열기(상태.모드 === 'us' ? 'us' : 'kr', -1);
                 else if (일 === 'edit') 보유창열기(곳, i);
-                else if (일 === 'cur') { 상태.보유.통화 = b.getAttribute('data-v'); 보유저장(); 보유(); }
+                else if (일 === 'cur') { 상태.보유.표기 = b.getAttribute('data-v'); 보유저장(); 보유(); }
                 else if (일 === 'hfs') { 보유글자 = Math.max(0, Math.min(4, 보유글자 + Number(b.getAttribute('data-v')))); 저장('sz_hold_fs', String(보유글자)); 보유다시(); }
             });
             el.addEventListener('change', function (e) {
@@ -14138,7 +14201,9 @@
             var 칸들 = 보유칸들(); if (!칸들.length) return;
             var 헤환 = typeof 시황_값 !== 'undefined' && 시황_값['neon-usdkrw'] && 시황_값['neon-usdkrw'].p > 500 ? 시황_값['neon-usdkrw'].p : null;
             var 국환 = 상태.live && 상태.live.환율 && 상태.live.환율.p > 0 ? 상태.live.환율.p : null;
-            var H = 상태.보유, 환 = 상태.모드 === 'us' && 헤환 ? 헤환 : (국환 || 헤환), 통 = H.통화 || '둘다';
+            var H = 상태.보유, 환 = 상태.모드 === 'us' && 헤환 ? 헤환 : (국환 || 헤환);
+            // 상세 표기: 원화 / 달러 (키움 해외주식 잔고의 "잔고 표기 외화·원화" 와 같은 방식) · 예전 값(둘다) → 원화
+            var 표기 = H.표기 === '달러' ? '달러' : '원화';
             var 국비 = H.비용 ? (H.국비 || 0) / 100 : 0, 미비 = H.비용 ? (H.미비 || 0) / 100 : 0;
             var 맵 = {}; ((상태.live && 상태.live.종목) || []).forEach(function (q) { 맵[q.c] = q; }); Object.keys(상태.보유시세).forEach(function (c) { if (!맵[c] || (상태.보유시세[c].p > 0 && 상태.보유시세[c].t >= (맵[c].t || ''))) 맵[c] = 상태.보유시세[c]; });
             var kr = (H.kr || []).map(function (x, i) {
@@ -14150,39 +14215,64 @@
             var us = (H.us || []).map(function (x, i) {
                 var q = 미실시간(x.t) || 상태.미시세[x.t], p = q && q.price > 0 ? q.price : null;
                 var 매 = x.가 * x.수, 평 = p ? p * x.수 * (1 - 미비) : null, 손 = 평 != null ? 평 - 매 : null, 오늘 = p && q.change != null ? q.change * x.수 : null;
-                var 매원 = x.환 > 0 ? 매 * x.환 : (환 ? 매 * 환 : null), 평원 = 평 != null && 환 ? 평 * 환 : null;
-                return { i: i, x: x, q: q, p: p, 매: 매, 평: 평, 손: 손, 률: 손 != null ? 손 / 매 * 100 : null, 오늘: 오늘, 매원: 매원, 평원: 평원, 손원: 매원 != null && 평원 != null ? 평원 - 매원 : null,
+                var 매환 = x.환 > 0 ? x.환 : 환, 매원 = 매환 ? 매 * 매환 : null, 평원 = 평 != null && 환 ? 평 * 환 : null;
+                return { i: i, x: x, q: q, p: p, 매: 매, 평: 평, 손: 손, 률: 손 != null ? 손 / 매 * 100 : null, 오늘: 오늘, 매환: 매환, 매원: 매원, 평원: 평원, 손원: 매원 != null && 평원 != null ? 평원 - 매원 : null,
                          환차: x.환 > 0 && 환 && 평 != null ? 평 * (환 - x.환) : null };
             });
             function 합계(목, 키) { var ok = 목.filter(function (r) { return r[키] != null; }); return ok.length ? 합(ok.map(function (r) { return r[키]; })) : null; }
             var k매 = 합계(kr, '매'), k평 = 합계(kr, '평'), k오 = 합계(kr, '오늘'), u매 = 합계(us, '매'), u평 = 합계(us, '평'), u오 = 합계(us, '오늘'), u매원 = 합계(us, '매원'), u평원 = 합계(us, '평원'), u환차 = 합계(us, '환차');
-            var k손 = k평 != null && k매 != null ? k평 - k매 : null;
-            var 전매 = (k매 || 0) + (u매원 || 0), 전평 = (k평 || 0) + (u평원 || 0), 전손 = 전평 - 전매, 전오 = (k오 || 0) + (u오 != null && 환 ? u오 * 환 : 0);
-            function 칸(제목, 값, 클, 작, 작클) { return '<div class="kr-hs"><span>' + 제목 + '</span><b class="' + (클 || '') + '">' + 값 + '</b>' + (작 ? '<small class="' + (작클 != null ? 작클 : 클 || '') + '">' + 작 + '</small>' : '') + '</div>'; }
-            var h = '<div class="kr-hbar"><button type="button" class="kr-hnew" data-a="new">+ 종목 추가</button><span class="kr-nfs kr-hfs">글자 <button type="button" data-a="hfs" data-v="-1">가−</button><b>' + ['작게', '보통', '크게', '더 크게', '아주 크게'][보유글자] + '</b><button type="button" data-a="hfs" data-v="1">가+</button></span><span class="kr-seg">' + [['둘다', '원화+달러'], ['달러', '달러'], ['원화', '원화']].map(function (o) { return '<button type="button" data-a="cur" data-v="' + o[0] + '" class="' + (통 === o[0] ? 'on' : '') + '">' + o[1] + '</button>'; }).join('') + '</span>' +
+            var k손 = k평 != null && k매 != null ? k평 - k매 : null, u손 = u평 != null && u매 != null ? u평 - u매 : null, u손원 = u평원 != null && u매원 != null ? u평원 - u매원 : null;
+            var 양 = u손원 != null && u손원 > 2500000 ? (u손원 - 2500000) * 0.22 : 0;
+            function 달2(v, 부) { return 달(v, 부); }
+            function 줄(표, 셀들) { return '<div class="hs-row"><span class="hs-lb">' + 표 + '</span>' + 셀들.map(function (c) { if (!c[0]) return '<div class="hs-c hs-blank"></div>'; return '<div class="hs-c"><span>' + c[0] + '</span><b class="' + (c[2] || '') + '">' + c[1] + '</b>' + (c[3] ? '<small class="' + (c[2] || '') + '">' + c[3] + '</small>' : '') + '</div>'; }).join('') + '</div>'; }
+            function 손셀(제목, v, 기준, 돈) { return [제목, 돈(v, 1), 쪽(v), 기준 ? 퍼(v / 기준 * 100) : '']; }
+            var h = '<div class="kr-hbar"><button type="button" class="kr-hnew" data-a="new">+ 종목 추가</button>' +
+                    '<span class="kr-nfs kr-hfs">글자 <button type="button" data-a="hfs" data-v="-1">가−</button><b>' + ['작게', '보통', '크게', '더 크게', '아주 크게'][보유글자] + '</b><button type="button" data-a="hfs" data-v="1">가+</button></span>' +
+                    '<span class="hs-pick">상세 표기 <span class="kr-seg">' + ['원화', '달러'].map(function (o) { return '<button type="button" data-a="cur" data-v="' + o + '" class="' + (표기 === o ? 'on' : '') + '">' + o + '</button>'; }).join('') + '</span></span>' +
                     '<label><input type="checkbox" data-o="비용"' + (H.비용 ? ' checked' : '') + '> 매도 비용 반영</label>' +
                     (H.비용 ? '<label>국내 <input type="number" step="0.01" data-o="국비" value="' + (H.국비 || 0) + '">%</label><label>미국 <input type="number" step="0.01" data-o="미비" value="' + (H.미비 || 0) + '">%</label>' : '') +
-                    '<span class="kr-0">원/달러 ' + (환 ? 콤(환, 2) : '─') + '</span></div>';
+                    '<span class="kr-0">원/달러 <b>' + (환 ? 콤(환, 2) : '─') + '</b></span></div>';
             if (!kr.length && !us.length) h += '<div class="kr-empty">[+ 종목 추가]로 보유 종목을 넣으면 현재 시세로 손익이 계산됩니다</div>';
+            // ── 전체 (국내 + 미국): 같은 결과를 윗줄 원화 · 아랫줄 달러로 ──
+            if (kr.length && us.length && 환) {
+                var 전매 = (k매 || 0) + (u매원 || 0), 전평 = (k평 || 0) + (u평원 || 0), 전손 = 전평 - 전매, 전오 = (k오 || 0) + (u오 != null ? u오 * 환 : 0);
+                h += '<section class="kr-hbox kr-hbox-all"><h5>전체 <small>국내 + 미국 · 위 = 원화 · 아래 = 달러 환산 (원/달러 ' + 콤(환, 2) + ')</small></h5><div class="hs-tbl">' +
+                     줄('원화', [['총매입', 원(전매)], ['총평가', 원(전평)], ['총손익', 원(전손, 1), 쪽(전손)], ['총수익률', 퍼(전매 ? 전손 / 전매 * 100 : null), 쪽(전손)], 손셀('오늘 손익', 전오, 전평 - 전오, 원)]) +
+                     줄('달러', [['총매입', 달2(전매 / 환)], ['총평가', 달2(전평 / 환)], ['총손익', 달2(전손 / 환, 1), 쪽(전손 / 환)], ['총수익률', 퍼(전매 ? 전손 / 전매 * 100 : null), 쪽(전손)], 손셀('오늘 손익', 전오 / 환, (전평 - 전오) / 환, 달2)]) + '</div></section>';
+            }
             function 단추(곳, i) { return '<td class="act"><button type="button" data-a="edit" data-k="' + 곳 + '" data-i="' + i + '">수정</button></td>'; }
-            if (kr.length) h += '<section class="kr-hbox kr-hbox-kr"><h5>국내 주식 <small>' + kr.length + '종목</small></h5>' +
-                '<div class="kr-hsum">' + 칸('매수금', 원(k매)) + 칸('평가금', 원(k평)) + 칸('손익', 원(k손, 1), 쪽(k손), 퍼(k매 ? k손 / k매 * 100 : null)) + 칸('오늘 손익', 원(k오, 1), 쪽(k오), k평 && k오 != null ? 퍼(k오 / (k평 - k오) * 100) : '') + '</div>' +
-                '<div class="kr-hwrap"><table class="kr-tbl kr-htbl"><thead><tr><th class="l">종목</th><th>수량</th><th>매수가</th><th>현재가</th><th class="c-hm">매수금</th><th class="c-hm">평가금</th><th>손익</th><th>수익률</th><th class="c-hw">비중</th><th class="c-hw">오늘 손익</th><th></th></tr></thead><tbody>' +
-                kr.map(function (r) { return '<tr><td class="l nm"><b>' + esc(r.x.n || (r.q ? r.q.n : '') || '이름 확인 중') + '</b><small>' + r.x.c + '</small></td><td>' + 콤(r.x.수) + '</td><td>' + 콤(r.x.가) + '</td><td class="' + 쪽(r.q && r.q.r) + '">' + (r.p ? 콤(r.p) + '<small> ' + 퍼(r.q.r) + '</small>' : '─') + '</td><td class="c-hm">' + 콤(r.매) + '</td><td class="c-hm">' + 콤(r.평) + '</td><td class="' + 쪽(r.손) + '"><b>' + (r.손 != null ? (r.손 > 0 ? '+' : '') + 콤(r.손) : '─') + '</b></td><td class="' + 쪽(r.률) + '"><b>' + 퍼(r.률) + '</b></td><td class="c-hw">' + (k평 > 0 && r.평 != null ? (r.평 / k평 * 100).toFixed(1) + '%' : '─') + '</td><td class="c-hw ' + 쪽(r.오늘) + '">' + (r.오늘 != null ? (r.오늘 > 0 ? '+' : '') + 콤(r.오늘) : '─') + '</td>' + 단추('kr', r.i) + '</tr>'; }).join('') + '</tbody></table></div></section>';
-            var 달러 = 통 !== '원화', 원화 = 통 !== '달러';
-            function 둘(d, w, 부) { return (달러 ? 달(d, 부) : '') + (달러 && 원화 ? '<small class="w">' + 원(w, 부) + '</small>' : 원화 ? 원(w, 부) : ''); }
-            var u손 = u평 != null && u매 != null ? u평 - u매 : null, u손원 = u평원 != null && u매원 != null ? u평원 - u매원 : null;
-            var 양 = u손원 != null && u손원 > 2500000 ? (u손원 - 2500000) * 0.22 : 0;
-            if (us.length) h += '<section class="kr-hbox kr-hbox-us"><h5>미국 주식 <small>' + us.length + '종목</small></h5>' +
-                '<div class="kr-hsum">' + 칸('매수금', 둘(u매, u매원)) + 칸('평가금', 둘(u평, u평원)) +
-                    칸('손익 (달러)', 달(u손, 1), 쪽(u손), 퍼(u매 ? u손 / u매 * 100 : null)) +
-                    칸('손익 (원화)', 원(u손원, 1), 쪽(u손원), 퍼(u매원 ? u손원 / u매원 * 100 : null) + (u환차 != null ? ' · 환차 ' + 원(u환차, 1) : '')) +
-                    칸('오늘 손익', 둘(u오, u오 != null && 환 ? u오 * 환 : null, 1), 쪽(u오), u평 && u오 != null ? 퍼(u오 / (u평 - u오) * 100) : '') + '</div>' +
-                (H.비용 && 양 > 0 ? '<div class="kr-sub">양도세 예상 ' + 원(양) + ' (250만 공제 · 22%) → 세후 ' + 원(u손원 - 양, 1) + '</div>' : '') +
-                '<div class="kr-hwrap"><table class="kr-tbl kr-htbl"><thead><tr><th class="l">종목</th><th>수량</th><th>매수가</th><th>현재가</th><th class="c-hm">매수금</th><th class="c-hm">평가금</th><th>손익</th><th>수익률</th><th class="c-hw" title="매수 환율을 넣은 종목만 · 환율 변화로 생긴 손익">환차손익</th><th class="c-hw">오늘 손익</th><th></th></tr></thead><tbody>' +
-                us.map(function (r) { var ch = r.q ? r.q.changePct : null; return '<tr><td class="l nm"><b>' + esc(r.x.t) + '</b>' + (r.x.환 ? '<small>매수 환율 ' + 콤(r.x.환, 1) + '</small>' : '') + '</td><td>' + 콤(r.x.수, r.x.수 % 1 ? 4 : 0) + '</td><td>' + 달(r.x.가) + '</td><td class="' + 쪽(ch) + '">' + (r.p ? 달(r.p) + '<small> ' + 퍼(ch) + '</small>' : '─') + '</td><td class="c-hm">' + 둘(r.매, r.매원) + '</td><td class="c-hm">' + 둘(r.평, r.평원) + '</td><td class="' + 쪽(r.손) + '"><b>' + 둘(r.손, r.손원, 1) + '</b></td><td class="' + 쪽(r.률) + '"><b>' + 퍼(r.률) + '</b>' + (r.손원 != null && r.매원 ? '<small class="w">원화 ' + 퍼(r.손원 / r.매원 * 100) + '</small>' : '') + '</td><td class="c-hw ' + 쪽(r.환차) + '">' + (r.환차 != null ? 원(r.환차, 1) : '─') + '</td><td class="c-hw ' + 쪽(r.오늘) + '">' + (r.오늘 != null ? 둘(r.오늘, 환 ? r.오늘 * 환 : null, 1) : '─') + '</td>' + 단추('us', r.i) + '</tr>'; }).join('') + '</tbody></table></div></section>';
-            if (kr.length && us.length) h += '<div class="kr-htot">합계 (원화) · 매수 ' + 원(전매) + ' → 평가 ' + 원(전평) + ' · 손익 <b class="' + 쪽(전손) + '">' + 원(전손, 1) + ' (' + 퍼(전매 > 0 ? 전손 / 전매 * 100 : null) + ')</b> · 오늘 <b class="' + 쪽(전오) + '">' + 원(전오, 1) + '</b></div>';
-            h += '<div class="kr-sub">이 기기(브라우저)에만 저장됩니다 · 국내 시세 장중 3초마다 · 미국 시세 실시간 (관심 종목에 없는 종목은 15초마다) · 원화 환산은 실시간 원/달러 · 양도세는 미국 주식 손익 합계로 단순 계산한 예상치</div>';
+            function 수(v) { return v == null ? '─' : (v > 0 ? '+' : '') + 콤(v); }
+            // ── 국내 ──
+            if (kr.length) h += '<section class="kr-hbox kr-hbox-kr"><h5>국내 주식 <small>' + kr.length + '종목 · 원화</small></h5><div class="hs-tbl">' +
+                줄('원화', [['총매입', 원(k매)], ['총평가', 원(k평)], ['총손익', 원(k손, 1), 쪽(k손)], ['총수익률', 퍼(k매 ? k손 / k매 * 100 : null), 쪽(k손)], 손셀('오늘 손익', k오, k평 - k오, 원)]) + '</div>' +
+                '<div class="kr-hwrap"><table class="kr-tbl kr-htbl"><thead><tr class="hg"><th class="l"></th><th colspan="3" class="g-buy">매수</th><th colspan="2" class="g-ev">평가</th><th colspan="3" class="g-pl">손익</th><th class="c-hw"></th><th></th></tr>' +
+                '<tr><th class="l">종목</th><th class="g-buy">수량</th><th>매입가</th><th class="c-hm">매입금액</th><th class="g-ev">현재가</th><th class="c-hm">평가금액</th><th class="g-pl">평가손익</th><th class="g-plc">수익률</th><th class="g-plc c-hw">오늘 손익</th><th class="c-hw g-etc">비중</th><th></th></tr></thead><tbody>' +
+                kr.map(function (r) { return '<tr><td class="l nm"><b>' + esc(r.x.n || (r.q ? r.q.n : '') || '이름 확인 중') + '</b><small>' + r.x.c + '</small></td><td class="g-buy">' + 콤(r.x.수) + '</td><td>' + 콤(r.x.가) + '</td><td class="c-hm">' + 콤(r.매) + '</td>' +
+                    '<td class="g-ev ' + 쪽(r.q && r.q.r) + '">' + (r.p ? 콤(r.p) + '<small> ' + 퍼(r.q.r) + '</small>' : '─') + '</td><td class="c-hm">' + 콤(r.평) + '</td>' +
+                    '<td class="g-pl ' + 쪽(r.손) + '"><b>' + 수(r.손) + '</b></td><td class="g-plc ' + 쪽(r.률) + '"><b>' + 퍼(r.률) + '</b></td><td class="g-plc c-hw ' + 쪽(r.오늘) + '">' + 수(r.오늘) + '</td>' +
+                    '<td class="c-hw g-etc">' + (k평 > 0 && r.평 != null ? (r.평 / k평 * 100).toFixed(1) + '%' : '─') + '</td>' + 단추('kr', r.i) + '</tr>'; }).join('') + '</tbody></table></div></section>';
+            // ── 미국: 요약 2줄 (원화 · 달러) + 상세 표 (고른 통화 하나로) ──
+            if (us.length) {
+                var 원줄 = 환 ? 줄('원화', [['총매입', 원(u매원)], ['총평가', 원(u평원)], ['총손익', 원(u손원, 1), 쪽(u손원)], ['총수익률', 퍼(u매원 ? u손원 / u매원 * 100 : null), 쪽(u손원)], ['환차손익', 원(u환차, 1), 쪽(u환차), u환차 == null ? '매수 환율을 넣은 종목만' : '환율 변화로 생긴 손익'], 손셀('오늘 손익', u오 != null ? u오 * 환 : null, u평 != null && u오 != null ? (u평 - u오) * 환 : null, 원)]) : '';
+                var 달줄 = 줄('달러', [['총매입', 달2(u매)], ['총평가', 달2(u평)], ['총손익', 달2(u손, 1), 쪽(u손)], ['총수익률', 퍼(u매 ? u손 / u매 * 100 : null), 쪽(u손)], ['', '', '', ''], 손셀('오늘 손익', u오, u평 != null && u오 != null ? u평 - u오 : null, 달2)]);
+                h += '<section class="kr-hbox kr-hbox-us"><h5>미국 주식 <small>' + us.length + '종목 · 위 = 원화 · 아래 = 달러 · 상세 표는 ' + 표기 + '</small></h5><div class="hs-tbl hs-6">' + 원줄 + 달줄 + '</div>' +
+                    (H.비용 && 양 > 0 ? '<div class="kr-sub">양도세 예상 ' + 원(양) + ' (250만 공제 · 22%) → 세후 ' + 원(u손원 - 양, 1) + '</div>' : '');
+                if (표기 === '달러') {
+                    h += '<div class="kr-hwrap"><table class="kr-tbl kr-htbl"><thead><tr class="hg"><th class="l"></th><th colspan="3" class="g-buy">매수 (달러)</th><th colspan="2" class="g-ev">평가 (달러)</th><th colspan="3" class="g-pl">손익 (달러)</th><th></th></tr>' +
+                        '<tr><th class="l">종목</th><th class="g-buy">수량</th><th>매입가</th><th class="c-hm">매입금액</th><th class="g-ev">현재가</th><th class="c-hm">평가금액</th><th class="g-pl">평가손익</th><th class="g-plc">수익률</th><th class="g-plc c-hw">오늘 손익</th><th></th></tr></thead><tbody>' +
+                        us.map(function (r) { var ch = r.q ? r.q.changePct : null; return '<tr><td class="l nm"><b>' + esc(r.x.t) + '</b><small>' + esc(미이름(r.x.t)).slice(0, 14) + '</small></td><td class="g-buy">' + 콤(r.x.수, r.x.수 % 1 ? 4 : 0) + '</td><td>' + 달(r.x.가) + '</td><td class="c-hm">' + 달(r.매) + '</td>' +
+                            '<td class="g-ev ' + 쪽(ch) + '">' + (r.p ? 달(r.p) + '<small> ' + 퍼(ch) + '</small>' : '─') + '</td><td class="c-hm">' + 달(r.평) + '</td>' +
+                            '<td class="g-pl ' + 쪽(r.손) + '"><b>' + 달(r.손, 1) + '</b></td><td class="g-plc ' + 쪽(r.률) + '"><b>' + 퍼(r.률) + '</b></td><td class="g-plc c-hw ' + 쪽(r.오늘) + '">' + 달(r.오늘, 1) + '</td>' + 단추('us', r.i) + '</tr>'; }).join('') + '</tbody></table></div>';
+                } else {
+                    h += '<div class="kr-hwrap"><table class="kr-tbl kr-htbl"><thead><tr class="hg"><th class="l"></th><th colspan="3" class="g-buy">매수 (원화)</th><th colspan="2" class="g-ev">평가 (원화)</th><th colspan="4" class="g-pl">손익 (원화)</th><th></th></tr>' +
+                        '<tr><th class="l">종목</th><th class="g-buy">수량</th><th title="매수 때 넣은 환율 (없으면 지금 환율)">매입 환율</th><th class="c-hm">매입금액</th><th class="g-ev">현재가</th><th class="c-hm">평가금액</th><th class="g-pl">평가손익</th><th class="g-plc">수익률</th><th class="g-plc c-hw" title="매수 환율을 넣은 종목만 · 환율 변화로 생긴 손익">환차손익</th><th class="g-plc c-hw">오늘 손익</th><th></th></tr></thead><tbody>' +
+                        us.map(function (r) { var ch = r.q ? r.q.changePct : null; return '<tr><td class="l nm"><b>' + esc(r.x.t) + '</b><small>' + esc(미이름(r.x.t)).slice(0, 14) + '</small></td><td class="g-buy">' + 콤(r.x.수, r.x.수 % 1 ? 4 : 0) + '</td><td>' + (r.매환 ? 콤(r.매환, 1) + (r.x.환 > 0 ? '' : '<small> 지금</small>') : '─') + '</td><td class="c-hm">' + 원(r.매원) + '</td>' +
+                            '<td class="g-ev ' + 쪽(ch) + '">' + (r.p && 환 ? 원(r.p * 환) + '<small> ' + 달(r.p) + ' ' + 퍼(ch) + '</small>' : '─') + '</td><td class="c-hm">' + 원(r.평원) + '</td>' +
+                            '<td class="g-pl ' + 쪽(r.손원) + '"><b>' + 원(r.손원, 1) + '</b></td><td class="g-plc ' + 쪽(r.손원) + '"><b>' + 퍼(r.손원 != null && r.매원 ? r.손원 / r.매원 * 100 : null) + '</b></td><td class="g-plc c-hw ' + 쪽(r.환차) + '">' + (r.환차 != null ? 원(r.환차, 1) : '─') + '</td><td class="g-plc c-hw ' + 쪽(r.오늘) + '">' + (r.오늘 != null && 환 ? 원(r.오늘 * 환, 1) : '─') + '</td>' + 단추('us', r.i) + '</tr>'; }).join('') + '</tbody></table></div>';
+                }
+                h += '</section>';
+            }
+            h += '<div class="kr-sub">이 기기(브라우저)에만 저장됩니다 · 국내 시세 장중 3초마다 · 미국 시세 실시간 (관심 종목에 없는 종목은 15초마다) · 원화 환산은 실시간 원/달러 · 매도 비용 반영 시 평가금에서 비용을 뺌 · 양도세는 미국 주식 손익 합계로 단순 계산한 예상치</div>';
             칸들.forEach(function (el) {
                 el.style.setProperty('--hf', 보유글자단계[보유글자]);
                 var 활 = el.ownerDocument.activeElement, 입력중 = 활 && el.contains(활) && 활.tagName === 'INPUT' && 활.type !== 'checkbox';
@@ -14204,6 +14294,7 @@
             if (상태.모드 === 'kr') { 지금받기(true); 구독(true); 일별받기(false); 탭자료(); }
             시작타이머();
             try { 미시작(); } catch (e) { console.warn('[미장 탭]', e); }
+            setTimeout(function () { try { 한줄그리기(); } catch (e) { } }, 1500);
             document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && 상태.모드 === 'kr') { 지금받기(false); 탭자료(); } });
         }
         // ════════════════════════════════════════════════════════
@@ -14268,10 +14359,15 @@
         function 미만들기() {
             var cw = document.querySelector('.content-wrapper'); if (!cw || document.getElementById('us-tabbar')) return;
             var bar = document.createElement('div'); bar.className = 'us-tabbar'; bar.id = 'us-tabbar';
-            bar.innerHTML = 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + t + '</button>'; }).join('') + '<span class="us-stat" id="us-stat"></span>';
+            bar.innerHTML = 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + t + '</button>'; }).join('') + (격 ? '' : '<div class="sz-brief" id="us-brief"></div>') + '<span class="us-stat" id="us-stat"></span><span class="sz-ver" title="대시보드 파일 판 (윈폼 · 브라우저가 같은 파일인지 확인용)">판 2026.10.22</span>';
             // 대시보드2: 차트 자리를 줄이지 않도록 위 시황 줄(미장/국장 단추 옆)에 작게 2줄 / 대시보드1: 차트 위 한 줄
             var tb = document.querySelector('.top-bar'), sw = document.getElementById('mkt-sw');
-            if (격 && tb && sw && sw.parentNode === tb) tb.insertBefore(bar, sw.nextSibling);
+            if (격 && tb && sw && sw.parentNode === tb) {
+                tb.insertBefore(bar, sw.nextSibling);
+                // 대시보드2: 시황 평가는 오른쪽 관심 종목 칸 맨 위 작은 상자 (차트 자리를 줄이지 않게)
+                var 한 = document.createElement('div'); 한.className = 'sz-brief sz-brief-g'; 한.id = 'us-brief';
+                var 옆 = cw.querySelector('.sidebar'); if (옆) 옆.insertBefore(한, 옆.firstChild);
+            }
             else cw.parentNode.insertBefore(bar, cw);
             var v = document.createElement('div'); v.className = 'us-view'; v.id = 'us-view';
             function 카드(id, 제목, 작은, 넓게) { return '<div class="kr-card' + (넓게 ? ' kr-wide' : '') + '"><h4><span id="' + id + '-h">' + 제목 + '</span> <small id="' + id + '-t">' + (작은 || '') + '</small></h4><div id="' + id + '"></div></div>'; }
@@ -14693,6 +14789,25 @@
             function 합() { var v = 곱(); while (토[i] === '+' || 토[i] === '-') { var o = 토[i++], w = 곱(); v = o === '+' ? v + w : v - w; } return v; }
             var r = 합(); if (i < 토.length || !isFinite(r)) throw new Error('식'); return r;
         }
+        // 원화 금액 한글 읽기: 13,500,000 → 1천3백5십만원 · 1,234,567,890 → 12억 3천4백5십6만 7천8백9십원 (숫자를 잘못 넣는 실수 막기)
+        function 한글금액(v) {
+            if (v == null || !isFinite(v)) return '';
+            var n = Math.round(Math.abs(v)); if (n === 0) return '0원';
+            var 단 = ['', '만', '억', '조'], 부 = [], i = 0;
+            while (n > 0 && i < 4) { var g = n % 10000; n = Math.floor(n / 10000); if (g) { var d = [Math.floor(g / 1000), Math.floor(g / 100) % 10, Math.floor(g / 10) % 10, g % 10]; 부.unshift((d[0] ? d[0] + '천' : '') + (d[1] ? d[1] + '백' : '') + (d[2] ? d[2] + '십' : '') + (d[3] ? d[3] : '') + 단[i]); } i++; }
+            return (v < 0 ? '-' : '') + 부.join(' ') + '원';
+        }
+        // 세 자리 쉼표 (입력 칸 · 계산기 화면)
+        function 쉼표글(글) { return String(글).replace(/\d+(\.\d+)?/g, function (m) { var p = m.split('.'); return p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',') + (p.length > 1 ? '.' + p[1] : ''); }); }
+        function 쉼표입력(i) {
+            var v = i.value, 끝 = i.selectionStart == null ? v.length : i.selectionStart, 앞 = v.slice(0, 끝).replace(/[^0-9.\-]/g, '').length;
+            var 깨 = v.replace(/[^0-9.\-]/g, ''), 부 = 깨.split('.'), 정 = 부[0].replace(/(?!^)-/g, '');
+            var 새 = 정.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + (부.length > 1 ? '.' + 부.slice(1).join('') : '');
+            if (새 === v) return;
+            i.value = 새; var n = 0, pos = 0; while (pos < 새.length && n < 앞) { if (/[0-9.\-]/.test(새[pos])) n++; pos++; }
+            try { i.setSelectionRange(pos, pos); } catch (e) { }
+        }
+        var 계원칸 = { us: ['c1amt'], kr: ['c1amt', 'p', 'c2bp', 'c2sp', 'c3op', 'c3np', 'c3ta', 'c3tb', 'c4bp', 'c4sp'] };   // 아래에 한글 금액을 보여 줄 원화 입력 칸
         function 계값(S, k, 기본) { var v = parseFloat(String(S[k] == null ? '' : S[k]).replace(/[,\s$원₩]/g, '')); return isFinite(v) ? v : 기본; }
         function 계산기(m) {
             var el = 찾기(m + '-calc'); if (!el) return;
@@ -14703,7 +14818,7 @@
         }
         function 계만들기(el, m, 목) {
             var S = 계상태(m), 미 = m === 'us', 단 = 미 ? '$' : '원';
-            function 칸(k, 제목, 힌트, 따라) { return '<label class="cz-f"><span>' + 제목 + '</span><span class="cz-in"><input data-k="' + k + '" inputmode="decimal" autocomplete="off" placeholder="' + (힌트 || '') + '">' + (따라 ? '<button type="button" data-a="live" data-k="' + k + '" title="현재가(실시간)로 되돌림">' + (k === 'fx' ? '실시간' : '현재가') + '</button>' : '') + '</span></label>'; }
+            function 칸(k, 제목, 힌트, 따라) { return '<label class="cz-f"><span>' + 제목 + '</span>' + (계원칸[m].indexOf(k) >= 0 ? '<small class="cz-han" data-han="' + k + '"></small>' : '') + '<span class="cz-in"><input data-k="' + k + '" inputmode="decimal" autocomplete="off" placeholder="' + (힌트 || '') + '">' + (따라 ? '<button type="button" data-a="live" data-k="' + k + '" title="현재가(실시간)로 되돌림">' + (k === 'fx' ? '실시간' : '현재가') + '</button>' : '') + '</span></label>'; }
             function 결(r, 제목, 큰) { return '<div class="cz-r' + (큰 ? ' big' : '') + '"><span>' + 제목 + '</span><b data-r="' + r + '">─</b><small data-r="' + r + 's"></small></div>'; }
             var h = '<div class="cz-top">' +
                 '<label class="cz-f cz-t"><span>종목</span><select data-k="t">' + 목.map(function (x) { return '<option value="' + esc(x[0]) + '">' + esc(x[1]) + '</option>'; }).join('') + '</select></label>' +
@@ -14738,7 +14853,8 @@
             var sel = el.querySelector('select[data-k="t"]'); sel.value = S.t;
             if (el._이벤트) return; el._이벤트 = 1;
             el.addEventListener('input', function (e) {
-                var i = e.target, k = i.getAttribute('data-k'), S2 = 계상태(el._m); if (!k || k === 'pct' || k === 't') return;
+                var i = e.target, k = i.getAttribute('data-k'), S2 = 계상태(el._m); if (!k || k === 't') return;
+                쉼표입력(i); if (k === 'pct') return;
                 S2[k] = i.value; if (계따라감.indexOf(k) >= 0) S2.고정[k] = i.value !== ''; 계저장(el._m); 계산기갱신(el._m);
             });
             el.addEventListener('change', function (e) {
@@ -14771,7 +14887,7 @@
                     else { S2.식 += (S2.닫음 && S2.화면 === '0' ? '' : S2.화면 + ' ') + key + ' '; S2.화면 = '0'; S2.닫음 = false; }
                 }
                 else return;
-                if (화) 화.textContent = S2.화면; if (식칸) 식칸.textContent = S2.식 || S2.위 || '';
+                if (화) 화.textContent = 쉼표글(S2.화면); if (식칸) 식칸.textContent = 쉼표글(S2.식 || S2.위 || '');
                 계저장(mm);
             });
         }
@@ -14781,10 +14897,10 @@
             var p = S.고정.p ? 계값(S, 'p', 0) : (현 ? 현.p : 계값(S, 'p', 0)), fx = 미 ? (S.고정.fx ? 계값(S, 'fx', 0) : (환실 || 계값(S, 'fx', 0))) : 1;
             var f = 계값(S, 'fee', 0) / 100, tx = 미 ? 0 : 계값(S, 'tax', 0) / 100;
             // 따라가는 칸: 고정이 아니면 현재가(환율) 표시 (입력 중인 칸은 건드리지 않음)
-            function 보여(k, v) { var i = el.querySelector('input[data-k="' + k + '"]'); if (i && i.ownerDocument.activeElement !== i && !S.고정[k]) i.value = v > 0 ? +(+v).toFixed(미 ? 2 : 0) : ''; if (i) i.classList.toggle('fixed', !!S.고정[k]); }
+            function 보여(k, v) { var i = el.querySelector('input[data-k="' + k + '"]'); if (i && i.ownerDocument.activeElement !== i && !S.고정[k]) i.value = v > 0 ? 콤(+v, 미 && k !== 'fx' ? 2 : k === 'fx' ? 2 : 0) : ''; if (i) i.classList.toggle('fixed', !!S.고정[k]); }
             보여('p', p); if (미) 보여('fx', fx);
             ['c2sp', 'c3np', 'c4bp', 'c4sp'].forEach(function (k) { 보여(k, p); });
-            function 기본(k, v) { var i = el.querySelector('input[data-k="' + k + '"]'); if (i) i.placeholder = v > 0 ? String(+(+v).toFixed(미 ? 2 : 0)) + (보 && (k === 'c2bp' || k === 'c3op' || k === 'c2q' || k === 'c3oq') ? ' (보유)' : '') : ''; }
+            function 기본(k, v) { var i = el.querySelector('input[data-k="' + k + '"]'); if (i) i.placeholder = v > 0 ? 콤(+v, 미 && k !== 'c2q' && k !== 'c3oq' ? 2 : 0) + (보 && (k === 'c2bp' || k === 'c3op' || k === 'c2q' || k === 'c3oq') ? ' (보유)' : '') : ''; }
             var 보가 = 보 ? 보.가 : p, 보수 = 보 ? 보.수 : 0;
             기본('c2bp', 보가); 기본('c2q', 보수 || 10); 기본('c3op', 보가); 기본('c3oq', 보수 || 10); 기본('c3ta', 보가 && p ? (보가 + p) / 2 : 0); 기본('c3tb', p);
             var 소 = el.querySelector('[data-r="src"]');
@@ -14796,7 +14912,19 @@
             if (a1) a1.closest('label').style.display = S.c1모드 === 'amt' ? '' : 'none'; if (s1) s1.closest('label').style.display = S.c1모드 === 'sh' ? '' : 'none';
             function 돈(v, 부) { if (v == null || !isFinite(v)) return '─'; return 미 ? (부 && v > 0 ? '+' : v < 0 ? '-' : '') + '$' + 콤(Math.abs(v), 2) : 원(v, 부); }
             function 원화(v, 부) { return v == null || !isFinite(v) ? '' : 원(v, 부); }
-            function 넣(r, v, 작, 클) { var b = el.querySelector('[data-r="' + r + '"]'), s2 = el.querySelector('[data-r="' + r + 's"]'); if (b) { b.textContent = v; b.className = 클 || ''; } if (s2) s2.textContent = 작 || ''; }
+            function 원읽기(글) { var m2 = /^([+-]?)([\d,]+)원$/.exec(String(글 || '').trim()); return m2 ? 한글금액((m2[1] === '-' ? -1 : 1) * +m2[2].replace(/,/g, '')) : ''; }
+            function 넣(r, v, 작, 클) {
+                var b = el.querySelector('[data-r="' + r + '"]'), s2 = el.querySelector('[data-r="' + r + 's"]');
+                var 한 = 원읽기(v), 작한 = 작 ? 원읽기(String(작).split(' · ').pop()) : '';
+                if (b) { b.textContent = v; b.className = 클 || ''; }
+                if (s2) s2.textContent = [작 || '', 한 ? '= ' + 한 : '', 작한 && !한 ? '(' + 작한 + ')' : ''].filter(Boolean).join(' ');
+            }
+            // 원화 입력 칸 아래 한글 금액 (넣은 값 · 없으면 기본값)
+            (계원칸[m] || []).forEach(function (k) {
+                var i = el.querySelector('input[data-k="' + k + '"]'), t = el.querySelector('[data-han="' + k + '"]'); if (!i || !t) return;
+                var v = parseFloat(String(i.value || '').replace(/[^0-9.\-]/g, '')); if (!isFinite(v)) v = parseFloat(String(i.placeholder || '').replace(/[^0-9.\-]/g, ''));
+                var 글 = isFinite(v) && v > 0 ? 한글금액(v) : ''; if (t.textContent !== 글) { t.textContent = 글; t.classList.toggle('big', v >= 1e8); }
+            });
             var 단가 = function (v) { return 미 ? 미달(v) : 콤(v) + '원'; };
             var 올림가 = function (v) { return 단가(미 ? Math.ceil(v * 100 - 1e-9) / 100 : Math.ceil(v - 1e-9)); };   // 팔아야 할 가격은 올림 (이 가격 이상)
             // ① 매수 비중
@@ -14832,7 +14960,7 @@
                 var 투4 = b4 * q4, 순4 = s4 * q4 - 투4 - 투4 * f - s4 * q4 * (f + tx); 넣('c4net', 돈(순4, 1), 미 && fx > 0 ? 원화(순4 * fx, 1) : '', 쪽(순4)); 넣('c4mg', 퍼(투4 > 0 ? 순4 / 투4 * 100 : null), '', 쪽(순4));
                 넣('c4tgt', 올림가(b4 * (1 + tp + f) / (1 - f - tx)), '수익률 ' + 퍼(tp * 100) + ' (비용 뺀 뒤)', 'cz-b');
             }
-            var 화 = el.querySelector('[data-r="dp"]'), 식칸 = el.querySelector('[data-r="ex"]'); if (화) 화.textContent = S.화면 || '0'; if (식칸) 식칸.textContent = S.식 || S.위 || '';
+            var 화 = el.querySelector('[data-r="dp"]'), 식칸 = el.querySelector('[data-r="ex"]'); if (화) 화.textContent = 쉼표글(S.화면 || '0'); if (식칸) 식칸.textContent = 쉼표글(S.식 || S.위 || '');
         }
         // ════════════════════════════════════════════════════════
         // ★ 따로 뜨는 창: 보유현황 · 계산기 (탭을 누르면 화면 위에 창으로 뜸 · 차트는 그대로 보임)
@@ -14880,12 +15008,14 @@
             w.addEventListener('click', function (e) {
                 var b = e.target.closest('button'); if (!b) return;
                 if (b.getAttribute('data-wa') === 'close') { 창닫기(이름); return; }
-                if (b.getAttribute('data-wa') === 'out') { 밖으로(이름); return; }
-                if (b.getAttribute('data-wa') === 'in') { 안으로(이름); return; }
+                if (b.getAttribute('data-wa') === 'out') { 저장('sz_win_out', '1'); 밖으로(이름); return; }
+                if (b.getAttribute('data-wa') === 'in') { 저장('sz_win_out', '0'); 안으로(이름); return; }
                 if (b.hasAttribute('data-wm')) { w._m = b.getAttribute('data-wm'); 저장('sz_win_calc_m', w._m); 창내용(이름); }
             });
             if (이름 === '보유') 보유이벤트(w.querySelector('#sz-hold'));
             창내용(이름);
+            // PC: 탭을 누르면 바로 밖으로 (마지막에 [안으로]를 눌렀으면 대시보드 안에서)
+            if (window.innerWidth > 640 && 읽기('sz_win_out') !== '0') 밖으로(이름);
         }
         function 창저장(이름) { var w = 창들[이름]; if (!w || w._외 || window.innerWidth <= 640) return; var r = w.getBoundingClientRect(); 저장('sz_win_' + 이름, { x: Math.round(r.left), y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height) }); }
         function 창닫기(이름) {
@@ -14962,6 +15092,204 @@
             if (이름 === '보유') { 보유시세받기(false); 보유(); } else 계산기갱신(창들['계산기']._m);
         }
         setInterval(function () { if (document.visibilityState !== 'visible') return; 창갱신('보유', false); 창갱신('계산기', false); }, 500);
+        // ════════════════════════════════════════════════════════
+        // ★ 탭 줄 오른쪽 "시황 한 줄 평가" (미장 · 국장): 지금 상황에서 매매에 쓸 문장을 규칙으로 만들어 중요한 순서로
+        //   - 위험(빨강) · 주의(주황) · 좋음(민트) · 정보(회색) · 가장 중요한 1개(넓은 화면 2개)는 늘 보이고 나머지는 6초마다 바뀌어 보임 · 누르면 전체 목록
+        //   - 5초마다 다시 계산 · 자료: 상단 시황(선물·지수·금리·달러·유가·VIX) · 섹터 ETF · 관심 종목 · 보유 · 경제 일정 · 실적 · 국장 수급
+        //   - 규칙으로 만든 참고 문장 (매매 판단은 본인)
+        // ════════════════════════════════════════════════════════
+        var 한줄 = { us: [], kr: [], 돌림: 0, 열림: null };
+        function 한줄_선(키) { try { var d = typeof 시황_선 !== 'undefined' && 시황_선 && 시황_선[키]; if (d && d.price > 0 && d.prev > 0) return { p: d.price, c: (d.price / d.prev - 1) * 100 }; } catch (e) { } return null; }
+        function 한줄_분후(날짜, hm) { var t = etNowParts(); if (날짜 !== t.date || !/^\d{2}:\d{2}$/.test(hm || '')) return null; return +hm.slice(0, 2) * 60 + +hm.slice(3, 5) - t.m; }
+        function 한줄_퍼(v) { return (v > 0 ? '+' : '') + Number(v).toFixed(2) + '%'; }
+        function 미브리핑() {
+            var 목 = []; function 넣(lv, w, t) { 목.push({ lv: lv, w: w, t: t }); }
+            var 단 = 미단계(), B = 미B(), t = etNowParts();
+            var q = 미시황('qqq'), s = 미시황('spy'), nq = 미시황('nq'), vix = 미시황('vix'), tnx = 미시황('tnx'), dxy = 미시황('dxy'), cl = 미시황('cl'), gd = 미시황('gold'), btc = 미시황('btc'), krw = 미시황('usdkrw');
+            var es = 한줄_선('ES'), ym = 한줄_선('YM'), qx = 미시외('qqq'), sx = 미시외('spy');
+            if (!q && B.QQQ && B.QQQ.rp > 0) q = { p: B.QQQ.rp, c: B.QQQ.rc }; if (!s && B.SPY && B.SPY.rp > 0) s = { p: B.SPY.rp, c: B.SPY.rc };
+            var 관 = 미관심().filter(function (x) { return !미ETF(x); }), 보유미 = (상태.보유.us || []).map(function (x) { return x.t; });
+            var 섹 = 미섹터.map(function (x) { var v = B[x[0]]; return v && v.rp > 0 ? { n: x[1], r: 미등락(v) } : null; }).filter(function (x) { return x && x.r != null; }).sort(function (a, b) { return b.r - a.r; });
+            var 섹오 = 섹.filter(function (x) { return x.r > 0; }).length;
+            function 등(x) { return 미등락(B[x]); }
+            var 마감 = typeof 정규장마감분 === 'function' ? 정규장마감분(t.date) : 960;
+            // ── 공통: 위험 지표 ──
+            if (vix) {
+                if (vix.p >= 30) 넣('위험', 95, 'VIX ' + vix.p.toFixed(1) + ' 공포 구간 → 하루 변동 매우 큼, 수량 줄이고 손절 폭 넓게');
+                else if (vix.p >= 22) 넣('주의', 70, 'VIX ' + vix.p.toFixed(1) + ' 경계 구간 → 장중 흔들림 크게 보고 추격 매매 자제');
+                else if (vix.p <= 14) 넣('좋음', 30, 'VIX ' + vix.p.toFixed(1) + ' 안정 → 추세 따라가는 매매가 유리한 환경');
+                if (vix.c >= 8) 넣('위험', 88, 'VIX ' + 한줄_퍼(vix.c) + ' 급등 → 하락 압력 커짐, 저가 매수 서두르지 말 것');
+                else if (vix.c <= -7) 넣('좋음', 45, 'VIX ' + 한줄_퍼(vix.c) + ' 급락 → 불안 해소, 반등 이어질 가능성');
+            }
+            if (tnx && tnx.p > 0) { var bp = (tnx.p - tnx.p / (1 + tnx.c / 100)) * 100; if (bp >= 5) 넣('주의', 72, '미국채 10년 ' + tnx.p.toFixed(2) + '% (+' + bp.toFixed(0) + 'bp) 급등 → 성장·기술주 부담, 나스닥 반등 제한적'); else if (bp <= -5) 넣('좋음', 55, '미국채 10년 ' + tnx.p.toFixed(2) + '% (' + bp.toFixed(0) + 'bp) 하락 → 성장·기술주 우호'); }
+            if (dxy && Math.abs(dxy.c) >= 0.4) 넣(dxy.c > 0 ? '주의' : '정보', 50, '달러인덱스 ' + 한줄_퍼(dxy.c) + (dxy.c > 0 ? ' 강세 → 위험자산·신흥국 부담' : ' 약세 → 위험자산 우호'));
+            if (cl && Math.abs(cl.c) >= 2) 넣('주의', 52, 'WTI 원유 ' + 한줄_퍼(cl.c) + (cl.c > 0 ? ' 급등 → 인플레·금리 부담, 에너지 강세 · 항공·소비 약세 쪽' : ' 급락 → 에너지주 약세, 인플레 부담은 줄어듦'));
+            if (gd && gd.c >= 1.5) 넣('정보', 35, '금 ' + 한줄_퍼(gd.c) + ' 강세 → 안전자산 선호 (위험 회피 분위기)');
+            if (btc && Math.abs(btc.c) >= 3) 넣(btc.c > 0 ? '정보' : '주의', 40, '비트코인 ' + 한줄_퍼(btc.c) + ' → MSTR · COIN · 채굴주 같은 방향으로 크게 움직일 가능성');
+            var fg = document.querySelector('#neon-fg .val'); if (fg && /\d/.test(fg.textContent)) { var fv = parseFloat(fg.textContent); if (fv <= 25) 넣('정보', 38, '공포탐욕 ' + fv + ' 극단적 공포 → 반등은 짧을 수 있음, 추세 전환 확인 후'); else if (fv >= 75) 넣('주의', 38, '공포탐욕 ' + fv + ' 극단적 탐욕 → 과열, 신규 매수 수량 줄이기'); }
+            // ── 일정: 경제지표 · FOMC · 실적 · 옵션 만기 ──
+            if (typeof 일정자료 !== 'undefined') {
+                var ec = 일정자료.econ || {};
+                (ec.일정 || []).forEach(function (e) {
+                    if (e.중요 === false) return; var 분 = 한줄_분후(e.날짜, e.시각); if (분 == null) return;
+                    var 이 = typeof 일정_짧은 === 'function' ? 일정_짧은(e.이름) : e.이름, 한 = typeof 일정_한국시각 === 'function' ? (일정_한국시각(e.날짜, e.시각) || '').slice(-5) : '';
+                    var r = (ec.반응 || []).filter(function (x) { return x.날짜 === e.날짜 && x.시각 === e.시각; })[0];
+                    if (분 > 0 && 분 <= 180) 넣(분 <= 30 ? '위험' : '주의', 분 <= 30 ? 97 : 80, (/FOMC/.test(e.이름) ? 'FOMC ' : '') + 이 + ' ' + 한 + ' (' + 분 + '분 후) → 발표 앞뒤 30분 신규 진입 자제');
+                    else if (분 <= 0 && 분 > -60) 넣('주의', 85, 이 + ' 발표 ' + (-분) + '분 지남' + (r && (r.확정 || r.일차) ? ' · 시장 반응 ' + (r.확정 || r.일차) : '') + ' → 첫 반응이 뒤집히는지 15분 확인');
+                    else if (분 > 180) 넣('정보', 42, '오늘 ' + 이 + ' ' + 한 + ' 발표 예정');
+                });
+                var 실 = (일정자료.실적 && 일정자료.실적.종목) || {}, 내일 = new Date(new Date(t.date + 'T12:00:00Z').getTime() + 86400e3).toISOString().slice(0, 10);
+                var 오늘실 = [], 내일실 = [];
+                Object.keys(실).forEach(function (x) { var v = 실[x]; if (!v) return; var 내것 = 보유미.indexOf(x) >= 0 || 관.indexOf(x) >= 0; if (!내것) return; if (v.날짜 === t.date) 오늘실.push(x + '(' + (v.시간 === '장전' ? '장 전' : v.시간 === '장후' ? '마감 후' : '시간 미정') + ')' + (보유미.indexOf(x) >= 0 ? ' 보유' : '')); else if (v.날짜 === 내일) 내일실.push(x); });
+                if (오늘실.length) 넣(오늘실.some(function (x) { return /보유/.test(x); }) ? '위험' : '주의', 78, '오늘 실적: ' + 오늘실.join(' · ') + ' → 발표 전후 급변, 보유 종목은 손절선 미리 정하기');
+                if (내일실.length && (단 === '애프터' || 단 === '마감앞' || 단 === '정규')) 넣('정보', 40, '내일 실적: ' + 내일실.join(' · '));
+            }
+            var 요일 = new Date(t.date + 'T12:00:00Z').getUTCDay(), 일 = +t.date.slice(8, 10);
+            if (요일 === 5 && 단 !== '애프터' && 단 !== '오버나이트' && 단 !== '휴장') { var 셋 = 일 >= 15 && 일 <= 21, 분기 = [3, 6, 9, 12].indexOf(+t.date.slice(5, 7)) >= 0; 넣(셋 ? '주의' : '정보', 셋 ? 66 : 33, 셋 ? (분기 ? '분기 동시 만기(쿼드러플 위칭) → 마감 직전 거래량·변동성 급증' : '월간 옵션 만기 → 오후에 행사가 근처로 가격이 끌리는 현상 주의') : '주간 옵션 만기(금) → 오후 변동성 커질 수 있음'); }
+            // ── 단계별 ──
+            if (단 === '프리' || 단 === '오버나이트' || 단 === '휴장') {
+                var 선 = [nq ? nq.c : null, es ? es.c : null].filter(function (x) { return x != null; }), 평 = 선.length ? 선.reduce(function (a, b) { return a + b; }, 0) / 선.length : null;
+                var 선글 = (nq ? '나스닥선물 ' + 한줄_퍼(nq.c) : '') + (es ? ' · S&P선물 ' + 한줄_퍼(es.c) : '') + (ym ? ' · 다우선물 ' + 한줄_퍼(ym.c) : '');
+                if (평 != null) {
+                    if (평 >= 0.5) 넣('좋음', 90, 선글 + ' → 갭 상승 출발 예상, 시가 추격보다 첫 5~15분 눌림 확인 후');
+                    else if (평 <= -0.5) 넣('위험', 92, 선글 + ' → 갭 하락 출발 예상, 시가 매수 자제 · 첫 30분 저점 확인 후');
+                    else 넣('정보', 60, 선글 + ' → 보합 출발 예상, 개장 후 방향 확인');
+                    if (nq && es && nq.c - es.c >= 0.4) 넣('정보', 45, '나스닥이 S&P보다 강함 → 기술주 상대 강세 출발');
+                    else if (nq && es && nq.c - es.c <= -0.4) 넣('주의', 45, '나스닥이 S&P보다 약함 → 기술주 상대 약세 (금리 · 실적 확인)');
+                }
+                if (qx && 단 === '프리') 넣('정보', 58, '프리마켓 QQQ ' + 한줄_퍼(qx.c) + (sx ? ' · SPY ' + 한줄_퍼(sx.c) : ''));
+                var 움 = 관.concat(보유미.filter(function (x) { return 관.indexOf(x) < 0; })).map(function (x) { var v = B[x]; return v && v.xp > 0 ? { t: x, r: v.xc } : null; }).filter(Boolean).sort(function (a, b) { return Math.abs(b.r) - Math.abs(a.r); });
+                var 큰 = 움.filter(function (x) { return Math.abs(x.r) >= 3; }).slice(0, 4);
+                if (큰.length) 넣('주의', 64, (단 === '프리' ? '프리' : '시간외') + ' 크게 움직인 종목: ' + 큰.map(function (x) { return x.t + ' ' + 한줄_퍼(x.r) + (보유미.indexOf(x.t) >= 0 ? '(보유)' : ''); }).join(' · ') + ' → 개장 직후 변동 큼');
+                if (단 === '프리' && t.m >= 540) 넣('정보', 50, '개장 ' + (570 - t.m) + '분 전 → 주문은 개장 5분 뒤 호가가 안정된 다음');
+                if (단 === '휴장') 넣('정보', 20, '휴장 · 마지막 거래일 기준 · 다음 거래일 일정 · 실적 미리 확인');
+            }
+            if (단 === '초반' || 단 === '정규' || 단 === '마감앞') {
+                if (단 === '초반') 넣('주의', 75, '개장 ' + (t.m - 570) + '분째 → 첫 30분은 방향이 자주 바뀜, 10시 이후 추세 확인');
+                var qq = B.QQQ;
+                if (qq && qq.o > 0 && qq.pc > 0 && qq.rp > 0) {
+                    var 갭 = (qq.o / qq.pc - 1) * 100, 시대 = (qq.rp / qq.o - 1) * 100;
+                    if (갭 >= 0.4 && 시대 <= -0.3) 넣('주의', 82, 'QQQ 갭 상승(' + 한줄_퍼(갭) + ') 후 시가 아래로 밀림(' + 한줄_퍼(시대) + ') → 상승 실패 신호, 반등 확인 전 매수 보류');
+                    else if (갭 <= -0.4 && 시대 >= 0.3) 넣('좋음', 80, 'QQQ 갭 하락(' + 한줄_퍼(갭) + ') 후 시가 위로 회복(' + 한줄_퍼(시대) + ') → 저가 매수세 유입, 하락 힘 약해짐');
+                    if (qq.h > qq.l) { var 위 = (qq.rp - qq.l) / (qq.h - qq.l) * 100; if (위 >= 85 && qq.rc > 0.3) 넣('좋음', 62, 'QQQ 장중 고점 부근(위치 ' + 위.toFixed(0) + '%) → 추세 강함, 눌림에서 매수 관점'); else if (위 <= 15 && qq.rc < -0.3) 넣('위험', 76, 'QQQ 장중 저점 부근(위치 ' + 위.toFixed(0) + '%) → 추가 하락 열려 있음, 바닥 확인 전 매수 금지'); }
+                }
+                if (q && s) { var 평2 = (q.c + s.c) / 2; 넣(평2 >= 0.5 ? '좋음' : 평2 <= -0.5 ? '주의' : '정보', 58, '나스닥(QQQ) ' + 한줄_퍼(q.c) + ' · S&P(SPY) ' + 한줄_퍼(s.c) + ' → ' + (평2 >= 0.5 ? '상승장' : 평2 <= -0.5 ? '하락장' : '보합권')); }
+                if (섹.length >= 8) {
+                    var 지 = q ? q.c : 0;
+                    if (지 > 0.2 && 섹오 <= 4) 넣('주의', 74, '지수는 오르는데 섹터 ' + 섹오 + '/' + 섹.length + '만 상승 → 일부 대형주가 받치는 장, 추격 매수 주의');
+                    else if (지 < -0.2 && 섹오 >= 7) 넣('정보', 55, '지수는 내리는데 섹터 ' + 섹오 + '/' + 섹.length + ' 상승 → 대형 기술주만 약함, 종목별 차별화');
+                    else if (섹오 >= 9) 넣('좋음', 60, '섹터 ' + 섹오 + '/' + 섹.length + ' 상승 → 시장 전반 강세');
+                    else if (섹오 <= 2) 넣('위험', 70, '섹터 ' + 섹오 + '/' + 섹.length + '만 상승 → 시장 전반 약세, 버티는 종목만 짧게');
+                    넣('정보', 48, '강세 ' + 섹.slice(0, 2).map(function (x) { return x.n + ' ' + 한줄_퍼(x.r); }).join(' · ') + ' / 약세 ' + 섹.slice(-2).reverse().map(function (x) { return x.n + ' ' + 한줄_퍼(x.r); }).join(' · ') + ' → 자금이 몰리는 쪽 위주로');
+                }
+                var 반 = 등('SOXX'); if (반 != null && q) { if (반 - q.c >= 1) 넣('좋음', 57, '반도체(SOXX ' + 한줄_퍼(반) + ')가 시장 주도 → 반도체 종목 우선'); else if (반 - q.c <= -1) 넣('주의', 57, '반도체(SOXX ' + 한줄_퍼(반) + ') 약세 → 반도체 비중 주의'); }
+                var 소 = 등('IWM'); if (소 != null && s) { if (소 - s.c >= 0.7) 넣('좋음', 46, '소형주(IWM ' + 한줄_퍼(소) + ') 강세 → 위험 선호 넓어짐'); else if (소 - s.c <= -0.7) 넣('주의', 46, '소형주(IWM ' + 한줄_퍼(소) + ') 약세 → 위험 회피, 대형주 위주'); }
+                if (vix && s && vix.c >= 5 && s.c > 0.2) 넣('주의', 68, '지수 상승에도 VIX ' + 한줄_퍼(vix.c) + ' → 상승을 믿기 어려움, 이익 실현 고려');
+                var 관등 = 관.map(function (x) { var v = B[x]; return v && v.rp > 0 ? { t: x, r: v.rc, 배: 미거래배(v), 고: v.h52 > 0 ? (v.rp / v.h52 - 1) * 100 : null } : null; }).filter(Boolean);
+                if (관등.length >= 5) {
+                    var 오 = 관등.filter(function (x) { return x.r > 0; }).length;
+                    if (q && q.c > 0.3 && 오 / 관등.length < 0.35) 넣('주의', 60, '관심 종목 ' + 오 + '/' + 관등.length + '만 상승 → 지수보다 체감이 약한 장');
+                    var 급 = 관등.filter(function (x) { return Math.abs(x.r) >= 4 || (x.배 != null && x.배 >= 2.5); }).sort(function (a, b) { return Math.abs(b.r) - Math.abs(a.r); }).slice(0, 4);
+                    if (급.length) 넣('정보', 63, '관심 종목 큰 움직임: ' + 급.map(function (x) { return x.t + ' ' + 한줄_퍼(x.r) + (x.배 != null && x.배 >= 2 ? '(거래 ' + x.배.toFixed(1) + '배)' : ''); }).join(' · '));
+                    var 신 = 관등.filter(function (x) { return x.고 != null && x.고 > -1.5; }).map(function (x) { return x.t; }).slice(0, 5);
+                    if (신.length) 넣('좋음', 44, '52주 신고가 근처: ' + 신.join(' · ') + ' → 돌파 후 지지 확인되면 추세 매수 후보');
+                }
+                if (단 === '마감앞') { 넣('주의', 86, '마감 ' + (마감 - t.m) + '분 전 → 오버나이트 위험, 단타 물량 정리 · 손절선 확인'); if (q && q.c <= -1) 넣('주의', 70, '약세로 마감 접근 → 종가 매수는 서두르지 말 것'); }
+            }
+            if (단 === '애프터') {
+                if (q && s) 넣('정보', 70, '정규장 마감: QQQ ' + 한줄_퍼(q.c) + ' · SPY ' + 한줄_퍼(s.c) + (섹.length ? ' · 섹터 ' + 섹오 + '/' + 섹.length + ' 상승' : ''));
+                var 애 = 관.concat(보유미).map(function (x) { var v = B[x]; return v && v.xp > 0 ? { t: x, r: v.xc } : null; }).filter(function (x) { return x && Math.abs(x.r) >= 2.5; }).sort(function (a, b) { return Math.abs(b.r) - Math.abs(a.r); }).slice(0, 4);
+                if (애.length) 넣('주의', 80, '애프터 급변: ' + 애.map(function (x) { return x.t + ' ' + 한줄_퍼(x.r) + (보유미.indexOf(x.t) >= 0 ? '(보유)' : ''); }).join(' · ') + ' → 내일 출발 영향 · 관련 업종도 같이 확인');
+                if (nq) 넣('정보', 50, '지금 나스닥선물 ' + 한줄_퍼(nq.c) + ' → 내일 출발 참고');
+            }
+            // ── 보유 ──
+            var 보 = (상태.보유.us || []).map(function (x) { var q2 = 미실시간(x.t) || 상태.미시세[x.t]; return q2 && q2.price > 0 ? { t: x.t, r: q2.changePct, 오: q2.change != null ? q2.change * x.수 : null, 손률: (q2.price / x.가 - 1) * 100 } : null; }).filter(Boolean);
+            if (보.length) {
+                var 오늘합 = 보.reduce(function (a, x) { return a + (x.오 || 0); }, 0), 큰보 = 보.slice().sort(function (a, b) { return Math.abs(b.r || 0) - Math.abs(a.r || 0); })[0];
+                넣(오늘합 >= 0 ? '정보' : '주의', 52, '보유 오늘 손익 ' + 달(오늘합, 1) + (큰보 && 큰보.r != null ? ' · 가장 크게 움직인 ' + 큰보.t + ' ' + 한줄_퍼(큰보.r) : ''));
+                var 손절 = 보.filter(function (x) { return x.손률 <= -8; }).map(function (x) { return x.t + ' ' + 한줄_퍼(x.손률); });
+                if (손절.length) 넣('주의', 58, '매수가 대비 크게 손실: ' + 손절.join(' · ') + ' → 손절 · 비중 기준 다시 확인');
+            }
+            if (krw && Math.abs(krw.c) >= 0.4) 넣('정보', 34, '원/달러 ' + 한줄_퍼(krw.c) + ' → 원화 환산 손익이 ' + (krw.c > 0 ? '늘어남' : '줄어듦'));
+            return 목.sort(function (a, b) { return b.w - a.w; });
+        }
+        function 국브리핑() {
+            var 목 = []; function 넣(lv, w, t) { 목.push({ lv: lv, w: w, t: t }); }
+            var v = 상태.live; if (!v) return 목;
+            var 단 = 단계(), 지 = v.지수 || {}, f = (v.수급 && v.수급.KOSPI) || {}, pg = v.프로그램 || {}, ud = (v.등락 && v.등락.KOSPI) || {}, 해 = v.해외 || {}, k = KST();
+            var 코 = 지.KOSPI ? 지.KOSPI.r : null, 닥 = 지.KOSDAQ ? 지.KOSDAQ.r : null, 외 = f.외국인 || 0, 기 = f.기관 || 0, 유 = 기준금액(), nq = 미시황('nq'), krw = v.환율;
+            function 억2(x) { return (x > 0 ? '+' : '') + 콤(Math.round(x)) + '억'; }
+            if (단 === '장전' || 단 === '휴장') {
+                if (해.IXIC || 해.SOX) {
+                    var 나 = 해.IXIC ? 해.IXIC.r : null, 반 = 해.SOX ? 해.SOX.r : null;
+                    if (나 != null) 넣(나 <= -1 ? '위험' : 나 >= 1 ? '좋음' : '정보', 88, '간밤 나스닥 ' + 한줄_퍼(나) + ' → 코스피 출발 ' + (나 >= 1 ? '우호 (상승 출발 가능성)' : 나 <= -1 ? '부담 (하락 출발 가능성)' : '영향 작음'));
+                    if (반 != null && Math.abs(반) >= 1.5) 넣(반 > 0 ? '좋음' : '주의', 84, '간밤 필라델피아 반도체 ' + 한줄_퍼(반) + ' → 삼성전자 · SK하이닉스 출발 ' + (반 > 0 ? '강세 쪽' : '약세 쪽'));
+                }
+                if (nq) 넣(nq.c <= -0.5 ? '주의' : '정보', 70, '지금 나스닥선물 ' + 한줄_퍼(nq.c) + ' → 장중 외국인 수급 참고');
+                if (krw && krw.p > 0 && Math.abs(krw.d) >= 5) 넣(krw.d > 0 ? '주의' : '좋음', 66, '원/달러 ' + 콤(krw.p, 1) + '원 (' + (krw.d > 0 ? '+' : '') + 콤(krw.d, 1) + ') → ' + (krw.d > 0 ? '원화 약세, 외국인 매도 압력' : '원화 강세, 외국인 매수 우호'));
+                if (단 === '장전') { 넣('정보', 50, '개장 ' + (9 * 60 - k.m) + '분 전 → 9시 동시호가 뒤 첫 10분 흐름 보고 진입'); }
+            }
+            if (단 === '초반' || 단 === '본장' || 단 === '마감앞') {
+                if (단 === '초반') 넣('주의', 75, '개장 ' + (k.m - 540) + '분째 → 9시 30분까지 판단 보류, 갭 메우기 자주 나옴');
+                if (코 != null) 넣(코 >= 0.7 ? '좋음' : 코 <= -0.7 ? '주의' : '정보', 60, '코스피 ' + 한줄_퍼(코) + (닥 != null ? ' · 코스닥 ' + 한줄_퍼(닥) : '') + (코 != null && 닥 != null && Math.abs(코 - 닥) >= 1 ? (코 > 닥 ? ' → 대형주 위주 장' : ' → 중소형주 위주 장') : ''));
+                var a = Math.abs(외) >= 유, b = Math.abs(기) >= 유;
+                if (a && b && 외 > 0 && 기 > 0) 넣('좋음', 86, '외국인 ' + 억2(외) + ' · 기관 ' + 억2(기) + ' 쌍끌이 매수 → 지수 상승 힘 강함, 주도 업종 눌림 매수');
+                else if (a && b && 외 < 0 && 기 < 0) 넣('위험', 88, '외국인 ' + 억2(외) + ' · 기관 ' + 억2(기) + ' 동반 매도 → 반등 약함, 신규 매수 보수적으로');
+                else if (a && 외 > 0) 넣('좋음', 70, '외국인 ' + 억2(외) + ' 순매수 → 대형주 · 반도체 쪽 수급 우호');
+                else if (a && 외 < 0) 넣('주의', 72, '외국인 ' + 억2(외) + ' 순매도' + (기 > 0 ? ' · 기관이 일부 받는 중' : '') + ' → 대형주 상단 막힘');
+                else 넣('정보', 40, '외국인 ' + 억2(외) + ' · 기관 ' + 억2(기) + ' → 수급 방향 뚜렷하지 않음');
+                if (pg.합 != null && Math.abs(pg.합) >= 1000) 넣(pg.합 > 0 ? '좋음' : '주의', 62, '프로그램 ' + 억2(pg.합) + ' → 지수 ' + (pg.합 > 0 ? '지지' : '압박'));
+                if (ud.상승 != null && ud.하락 != null && ud.상승 + ud.하락 > 0) { var 비 = ud.상승 / (ud.상승 + ud.하락); if (코 != null && 코 > 0.3 && 비 < 0.4) 넣('주의', 64, '지수는 오르는데 오르는 종목 ' + ud.상승 + ' / 내리는 종목 ' + ud.하락 + ' → 대형주만 오르는 장, 개별 종목 체감 약함'); else if (비 >= 0.7) 넣('좋음', 50, '오르는 종목 ' + ud.상승 + ' / 내리는 종목 ' + ud.하락 + ' → 시장 전반 강세'); else if (비 <= 0.25) 넣('위험', 62, '오르는 종목 ' + ud.상승 + ' / 내리는 종목 ' + ud.하락 + ' → 시장 전반 약세'); }
+                var 업 = 강세목록('업종', 3); if (업.length) 넣('정보', 52, '강세 업종: ' + 업.map(function (x) { return x.n + ' ' + 한줄_퍼(x.r); }).join(' · ') + ' → 자금이 몰리는 쪽');
+                if (nq && Math.abs(nq.c) >= 0.7) 넣(nq.c < 0 ? '주의' : '정보', 58, '나스닥선물 ' + 한줄_퍼(nq.c) + ' → 오후 외국인 ' + (nq.c < 0 ? '매도' : '매수') + ' 쪽으로 기울 가능성');
+                if (krw && Math.abs(krw.d) >= 7) 넣('주의', 60, '원/달러 ' + (krw.d > 0 ? '+' : '') + 콤(krw.d, 1) + '원 급변 → 외국인 수급 흔들림');
+                if (단 === '마감앞') 넣('주의', 85, '15:20부터 종가 동시호가 → 단타 물량 정리 · 종가 급변 주의');
+            }
+            if (단 === '장후' && 코 != null) {
+                넣('정보', 70, '코스피 ' + 한줄_퍼(코) + (닥 != null ? ' · 코스닥 ' + 한줄_퍼(닥) : '') + ' 마감 · 외국인 ' + 억2(외) + ' · 기관 ' + 억2(기));
+                if (nq) 넣('정보', 55, '지금 나스닥선물 ' + 한줄_퍼(nq.c) + ' → 오늘 밤 미장 · 내일 출발 참고');
+                넣('정보', 30, 'NXT 애프터마켓 20:00까지 · 거래량 적어 호가 차이 큼');
+            }
+            // 보유 (국내)
+            var 맵 = {}; ((v && v.종목) || []).forEach(function (q) { 맵[q.c] = q; }); Object.keys(상태.보유시세).forEach(function (c) { 맵[c] = 맵[c] || 상태.보유시세[c]; });
+            var 보 = (상태.보유.kr || []).map(function (x) { var q = 맵[x.c]; return q && q.p > 0 ? { n: x.n || x.c, r: q.r, 오: q.d != null ? q.d * x.수 : null } : null; }).filter(Boolean);
+            if (보.length) { var 합오 = 보.reduce(function (a2, x) { return a2 + (x.오 || 0); }, 0), 큰 = 보.slice().sort(function (a2, b2) { return Math.abs(b2.r || 0) - Math.abs(a2.r || 0); })[0]; 넣(합오 >= 0 ? '정보' : '주의', 50, '보유 오늘 손익 ' + 원(합오, 1) + (큰 ? ' · ' + 큰.n + ' ' + 한줄_퍼(큰.r) : '')); }
+            return 목.sort(function (a2, b2) { return b2.w - a2.w; });
+        }
+        function 한줄그리기() {
+            var 곳 = 상태.모드 === 'kr' ? 'kr' : 'us', el = document.getElementById(곳 + '-brief'); if (!el) return;
+            var 목 = []; try { 목 = 곳 === 'us' ? 미브리핑() : 국브리핑(); } catch (e) { console.warn('[시황 한 줄]', e); }
+            한줄[곳] = 목;
+            if (!목.length) { 넣기(el, '<span class="sb-t kr-0">시황 자료 받는 중</span>'); return; }
+            var 넓 = el.classList.contains('sz-brief-g') || el.getBoundingClientRect().width >= 1100, 좁 = window.innerWidth <= 640; 앞 = 목.slice(0, 넓 ? 2 : 1), 뒤 = 목.slice(앞.length), 돌 = 뒤.length ? 뒤[한줄.돌림 % 뒤.length] : null;
+            function 칸(x) { return '<span class="sb-i lv-' + x.lv + '"><i></i>' + esc(x.t) + '</span>'; }
+            if (좁) { 앞 = 목.slice(0, 1); 뒤 = 목.slice(1); 돌 = 뒤.length ? 뒤[한줄.돌림 % 뒤.length] : null; }
+            넣기(el, 앞.map(칸).join('') + (돌 ? 칸(돌) : '') + '<button type="button" class="sb-more" data-a="brief">전체 ' + 목.length + '</button>');
+            var 펼 = document.getElementById('sz-brief-pop'); if (펼 && 펼._곳 === 곳) 한줄펼침(곳, true);
+        }
+        function 한줄펼침(곳, 다시) {
+            var 펼 = document.getElementById('sz-brief-pop'), el = document.getElementById(곳 + '-brief');
+            if (펼 && !다시) { 펼.remove(); return; }
+            if (!el) return;
+            if (!펼) { 펼 = document.createElement('div'); 펼.id = 'sz-brief-pop'; 펼.className = 'sz-brief-pop'; document.body.appendChild(펼); }
+            펼._곳 = 곳;
+            var r = el.getBoundingClientRect();
+            펼.style.top = Math.round(r.bottom + 6) + 'px'; 펼.style.right = Math.max(8, Math.round(window.innerWidth - r.right)) + 'px';
+            var 목 = 한줄[곳] || [];
+            var h = '<div class="sbp-h"><b>' + (곳 === 'us' ? '미장' : '국장') + ' 시황 평가</b><small>' + (곳 === 'us' ? 미단계이름[미단계()] : 단계이름[단계()]) + ' · 중요한 순서 · 5초마다 다시 계산</small><button type="button" data-a="bclose">×</button></div>' +
+                '<div class="sbp-l">' + 목.map(function (x) { return '<div class="sb-i lv-' + x.lv + '"><i></i><em>' + x.lv + '</em>' + esc(x.t) + '</div>'; }).join('') + '</div>' +
+                '<div class="kr-sub">규칙으로 만든 참고 문장입니다 · 매매 판단과 책임은 본인에게 있습니다</div>';
+            넣기(펼, h);
+        }
+        document.addEventListener('click', function (e) {
+            var b = e.target.closest && e.target.closest('button[data-a="brief"], button[data-a="bclose"]');
+            if (!b && e.target.closest && e.target.closest('.sz-brief') && window.innerWidth <= 640) { 한줄펼침(상태.모드 === 'kr' ? 'kr' : 'us'); return; }
+            if (b) { if (b.getAttribute('data-a') === 'bclose') { var p = document.getElementById('sz-brief-pop'); if (p) p.remove(); } else 한줄펼침(상태.모드 === 'kr' ? 'kr' : 'us'); return; }
+            var p2 = document.getElementById('sz-brief-pop'); if (p2 && !p2.contains(e.target) && !(e.target.closest && e.target.closest('.sz-brief'))) p2.remove();
+        });
+        setInterval(function () { if (document.visibilityState !== 'visible') return; 한줄.돌림++; 한줄그리기(); }, 6000);
+        // 미장: 차트 탭에서도 시황 한 줄에 쓸 시세표(섹터 · 관심 종목)를 2분마다 받음 (다른 탭은 원래 주기)
+        setInterval(function () { if (상태.모드 === 'us' && 미.탭 === '차트' && document.visibilityState === 'visible' && Date.now() - 미.board받음 > 120000) { var 옛 = 미.탭; 미.탭 = '시장'; try { 미자료(false); } finally { 미.탭 = 옛; } } }, 15000);
         window.미장탭 = { 상태: 미, 탭바꾸기: 미탭바꾸기, 그리기: 미그리기, 자료: 미자료, 단계: 미단계, 멈춤: 멈춤남기기, 계산기: 계산기 };
         window.국장 = { 상태: 상태, 모드바꾸기: 모드바꾸기, 반영: 반영, 그리기: 그리기, 종목: KR종목, 수급통계: 수급통계, 단계: 단계, 누적비율: 누적비율 };
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', 시작); else 시작();
