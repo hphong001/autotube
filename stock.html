@@ -2940,39 +2940,41 @@
         .kr-htot { font-size: calc(13.5px * var(--hf, 1)); }
         .kr-hbox .kr-hsum { grid-template-columns: repeat(auto-fit, minmax(calc(150px * var(--hf, 1)), 1fr)); }
         /* ── 계산기 ── */
-        .cz-top { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px 12px; align-items: end; padding-bottom: 10px; border-bottom: 1px solid #242a38; }
-        .cz-f { display: block; min-width: 0; } .cz-f > span:first-child { display: block; font-size: 12.5px; color: #9aa2b5; font-weight: 700; margin-bottom: 4px; }
-        .cz-t { grid-column: span 2; } .cz-t .cz-tq { flex: 0 0 38%; } .cz-t select { flex: 1 1 auto; }
-        .cz-in { display: flex; gap: 4px; }
-        .cz-f input, .cz-f select, .cz-man input { width: 100%; min-width: 0; box-sizing: border-box; font: inherit; font-size: 15.5px; font-variant-numeric: tabular-nums; background: #0d1018; color: #eef1f7; border: 1px solid #2a3042; border-radius: 7px; padding: 7px 10px; }
+        .cz-top { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px 14px; align-items: end; padding: 12px 14px; margin-bottom: 14px; background: #141927; border: 1px solid #2a3246; border-radius: 10px; }
+        .cz-f { display: block; min-width: 0; } .cz-f > span:first-child { display: block; font-size: 14.5px; color: #aab2c4; font-weight: 700; margin-bottom: 5px; }
+        .cz-top .cz-f > span:first-child { color: #c9d2e6; font-weight: 800; }
+        .cz-t { grid-column: span 2; } .cz-t .cz-tq { flex: 0 0 36%; } .cz-t select { flex: 1 1 auto; }
+        .cz-in { display: flex; gap: 5px; }
+        .cz-f input, .cz-f select, .cz-man input { width: 100%; min-width: 0; box-sizing: border-box; font: inherit; font-size: 19px; font-weight: 700; font-variant-numeric: tabular-nums; background: #0d1018; color: #eef1f7; border: 1px solid #2a3042; border-radius: 8px; padding: 9px 12px; }
+        .cz-f select { font-size: 17px; }
         .cz-f input:focus, .cz-man input:focus { outline: none; border-color: #ffdf00; }
         .cz-f input.fixed { border-color: #6b5520; color: #ffd27a; }
-        .cz-in button, .cz-man button, .cz-seg button { font: inherit; font-size: 12.5px; font-weight: 800; padding: 0 10px; border-radius: 7px; border: 1px solid #2a3042; background: #121624; color: #b3bbcc; cursor: pointer; white-space: nowrap; }
-        .cz-src { grid-column: 1 / -1; font-size: 13px; color: #aab2c4; } .cz-src b { color: #eef1f7; } .cz-src em { font-style: normal; color: #ffd27a; }
-        .cz-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin: 10px 0; }
-        .cz-tabs button { font: inherit; font-size: 13.5px; font-weight: 800; padding: 6px 14px; border-radius: 8px; border: 1px solid #2a3042; background: #121624; color: #9aa2b5; cursor: pointer; }
+        .cz-in button, .cz-man button, .cz-seg button { font: inherit; font-size: 14px; font-weight: 800; padding: 0 12px; border-radius: 8px; border: 1px solid #2a3042; background: #121624; color: #b3bbcc; cursor: pointer; white-space: nowrap; }
+        .cz-src { grid-column: 1 / -1; font-size: 15px; color: #b9c0d0; line-height: 1.5; } .cz-src b { color: #eef1f7; font-size: 16.5px; } .cz-src em { font-style: normal; color: #ffd27a; }
+        .cz-tabs { display: flex; flex-wrap: wrap; gap: 5px; margin: 0 0 12px; padding-bottom: 12px; border-bottom: 1px solid #242a38; }
+        .cz-tabs button { font: inherit; font-size: 16px; font-weight: 800; padding: 8px 18px; border-radius: 9px; border: 1px solid #2a3042; background: #121624; color: #aab2c4; cursor: pointer; }
         .cz-tabs button.on, .cz-seg button.on { color: #111; background: #ffdf00; border-color: #ffdf00; }
         .cz-p { display: none; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
         .cz-p.on { display: grid; }
         .cz-col { display: flex; flex-direction: column; gap: 9px; min-width: 0; }
-        .cz-seg { display: flex; gap: 4px; } .cz-seg button { padding: 6px 12px; }
-        .cz-sub { font-size: 13px; font-weight: 800; color: #7fdcc6; margin-top: 4px; }
+        .cz-seg { display: flex; gap: 5px; } .cz-seg button { padding: 8px 14px; font-size: 15px; }
+        .cz-sub { font-size: 15px; font-weight: 800; color: #7fdcc6; margin-top: 4px; }
         .cz-r { background: #0d1018; border: 1px solid #242a38; border-radius: 9px; padding: 9px 12px; }
-        .cz-r > span { display: block; font-size: 12.5px; color: #9aa2b5; font-weight: 700; }
-        .cz-r b { display: block; font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; color: #eef1f7; } .cz-r.big b { font-size: 26px; }
-        .cz-r small { display: block; font-size: 12.5px; color: #9aa2b5; margin-top: 2px; } .cz-r small:empty { display: none; }
+        .cz-r > span { display: block; font-size: 14px; color: #aab2c4; font-weight: 700; }
+        .cz-r b { display: block; font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; color: #eef1f7; } .cz-r.big b { font-size: 30px; }
+        .cz-r small { display: block; font-size: 14px; color: #b0b8c9; margin-top: 3px; } .cz-r small:empty { display: none; }
         .cz-r b.cz-g { color: #7fdcc6; } .cz-r b.cz-b { color: #8fb3ff; } .cz-r b.cz-r2 { color: #ff9f9f; }
         .cz-calc { grid-column: 1 / -1; max-width: 520px; width: 100%; margin: 0 auto; }
         .cz-disp { background: #0d1018; border: 1px solid #2a3042; border-radius: 9px; padding: 10px 14px; text-align: right; margin-bottom: 8px; }
         .cz-disp small { display: block; min-height: 18px; font-size: 13px; color: #9aa2b5; word-break: break-all; } .cz-disp b { display: block; font-size: 30px; font-weight: 800; font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; }
         .cz-pct { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 3px; margin-bottom: 6px; }
-        .cz-pct button { font: inherit; font-size: 12.5px; font-weight: 800; padding: 6px 0; border-radius: 6px; border: 0; cursor: pointer; color: #fff; }
+        .cz-pct button { font: inherit; font-size: 14px; font-weight: 800; padding: 6px 0; border-radius: 6px; border: 0; cursor: pointer; color: #fff; }
         .cz-pct button.dn { background: #2c4f9e; } .cz-pct button.up { background: #a8323e; }
         .cz-man { display: flex; gap: 4px; margin-bottom: 8px; } .cz-man button { padding: 0 12px; }
         .cz-keys { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
         .cz-keys button { font: inherit; font-size: 20px; font-weight: 800; padding: 12px 0; border-radius: 9px; border: 0; background: #262c3c; color: #eef1f7; cursor: pointer; }
         .cz-keys button.op { background: #33405e; color: #cfe0ff; } .cz-keys button.eq { background: #ffdf00; color: #111; }
-        @container (max-width: 620px) { .cz-p { grid-template-columns: minmax(0, 1fr); } .cz-t { grid-column: 1 / -1; } .cz-pct { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+        @container (max-width: 620px) { .cz-p { grid-template-columns: minmax(0, 1fr); } .cz-t { grid-column: 1 / -1; } .cz-top { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 10px; } .cz-tabs button { padding: 7px 12px; font-size: 15px; } .cz-pct { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 
         /* ── 따로 뜨는 창 (보유현황 · 계산기) ── */
         .sz-win { position: fixed; z-index: 9990; display: flex; flex-direction: column; background: #10131b; border: 1px solid #343b50; border-radius: 12px; box-shadow: 0 18px 50px rgba(0, 0, 0, .6); color: #e7e9f0; resize: both; overflow: hidden; min-width: 320px; min-height: 240px; max-width: 100vw; max-height: 100vh; }
@@ -3022,7 +3024,7 @@
         .kr-htbl td.nm b { font-size: calc(14px * var(--hf, 1)); } .kr-htbl td.nm small { display: block; color: #8b93a7; }
 
         .cz-f { position: relative; }
-        .cz-han { display: block; min-height: 15px; margin: -2px 0 3px; font-size: 12.5px; font-weight: 800; color: #ffd27a; }
+        .cz-han { display: block; min-height: 15px; margin: -2px 0 3px; font-size: 13.5px; font-weight: 800; color: #ffd27a; }
         .cz-han.big { color: #ff9f6b; }
         .cz-r small { line-height: 1.45; }
 
@@ -3069,6 +3071,9 @@
         /* 현금화: 큰 글자 · 가이드 */
         .cz-cash .cz-r.big b { font-size: 32px; }
         .cz-cash .cz-r small { font-size: 14.5px; line-height: 1.5; color: #b9c0d0; }
+        .cz-hint { display: block; font-size: 13.5px; color: #9aa2b5; margin: -2px 0 4px; line-height: 1.45; }
+        .cz-fxnow { background: #0d1018; border: 1px solid #242a38; border-radius: 9px; padding: 9px 12px; font-size: 15px; color: #cfd5e2; } .cz-fxnow b { font-size: 19px; color: #ffd27a; }
+        .cz-cash input::placeholder { color: #5d6578; font-weight: 600; }
         .cz-cash input[type="datetime-local"] { font-size: 18px; color-scheme: dark; min-width: 0; width: 100%; }
         .cz-gt { font-size: 17px; margin-bottom: 10px; } .cz-gt th { font-size: 13.5px; } .cz-gt td { padding: 8px; }
         .cz-guide { background: #0d1018; border: 1px solid #242a38; border-radius: 9px; padding: 10px 14px; font-size: 15px; line-height: 1.55; color: #cfd5e2; }
@@ -14791,8 +14796,8 @@
         // ════════════════════════════════════════════════════════
         var 계 = { us: null, kr: null, 받음: {} };
         var 계기본 = {
-            us: { t: '', fee: 0.07, tax: 0, 탭: '1', c1모드: 'amt', c1amt: 10000000, c1sh: 50, c2roi: 10, c3nq: 100, c4amt: 50000000, c4tp: 5, c6amt: 5000000, c6cx: 0, c6adj: 0 },
-            kr: { t: '', fee: 0.015, tax: 0.20, 탭: '1', c1모드: 'amt', c1amt: 10000000, c1sh: 50, c2roi: 10, c3nq: 100, c4amt: 50000000, c4tp: 5, c6amt: 5000000, c6adj: 0 }
+            us: { t: '', fee: 0.07, tax: 0, 탭: '1', c1모드: 'amt', c1amt: 10000000, c1sh: 50, c2roi: 10, c3nq: 100, c4amt: 50000000, c4tp: 5, c6amt: 5000000 },
+            kr: { t: '', fee: 0.015, tax: 0.20, 탭: '1', c1모드: 'amt', c1amt: 10000000, c1sh: 50, c2roi: 10, c3nq: 100, c4amt: 50000000, c4tp: 5, c6amt: 5000000 }
         };
         var 계따라감 = ['p', 'fx', 'c2sp', 'c3np', 'c4bp'];      // 직접 고치기 전까지 현재가(환율)를 따라가는 칸
         var 계종목칸 = ['c2bp', 'c2q', 'c3op', 'c3oq', 'c3ta', 'c3tb', 'c3np', 'c4bp', 'c4sp', 'c2sp'];   // 종목을 바꾸면 비우는 칸
@@ -14894,6 +14899,7 @@
         }
         function 미시차() { var t = new Date(), e = 지역시각(t, 'America/New_York'), k = 지역시각(t, 'Asia/Seoul'); return Math.round(((Date.parse(k.날 + 'T00:00:00Z') + k.분 * 60000) - (Date.parse(e.날 + 'T00:00:00Z') + e.분 * 60000)) / 3600000); }   // 13 = 서머타임 · 14 = 아닐 때
         function 짧은날(s) { var p = s.split('-'); return (+p[1]) + '/' + (+p[2]) + '(' + '일월화수목금토'[날요일(s)] + ')'; }
+        function 한국입력값(t) { var k = 지역시각(t, 'Asia/Seoul'); return k.날 + 'T' + ('0' + Math.floor(k.분 / 60)).slice(-2) + ':' + ('0' + k.분 % 60).slice(-2); }
         function 한국시각글(t) { var k = 지역시각(t, 'Asia/Seoul'); return 짧은날(k.날) + ' ' + ('0' + Math.floor(k.분 / 60)).slice(-2) + ':' + ('0' + k.분 % 60).slice(-2); }
         // 매도 시각 → { 체결, 세션, 결제, 출금 }
         function 출금계산(m, t, 보정) {
@@ -14940,12 +14946,12 @@
             var S = 계상태(m), 미 = m === 'us', 단 = 미 ? '$' : '원';
             function 칸(k, 제목, 힌트, 따라) { return '<label class="cz-f"><span>' + 제목 + '</span>' + (계원칸[m].indexOf(k) >= 0 ? '<small class="cz-han" data-han="' + k + '"></small>' : '') + '<span class="cz-in"><input data-k="' + k + '" inputmode="decimal" autocomplete="off" placeholder="' + (힌트 || '') + '">' + (따라 ? '<button type="button" data-a="live" data-k="' + k + '" title="현재가(실시간)로 되돌림">' + (k === 'fx' ? '실시간' : '현재가') + '</button>' : '') + '</span></label>'; }
             function 결(r, 제목, 큰) { return '<div class="cz-r' + (큰 ? ' big' : '') + '"><span>' + 제목 + '</span><b data-r="' + r + '">─</b><small data-r="' + r + 's"></small></div>'; }
-            var h = '<div class="cz-top">' +
+            var h = '<div class="cz-tabs">' + [['1', '매수 비중'], ['2', '수익률'], ['3', '물타기'], ['4', '단타'], ['6', '현금화'], ['5', '일반 계산기']].map(function (x) { return '<button type="button" data-ct="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div>' +
+                '<div class="cz-top">' +
                 '<label class="cz-f cz-t"><span>종목 <small class="kr-0">' + 목.length + '개</small></span><span class="cz-in"><input data-k="tq" class="cz-tq" placeholder="찾기 (예: ' + (m === 'us' ? 'TSLL, 테슬라' : '삼성, 005930') + ')" autocomplete="off"><select data-k="t">' + 목.map(function (x) { return '<option value="' + esc(x[0]) + '">' + esc(x[1]) + '</option>'; }).join('') + '</select></span></label>' +
                 칸('p', '현재가 (' + 단 + ')', '', 1) + (미 ? 칸('fx', '환율 (원/달러)', '', 1) : '') +
                 칸('fee', '수수료 (%, 사고팔 때 각각)', '') + (미 ? '' : 칸('tax', '매도 세금 (%)', '')) +
                 '<div class="cz-src" data-r="src"></div></div>' +
-                '<div class="cz-tabs">' + [['1', '매수 비중'], ['2', '수익률'], ['3', '물타기'], ['4', '단타'], ['6', '현금화'], ['5', '일반 계산기']].map(function (x) { return '<button type="button" data-ct="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div>' +
                 // ① 매수 비중
                 '<div class="cz-p" data-c="1"><div class="cz-col"><div class="cz-seg"><button type="button" data-c1="amt">투자 금액 기준</button><button type="button" data-c1="sh">수량 기준</button></div>' +
                     칸('c1amt', '투자 가능 금액 (원)', '예: 10000000') + 칸('c1sh', '목표 매수 수량 (주)', '예: 50') + '</div>' +
@@ -14967,8 +14973,9 @@
                     '<div class="cz-col cz-wide"><div class="cz-sub">단계별 목표가 · 손절가 (비용 뺀 뒤 수익률 기준)</div><div data-r="c4tbl"></div></div></div>' +
                 // ⑥ 현금화: 필요한 원화 → 팔아야 할 수량 · 실제 받는 돈 · 출금 예상일
                 '<div class="cz-p cz-big cz-cash" data-c="6"><div class="cz-col">' + 칸('c6amt', '필요한 현금 (원)', '예: 5,000,000') +
-                    '<label class="cz-f"><span>매도 시각 <small class="kr-0">(비우면 지금)</small></span><span class="cz-in"><input data-k="c6at" type="datetime-local" autocomplete="off"><button type="button" data-a="now6">지금</button></span></label>' +
-                    (미 ? 칸('c6cx', '환전 비용 (%, 달러 → 원)', '보통 0 ~ 0.5') : '') + 칸('c6adj', '출금일 보정 (영업일, 보통 0)', '0') + '</div>' +
+                    '<label class="cz-f"><span>매도 시각 (한국 시간)</span><small class="cz-hint" data-r="c6atn"></small><span class="cz-in"><input data-k="c6at" type="datetime-local" autocomplete="off"><button type="button" data-a="now6" title="지금 한국 시각으로 (계속 따라감)">지금</button></span></label>' +
+                    (미 ? '<label class="cz-f"><span>환전 비용 (%, 달러 → 원으로 바꿀 때)</span><small class="cz-hint">증권사 환전 수수료 · 예: 환율 우대 95%면 0.05 · 우대 90%면 0.1 · 모르면 비워 두기 (0)</small><span class="cz-in"><input data-k="c6cx" inputmode="decimal" autocomplete="off" placeholder="예: 0.05"></span></label>' : '') +
+                    '<label class="cz-f"><span>출금일 보정 (영업일)</span><small class="cz-hint">보통은 비워 두기 (0) · 키움에서 실제 출금일이 여기보다 하루 늦으면 1</small><span class="cz-in"><input data-k="c6adj" inputmode="decimal" autocomplete="off" placeholder="예: 0"></span></label>' + '</div>' +
                     '<div class="cz-col">' + 결('c6q', '팔아야 할 수량', 1) + 결('c6got', '실제 받는 돈 (수수료' + (미 ? '·환전' : '·세금') + ' 뺀 뒤)') + 결('c6day', '출금 예상일', 1) + 결('c6left', '팔고 남는 수량') + 결('c6pl', '이번 매도 실현 손익 (평단 기준)') + '</div>' +
                     '<div class="cz-col cz-wide"><div class="cz-sub">언제 팔면 언제 받나 (한국 시각)</div><div data-r="c6guide"></div></div></div>' +
                 // ⑤ 일반 계산기
@@ -15006,7 +15013,7 @@
                 if (b.hasAttribute('data-ct')) { S2.탭 = b.getAttribute('data-ct'); 계저장(mm); 계산기갱신(mm); return; }
                 if (b.hasAttribute('data-c1')) { S2.c1모드 = b.getAttribute('data-c1'); 계저장(mm); 계산기갱신(mm); return; }
                 var a = b.getAttribute('data-a');
-                if (a === 'now6') { S2.c6at = ''; var i6 = el.querySelector('input[data-k="c6at"]'); if (i6) i6.value = ''; 계저장(mm); 계산기갱신(mm); return; }
+                if (a === 'now6') { S2.c6at = ''; var i6 = el.querySelector('input[data-k="c6at"]'); if (i6) i6.value = 한국입력값(new Date()); 계저장(mm); 계산기갱신(mm); return; }
                 if (a === 'live') { var k = b.getAttribute('data-k'); delete S2.고정[k]; delete S2[k]; var i = el.querySelector('input[data-k="' + k + '"]'); if (i) i.value = ''; 계저장(mm); 계산기갱신(mm); return; }
                 var 화 = el.querySelector('[data-r="dp"]'), 식칸 = el.querySelector('[data-r="ex"]');
                 S2.식 = S2.식 || ''; S2.화면 = S2.화면 || '0';
@@ -15128,7 +15135,7 @@
                     var 모자 = 보 && q6 > 보.수;
                     if (모자) { var 전량 = 보.수 * 한주원; 넣('c6q', 콤(q6) + '주', '보유 ' + 콤(보.수, 보.수 % 1 ? 4 : 0) + '주뿐 · 전량 팔아도 ' + 원(필 - 전량) + ' 부족 (전량 = ' + 원(전량) + ')', 'cz-r2'); }
                     else 넣('c6q', 콤(q6) + '주', 단가(p) + ' 기준 · 한 주 팔면 ' + 원(한주원), 'cz-g');
-                    넣('c6got', 원(받), (미 ? '$' + 콤(받달, 2) + ' × ' + 콤(fx, 2) + (cx > 0 ? ' − 환전 ' + 퍼(cx * 100).replace('+', '') : '') + ' · ' : '') + '필요 금액보다 ' + 원(받 - 필) + ' 더 받음', '');
+                    넣('c6got', 원(받), (미 ? '$' + 콤(받달, 2) + ' × 환율 ' + 콤(fx, 2) + (cx > 0 ? ' − 환전 ' + 퍼(cx * 100).replace('+', '') : '') + ' (1달러 → 약 ' + 원(fx * (1 - cx)) + ') · ' : '') + '필요 금액보다 ' + 원(받 - 필) + ' 더 받음', '');
                     if (보) {
                         var 남 = 보.수 - q6;
                         넣('c6left', 남 >= 0 ? 콤(남, 남 % 1 ? 4 : 0) + '주' : '0주', 남 > 0 ? '남는 평가 ' + (미 ? '$' + 콤(남 * p, 2) + ' = ' + 원(남 * p * fx) : 원(남 * p)) : '전량 매도', '');
@@ -15136,7 +15143,10 @@
                         넣('c6pl', 미 ? 돈(손, 1) + ' · ' + 원(손 * fx, 1) : 원(손, 1), '평단 ' + 단가(보.가) + ' · 수익률 ' + 퍼(손 / (팔수 * 보.가) * 100) + (미 ? ' · 원화는 지금 환율 기준' : ''), 쪽(손));
                     } else { 넣('c6left', '─', '보유 종목이 아니라 보유 수량을 모릅니다', 'kr-0'); 넣('c6pl', '─', '보유 종목일 때만 계산', 'kr-0'); }
                 }
-                var 시 = S.c6at ? new Date(S.c6at) : new Date(); if (isNaN(시.getTime())) 시 = new Date();
+                var 시 = S.c6at ? new Date(Date.parse(S.c6at + (S.c6at.length <= 16 ? ':00' : '') + '+09:00')) : new Date(); if (isNaN(시.getTime())) 시 = new Date();   // 입력은 한국 시간
+                var i6 = el.querySelector('input[data-k="c6at"]'); if (i6 && !S.c6at && i6.ownerDocument.activeElement !== i6) { var 지 = 한국입력값(new Date()); if (i6.value !== 지) i6.value = 지; }
+                var n6 = el.querySelector('[data-r="c6atn"]'); if (n6) { var 글6 = S.c6at ? '직접 넣은 시각으로 계산 중 · [지금]을 누르면 지금 시각을 따라감' : '지금 한국 시각을 따라가는 중 · 날짜·시각을 바꾸면 그 시각으로 계산'; if (n6.textContent !== 글6) n6.textContent = 글6; }
+                var f6 = el.querySelector('[data-r="c6fx"]'); if (f6) { var 환글 = fx > 0 ? '현재 환율 <b>' + 콤(fx, 2) + '원</b> / 달러 · ' + (S.고정.fx ? '직접 넣은 값 (위 환율 칸)' : '실시간') + ' · 1달러 팔면 약 ' + 원(fx * (1 - (계값(S, 'c6cx', 0) / 100))) + ' 받음' : '환율을 받는 중 · 위 환율 칸에 직접 넣어도 됩니다'; if (f6._h !== 환글) { f6.innerHTML = 환글; f6._h = 환글; } }
                 var 결과 = 출금계산(m, 시, 보정);
                 넣('c6day', 짧은날(결과.출금), (S.c6at ? 한국시각글(시) + ' 매도' : '지금 매도') + ' · ' + 결과.세션 + ' → ' + (미 ? '미국 체결 ' + 짧은날(결과.체결) + ' → 미국 결제 ' + 짧은날(결과.결제) + ' (T+1)' : '체결 ' + 짧은날(결과.체결) + ' → 결제 ' + 짧은날(결과.결제) + ' (T+2)') + ' → 출금 ' + 짧은날(결과.출금), 'cz-b');
                 var 가 = el.querySelector('[data-r="c6guide"]');
@@ -15171,7 +15181,7 @@
         //   - 계산기는 [미장 | 국장] 고름 (처음엔 지금 보는 시장)
         // ════════════════════════════════════════════════════════
         var 창들 = {}, 창순서 = 9990;
-        var 창기본 = { 보유: { w: 1040, h: 660 }, 계산기: { w: 560, h: 680 } };
+        var 창기본 = { 보유: { w: 1040, h: 660 }, 계산기: { w: 660, h: 780 } };
         var 외창 = {};   // 이름 → { win, 종류: 'pip'(항상 위 떠 있는 창) | 'popup'(일반 새 창) }
         function 창문서들() { var a = [document]; Object.keys(외창).forEach(function (k) { var x = 외창[k]; try { if (x && x.win && !x.win.closed) a.push(x.win.document); } catch (e) { } }); return a; }
         function 찾기(id) { var d = 창문서들(); for (var i = 0; i < d.length; i++) { var e = d[i].getElementById(id); if (e) return e; } return null; }
