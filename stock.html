@@ -3091,6 +3091,19 @@
         .pm-q input:focus { outline: none; border-color: #ffdf00; } .pm-q button { font: inherit; font-size: 16px; font-weight: 800; padding: 0 18px; border-radius: 8px; border: 0; background: #ffdf00; color: #111; cursor: pointer; }
         .pm-sq { font-size: 14px; color: #b9c0d0; margin-bottom: 8px; } .pm-x { font: inherit; font-size: 12.5px; padding: 1px 8px; border-radius: 6px; border: 1px solid #2a3042; background: #121624; color: #b3bbcc; cursor: pointer; margin-left: 6px; }
         .pm-note { font-size: 12.5px; color: #7d8598; line-height: 1.5; }
+        .pm-bar2 { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; } .pm-bl { font-size: 13.5px; color: #9aa2b5; font-weight: 700; }
+        .pm-sort button, .pm-cats button { font-size: 14px; padding: 5px 12px; }
+        .pm-cats { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+        .pm-cats button { font: inherit; font-size: 14.5px; font-weight: 800; padding: 6px 13px; border-radius: 8px; border: 1px solid #2a3042; background: #121624; color: #aab2c4; cursor: pointer; } .pm-cats button.on { background: #ffdf00; color: #111; border-color: #ffdf00; }
+        .pm-sec h5 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; } .pm-hb { margin-left: auto; display: flex; gap: 6px; }
+        .pm-hb button, .pm-edbar button, .pm-pin { font: inherit; font-size: 13.5px; font-weight: 800; padding: 4px 11px; border-radius: 7px; border: 1px solid #2f3a55; background: #172038; color: #a9c2ff; cursor: pointer; }
+        .pm-hb button.on { background: #ffdf00; color: #111; border-color: #ffdf00; }
+        .pm-pin { color: #111; background: #7fdcc6; border-color: #7fdcc6; } .pm-pinned { font-size: 12.5px; color: #7fdcc6; font-weight: 800; }
+        .pm-edbar { font-size: 13.5px; color: #b9c0d0; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .pm-ed { display: inline-flex; gap: 4px; } .pm-ed button { font: inherit; font-size: 14px; font-weight: 800; width: 32px; height: 28px; border-radius: 6px; border: 1px solid #2f3a55; background: #172038; color: #cfe0ff; cursor: pointer; } .pm-ed button[data-pe="del"] { color: #ff9f9f; border-color: #6b2f3a; }
+        .pm-src.u { color: #ffd27a; border-color: #6b5520; } .pm-row.gone { opacity: .7; cursor: default; }
+        #us-pmc { cursor: pointer; } .pmc-l { display: flex; align-items: baseline; gap: 8px; padding: 3px 0; font-size: 14px; } .pmc-l span { flex: 1 1 auto; min-width: 0; color: #b9c0d0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .pmc-l b { font-size: 15.5px; color: #ffdf00; white-space: nowrap; }
+        .pmc-l.mv span { color: #ffc27a; } .pmc-l em { font-style: normal; font-size: 12.5px; font-weight: 800; } .pmc-l em.up { color: #ff6b6b; } .pmc-l em.dn { color: #5b9bff; } .pmc-more { font-size: 12.5px; color: #8b93a7; margin-top: 4px; }
         @container (max-width: 560px) { .pm-c { grid-template-columns: minmax(0, 1fr) 64px 40px; } .pm-bar { display: none; } .pm-due { margin-left: 0; width: 100%; } }
         /* 현금화: 큰 글자 · 가이드 */
         .cz-cash .cz-r.big b { font-size: 32px; }
@@ -14451,7 +14464,7 @@
             var v = document.createElement('div'); v.className = 'us-view'; v.id = 'us-view';
             function 카드(id, 제목, 작은, 넓게) { return '<div class="kr-card' + (넓게 ? ' kr-wide' : '') + '"><h4><span id="' + id + '-h">' + 제목 + '</span> <small id="' + id + '-t">' + (작은 || '') + '</small></h4><div id="' + id + '"></div></div>'; }
             v.innerHTML =
-                '<div class="kr-pane us-pane" data-t="시장">' + 카드('us-pj', '오늘 장 판정', '', 1) + 카드('us-idx', '주요 지표', '지수 · 선물 · 금리 · 달러 · 원자재') + 카드('us-kr', '국장 영향', '다음 국내 장에 줄 영향 (규칙으로 만든 문장)') +
+                '<div class="kr-pane us-pane" data-t="시장">' + 카드('us-pj', '오늘 장 판정', '', 1) + 카드('us-pmc', '예측 시장', '칼시 · 폴리마켓 확률 · 눌러서 창 열기', 1) + 카드('us-idx', '주요 지표', '지수 · 선물 · 금리 · 달러 · 원자재') + 카드('us-kr', '국장 영향', '다음 국내 장에 줄 영향 (규칙으로 만든 문장)') +
                     카드('us-sec', '섹터 강약', 'S&P 500 섹터 ETF 11개 · 등락률 순') + 카드('us-thm', '테마 · 지수 ETF', '반도체 · 소프트웨어 · 소형주 등') + 카드('us-brd', '관심 종목 강약', '상승 · 하락 수와 강한 · 약한 종목', 1) + '</div>' +
                 '<div class="kr-pane us-pane" data-t="종목"><div class="kr-card"><h4>관심 종목 <small id="us-tbl-t"></small><span class="kr-sort" id="us-sort"></span></h4><div id="us-tbl"></div></div></div>' +
                 '<div class="kr-pane us-pane" data-t="일정">' + 카드('us-cal', '이번 주 일정', '경제지표 · FOMC · 관심 종목 실적 · 옵션 만기 · 시각은 한국 시각', 1) + '</div>' +
@@ -14525,7 +14538,7 @@
             if (상태.모드 !== 'us' || 미.탭 === '차트') return;
             var t = 미.탭;
             try {
-                if (t === '시장') { 미판정(); 미지표(); 미국장영향(); 미섹터그리기(); 미강약(); }
+                if (t === '시장') { 미판정(); 미지표(); 미국장영향(); 미섹터그리기(); 미강약(); 예요약그리기(); }
                 else if (t === '종목') 미종목();
                 else if (t === '일정') 미일정();
                 else if (t === '신호') { 미신호(); 멈춤그리기(document.getElementById('us-fz')); }
@@ -15205,12 +15218,19 @@
         //   - 계산기는 [미장 | 국장] 고름 (처음엔 지금 보는 시장)
         // ════════════════════════════════════════════════════════
         // ════════════════════════════════════════════════════════
-        // ★ 예측 시장 창 (칼시 · 폴리마켓): 핵심 이벤트 확률 · 검색 · 한글/원문
-        //   - 워커 /pm/core (1분마다, 창이 열려 있을 때만) · /pm/search (검색할 때만)
-        //   - 확률 = 시장 가격 (0.82달러 = 82%) · 변화 = 24시간 전보다 %포인트
-        //   - 한글 검색: 사전 · 종목 이름표로 영어로 바꿔 보냄 (남은 한글은 워커가 번역)
+        // ★ 예측 시장 (칼시 · 폴리마켓): 핵심 목록 · 오늘 급변 · 찾기 창 · 급변 알림 · 시장 탭 요약
+        //   - 핵심 목록 = 기본 규칙 8개 + [+ 고정]한 시장 (이 기기에 저장 sz_pm_list) · [편집]으로 빼기 · 순서
+        //   - 창이 열려 있으면 1분마다 · 닫혀 있으면 5분마다 (요약 · 알림용) · 화면이 보일 때만
+        //   - 급변 알림: 같은 선택지 확률이 1시간 안에 10%포인트 넘게 바뀌면 알림 (같은 것은 2시간에 한 번)
+        //   - 정렬: 기본 순서 · 마감 빠른 순 · 거래량 순 · 변화 큰 순 (모든 목록 공통 · sz_pm_sort)
         // ════════════════════════════════════════════════════════
-        var 예 = { core: 읽기('sz_pm_core', true), 받음: 0, 검색: null, 펼침: {}, 언어: 읽기('sz_pm_lang') === 'en' ? 'en' : 'ko', 받는중: false, 오류: '' };
+        var 예기본 = ['fed', 'cpi', 'jobs', 'spx', 'ndx', 'wti', 't10', 'rec'];
+        var 예분류 = [['hot', '인기'], ['econ', '금리 · 경제'], ['commod', '원자재'], ['bond', '채권 · 금리'], ['policy', '정책 · 관세'], ['war', '전쟁 · 지정학'], ['corp', '기업'], ['crypto', '암호화폐']];
+        var 예정렬이름 = [['기본', '기본 순서'], ['마감', '마감 빠른 순'], ['거래', '거래량 순'], ['변화', '변화 큰 순']];
+        var 예 = { core: 읽기('sz_pm_core', true), 받음: 0, 받는중: false, 오류: '', 펼침: {}, 언어: 읽기('sz_pm_lang') === 'en' ? 'en' : 'ko',
+            설정: (function () { var v = 읽기('sz_pm_list', true); return Array.isArray(v) && v.length ? v.slice(0, 24) : 예기본.slice(); })(),
+            정렬: 읽기('sz_pm_sort') || '기본', 편집: false, movers: null, mv받음: 0, 찾기: { 모드: '분류', cat: 'hot', 결과: null, 중: false, q: '' }, 기록: {}, 알림: {} };
+        if (!예정렬이름.some(function (x) { return x[0] === 예.정렬; })) 예.정렬 = '기본';
         var 예사전 = { '금리': 'Fed rate', '기준금리': 'Fed rate', '연준': 'Fed', '금리인하': 'rate cut', '인하': 'rate cut', '인상': 'rate hike', '물가': 'CPI inflation', '인플레이션': 'inflation', '소비자물가': 'CPI', 'cpi': 'CPI',
             '고용': 'jobs report', '일자리': 'jobs', '실업률': 'unemployment rate', '경기침체': 'recession', '침체': 'recession', '관세': 'tariff', '유가': 'oil price', '원유': 'oil', '국제유가': 'oil price', '금값': 'gold price', '금': 'gold', '은값': 'silver price',
             '비트코인': 'Bitcoin', '이더리움': 'Ethereum', '코인': 'crypto', '합병': 'merger', '인수': 'acquisition', '상장': 'IPO', '실적': 'earnings', '전쟁': 'war', '휴전': 'ceasefire', '종전': 'end of war', '평화협정': 'peace deal',
@@ -15228,20 +15248,82 @@
                 return w;
             }).join(' ');
         }
+        function 예설정저장() { 저장('sz_pm_list', 예.설정); 예.받음 = 0; 예받기(true); }
         function 예받기(강제) {
             if (예.받는중 || (!강제 && Date.now() - 예.받음 < 60000)) return;
             var u = URL0(); if (!u) return;
             예.받는중 = true; 예.받음 = Date.now();
-            fetch(u + '/pm/core', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) { 예.받는중 = false; if (j && j.목록) { 예.core = j; 예.오류 = ''; 저장('sz_pm_core', j); } else 예.오류 = (j && j.error) || '받기 실패'; 예그리기(); })
-                .catch(function () { 예.받는중 = false; 예.오류 = '연결 실패'; 예그리기(); });
+            var 설 = 예.설정.join(',');
+            fetch(u + '/pm/core?c=' + encodeURIComponent(설), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+                예.받는중 = false;
+                if (j && j.목록) { 예.core = j; 예.core.설정 = 설; 예.오류 = ''; 저장('sz_pm_core', j); 예급변점검(j.목록); } else 예.오류 = (j && j.error) || '받기 실패';
+                예그리기(); 예요약그리기();
+            }).catch(function () { 예.받는중 = false; 예.오류 = '연결 실패'; 예그리기(); });
+            if (Date.now() - 예.mv받음 > 5 * 60000) {
+                예.mv받음 = Date.now();
+                fetch(u + '/pm/movers', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) { if (j && j.목록) { 예.movers = j; 예그리기(); 예요약그리기(); } }).catch(function () { });
+            }
+        }
+        // 1분마다: 예측 창이 열려 있으면 1분 · 아니면 5분 간격으로 받음 (화면이 보일 때만)
+        setInterval(function () {
+            if (document.visibilityState !== 'visible' || !URL0()) return;
+            if (창열림('예측')) 예받기(false); else if (Date.now() - 예.받음 > 5 * 60000) 예받기(true);
+        }, 60000);
+        setTimeout(function () { if (URL0()) 예받기(true); }, 15000);
+        function 예키(x) { return x.고정 || x.id; }
+        function 예급변점검(목록) {
+            var 지금 = Date.now();
+            목록.forEach(function (x) {
+                if (x.없음 || !x.선택) return;
+                var 이름 = x.한 || x.이름 || x.원문;
+                x.선택.slice().sort(function (a, b) { return b.p - a.p; }).slice(0, 3).forEach(function (c) {
+                    var k = 예키(x) + '|' + c.l, h = 예.기록[k] = (예.기록[k] || []).filter(function (r) { return 지금 - r.t < 70 * 60000; });
+                    h.push({ t: 지금, p: c.p });
+                    var 옛 = h.filter(function (r) { return 지금 - r.t >= 50 * 60000; })[0]; if (!옛) return;
+                    var 차 = c.p - 옛.p; if (Math.abs(차) < 0.10 || 지금 - (예.알림[k] || 0) < 2 * 3600e3) return;
+                    예.알림[k] = 지금;
+                    var 글 = '예측 시장 급변: ' + 이름 + ' · ' + (c.lk || c.l) + ' ' + 예퍼(옛.p) + ' → ' + 예퍼(c.p) + ' (' + Math.round((지금 - 옛.t) / 60000) + '분)';
+                    try { if (typeof 알림_띄우기 === 'function' && (typeof 시장경보_담당 !== 'function' || 시장경보_담당())) 알림_띄우기({ 종류: '시장', 종목: '예측', 시각: 알림_시각(), 글: 글 + '\n확률이 빠르게 움직임 · 관련 뉴스와 종목 확인', 짧은글: '예측 급변', 유지ms: 30000 }); } catch (e) { }
+                });
+            });
         }
         function 예검색(q) {
-            q = String(q || '').trim(); if (!q) { 예.검색 = null; 예그리기(); return; }
+            q = String(q || '').trim(); var F = 예.찾기;
+            if (!q) { F.모드 = '분류'; 예분류받기(F.cat); return; }
             var u = URL0(); if (!u) return;
-            var en = 예영어(q); 예.검색 = { q: q, 중: true, 목록: [] }; 예그리기();
+            var en = 예영어(q); F.모드 = '검색'; F.q = q; F.중 = true; F.결과 = null; 예찾기그리기();
             fetch(u + '/pm/search?q=' + encodeURIComponent(q) + (en !== q ? '&en=' + encodeURIComponent(en) : ''), { cache: 'no-store' }).then(function (r) { return r.json(); })
-                .then(function (j) { if (!예.검색 || 예.검색.q !== q) return; 예.검색 = j && j.목록 ? j : { q: q, 목록: [], 오류: (j && j.error) || '검색 실패' }; 예.검색.q = q; 예그리기(); })
-                .catch(function () { if (예.검색 && 예.검색.q === q) { 예.검색 = { q: q, 목록: [], 오류: '연결 실패' }; 예그리기(); } });
+                .then(function (j) { if (F.모드 !== '검색' || F.q !== q) return; F.중 = false; F.결과 = j && j.목록 ? j : { 목록: [], 오류: (j && j.error) || '검색 실패' }; 예찾기그리기(); })
+                .catch(function () { if (F.q === q) { F.중 = false; F.결과 = { 목록: [], 오류: '연결 실패' }; 예찾기그리기(); } });
+        }
+        function 예분류받기(cat) {
+            var F = 예.찾기, u = URL0(); if (!u) return;
+            F.모드 = '분류'; F.cat = cat; F.중 = true; F.결과 = null; 예찾기그리기();
+            fetch(u + '/pm/browse?cat=' + cat, { cache: 'no-store' }).then(function (r) { return r.json(); })
+                .then(function (j) { if (F.모드 !== '분류' || F.cat !== cat) return; F.중 = false; F.결과 = j && j.목록 ? j : { 목록: [], 오류: (j && j.error) || '받기 실패' }; 예찾기그리기(); })
+                .catch(function () { if (F.cat === cat) { F.중 = false; F.결과 = { 목록: [], 오류: '연결 실패' }; 예찾기그리기(); } });
+        }
+        function 예찾기열기(q) {
+            창열기('예측찾기');
+            if (q) { var el = 찾기('sz-pms'), f = el && el.querySelector('.pm-q'); if (f) f.q.value = q; 예검색(q); }
+            else if (!예.찾기.결과 && !예.찾기.중) 예분류받기(예.찾기.cat);
+        }
+        function 예고정(x, 검색어) {
+            if (!x.슬러그) return;
+            var e = 'p:' + encodeURIComponent(x.슬러그) + '~' + encodeURIComponent(String(검색어 || x.원문 || '').replace(/[,~]/g, ' ').slice(0, 60)) + '~' + encodeURIComponent(String(x.한 || x.원문 || '').replace(/[,~]/g, ' ').slice(0, 60));
+            if (예고정됨(x)) return;
+            if (예.설정.length >= 24) { try { 알림_잠깐('핵심 목록은 24개까지입니다 · 편집에서 빼고 다시 추가해 주세요'); } catch (er) { } return; }
+            예.설정.push(e); 예설정저장(); 예찾기그리기(); 예그리기();
+        }
+        function 예고정됨(x) { return !!x.슬러그 && 예.설정.some(function (e) { return e.indexOf('p:' + encodeURIComponent(x.슬러그) + '~') === 0; }); }
+        function 예정렬(목록) {
+            var m = 예.정렬; if (m === '기본' || 예.편집) return 목록;
+            function 변(x) { return Math.max.apply(null, (x.선택 || []).map(function (c) { return Math.abs(+c.ch || 0); }).concat([0])); }
+            return 목록.slice().sort(function (a, b) {
+                if (m === '마감') { var ta = Date.parse(a.마감), tb = Date.parse(b.마감); return (isFinite(ta) ? ta : 9e15) - (isFinite(tb) ? tb : 9e15); }
+                if (m === '거래') return (+b.거래24 || 0) - (+a.거래24 || 0);
+                return 변(b) - 변(a);
+            });
         }
         function 예퍼(p) { p = +p || 0; return p > 0 && p < 0.01 ? '1% 미만' : p > 0.99 && p < 1 ? '99% 초과' : Math.round(p * 100) + '%'; }
         function 예변(ch) { var v = Math.round((+ch || 0) * 100); return Math.abs(v) < 1 ? '' : '<em class="' + (v > 0 ? 'up' : 'dn') + '">' + (v > 0 ? '▲' : '▼') + Math.abs(v) + '</em>'; }
@@ -15257,52 +15339,130 @@
             if (남 < 36 * 3600e3) return 날 + ' ' + 시 + ' 마감 · ' + (남 < 3600e3 ? Math.max(1, Math.round(남 / 60000)) + '분 남음' : Math.round(남 / 3600e3) + '시간 남음');
             return 날 + ' 마감 · D-' + Math.ceil(남 / 86400e3);
         }
-        function 예줄(x, 앞) {
-            var 한 = 예.언어 === 'ko', id = 앞 + (x.id || x.원문), 열림 = !!예.펼침[id];
+        function 예이름(x, c) { var 한 = 예.언어 === 'ko', l = 한 ? (c.lk || c.l) : c.l; return x.선택.length === 1 && /^(yes|예)$/i.test(c.l) ? (한 ? '예 (일어남)' : 'Yes') : l; }
+        function 예줄(x, 앞, 옵) {
+            옵 = 옵 || {};
+            var 한 = 예.언어 === 'ko', id = 앞 + 예키(x), 열림 = !!예.펼침[id], 키 = 예키(x);
+            var 편 = 옵.편집 ? '<span class="pm-ed"><button type="button" data-pe="up" data-k="' + esc(키) + '" title="위로">▲</button><button type="button" data-pe="down" data-k="' + esc(키) + '" title="아래로">▼</button><button type="button" data-pe="del" data-k="' + esc(키) + '" title="빼기">−</button></span>' : '';
+            if (x.없음) return '<div class="pm-row gone"><div class="pm-h"><span class="pm-src p">고정</span><b class="pm-t">' + esc(x.원문 || '') + '</b><small class="pm-due">끝났거나 찾지 못함 · [편집]에서 빼기</small>' + 편 + '</div></div>';
             var 제목 = 한 ? (x.한 || x.원문) : (x.원문 || x.한), 부 = 한 ? (x.부한 || x.부 || '') : (x.부 || '');
-            function 이름(c) { var l = 한 ? (c.lk || c.l) : c.l; return x.선택.length === 1 && /^(yes|예)$/i.test(c.l) ? (한 ? '예 (일어남)' : 'Yes') : l; }
             var 위 = x.선택.slice().sort(function (a, b) { return b.p - a.p; }).slice(0, x.택1 ? 3 : 1);
-            function 막대(c, 큰) { return '<div class="pm-c' + (큰 ? ' top' : '') + '"><span class="pm-l" title="' + esc(c.l) + '">' + esc(이름(c)) + '</span><span class="pm-bar"><i style="width:' + Math.max(1, Math.min(100, c.p * 100)).toFixed(1) + '%"></i></span><b>' + 예퍼(c.p) + '</b>' + 예변(c.ch) + '</div>'; }
-            var h = '<div class="pm-row' + (열림 ? ' open' : '') + '" data-pid="' + esc(id) + '"><div class="pm-h"><span class="pm-src ' + (x.출처 === '칼시' ? 'k' : 'p') + '">' + esc(x.출처) + '</span><b class="pm-t">' + esc(제목) + '</b>' + (부 ? '<span class="pm-sub">' + esc(부) + '</span>' : '') + '<small class="pm-due">' + esc(예마감(x.마감)) + '</small></div>' +
+            function 막대(c, 큰) { return '<div class="pm-c' + (큰 ? ' top' : '') + '"><span class="pm-l" title="' + esc(c.l) + '">' + esc(예이름(x, c)) + '</span><span class="pm-bar"><i style="width:' + Math.max(1, Math.min(100, c.p * 100)).toFixed(1) + '%"></i></span><b>' + 예퍼(c.p) + '</b>' + 예변(c.ch) + '</div>'; }
+            var 핀 = 옵.고정단추 && x.슬러그 ? (예고정됨(x) ? '<span class="pm-pinned">핵심에 있음</span>' : '<button type="button" class="pm-pin" data-pin="' + esc(x.id) + '">+ 고정</button>') : '';
+            var h = '<div class="pm-row' + (열림 ? ' open' : '') + '" data-pid="' + esc(id) + '"><div class="pm-h"><span class="pm-src ' + (x.출처 === '칼시' ? 'k' : 'p') + '">' + esc(x.출처) + '</span>' + (x.고정 ? '<span class="pm-src u">고정</span>' : '') + '<b class="pm-t">' + esc(제목) + '</b>' + (부 ? '<span class="pm-sub">' + esc(부) + '</span>' : '') + '<small class="pm-due">' + esc(예마감(x.마감)) + '</small>' + 핀 + 편 + '</div>' +
                 '<div class="pm-cs">' + 위.map(function (c, i) { return 막대(c, i === 0); }).join('') + '</div>' +
-                '<div class="pm-m">24시간 거래 ' + 예양(x.거래24, x.단위) + ' · 누적 ' + 예양(x.거래, x.단위) + (x.선택.length > 위.length ? ' · 선택지 ' + x.선택.length + '개 (눌러서 모두 보기)' : ' · 눌러서 자세히') + '</div>';
-            if (열림) h += '<div class="pm-more">' + (x.선택.length > 1 ? '<div class="pm-all">' + x.선택.map(function (c) { return 막대(c, false); }).join('') + '</div>' : '') +
+                '<div class="pm-m">24시간 거래 ' + 예양(x.거래24, x.단위) + ' · 누적 ' + 예양(x.거래, x.단위) + (x.대체 ? ' · ' + esc(x.대체) : '') + (x.선택.length > 위.length ? ' · 선택지 ' + x.선택.length + '개 (눌러서 모두 보기)' : ' · 눌러서 자세히') + '</div>';
+            if (열림) h += '<div class="pm-more">' + (x.선택.length > 1 ? '<div class="pm-all">' + 예선택순(x).map(function (c) { return 막대(c, false); }).join('') + '</div>' : '') +
                 '<div class="pm-orig">' + esc(한 ? x.원문 : (x.한 || '')) + (x.부 ? ' · ' + esc(한 ? x.부 : (x.부한 || '')) : '') + '</div>' +
                 '<a class="pm-link" href="' + esc(x.링크) + '" target="_blank" rel="noopener">' + esc(x.출처) + '에서 보기</a></div>';
             return h + '</div>';
+        }
+        // 펼친 목록: 가격 구간이면 숫자 순 · 아니면 확률 순
+        function 예선택순(x) {
+            function 수(c) { var m = /-?\d[\d,]*(?:\.\d+)?/.exec(String(c.l).replace(/\$/g, '')); return m ? parseFloat(m[0].replace(/,/g, '')) : NaN; }
+            var 숫자 = x.선택.every(function (c) { return isFinite(수(c)); });
+            return x.선택.slice().sort(숫자 ? function (a, b) { return 수(a) - 수(b); } : function (a, b) { return b.p - a.p; });
+        }
+        function 예정렬단추() { return '<span class="kr-seg pm-sort">' + 예정렬이름.map(function (x) { return '<button type="button" data-ps="' + x[0] + '" class="' + (예.정렬 === x[0] ? 'on' : '') + '">' + x[1] + '</button>'; }).join('') + '</span>'; }
+        function 예공통클릭(el, 다시) {
+            el.addEventListener('click', function (e) {
+                var b = e.target.closest('button[data-pl]'); if (b) { 예.언어 = b.getAttribute('data-pl'); 저장('sz_pm_lang', 예.언어); 예그리기(); 예찾기그리기(); return; }
+                b = e.target.closest('button[data-ps]'); if (b) { 예.정렬 = b.getAttribute('data-ps'); 저장('sz_pm_sort', 예.정렬); 예그리기(); 예찾기그리기(); return; }
+                if (e.target.closest('a') || e.target.closest('button')) return;
+                var r = e.target.closest('.pm-row'); if (r && r.getAttribute('data-pid')) { var id = r.getAttribute('data-pid'); 예.펼침[id] = !예.펼침[id]; 다시(); }
+            });
         }
         function 예그리기() {
             var el = 찾기('sz-pm'); if (!el) return;
             if (!el._뼈) {
                 el.innerHTML = '<div class="pm-top"><span class="pm-st" data-r="st"></span><span class="kr-seg pm-lang"><button type="button" data-pl="ko">한글</button><button type="button" data-pl="en">원문</button></span></div>' +
-                    '<div class="pm-sec"><h5>핵심 이벤트 <small>금리 · 물가 · 고용 · 지수 · 유가 · 국채 · 경기</small></h5><div data-r="core"></div></div>' +
-                    '<div class="pm-sec"><h5>검색 <small>한글 · 영어 모두 (예: 테슬라, 우크라이나 휴전, 관세, Bitcoin)</small></h5><form class="pm-q"><input name="q" placeholder="예: 테슬라 합병, 금리, 우크라이나 휴전" autocomplete="off"><button type="submit">찾기</button></form><div data-r="sr"></div></div>' +
-                    '<div class="pm-note">확률 = 그 결과에 거는 계약 가격 (0.82달러 = 82%) · ▲▼ = 24시간 전보다 %포인트 · 거래가 적은 시장은 확률이 크게 흔들릴 수 있음 · 매매 판단은 본인</div>';
+                    '<div class="pm-bar2"><span class="pm-bl">정렬</span><span data-r="sort"></span></div>' +
+                    '<div class="pm-sec"><h5>핵심 목록 <small data-r="coreh"></small><span class="pm-hb"><button type="button" data-a="pmadd">+ 항목 추가 · 찾기</button><button type="button" data-a="pmedit">편집</button></span></h5><div data-r="edbar"></div><div data-r="core"></div></div>' +
+                    '<div class="pm-sec"><h5>오늘 급변 <small>거래량 큰 시장 중 24시간에 10%포인트 넘게 움직인 것</small></h5><div data-r="mv"></div></div>' +
+                    '<div class="pm-note">확률 = 그 결과에 거는 계약 가격 (0.82달러 = 82%) · ▲▼ = 24시간 전보다 %포인트 · 1시간에 10%포인트 넘게 바뀌면 알림 · 거래가 적은 시장은 확률이 크게 흔들릴 수 있음 · 매매 판단은 본인</div>';
                 el._뼈 = 1;
             }
             if (!el._이벤트) {
                 el._이벤트 = 1;
+                예공통클릭(el, 예그리기);
                 el.addEventListener('click', function (e) {
-                    var b = e.target.closest('button[data-pl]'); if (b) { 예.언어 = b.getAttribute('data-pl'); 저장('sz_pm_lang', 예.언어); 예그리기(); return; }
-                    if (e.target.closest('a')) return;
-                    var r = e.target.closest('.pm-row'); if (r) { var id = r.getAttribute('data-pid'); 예.펼침[id] = !예.펼침[id]; 예그리기(); }
+                    var b = e.target.closest('button[data-a]'), a = b && b.getAttribute('data-a');
+                    if (a === 'pmadd') { 예찾기열기(''); return; }
+                    if (a === 'pmedit') { 예.편집 = !예.편집; 예그리기(); return; }
+                    if (a === 'pmreset') { 예.설정 = 예기본.slice(); 예설정저장(); 예그리기(); return; }
+                    var pe = e.target.closest('button[data-pe]'); if (!pe) return;
+                    var k = pe.getAttribute('data-k'), i = 예.설정.indexOf(k), 동 = pe.getAttribute('data-pe'); if (i < 0) return;
+                    if (동 === 'del') 예.설정.splice(i, 1);
+                    else { var j = 동 === 'up' ? i - 1 : i + 1; if (j < 0 || j >= 예.설정.length) return; var t = 예.설정[i]; 예.설정[i] = 예.설정[j]; 예.설정[j] = t; }
+                    저장('sz_pm_list', 예.설정);
+                    if (예.core && 예.core.목록) { var 맵 = {}; 예.core.목록.forEach(function (x) { 맵[예키(x)] = x; }); 예.core.목록 = 예.설정.map(function (kk) { return 맵[kk]; }).filter(Boolean); 예.core.설정 = 예.설정.join(','); }
+                    예그리기(); 예요약그리기();
                 });
-                el.addEventListener('submit', function (e) { e.preventDefault(); var f = e.target; 예검색(f.q.value); });
             }
             Array.prototype.forEach.call(el.querySelectorAll('button[data-pl]'), function (b) { b.classList.toggle('on', b.getAttribute('data-pl') === 예.언어); });
+            var so = el.querySelector('[data-r="sort"]'), sg = 예정렬단추(); if (so._h !== sg) { so.innerHTML = sg; so._h = sg; }
+            var eb = el.querySelector('button[data-a="pmedit"]'); eb.textContent = 예.편집 ? '편집 끝' : '편집'; eb.classList.toggle('on', 예.편집);
+            var ed = el.querySelector('[data-r="edbar"]'), edg = 예.편집 ? '<div class="pm-edbar">▲▼ 순서 · − 빼기 · 바뀐 순서는 이 기기에 저장 <button type="button" data-a="pmreset">기본값으로 되돌리기</button></div>' : ''; if (ed._h !== edg) { ed.innerHTML = edg; ed._h = edg; }
+            el.querySelector('[data-r="coreh"]').textContent = 예.설정.length + '개 · 기본 ' + 예.설정.filter(function (k) { return 예기본.indexOf(k) >= 0; }).length + ' · 고정 ' + 예.설정.filter(function (k) { return /^p:/.test(k); }).length;
             var c = 예.core, 코 = el.querySelector('[data-r="core"]'), st = el.querySelector('[data-r="st"]');
-            var 글 = !c ? (예.받는중 ? '받는 중…' : 예.오류 || '아직 없음') : c.목록.map(function (x) { return 예줄(x, 'c'); }).join('') || '<div class="kr-0">받은 이벤트가 없습니다</div>';
+            var 목 = c && c.목록 ? (c.설정 === 예.설정.join(',') ? c.목록 : 예.설정.map(function (k) { return c.목록.filter(function (x) { return 예키(x) === k; })[0]; }).filter(Boolean)) : null;
+            var 글 = !목 ? (예.받는중 ? '받는 중…' : 예.오류 || '아직 없음') : 예정렬(목).map(function (x) { return 예줄(x, 'c', { 편집: 예.편집 }); }).join('') || '<div class="kr-0">핵심 목록이 비었습니다 · [+ 항목 추가]</div>';
             if (코._h !== 글) { 코.innerHTML = 글; 코._h = 글; }
-            if (st) { var 시 = c && c.ms ? new Date(c.ms + 9 * 3600e3).toISOString().slice(11, 16) : '─'; var sg = '갱신 ' + 시 + ' (한국 시각) · 1분마다' + (예.오류 ? ' · ' + 예.오류 : '') + (c && c.ai === false && 예.언어 === 'ko' ? ' · 번역 연결 안 됨 (영어 그대로)' : ''); if (st.textContent !== sg) st.textContent = sg; }
-            var sr = el.querySelector('[data-r="sr"]'), S = 예.검색, 글2 = '';
-            if (S) {
-                글2 = '<div class="pm-sq">"' + esc(S.q) + '"' + (S.검색어 && S.검색어.toLowerCase() !== String(S.q).toLowerCase() ? ' → 영어 검색어 "' + esc(S.검색어) + '"' : '') + (S.중 ? ' · 찾는 중…' : ' · ' + (S.목록 || []).length + '개 (24시간 거래량 순)') + ' <button type="button" class="pm-x" data-a="pmclr">지우기</button></div>' +
-                    (S.오류 ? '<div class="kr-0">' + esc(S.오류) + '</div>' : '') + (S.목록 || []).map(function (x) { return 예줄(x, 's'); }).join('') + (!S.중 && !S.오류 && !(S.목록 || []).length ? '<div class="kr-0">진행 중인 시장이 없습니다 · 다른 말로 찾아 보세요 (영어 단어가 더 잘 찾아짐)</div>' : '');
+            if (st) { var 시 = c && c.ms ? new Date(c.ms + 9 * 3600e3).toISOString().slice(11, 16) : '─'; var sg2 = '갱신 ' + 시 + ' (한국 시각) · 1분마다' + (예.오류 ? ' · ' + 예.오류 : '') + (c && c.ai === false && 예.언어 === 'ko' ? ' · 번역: 구글 무료 (AI 연결 없음)' : ''); if (st.textContent !== sg2) st.textContent = sg2; }
+            var mv = el.querySelector('[data-r="mv"]'), 급 = 예급변목록(), 글3 = 급.length ? 예정렬(급).map(function (x) { return 예줄(x, 'm', { 고정단추: true }); }).join('') : '<div class="kr-0">' + (예.movers ? '지금은 크게 움직인 시장이 없습니다' : '받는 중…') + '</div>';
+            if (mv._h !== 글3) { mv.innerHTML = 글3; mv._h = 글3; }
+        }
+        function 예급변목록() {
+            var 목 = [], 본 = {};
+            ((예.core && 예.core.목록) || []).forEach(function (x) { if (!x.없음 && x.선택 && x.선택.some(function (cc) { return Math.abs(cc.ch) >= 0.10; })) { 목.push(x); 본[x.슬러그 || 예키(x)] = 1; } });
+            ((예.movers && 예.movers.목록) || []).forEach(function (x) { if (!본[x.슬러그 || x.id]) 목.push(x); });
+            return 목.slice(0, 6);
+        }
+        function 예찾기그리기() {
+            var el = 찾기('sz-pms'); if (!el) return;
+            var F = 예.찾기;
+            if (!el._뼈) {
+                el.innerHTML = '<form class="pm-q"><input name="q" placeholder="예: 테슬라 합병, 금리, 우크라이나 휴전, Bitcoin" autocomplete="off"><button type="submit">찾기</button></form>' +
+                    '<div class="pm-cats" data-r="cats"></div><div class="pm-bar2"><span class="pm-bl">정렬</span><span data-r="sort"></span><span class="kr-seg pm-lang"><button type="button" data-pl="ko">한글</button><button type="button" data-pl="en">원문</button></span></div>' +
+                    '<div data-r="head" class="pm-sq"></div><div data-r="list"></div>' +
+                    '<div class="pm-note">[+ 고정] = 예측 창 핵심 목록에 추가 (그 시장이 끝나면 같은 검색어의 다음 시장으로 자동으로 넘어감) · 한글로 찾으면 영어로 바꿔 찾음 (영어 단어가 더 잘 찾아짐)</div>';
+                el._뼈 = 1;
             }
-            if (sr._h !== 글2) { sr.innerHTML = 글2; sr._h = 글2; var x2 = sr.querySelector('[data-a="pmclr"]'); if (x2) x2.onclick = function (ev) { ev.stopPropagation(); 예.검색 = null; var f = el.querySelector('.pm-q'); if (f) f.q.value = ''; 예그리기(); }; }
+            if (!el._이벤트) {
+                el._이벤트 = 1;
+                예공통클릭(el, 예찾기그리기);
+                el.addEventListener('submit', function (e) { e.preventDefault(); 예검색(e.target.q.value); });
+                el.addEventListener('click', function (e) {
+                    var b = e.target.closest('button[data-cat]'); if (b) { var f = el.querySelector('.pm-q'); if (f) f.q.value = ''; 예분류받기(b.getAttribute('data-cat')); return; }
+                    b = e.target.closest('button[data-pin]'); if (b) { var id = b.getAttribute('data-pin'), 목 = (F.결과 && F.결과.목록) || [], x = 목.filter(function (y) { return y.id === id; })[0]; if (x) 예고정(x, F.모드 === '검색' ? (F.결과.검색어 || F.q) : x.원문); return; }
+                    if (e.target.closest('button[data-a="pmsclr"]')) { var f2 = el.querySelector('.pm-q'); if (f2) f2.q.value = ''; 예분류받기(F.cat); }
+                });
+            }
+            var ca = el.querySelector('[data-r="cats"]'), cg = 예분류.map(function (x) { return '<button type="button" data-cat="' + x[0] + '" class="' + (F.모드 === '분류' && F.cat === x[0] ? 'on' : '') + '">' + x[1] + '</button>'; }).join(''); if (ca._h !== cg) { ca.innerHTML = cg; ca._h = cg; }
+            var so = el.querySelector('[data-r="sort"]'), sg = 예정렬단추(); if (so._h !== sg) { so.innerHTML = sg; so._h = sg; }
+            Array.prototype.forEach.call(el.querySelectorAll('button[data-pl]'), function (b) { b.classList.toggle('on', b.getAttribute('data-pl') === 예.언어); });
+            var R = F.결과, hd = el.querySelector('[data-r="head"]'), li = el.querySelector('[data-r="list"]');
+            var 머 = F.모드 === '검색' ? '검색 "' + esc(F.q) + '"' + (R && R.검색어 && R.검색어.toLowerCase() !== F.q.toLowerCase() ? ' → 영어 검색어 "' + esc(R.검색어) + '"' : '') : '분류: ' + esc((예분류.filter(function (x) { return x[0] === F.cat; })[0] || [0, ''])[1]) + ' (진행 중 · 24시간 거래량 상위)';
+            머 += F.중 ? ' · 찾는 중…' : R ? ' · ' + (R.목록 || []).length + '개' : '';
+            if (F.모드 === '검색') 머 += ' <button type="button" class="pm-x" data-a="pmsclr">검색 지우기</button>';
+            if (hd._h !== 머) { hd.innerHTML = 머; hd._h = 머; }
+            var 글 = !R ? '' : (R.오류 ? '<div class="kr-0">' + esc(R.오류) + '</div>' : '') + 예정렬(R.목록 || []).map(function (x) { return 예줄(x, 'f', { 고정단추: true }); }).join('') + (!F.중 && !R.오류 && !(R.목록 || []).length ? '<div class="kr-0">진행 중인 시장이 없습니다 · 다른 말로 찾아 보세요</div>' : '');
+            if (li._h !== 글) { li.innerHTML = 글; li._h = 글; }
+        }
+        // 미장 '시장' 탭 요약 카드 (누르면 예측 창)
+        function 예요약그리기() {
+            var el = document.getElementById('us-pmc'); if (!el) return;
+            var c = 예.core, 목 = c && c.목록 ? c.목록.filter(function (x) { return !x.없음 && x.선택 && x.선택.length; }).slice(0, 3) : [];
+            var 급 = 예급변목록().slice(0, 2);
+            var h = !목.length ? '<div class="kr-0">' + (예.받는중 ? '받는 중…' : '예측 시장 자료가 아직 없습니다 · 눌러서 열기') + '</div>' :
+                목.map(function (x) { var t = x.선택.slice().sort(function (a, b) { return b.p - a.p; })[0]; return '<div class="pmc-l"><span>' + esc(x.한 || x.이름 || x.원문) + '</span><b>' + esc(예이름(x, t)) + ' ' + 예퍼(t.p) + '</b>' + 예변(t.ch) + '</div>'; }).join('') +
+                급.map(function (x) { var t = x.선택.slice().sort(function (a, b) { return Math.abs(b.ch) - Math.abs(a.ch); })[0]; return '<div class="pmc-l mv"><span>급변 · ' + esc(x.한 || x.이름 || x.원문) + '</span><b>' + esc(예이름(x, t)) + ' ' + 예퍼(t.p) + '</b>' + 예변(t.ch) + '</div>'; }).join('');
+            h += '<div class="pmc-more">눌러서 예측 창 열기 (전체 · 찾기 · 고정)</div>';
+            if (el._h !== h) { el.innerHTML = h; el._h = h; }
+            if (!el._이벤트) { el._이벤트 = 1; el.addEventListener('click', function () { 창열기('예측'); }); }
         }
         var 창들 = {}, 창순서 = 9990;
-        var 창기본 = { 보유: { w: 1040, h: 660 }, 계산기: { w: 660, h: 780 }, 예측: { w: 820, h: 860 } };
+        var 창기본 = { 보유: { w: 1040, h: 660 }, 계산기: { w: 660, h: 780 }, 예측: { w: 820, h: 860 }, 예측찾기: { w: 760, h: 820 } };
         var 외창 = {};   // 이름 → { win, 종류: 'pip'(항상 위 떠 있는 창) | 'popup'(일반 새 창) }
         function 창문서들() { var a = [document]; Object.keys(외창).forEach(function (k) { var x = 외창[k]; try { if (x && x.win && !x.win.closed) a.push(x.win.document); } catch (e) { } }); return a; }
         function 찾기(id) { var d = 창문서들(); for (var i = 0; i < d.length; i++) { var e = d[i].getElementById(id); if (e) return e; } return null; }
@@ -15316,15 +15476,16 @@
             var 탭줄 = document.querySelector(상태.모드 === 'kr' ? '#kr-tabs' : '#us-tabbar'), 아래 = 탭줄 ? Math.round(탭줄.getBoundingClientRect().bottom) + 8 : 12;
             if (!(아래 > 0 && 아래 < window.innerHeight - 200)) 아래 = 12;
             var W = Math.min(저.w || 기.w, window.innerWidth - 24), H = Math.min(저.h || 기.h, window.innerHeight - (저.y != null ? 12 : 아래 + 12));
-            var X = 저.x != null ? 저.x : (이름 === '계산기' ? window.innerWidth - W - 24 : 이름 === '예측' ? 24 : Math.round((window.innerWidth - W) / 2)), Y = 저.y != null ? 저.y : 아래;
+            var X = 저.x != null ? 저.x : (이름 === '계산기' || 이름 === '예측찾기' ? window.innerWidth - W - 24 : 이름 === '예측' ? 24 : Math.round((window.innerWidth - W) / 2)), Y = 저.y != null ? 저.y : 아래;
             X = Math.max(0, Math.min(X, window.innerWidth - 120)); Y = Math.max(0, Math.min(Y, window.innerHeight - 60));
             w.style.cssText = 'left:' + X + 'px;top:' + Y + 'px;width:' + W + 'px;height:' + H + 'px;';
             var 머리 = 이름 === '계산기'
                 ? '<b>계산기</b><span class="kr-seg sz-wseg">' + [['us', '미장'], ['kr', '국장']].map(function (o) { return '<button type="button" data-wm="' + o[0] + '">' + o[1] + '</button>'; }).join('') + '</span>'
                 : 이름 === '예측' ? '<b>예측 시장</b><small>칼시 · 폴리마켓 · 확률 = 시장 가격</small>'
+                : 이름 === '예측찾기' ? '<b>예측 찾기</b><small>검색 · 분류별 활발한 시장 · [+ 고정]으로 핵심에 추가</small>'
                 : '<b>보유현황</b><small>이 기기에만 저장 · 국내 · 미국 실시간 손익</small>';
             w.innerHTML = '<div class="sz-whead">' + 머리 + '<button type="button" class="sz-wout" data-wa="out" title="대시보드 밖으로 꺼내기 (다른 모니터 · 다른 프로그램 위)">밖으로</button><button type="button" class="sz-wout sz-win-in" data-wa="in" title="대시보드 안으로 되돌리기">안으로</button><button type="button" class="sz-wx" data-wa="close" title="닫기 (Esc)">×</button></div>' +
-                '<div class="sz-wbody">' + (이름 === '계산기' ? '<div id="us-calc" class="sz-wpart"></div><div id="kr-calc" class="sz-wpart"></div>' : 이름 === '예측' ? '<div id="sz-pm" class="sz-wpart on"></div>' : '<div id="sz-hold" class="sz-wpart on"></div>') + '</div>';
+                '<div class="sz-wbody">' + (이름 === '계산기' ? '<div id="us-calc" class="sz-wpart"></div><div id="kr-calc" class="sz-wpart"></div>' : 이름 === '예측' ? '<div id="sz-pm" class="sz-wpart on"></div>' : 이름 === '예측찾기' ? '<div id="sz-pms" class="sz-wpart on"></div>' : '<div id="sz-hold" class="sz-wpart on"></div>') + '</div>';
             document.body.appendChild(w); 창들[이름] = w; 창앞으로(w);
             if (이름 === '계산기') { var 저m = 읽기('sz_win_calc_m'); w._m = 저m === 'kr' || 저m === 'us' ? 저m : 상태.모드; }
             // 끌어 옮기기 (머리) · 크기 저장 (ResizeObserver)
@@ -15370,7 +15531,7 @@
             var pip쓰는중 = Object.keys(외창).some(function (k) { return 외창[k] && 외창[k].종류 === 'pip'; });
             function 옮기기(win, 종류) {
                 var d = win.document;
-                d.title = 'STRIKEZONE ' + ({ 계산기: '계산기', 예측: '예측 시장' }[이름] || 이름 + '현황');
+                d.title = 'STRIKEZONE ' + ({ 계산기: '계산기', 예측: '예측 시장', 예측찾기: '예측 찾기' }[이름] || 이름 + '현황');
                 Array.prototype.forEach.call(document.querySelectorAll('style, link[rel="stylesheet"]'), function (n) { d.head.appendChild(n.cloneNode(true)); });
                 d.body.style.cssText = 'margin:0;background:#10131b;color:#e7e9f0;font-family:' + getComputedStyle(document.body).fontFamily + ';';
                 w._외 = true; w.classList.add('sz-ext'); try { w._관찰 && w._관찰.disconnect(); } catch (e) { }
@@ -15389,7 +15550,7 @@
             }
             function 팝업() {
                 var L = 저.x != null ? 저.x : Math.round(window.screenX + r.left + 40), T = 저.y != null ? 저.y : Math.round(window.screenY + r.top + 60);
-                var win = window.open('', 'sz_ext_' + ({ 보유: 'hold', 계산기: 'calc', 예측: 'pm' }[이름] || 'x'), 'popup=yes,width=' + W + ',height=' + H + ',left=' + L + ',top=' + T);
+                var win = window.open('', 'sz_ext_' + ({ 보유: 'hold', 계산기: 'calc', 예측: 'pm', 예측찾기: 'pms' }[이름] || 'x'), 'popup=yes,width=' + W + ',height=' + H + ',left=' + L + ',top=' + T);
                 if (!win) { try { 알림_잠깐('새 창이 막혔습니다 · 주소창 오른쪽의 팝업 차단을 "허용"으로 바꿔 주세요'); } catch (e) { } return; }
                 try { win.document.open(); win.document.write('<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>STRIKEZONE</title></head><body></body></html>'); win.document.close(); } catch (e) { }
                 옮기기(win, 'popup');
@@ -15410,6 +15571,7 @@
             var w = 창들[이름]; if (!w) return;
             if (이름 === '보유') { 보유시세받기(true); 보유다시(); return; }
             if (이름 === '예측') { 예받기(false); 예그리기(); return; }
+            if (이름 === '예측찾기') { 예찾기그리기(); return; }
             Array.prototype.forEach.call(w.querySelectorAll('button[data-wm]'), function (b) { b.classList.toggle('on', b.getAttribute('data-wm') === w._m); });
             Array.prototype.forEach.call(w.querySelectorAll('.sz-wpart'), function (p) { p.classList.toggle('on', p.id === w._m + '-calc'); });
             계산기(w._m);
@@ -15425,7 +15587,7 @@
         document.addEventListener('pointerup', function () { setTimeout(function () { 창누름 = false; }, 150); }, true);
         function 창갱신(이름, 바깥) {
             if (창누름 || !창열림(이름) || !!외창[이름] !== !!바깥) return;   // 누르는 중에는 다시 그리지 않음 (단추가 바뀌어 눌림이 빠지지 않게)
-            if (이름 === '보유') { 보유시세받기(false); 보유(); } else if (이름 === '예측') 예받기(false); else 계산기갱신(창들['계산기']._m);
+            if (이름 === '보유') { 보유시세받기(false); 보유(); } else if (이름 === '예측') 예받기(false); else if (이름 === '예측찾기') return; else 계산기갱신(창들['계산기']._m);
         }
         setInterval(function () { if (document.visibilityState !== 'visible') return; 창갱신('보유', false); 창갱신('계산기', false); 창갱신('예측', false); }, 500);
         // ════════════════════════════════════════════════════════
