@@ -3092,6 +3092,9 @@
         .pm-q input:focus { outline: none; border-color: #ffdf00; } .pm-q button { font: inherit; font-size: 16px; font-weight: 800; padding: 0 18px; border-radius: 8px; border: 0; background: #ffdf00; color: #111; cursor: pointer; }
         .pm-sq { font-size: 14px; color: #b9c0d0; margin-bottom: 8px; } .pm-x { font: inherit; font-size: 12.5px; padding: 1px 8px; border-radius: 6px; border: 1px solid #2a3042; background: #121624; color: #b3bbcc; cursor: pointer; margin-left: 6px; }
         .pm-note { font-size: 12.5px; color: #7d8598; line-height: 1.5; }
+        .pm-per { display: flex; align-items: center; gap: 10px; margin: -2px 0 6px; font-size: 13px; color: #9aa2b5; } .pm-per > span:first-child { white-space: nowrap; }
+        .pm-pbar { flex: 1 1 auto; max-width: 220px; height: 5px; background: #1b2131; border-radius: 3px; overflow: hidden; } .pm-pbar i { display: block; height: 100%; background: #7fdcc6; }
+        .pm-dates { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13.5px; color: #9aa2b5; margin: 4px 0 6px; } .pm-dates b { color: #eef1f7; font-weight: 800; } .pm-dates small { color: #6d7588; font-size: 12px; align-self: center; }
         .pm-wait { display: flex; align-items: center; gap: 10px; padding: 14px 4px; font-size: 15px; color: #b9c0d0; }
         .pm-spin { display: inline-block; width: 18px; height: 18px; border: 3px solid #2a3246; border-top-color: #ffdf00; border-radius: 50%; animation: pmSpin .8s linear infinite; flex: 0 0 auto; }
         .pm-spin.sm { width: 11px; height: 11px; border-width: 2px; margin-right: 5px; vertical-align: -1px; }
@@ -13428,7 +13431,7 @@
             if (cw && !document.getElementById('kr-view')) {
                 var v = document.createElement('div'); v.className = 'kr-view'; v.id = 'kr-view';
                 function 카드(id, 제목, 작은, 넓게) { return '<div class="kr-card' + (넓게 ? ' kr-wide' : '') + '"><h4><span id="' + id + '-h">' + 제목 + '</span> <small id="' + id + '-t">' + (작은 || '') + '</small></h4><div id="' + id + '"></div></div>'; }
-                v.innerHTML = '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<div class="sz-brief" id="kr-brief"></div><span class="kr-stat" id="kr-stat"></span><span class="sz-ver">판 2026.10.24</span></div>' +
+                v.innerHTML = '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<div class="sz-brief" id="kr-brief"></div><span class="kr-stat" id="kr-stat"></span><span class="sz-ver">판 2026.10.25</span></div>' +
                     '<div class="kr-two" id="kr-two">' +
                     '<div class="kr-pane" data-t="시장">' +
                         카드('kr-pj', '오늘 장 판정', '', 1) +
@@ -14465,7 +14468,7 @@
         function 미만들기() {
             var cw = document.querySelector('.content-wrapper'); if (!cw || document.getElementById('us-tabbar')) return;
             var bar = document.createElement('div'); bar.className = 'us-tabbar'; bar.id = 'us-tabbar';
-            bar.innerHTML = 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + ({ 예측: '예측시장' }[t] || t) + '</button>'; }).join('') + (격 ? '' : '<div class="sz-brief" id="us-brief"></div>') + '<span class="us-stat" id="us-stat"></span><span class="sz-ver" title="대시보드 파일 판 (윈폼 · 브라우저가 같은 파일인지 확인용)">판 2026.10.24</span>';
+            bar.innerHTML = 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + ({ 예측: '예측시장' }[t] || t) + '</button>'; }).join('') + (격 ? '' : '<div class="sz-brief" id="us-brief"></div>') + '<span class="us-stat" id="us-stat"></span><span class="sz-ver" title="대시보드 파일 판 (윈폼 · 브라우저가 같은 파일인지 확인용)">판 2026.10.25</span>';
             // 대시보드2: 차트 자리를 줄이지 않도록 위 시황 줄(미장/국장 단추 옆)에 작게 2줄 / 대시보드1: 차트 위 한 줄
             var tb = document.querySelector('.top-bar'), sw = document.getElementById('mkt-sw');
             if (격 && tb && sw && sw.parentNode === tb) {
@@ -15241,7 +15244,7 @@
         // ════════════════════════════════════════════════════════
         var 예기본 = ['fed', 'cpi', 'jobs', 'spx', 'ndx', 'wti', 't10', 'rec'];
         var 예분류 = [['hot', '인기'], ['econ', '금리 · 경제'], ['commod', '원자재'], ['bond', '채권 · 금리'], ['policy', '정책 · 관세'], ['war', '전쟁 · 지정학'], ['corp', '기업'], ['crypto', '암호화폐']];
-        var 예정렬이름 = [['기본', '기본 순서'], ['마감', '마감 빠른 순'], ['거래', '거래량 순'], ['변화', '변화 큰 순']];
+        var 예정렬이름 = [['기본', '기본 순서'], ['마감', '마감 빠른 순'], ['시작', '최근 시작 순'], ['거래', '거래량 순'], ['변화', '변화 큰 순']];
         var 예 = { core: 읽기('sz_pm_core', true), 받음: 0, 받는중: false, 오류: '', 펼침: {}, 언어: 읽기('sz_pm_lang') === 'en' ? 'en' : 'ko',
             설정: (function () { var v = 읽기('sz_pm_list', true); return Array.isArray(v) && v.length ? v.slice(0, 24) : 예기본.slice(); })(),
             정렬: 읽기('sz_pm_sort') || '기본', 편집: false, movers: null, mv받음: 0, 기록: {}, 알림: {}, hist: {}, 흐름중: false, 종목: 읽기('sz_pm_tk', true) || null, 종목받음: 0, 종목중: false,
@@ -15388,6 +15391,7 @@
             function 변(x) { return Math.max.apply(null, (x.선택 || []).map(function (c) { return Math.abs(+c.ch || 0); }).concat([0])); }
             return 목록.slice().sort(function (a, b) {
                 if (m === '마감') { var ta = Date.parse(a.마감), tb = Date.parse(b.마감); return (isFinite(ta) ? ta : 9e15) - (isFinite(tb) ? tb : 9e15); }
+                if (m === '시작') { var sa = Date.parse(a.시작), sb = Date.parse(b.시작); return (isFinite(sb) ? sb : 0) - (isFinite(sa) ? sa : 0); }
                 if (m === '거래') return (+b.거래24 || 0) - (+a.거래24 || 0);
                 return 변(b) - 변(a);
             });
@@ -15406,6 +15410,14 @@
             if (남 < 36 * 3600e3) return 날 + ' ' + 시 + ' 마감 · ' + (남 < 3600e3 ? Math.max(1, Math.round(남 / 60000)) + '분 남음' : Math.round(남 / 3600e3) + '시간 남음');
             return 날 + ' 마감 · D-' + Math.ceil(남 / 86400e3);
         }
+        // 기간: 시작 → 마감 · 며칠 중 며칠 지남 (진행 막대)
+        function 예날(t) { var k = new Date(t + 9 * 3600e3), 올해 = new Date(Date.now() + 9 * 3600e3).getUTCFullYear(); return (k.getUTCFullYear() !== 올해 ? String(k.getUTCFullYear()).slice(2) + '/' : '') + (k.getUTCMonth() + 1) + '/' + k.getUTCDate(); }
+        function 예기간(x) {
+            var s0 = Date.parse(x.시작), e0 = Date.parse(x.마감); if (!isFinite(s0)) return null;
+            var 지금 = Date.now(), 전체 = isFinite(e0) ? Math.max(1, Math.round((e0 - s0) / 86400e3)) : null, 지난 = Math.max(0, Math.floor((지금 - s0) / 86400e3));
+            var 진행 = isFinite(e0) && e0 > s0 ? Math.max(0, Math.min(1, (지금 - s0) / (e0 - s0))) : null;
+            return { 글: 예날(s0) + ' 시작' + (전체 != null ? ' · ' + 전체 + '일 중 ' + Math.min(지난, 전체) + '일 지남' : ' · ' + 지난 + '일째'), 진행: 진행, 시작: s0 };
+        }
         function 예이름(x, c, W) { var 한 = (W || 예).언어 === 'ko', l = 한 ? (c.lk || c.l) : c.l; return x.선택.length === 1 && /^(yes|예)$/i.test(c.l) ? (한 ? '예 (일어남)' : 'Yes') : l; }
         function 예줄(x, 앞, 옵) {
             옵 = 옵 || {}; var W = 옵.W || 예;
@@ -15417,9 +15429,11 @@
             function 막대(c, 큰) { return '<div class="pm-c' + (큰 ? ' top' : '') + '"><span class="pm-l" title="' + esc(c.l) + '">' + esc(예이름(x, c, W)) + '</span><span class="pm-bar"><i style="width:' + Math.max(1, Math.min(100, c.p * 100)).toFixed(1) + '%"></i></span><b>' + 예퍼(c.p) + '</b>' + 예변(c.ch) + '</div>'; }
             var 핀 = 옵.고정단추 && x.슬러그 ? (예고정됨(x) ? '<span class="pm-pinned">핵심에 있음</span>' : '<button type="button" class="pm-pin" data-pin="' + esc(x.id) + '">+ 고정</button>') : '';
             var h = '<div class="pm-row' + (열림 ? ' open' : '') + '" data-pid="' + esc(id) + '"><div class="pm-h"><span class="pm-src ' + (x.출처 === '칼시' ? 'k' : 'p') + '">' + esc(x.출처) + '</span>' + (x.고정 ? '<span class="pm-src u">고정</span>' : '') + '<b class="pm-t">' + esc(제목) + '</b>' + (부 ? '<span class="pm-sub">' + esc(부) + '</span>' : '') + '<small class="pm-due">' + esc(예마감(x.마감)) + '</small>' + 핀 + 편 + '</div>' +
+                (function () { var g = 예기간(x); return g ? '<div class="pm-per"><span>' + esc(g.글) + '</span>' + (g.진행 != null ? '<span class="pm-pbar"><i style="width:' + (g.진행 * 100).toFixed(1) + '%"></i></span>' : '') + '</div>' : ''; })() +
                 '<div class="pm-cs">' + 위.map(function (c, i) { return 막대(c, i === 0); }).join('') + '</div>' + 예흐름그림(x, 위[0], 한) +
                 '<div class="pm-m">24시간 거래 ' + 예양(x.거래24, x.단위) + ' · 누적 ' + 예양(x.거래, x.단위) + (x.대체 ? ' · ' + esc(x.대체) : '') + (x.선택.length > 위.length ? ' · 선택지 ' + x.선택.length + '개 (눌러서 모두 보기)' : ' · 눌러서 자세히') + '</div>';
             if (열림) h += '<div class="pm-more">' + (x.선택.length > 1 ? '<div class="pm-all">' + 예선택순(x).map(function (c) { return 막대(c, false); }).join('') + '</div>' : '') +
+                '<div class="pm-dates">' + [['시작', x.시작], ['마감 (거래 끝)', x.마감], ['결과 확정 예정', x.확정]].filter(function (d) { return isFinite(Date.parse(d[1])); }).map(function (d) { var k = new Date(Date.parse(d[1]) + 9 * 3600e3); return '<span>' + d[0] + ' <b>' + k.toISOString().slice(0, 10).replace(/-/g, '.') + ' ' + k.toISOString().slice(11, 16) + '</b></span>'; }).join('') + '<small>한국 시각</small></div>' +
                 '<div class="pm-orig">' + esc(한 ? x.원문 : (x.한 || '')) + (x.부 ? ' · ' + esc(한 ? x.부 : (x.부한 || '')) : '') + '</div>' +
                 '<a class="pm-link" href="' + esc(x.링크) + '" target="_blank" rel="noopener">' + esc(x.출처) + '에서 보기</a></div>';
             return h + '</div>';
