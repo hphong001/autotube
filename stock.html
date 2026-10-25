@@ -15538,11 +15538,20 @@
         }
         // 기간: 시작 → 마감 · 며칠 중 며칠 지남 (진행 막대)
         function 예날(t) { var k = new Date(t + 9 * 3600e3), 올해 = new Date(Date.now() + 9 * 3600e3).getUTCFullYear(); return (k.getUTCFullYear() !== 올해 ? String(k.getUTCFullYear()).slice(2) + '/' : '') + (k.getUTCMonth() + 1) + '/' + k.getUTCDate(); }
+        // 기간 줄: "6/18 시작 → 10/29(목) 마감" (진행 막대) · 오른쪽에는 남은 시간만
+        function 예요일날(t) { var k = new Date(t + 9 * 3600e3); return 예날(t) + '(' + '일월화수목금토'[k.getUTCDay()] + ')'; }
         function 예기간(x) {
-            var s0 = Date.parse(x.시작), e0 = Date.parse(x.마감); if (!isFinite(s0)) return null;
-            var 지금 = Date.now(), 전체 = isFinite(e0) ? Math.max(1, Math.round((e0 - s0) / 86400e3)) : null, 지난 = Math.max(0, Math.floor((지금 - s0) / 86400e3));
-            var 진행 = isFinite(e0) && e0 > s0 ? Math.max(0, Math.min(1, (지금 - s0) / (e0 - s0))) : null;
-            return { 글: 예날(s0) + ' 시작' + (전체 != null ? ' · ' + 전체 + '일 중 ' + Math.min(지난, 전체) + '일 지남' : ' · ' + 지난 + '일째'), 진행: 진행, 시작: s0 };
+            var s0 = Date.parse(x.시작), e0 = Date.parse(x.마감); if (!isFinite(s0) && !isFinite(e0)) return null;
+            var 지금 = Date.now(), 진행 = isFinite(s0) && isFinite(e0) && e0 > s0 ? Math.max(0, Math.min(1, (지금 - s0) / (e0 - s0))) : null;
+            var 끝글 = isFinite(e0) ? 예요일날(e0) + (e0 - 지금 < 36 * 3600e3 && e0 > 지금 ? ' ' + new Date(e0 + 9 * 3600e3).toISOString().slice(11, 16) : '') + ' 마감' : '';
+            return { 글: (isFinite(s0) ? 예날(s0) + ' 시작' + (끝글 ? ' → ' : '') : '') + 끝글, 진행: 진행, 시작: s0 };
+        }
+        function 예남음(t) {
+            if (!isFinite(t)) return ''; var 남 = t - Date.now();
+            if (남 < 0) return '마감 지남 · 결과 대기';
+            if (남 < 3600e3) return Math.max(1, Math.round(남 / 60000)) + '분 남음';
+            if (남 < 36 * 3600e3) return Math.round(남 / 3600e3) + '시간 남음';
+            return 'D-' + Math.ceil(남 / 86400e3);
         }
         function 예이름(x, c, W) { var 한 = (W || 예).언어 === 'ko'; if (한 && !c.lk && /^(up|down)$/i.test(c.l)) return /^up$/i.test(c.l) ? '오름' : '내림'; var l = 한 ? (c.lk || c.l) : c.l; return x.선택.length === 1 && /^(yes|예)$/i.test(c.l) ? (한 ? '예 (일어남)' : 'Yes') : l; }
         // ── 시장 구조별 표시 ──
@@ -15615,11 +15624,11 @@
             function 막대(c, 큰, 덧) { return '<div class="pm-c' + (큰 ? ' top' : '') + '"><span class="pm-l" title="' + esc(c.l) + '">' + esc(예이름(x, c, W)) + (덧 ? '<small>' + esc(덧) + '</small>' : '') + '</span><span class="pm-bar"><i style="width:' + Math.max(1, Math.min(100, c.p * 100)).toFixed(1) + '%"></i></span><b>' + 예퍼(c.p) + '</b>' + 예변(c.ch) + '</div>'; }
             function 날덧(c) { if (G.형 !== '날짜') return ''; var t = Date.parse(c.마감); return isFinite(t) ? (t < Date.now() ? ' 마감 지남' : ' · ' + 예날(t) + ' 마감') : ''; }
             var 핀 = 옵.고정단추 && x.슬러그 ? (예고정됨(x) ? '<span class="pm-pinned">핵심에 있음</span>' : '<button type="button" class="pm-pin" data-pin="' + esc(x.id) + '">+ 고정</button>') : '';
-            var 마글 = G.지남 ? '마감 지남 · 결과 대기' : (isFinite(G.마감) ? 예마감(new Date(G.마감).toISOString()) : '') + (isFinite(G.마지막) ? ' · 마지막 ' + 예날(G.마지막) : '');
+            var 마글 = G.지남 ? '마감 지남 · 결과 대기' : 예남음(G.마감);
             var 윗줄 = G.무리 ? G.무리.map(function (g) { return '<div class="pm-gh">' + g[0] + '</div>' + g[1].slice(0, 2).map(function (c, i) { return 막대(c, i === 0 && g === G.무리[0]); }).join(''); }).join('')
                 : 위.map(function (c, i) { return 막대(c, i === 0); }).join('');   // 날짜형은 선택지 이름이 곧 날짜라 마감을 따로 안 붙임 (펼치면 한국 시각 마감 · 시작)
             var h = '<div class="pm-row' + (열림 ? ' open' : '') + (G.지남 ? ' past' : '') + '" data-pid="' + esc(id) + '" data-form="' + G.형 + '"><div class="pm-h"><span class="pm-src ' + (x.출처 === '칼시' ? 'k' : 'p') + '">' + esc(x.출처) + '</span>' + (x.고정 ? '<span class="pm-src u">고정</span>' : '') + '<b class="pm-t">' + esc(제목) + '</b>' + (부 ? '<span class="pm-sub">' + esc(부) + '</span>' : '') + '<small class="pm-due">' + esc(마글) + '</small>' + 핀 + 편 + '</div>' +
-                (function () { var g = 예기간({ 시작: isFinite(G.시작) ? new Date(G.시작).toISOString() : '', 마감: isFinite(G.마감) ? new Date(G.마감).toISOString() : '' }); return g ? '<div class="pm-per"><span>' + esc(g.글) + (G.형 === '날짜' ? ' (가장 가까운 날짜 기준)' : '') + '</span>' + (g.진행 != null ? '<span class="pm-pbar"><i style="width:' + (g.진행 * 100).toFixed(1) + '%"></i></span>' : '') + '</div>' : ''; })() +
+                (function () { var g = 예기간({ 시작: isFinite(G.시작) ? new Date(G.시작).toISOString() : '', 마감: isFinite(G.마감) ? new Date(G.마감).toISOString() : '' }); return g ? '<div class="pm-per"><span>' + esc(g.글) + (G.형 === '날짜' ? ' (가장 가까운 날짜' + (isFinite(G.마지막) ? ' · 마지막 ' + 예요일날(G.마지막) : '') + ')' : '') + '</span>' + (g.진행 != null ? '<span class="pm-pbar"><i style="width:' + (g.진행 * 100).toFixed(1) + '%"></i></span>' : '') + '</div>' : ''; })() +
                 (G.요약 && G.형 === '기준' ? '<div class="pm-sum">' + esc(G.요약) + '</div>' : '') +
                 '<div class="pm-cs">' + 윗줄 + '</div>' + 예흐름그림(x, G.대표, 한) +
                 '<div class="pm-m">24시간 거래 ' + 예양(x.거래24, x.단위) + ' · 누적 ' + 예양(x.거래, x.단위) + (x.대체 ? ' · ' + esc(x.대체) : '') + (x.선택.length > 위.length ? ' · 선택지 ' + x.선택.length + '개 (눌러서 모두 보기)' : ' · 눌러서 자세히') + '</div>';
