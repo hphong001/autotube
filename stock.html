@@ -15953,7 +15953,7 @@
             var q = 미시황('qqq'), s = 미시황('spy'), nq = 미시황('nq'), vix = 미시황('vix'), tnx = 미시황('tnx'), dxy = 미시황('dxy'), cl = 미시황('cl'), gd = 미시황('gold'), btc = 미시황('btc'), krw = 미시황('usdkrw');
             var es = 한줄_선('ES'), ym = 한줄_선('YM'), qx = 미시외('qqq'), sx = 미시외('spy');
             if (!q && B.QQQ && B.QQQ.rp > 0) q = { p: B.QQQ.rp, c: B.QQQ.rc }; if (!s && B.SPY && B.SPY.rp > 0) s = { p: B.SPY.rp, c: B.SPY.rc };
-            var 관 = 미관심().filter(function (x) { return !미ETF(x); }), 보유미 = (상태.보유.us || []).map(function (x) { return x.t; });
+            var 관 = 미관심().filter(function (x) { return !미ETF(x); }), 보유미 = [];   // 시황 한 줄에는 개인 보유 내용을 넣지 않음 (손익 · 보유 표시 · 화면 공유 때 노출 방지) → 보유현황 창에서만
             var 섹 = 미섹터.map(function (x) { var v = B[x[0]]; return v && v.rp > 0 ? { n: x[1], r: 미등락(v) } : null; }).filter(function (x) { return x && x.r != null; }).sort(function (a, b) { return b.r - a.r; });
             var 섹오 = 섹.filter(function (x) { return x.r > 0; }).length;
             function 등(x) { return 미등락(B[x]); }
@@ -15993,7 +15993,7 @@
                 var 실 = (일정자료.실적 && 일정자료.실적.종목) || {}, 내일 = new Date(new Date(t.date + 'T12:00:00Z').getTime() + 86400e3).toISOString().slice(0, 10);
                 var 오늘실 = [], 내일실 = [];
                 Object.keys(실).forEach(function (x) { var v = 실[x]; if (!v) return; var 내것 = 보유미.indexOf(x) >= 0 || 관.indexOf(x) >= 0; if (!내것) return; if (v.날짜 === t.date) 오늘실.push(x + '(' + (v.시간 === '장전' ? '장 전' : v.시간 === '장후' ? '마감 후' : '시간 미정') + ')' + (보유미.indexOf(x) >= 0 ? ' 보유' : '')); else if (v.날짜 === 내일) 내일실.push(x); });
-                if (오늘실.length) 넣(오늘실.some(function (x) { return /보유/.test(x); }) ? '위험' : '주의', 78, '오늘 실적: ' + 오늘실.join(' · ') + ' → 발표 전후 급변, 보유 종목은 손절선 미리 정하기');
+                if (오늘실.length) 넣(오늘실.some(function (x) { return /보유/.test(x); }) ? '위험' : '주의', 78, '오늘 실적: ' + 오늘실.join(' · ') + ' → 발표 전후 급변 주의');
                 if (내일실.length && (단 === '애프터' || 단 === '마감앞' || 단 === '정규')) 넣('정보', 40, '내일 실적: ' + 내일실.join(' · '));
             }
             var 요일 = new Date(t.date + 'T12:00:00Z').getUTCDay(), 일 = +t.date.slice(8, 10);
@@ -16054,15 +16054,7 @@
                 if (애.length) 넣('주의', 80, '애프터 급변: ' + 애.map(function (x) { return x.t + ' ' + 한줄_퍼(x.r) + (보유미.indexOf(x.t) >= 0 ? '(보유)' : ''); }).join(' · ') + ' → 내일 출발 영향 · 관련 업종도 같이 확인');
                 if (nq) 넣('정보', 50, '지금 나스닥선물 ' + 한줄_퍼(nq.c) + ' → 내일 출발 참고');
             }
-            // ── 보유 ──
-            var 보 = (상태.보유.us || []).map(function (x) { var q2 = 미실시간(x.t) || 상태.미시세[x.t]; return q2 && q2.price > 0 ? { t: x.t, r: q2.changePct, 오: q2.change != null ? q2.change * x.수 : null, 손률: (q2.price / x.가 - 1) * 100 } : null; }).filter(Boolean);
-            if (보.length) {
-                var 오늘합 = 보.reduce(function (a, x) { return a + (x.오 || 0); }, 0), 큰보 = 보.slice().sort(function (a, b) { return Math.abs(b.r || 0) - Math.abs(a.r || 0); })[0];
-                넣(오늘합 >= 0 ? '정보' : '주의', 52, '보유 오늘 손익 ' + 달(오늘합, 1) + (큰보 && 큰보.r != null ? ' · 가장 크게 움직인 ' + 큰보.t + ' ' + 한줄_퍼(큰보.r) : ''));
-                var 손절 = 보.filter(function (x) { return x.손률 <= -8; }).map(function (x) { return x.t + ' ' + 한줄_퍼(x.손률); });
-                if (손절.length) 넣('주의', 58, '매수가 대비 크게 손실: ' + 손절.join(' · ') + ' → 손절 · 비중 기준 다시 확인');
-            }
-            if (krw && Math.abs(krw.c) >= 0.4) 넣('정보', 34, '원/달러 ' + 한줄_퍼(krw.c) + ' → 원화 환산 손익이 ' + (krw.c > 0 ? '늘어남' : '줄어듦'));
+            if (krw && Math.abs(krw.c) >= 0.4) 넣('정보', 34, '원/달러 ' + 한줄_퍼(krw.c) + ' → 달러 자산의 원화 환산 가치 ' + (krw.c > 0 ? '늘어남' : '줄어듦'));
             return 목.sort(function (a, b) { return b.w - a.w; });
         }
         function 국브리핑() {
@@ -16102,10 +16094,6 @@
                 if (nq) 넣('정보', 55, '지금 나스닥선물 ' + 한줄_퍼(nq.c) + ' → 오늘 밤 미장 · 내일 출발 참고');
                 넣('정보', 30, 'NXT 애프터마켓 20:00까지 · 거래량 적어 호가 차이 큼');
             }
-            // 보유 (국내)
-            var 맵 = {}; ((v && v.종목) || []).forEach(function (q) { 맵[q.c] = q; }); Object.keys(상태.보유시세).forEach(function (c) { 맵[c] = 맵[c] || 상태.보유시세[c]; });
-            var 보 = (상태.보유.kr || []).map(function (x) { var q = 맵[x.c]; return q && q.p > 0 ? { n: x.n || x.c, r: q.r, 오: q.d != null ? q.d * x.수 : null } : null; }).filter(Boolean);
-            if (보.length) { var 합오 = 보.reduce(function (a2, x) { return a2 + (x.오 || 0); }, 0), 큰 = 보.slice().sort(function (a2, b2) { return Math.abs(b2.r || 0) - Math.abs(a2.r || 0); })[0]; 넣(합오 >= 0 ? '정보' : '주의', 50, '보유 오늘 손익 ' + 원(합오, 1) + (큰 ? ' · ' + 큰.n + ' ' + 한줄_퍼(큰.r) : '')); }
             return 목.sort(function (a2, b2) { return b2.w - a2.w; });
         }
         function 한줄그리기() {
