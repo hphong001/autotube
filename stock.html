@@ -2888,7 +2888,7 @@
         @container (max-width: 520px) { .us-two { grid-template-columns: minmax(0, 1fr); } }
         .us-chip { display: flex; gap: 6px; align-items: baseline; font-size: 13.5px; padding: 4px 2px; border-bottom: 1px solid #1a1f2c; white-space: nowrap; overflow: hidden; } .us-chip em { font-style: normal; font-weight: 800; margin-left: auto; }
         .us-tbl td.nm small { display: block; font-size: 11px; color: #8b93a7; font-weight: 600; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
-        @media (max-width: 640px) { .us-tabbar { flex-wrap: wrap; gap: 4px; padding: 6px 6px 0; } .us-tabbar button { padding: 5px 0; font-size: 13px; flex: 1 1 0; min-width: 0; } .us-stat { flex: 1 1 100%; margin-left: 0; font-size: 11.5px; } }
+        @media (max-width: 640px) { .us-tabbar { flex-wrap: wrap; gap: 3px; padding: 6px 6px 0; } .us-tabbar button { padding: 6px 3px; font-size: 12px; flex: 1 1 auto; min-width: 0; white-space: nowrap; word-break: keep-all; letter-spacing: -0.3px; } .us-stat { flex: 1 1 100%; margin-left: 0; font-size: 11.5px; } }
         .us-tbl tr.us-go { cursor: pointer; }
         .us-tags { display: flex; gap: 3px; flex-wrap: wrap; margin-top: 2px; }
         .us-tags i { font-style: normal; font-size: 10.5px; font-weight: 800; padding: 0 5px; border-radius: 4px; border: 1px solid #3a4258; color: #b8c0d2; }
@@ -3068,6 +3068,23 @@
         .cz-tbl td { text-align: right; padding: 6px 8px; border-bottom: 1px solid #1a1f2c; font-weight: 700; }
         .cz-tbl th:first-child, .cz-tbl td:first-child { text-align: left; }
         .cz-tbl tr.on td { background: rgba(255, 223, 0, .10); } .cz-tbl tr.손 td { background: rgba(77, 141, 255, .05); }
+        /* ── 캘린더 탭 ── */
+        .cal-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 8px; }
+        .cal-bar .kr-seg button { font-size: 13.5px; padding: 5px 12px; }
+        .cal-nav { display: inline-flex; align-items: center; gap: 6px; } .cal-nav b { font-size: 15px; min-width: 96px; text-align: center; }
+        .cal-nav button { font: inherit; font-size: 13px; font-weight: 800; padding: 3px 9px; border-radius: 6px; border: 1px solid #2a3042; background: #121624; color: #b3bbcc; cursor: pointer; }
+        .cal-kinds { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+        .cal-kinds button { font: inherit; font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 7px; border: 1px solid #2a3042; background: #121624; color: #6d7588; cursor: pointer; } .cal-kinds button.on { color: #e7e9f0; border-color: #4a5a85; background: #172038; } .cal-kinds small { color: #8b93a7; font-weight: 700; }
+        .us-ev.cal-ev { grid-template-columns: 52px 44px 64px minmax(0, 1fr) auto; } .cal-st { color: #ffb800; font-size: 12px; letter-spacing: -1px; white-space: nowrap; } .cal-st i { font-style: normal; color: #3a4052; }
+        .cal-v { display: inline-block; margin-left: 10px; font-size: 13px; color: #9aa2b5; } .cal-v b { color: #eef1f7; }
+        .cal-r { font-size: 12.5px; color: #b9c0d0; text-align: right; max-width: 260px; }
+        .cal-ev.past { opacity: .55; } .cal-ev.next { background: rgba(255, 223, 0, .07); border-radius: 6px; }
+        .cal-hawk { font-style: normal; font-size: 11.5px; font-weight: 800; padding: 0 5px; border-radius: 4px; margin-left: 4px; } .cal-hawk.h { background: #4a1f24; color: #ff9f9f; } .cal-hawk.d { background: #1d2c4d; color: #8fb3ff; } .cal-hawk.n { background: #262c3b; color: #b9c0d0; }
+        .cal-vote, .cal-eng { font-style: normal; font-size: 11px; font-weight: 800; padding: 0 5px; border-radius: 4px; margin-left: 4px; border: 1px solid #3a4560; color: #c9d2e6; } .cal-eng { border-color: #6b5520; color: #ffd27a; }
+        .kd.k-연준 { background: #2a2140; color: #c9a8ff; } .kd.k-금리 { background: #3a1f24; color: #ff9f9f; } .kd.k-입찰 { background: #1f2a3a; color: #8fc3ff; } .kd.k-원자재 { background: #2f2a17; color: #e8cf7a; } .kd.k-종목 { background: #1f3a33; color: #8fe3cf; }
+        @container (max-width: 620px) { .us-ev.cal-ev { grid-template-columns: 46px 40px minmax(0, 1fr); row-gap: 1px; } .us-ev.cal-ev .kd { display: none; } .cal-v { display: block; margin-left: 0; } .cal-r { grid-column: 3; text-align: left; max-width: none; } }
+        .ev-cal { margin-left: auto; font: inherit; font-size: 11.5px; font-weight: 800; padding: 1px 8px; border-radius: 6px; border: 1px solid #3a4f85; background: #172038; color: #a9c2ff; cursor: pointer; }
+        .ev-s.ev-up { color: #ff7b7b; } .ev-s.ev-dn { color: #6aa2ff; }
         /* ── 체결 속도 배지 ── */
         .kc-fl { position: absolute; right: 0; bottom: 0; z-index: 6; align-items: center; justify-content: flex-end; gap: 5px; padding: 0 6px; box-sizing: border-box; white-space: nowrap; pointer-events: auto; cursor: help;
                  background: rgba(13, 16, 24, .94); border-top: 1px solid #2a3042; border-left: 1px solid #2a3042; border-top-left-radius: 6px; font-size: 11.5px; font-weight: 800; color: #cfd5e2; font-variant-numeric: tabular-nums; }
@@ -12774,7 +12791,7 @@
         //   - system/econ (윈폼) · system/earnings (Worker 야후) → 관심종목 위 '오늘 일정' 상자 + 시작 때 업데이트 안내
         // ════════════════════════════════════════════════════════
         var 엔진 = { 자료: {}, meta: null, 설정: {}, 받음: 0 };
-        var 일정자료 = { econ: null, 실적: null, econ받음: false, 실적받음: false, 안내닫음: false };
+        var 일정자료 = { econ: null, 실적: null, save: null, econ받음: false, 실적받음: false, 안내닫음: false };
         function 엔진_지금ms() { return Date.now() + (typeof fbServerOffset === 'number' ? fbServerOffset : 0); }
         function 엔진_살아있음() { var m = 엔진.meta; return !!(m && m.alive > 0 && 엔진_지금ms() - m.alive < 90000); }
         function 엔진_오늘() { return 가상_날짜문자(가상_뉴욕시각()); }
@@ -12790,6 +12807,7 @@
                 }, function (e) { console.warn('[엔진] engine 읽기 실패 (Firebase 규칙에 engine 읽기 허용 필요)', e && e.message); });
                 firebase.database().ref('system/econ').on('value', function (snap) { 일정자료.econ = snap.val(); 일정자료.econ받음 = true; 일정_표시(); },
                     function () { 일정자료.econ받음 = true; 일정_표시(); });
+                firebase.database().ref('system/savecal').on('value', function (snap) { 일정자료.save = snap.val(); 캘_결과확인(); 일정_표시(); try { if (window.미장탭 && window.미장탭.다시) window.미장탭.다시(); } catch (e) { } }, function () { });
                 firebase.database().ref('system/earnings').on('value', function (snap) { 일정자료.실적 = snap.val(); 일정자료.실적받음 = true; 일정_표시(); },
                     function () { 일정자료.실적받음 = true; 일정_표시(); });
             } catch (e) { console.warn('[엔진] 구독 실패', e); }
@@ -13319,6 +13337,89 @@
             return 표;
         }
 
+        // ════════════════════════════════════════════════════════
+        // ★ 통합 캘린더: 세이브티커(system/savecal · 윈폼이 30분마다) + 윈폼 경제 일정(system/econ · FRED · 연준) + 관심 종목 실적 + 종목 이벤트 + 옵션 만기
+        //   - 같은 발표(미국 날짜 같음 · 5분 안 · 같은 지표)는 하나로: 이름 · 별 · 예측/이전/실제 = 세이브티커 · 반응 판정 = 매매 엔진
+        //   - 날짜 = 미국 동부 날짜 · 표시 시각 = 한국 시각 · 별: 세이브티커 그대로 (연준 인사 투표권 ★2 · 나머지 ★1 / FOMC ★3 / 실적 ★2 / 분기 만기 ★3 · 월간 ★2 · 주간 ★1)
+        // ════════════════════════════════════════════════════════
+        function 캘_날더(s, n) { var d = new Date(s + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+        function 캘_분류(n) {
+            n = String(n || '');
+            var m = /(총재|이사|의장)\s*\((매파|중립|비둘기)\s*\/\s*투표권\s*([OX])/.exec(n);
+            if (m) return { 종류: '연준', 성향: m[2], 투표: m[3] === 'O' };
+            if (/기준금리 결정|금리 결정|FOMC|베이지북/.test(n)) return { 종류: '금리' };
+            if (/국채|입찰|발행금리/.test(n)) return { 종류: '입찰' };
+            if (/EIA|원유|천연가스|시추기|베이커휴즈|Energy/i.test(n)) return { 종류: '원자재' };
+            return { 종류: '지표' };
+        }
+        function 캘_수(v) {
+            var t = String(v == null ? '' : v).replace(/[$,\s]/g, '').replace(/Bcf$/i, ''), m = /^(-?\d+(?:\.\d+)?)([KMBT%]?)$/i.exec(t); if (!m) return NaN;
+            var x = parseFloat(m[1]), u = m[2].toUpperCase(); return u === 'K' ? x * 1e3 : u === 'M' ? x * 1e6 : u === 'B' ? x * 1e9 : u === 'T' ? x * 1e12 : x;
+        }
+        function 캘_비교(f, a) { var x = 캘_수(f), y = 캘_수(a); if (!isFinite(x) || !isFinite(y)) return ''; var 허 = Math.max(Math.abs(x), Math.abs(y)) * 0.0005; return y - x > 허 ? '상회' : x - y > 허 ? '하회' : '일치'; }
+        function 캘_해석(n, 비) {
+            if (!비 || 비 === '일치') return ''; var 위 = 비 === '상회';
+            if (/CPI|PCE|PPI|물가|인플레|고용비용|임금/i.test(n)) return 위 ? '물가 부담 · 금리 부담' : '물가 둔화 · 금리 부담 완화';
+            if (/실업률|실업수당|감원/.test(n)) return 위 ? '고용 둔화 · 금리 인하 기대' : '고용 견조 · 금리 부담';
+            if (/원유 재고/.test(n)) return 위 ? '원유 재고 증가 · 유가 약세 요인' : '원유 재고 감소 · 유가 강세 요인';
+            if (/취업자|고용|ADP|소매판매|GDP|PMI|ISM|제조업|서비스업|주택|건설|수주|심리|신뢰|지수/i.test(n)) return 위 ? '경기 강함 · 금리 부담 가능' : '경기 둔화 신호';
+            return '';
+        }
+        var 캘_묶음 = [['근원 CPI', '근원 소비자물가', 'Core CPI'], ['CPI', '소비자물가'], ['근원 PCE'], ['PCE'], ['근원 PPI'], ['PPI', '생산자물가'], ['비농업', '고용보고서', '고용 보고서', 'Nonfarm', 'Employment Situation'], ['실업률'], ['실업수당', 'Jobless'],
+                     ['GDP'], ['소매판매', 'Retail'], ['ISM 제조', 'ISM Manufacturing'], ['ISM 서비스', 'ISM Services'], ['FOMC 금리', '미국 기준금리', 'FOMC 금리 결정'], ['미시간'], ['JOLTS', '구인'], ['ADP'], ['베이지북', 'Beige'], ['의사록', 'Minutes']];
+        function 캘_같은지표(a, b) {
+            a = String(a || ''); b = String(b || '');
+            if (/근원|Core/i.test(a) !== /근원|Core/i.test(b)) return false;
+            return 캘_묶음.some(function (g) { return g.some(function (w) { return a.indexOf(w) >= 0; }) && g.some(function (w) { return b.indexOf(w) >= 0; }); });
+        }
+        function 캘_분(hm) { var m = /^(\d{2}):(\d{2})$/.exec(hm || ''); return m ? +m[1] * 60 + +m[2] : null; }
+        // 시작 ~ 끝 (미국 날짜 · 포함) 통합 목록
+        function 캘_자료(시작, 끝) {
+            var 줄 = [], ec = 일정자료.econ || {}, sv = 일정자료.save && 일정자료.save.목록 || [];
+            function 안(d) { return d >= 시작 && d <= 끝; }
+            var 본 = {};
+            sv.forEach(function (e) {
+                if (!e || !안(e.d)) return;
+                var 키 = e.d + '|' + (e.t || '') + '|' + e.n; if (본[키]) return; 본[키] = 1;   // 같은 일정이 두 번 올라온 경우
+                var 분 = 캘_분류(e.n), 별 = +e.s || 0;
+                if (!별) 별 = 분.종류 === '연준' ? (분.투표 ? 2 : 1) : 1;
+                var 비 = 캘_비교(e.f, e.a);
+                줄.push({ 날: e.d, 시: e.t || '', 한: e.k ? e.k.slice(11, 16) : '', 한날: e.k ? e.k.slice(0, 10) : '', 이름: e.n, 별: 별, 종류: 분.종류, 성향: 분.성향 || '', 투표: !!분.투표, p: e.p || '', f: e.f || '', a: e.a || '', 비교: 비, 해석: 캘_해석(e.n, 비), x: e.x || '', 출처: '세이브티커', id: e.id || '' });
+            });
+            (ec.일정 || []).forEach(function (e) {
+                if (!e || !안(e.날짜) || e.출처 === 'SAVE') return;
+                var 분 = 캘_분(e.시각), r = (ec.반응 || []).filter(function (x) { return x.날짜 === e.날짜 && x.시각 === e.시각 && 일정_짧은(x.이름) === 일정_짧은(e.이름); })[0];
+                var 짝 = 줄.filter(function (x) { return x.출처 === '세이브티커' && x.날 === e.날짜 && 분 != null && 캘_분(x.시) != null && Math.abs(캘_분(x.시) - 분) <= 5 && 캘_같은지표(x.이름, e.이름); })[0];
+                if (짝) { 짝.반응 = r || 짝.반응 || null; 짝.엔진 = true; 짝.출처 = '세이브티커 · ' + (e.출처 || '윈폼'); return; }
+                var k = 일정_한국시각(e.날짜, e.시각) || '';
+                줄.push({ 날: e.날짜, 시: e.시각 || '', 한: k.slice(-5), 한날: k.length > 5 ? k.slice(0, 5) : '', 이름: 일정_짧은(e.이름), 별: /FOMC/.test(e.이름) || e.중요 !== false ? 3 : 1, 종류: /FOMC/.test(e.이름) ? '금리' : '지표', p: '', f: '', a: '', 비교: '', 해석: '', 반응: r || null, 엔진: e.중요 !== false, 출처: e.출처 || '윈폼' });
+            });
+            // 세이브티커 별 3개 지표 중 매매 엔진 일정으로 들어간 것: 반응 판정 붙이기
+            (ec.반응 || []).forEach(function (r) { if (!안(r.날짜)) return; var x = 줄.filter(function (q) { return !q.반응 && q.날 === r.날짜 && q.시 === r.시각 && (q.이름 === r.이름 || 캘_같은지표(q.이름, r.이름) || 일정_짧은(r.이름) === q.이름); })[0]; if (x) { x.반응 = r; x.엔진 = true; } });
+            var 관심 = {}; (typeof WATCH_LIST !== 'undefined' ? WATCH_LIST : []).forEach(function (w) { 관심[w.ticker] = 1; });
+            var 실 = (일정자료.실적 && 일정자료.실적.종목) || {};
+            Object.keys(실).forEach(function (t) { var v = 실[t]; if (!v || !안(v.날짜) || !관심[t]) return; var 시 = v.시간 === '장전' ? '08:00' : v.시간 === '장후' ? '16:05' : ''; 줄.push({ 날: v.날짜, 시: 시, 한: v.시간 === '장전' ? '장 전' : v.시간 === '장후' ? '장 후' : '미정', 이름: t + ' ' + (typeof tickerName === 'function' ? tickerName(t) : '') + ' 실적' + (v.예상 ? ' (날짜 예상)' : ''), 별: 2, 종류: '실적', 종목: t, 출처: '야후' }); });
+            (ec.이벤트 || []).forEach(function (v) { if (!v || !안(v.날짜) || !관심[v.종목]) return; var k = 캘_분(v.시각) != null ? (일정_한국시각(v.날짜, v.시각) || '').slice(-5) : '미정'; 줄.push({ 날: v.날짜, 시: 캘_분(v.시각) != null ? v.시각 : '', 한: k, 이름: v.종목 + ' ' + v.이름 + (v.확정 ? '' : ' (예상)'), 별: 2, 종류: '종목', 종목: v.종목, 출처: v.출처 || '이벤트' }); });
+            for (var d = 시작; d <= 끝; d = 캘_날더(d, 1)) {
+                var dt = new Date(d + 'T12:00:00Z'); if (dt.getUTCDay() !== 5) continue;
+                var 셋째 = dt.getUTCDate() >= 15 && dt.getUTCDate() <= 21, 분기 = [2, 5, 8, 11].indexOf(dt.getUTCMonth()) >= 0;
+                줄.push({ 날: d, 시: '16:00', 한: (일정_한국시각(d, '16:00') || '').slice(-5), 이름: 셋째 ? (분기 ? '분기 옵션·선물 동시 만기 (쿼드러플 위칭)' : '월간 옵션 만기') : '주간 옵션 만기', 별: 셋째 ? (분기 ? 3 : 2) : 1, 종류: '만기', 출처: '계산' });
+            }
+            return 줄.sort(function (a, b) { return a.날 < b.날 ? -1 : a.날 > b.날 ? 1 : (a.시 || '99') < (b.시 || '99') ? -1 : (a.시 || '99') > (b.시 || '99') ? 1 : b.별 - a.별; });
+        }
+        // 발표 결과 알림: 세이브티커 실제치가 새로 들어온 별 2개 이상 지표 (처음 받은 자료는 기준으로만 · 발표 30분 안)
+        var 캘_실제본 = null;
+        function 캘_결과확인() {
+            var sv = 일정자료.save && 일정자료.save.목록 || [], 첫 = !캘_실제본; if (첫) 캘_실제본 = {};
+            sv.forEach(function (e) {
+                if (!e || !e.a || !e.id) return; if (캘_실제본[e.id]) return; 캘_실제본[e.id] = 1;
+                if (첫 || (+e.s || 0) < 2 || !e.k) return;
+                var 지남 = Date.now() - Date.parse(e.k + ':00+09:00'); if (!(지남 >= -5 * 60000 && 지남 <= 30 * 60000)) return;
+                var 비 = 캘_비교(e.f, e.a), 해 = 캘_해석(e.n, 비);
+                var 글 = e.n + ' 실제 ' + e.a + (e.f ? ' · 예측 ' + e.f : '') + (e.p ? ' · 이전 ' + e.p : '') + (비 && 비 !== '일치' ? ' → 예상 ' + 비 : 비 === '일치' ? ' → 예상과 같음' : '') + (해 ? ' · ' + 해 : '');
+                try { if (typeof 알림_띄우기 === 'function' && (typeof 시장경보_담당 !== 'function' || 시장경보_담당())) 알림_띄우기({ 종류: '시장', 종목: '지표', 시각: 알림_시각(), 글: 글, 짧은글: '지표 발표', 유지ms: 45000 }); } catch (er) { }
+            });
+        }
         // ── 오늘 일정 상자 (관심종목 위) ──
         //   한 줄 = 시각 ET · 이름 · 상태 / 발표 30분 전 ~ 판정 끝까지 은은하게 깜빡임 / 마우스 = 한국 시각·자세히
         function 일정_한국시각(날짜, 시각) {
@@ -13339,18 +13440,18 @@
             var 오늘 = 엔진_오늘(), 뉴욕 = 가상_뉴욕시각(), 지금분 = 뉴욕.getHours() * 60 + 뉴욕.getMinutes(), 줄 = [];
             var ec = 일정자료.econ || {}, 반응 = (ec.반응 || []).filter(function (r) { return r.날짜 === 오늘; });
             var 관심 = {}; WATCH_LIST.forEach(function (w) { 관심[w.ticker] = 1; });
-            (ec.일정 || []).filter(function (e) { return e.날짜 === 오늘; }).forEach(function (e) {
-                var hm = /^(\d{2}):(\d{2})$/.exec(e.시각 || ''), 분 = hm ? +hm[1] * 60 + +hm[2] : 0, 남은 = 분 - 지금분;
-                var r = 반응.filter(function (x) { return x.시각 === e.시각 && 일정_짧은(x.이름) === 일정_짧은(e.이름); })[0];
-                var 끝남 = r ? r.단계 === '끝' : 남은 < -15;
-                // 상태 (짧게 · 자세한 글은 마우스): 발표 전 N분 / 1차 판정 중 / 1차 긍정 / 확정 부정 / N분 후
+            // 경제 일정 (세이브티커 + 윈폼 통합): 별 2개 이상 · 투표권 있는 연준 인사 · 매매 엔진 일정
+            캘_자료(오늘, 오늘).filter(function (q) { return /지표|금리|연준|입찰|원자재/.test(q.종류) && (q.별 >= 2 || q.엔진 || (q.종류 === '연준' && q.투표)); }).forEach(function (q) {
+                var 분 = 캘_분(q.시), 남은 = 분 != null ? 분 - 지금분 : null, r = q.반응;
+                var 끝남 = r ? r.단계 === '끝' : (남은 != null && 남은 < -15);
                 var 상태 = r && r.단계 === '발표 전' ? '발표 전 ' + Math.max(1, 남은) + '분' : r && r.단계 === '1차 판정 중' ? '1차 판정 중'
                          : r && r.단계 === '확정 판정 중' ? '1차 ' + (r.일차 || '') + (/더 기다림/.test(r.글 || '') ? ' · 혼조' : '') : r && r.단계 === '끝' ? '확정 ' + (r.확정 || '')
-                         : 남은 > 0 ? 일정_남은글(남은) : '발표됨';
-                var 깜빡 = e.중요 !== false && !끝남 && 남은 <= 30 && 남은 > -60;
-                var 색 = r && (r.확정 === '부정' || (!r.확정 && r.일차 === '부정')) ? 'neg' : r && (r.확정 === '긍정' || (!r.확정 && r.일차 === '긍정')) ? 'pos' : '';
-                줄.push({ 순: e.시각, 시각: e.시각, 이름: 일정_짧은(e.이름) + (e.중요 === false ? ' · 참고' : ''), 상태: 상태, 깜빡: 깜빡, 지남: 끝남, 색: 색, 종류: e.이름.indexOf('FOMC') >= 0 ? 'FOMC' : '지표',
-                         설명: '미국 ' + e.시각 + ' ET (한국 ' + 일정_한국시각(오늘, e.시각) + ') · ' + e.이름 + ' · 출처 ' + (e.출처 || '─') + (e.중요 === false ? ' · 참고 (진입 막지 않음)' : ' · 발표 30분 전부터 신규 진입 금지 → 5분 1차 · 15분 확정 판정') + (r && r.글 ? '\n' + r.글 : '') });
+                         : q.a ? '실제 ' + q.a + (q.비교 && q.비교 !== '일치' ? ' ' + q.비교 : '') : 남은 == null ? '시각 미정' : 남은 > 0 ? 일정_남은글(남은) : '발표됨';
+                var 깜빡 = (q.별 >= 3 || q.엔진) && !끝남 && 남은 != null && 남은 <= 30 && 남은 > -60;
+                var 색 = r && (r.확정 === '부정' || (!r.확정 && r.일차 === '부정')) ? 'neg' : r && (r.확정 === '긍정' || (!r.확정 && r.일차 === '긍정')) ? 'pos' : q.비교 === '상회' ? 'up' : q.비교 === '하회' ? 'dn' : '';
+                var 값 = q.a ? '' : q.f ? ' · 예측 ' + q.f : '';
+                줄.push({ 순: q.시 || '99', 시각: q.시 || '미정', 이름: (q.별 >= 3 ? '★' : '') + q.이름 + (q.종류 === '연준' ? ' · ' + q.성향 + (q.투표 ? ' · 투표권' : '') : '') + 값, 상태: 상태, 깜빡: 깜빡, 지남: 끝남, 색: 색, 종류: q.종류 === '금리' ? 'FOMC' : '지표',
+                         설명: (q.한 ? '한국 ' + (q.한날 ? q.한날.replace(/^\d{4}-(\d{2})-(\d{2})$/, '$1/$2') + ' ' : '') + q.한 + ' · ' : '') + q.이름 + ' · 별 ' + q.별 + (q.f || q.p || q.a ? ' · 예측 ' + (q.f || '─') + ' · 이전 ' + (q.p || '─') + ' · 실제 ' + (q.a || '─') : '') + (q.해석 ? ' · ' + q.해석 : '') + ' · 출처 ' + q.출처 + (q.엔진 ? ' · 매매 엔진: 발표 30분 전부터 신규 진입 금지 · 발표 뒤 반응 판정' : '') });
             });
             var 실 = (일정자료.실적 && 일정자료.실적.종목) || {};
             Object.keys(실).forEach(function (t) {
@@ -13385,7 +13486,7 @@
         function 일정_표시() {
             var 상자 = document.getElementById('ev-box'); if (!상자) return;
             var 줄 = 일정_줄들(), 안 = 일정_안내();
-            var h = '<div class="ev-head" title="오늘 = 미국 동부 날짜 · 시각 = 한국 시각 (줄에 마우스를 올리면 미국 시각과 자세한 내용)"><b>📅 오늘 일정</b><small>한국 시각</small>' + (엔진_살아있음() ? '<span class="ev-eng on" title="실시간 자동 분석 동작 중">분석 ●</span>' : '<span class="ev-eng" title="실시간 자동 분석 꺼짐 → 참고 계산">분석 ○</span>') + '</div>';
+            var h = '<div class="ev-head" title="오늘 = 미국 동부 날짜 · 시각 = 한국 시각 (줄에 마우스를 올리면 예측 · 이전 · 실제와 자세한 내용)"><b>📅 오늘 일정</b><small>한국 시각</small><button type="button" class="ev-cal" title="캘린더 탭 열기 (전체 일정)">캘린더</button>' + (엔진_살아있음() ? '<span class="ev-eng on" title="실시간 자동 분석 동작 중">분석 ●</span>' : '<span class="ev-eng" title="실시간 자동 분석 꺼짐 → 참고 계산">분석 ○</span>') + '</div>';
             if (안.length) h += '<div class="ev-note" title="' + 안.join('\n') + '">⚠ ' + 안[0] + (안.length > 1 ? ' 외 ' + (안.length - 1) + '건' : '') + '<button type="button" class="ev-x" title="이번에는 그만 보기">✕</button></div>';
             h += '<div class="ev-list">' + (줄.length ? 줄.map(function (r) {
                 return '<div class="ev-row' + (r.깜빡 ? ' ev-blink' : '') + (r.지남 ? ' ev-past' : '') + ' ev-' + r.종류 + '" title="' + String(r.설명).replace(/"/g, '&quot;') + '">' +
@@ -13393,7 +13494,7 @@
             }).join('') : '<div class="ev-row ev-past"><span class="ev-n">오늘은 경제지표·실적 일정이 없습니다</span></div>') + '</div>';
             if (상자._h !== h) { var 스크롤 = 상자.querySelector('.ev-list'), 위치 = 스크롤 ? 스크롤.scrollTop : 0; 상자.innerHTML = h; 상자._h = h; var 새 = 상자.querySelector('.ev-list'); if (새) 새.scrollTop = 위치; }
         }
-        document.addEventListener('click', function (e) { if (e.target && e.target.classList && e.target.classList.contains('ev-x')) { 일정자료.안내닫음 = true; 일정_표시(); } });
+        document.addEventListener('click', function (e) { if (e.target && e.target.classList && e.target.classList.contains('ev-x')) { 일정자료.안내닫음 = true; 일정_표시(); } if (e.target && e.target.classList && e.target.classList.contains('ev-cal')) { try { if (typeof 모드전환 === 'function' && 상태 && 상태.모드 !== 'us') { } if (window.미장탭 && window.미장탭.열기) window.미장탭.열기('일정'); } catch (er) { } } });
 
         (function start() {
             initDashboard(); if (격자모드) 격자_꾸미기(); buildWatchlist(); refreshAllDropdowns(); initFirebase();
@@ -13536,7 +13637,7 @@
             if (cw && !document.getElementById('kr-view')) {
                 var v = document.createElement('div'); v.className = 'kr-view'; v.id = 'kr-view';
                 function 카드(id, 제목, 작은, 넓게) { return '<div class="kr-card' + (넓게 ? ' kr-wide' : '') + '"><h4><span id="' + id + '-h">' + 제목 + '</span> <small id="' + id + '-t">' + (작은 || '') + '</small></h4><div id="' + id + '"></div></div>'; }
-                v.innerHTML = '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<div class="sz-brief" id="kr-brief"></div><span class="kr-stat" id="kr-stat"></span><span class="sz-ver">판 2026.10.25</span></div>' +
+                v.innerHTML = '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<div class="sz-brief" id="kr-brief"></div><span class="kr-stat" id="kr-stat"></span><span class="sz-ver">판 2026.10.26</span></div>' +
                     '<div class="kr-two" id="kr-two">' +
                     '<div class="kr-pane" data-t="시장">' +
                         카드('kr-pj', '오늘 장 판정', '', 1) +
@@ -14588,7 +14689,7 @@
         function 미만들기() {
             var cw = document.querySelector('.content-wrapper'); if (!cw || document.getElementById('us-tabbar')) return;
             var bar = document.createElement('div'); bar.className = 'us-tabbar'; bar.id = 'us-tabbar';
-            bar.innerHTML = 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + ({ 예측: '예측시장' }[t] || t) + '</button>'; }).join('') + (격 ? '' : '<div class="sz-brief" id="us-brief"></div>') + '<span class="us-stat" id="us-stat"></span><span class="sz-ver" title="대시보드 파일 판 (윈폼 · 브라우저가 같은 파일인지 확인용)">판 2026.10.25</span>';
+            bar.innerHTML = 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + ({ 예측: '예측시장', 일정: '캘린더' }[t] || t) + '</button>'; }).join('') + (격 ? '' : '<div class="sz-brief" id="us-brief"></div>') + '<span class="us-stat" id="us-stat"></span><span class="sz-ver" title="대시보드 파일 판 (윈폼 · 브라우저가 같은 파일인지 확인용)">판 2026.10.26</span>';
             // 대시보드2: 차트 자리를 줄이지 않도록 위 시황 줄(미장/국장 단추 옆)에 작게 2줄 / 대시보드1: 차트 위 한 줄
             var tb = document.querySelector('.top-bar'), sw = document.getElementById('mkt-sw');
             if (격 && tb && sw && sw.parentNode === tb) {
@@ -14604,7 +14705,7 @@
                 '<div class="kr-pane us-pane" data-t="시장">' + 카드('us-pj', '오늘 장 판정', '', 1) + 카드('us-pmc', '예측 시장', '칼시 · 폴리마켓 확률 · 눌러서 창 열기', 1) + 카드('us-idx', '주요 지표', '지수 · 선물 · 금리 · 달러 · 원자재') + 카드('us-kr', '국장 영향', '다음 국내 장에 줄 영향 (규칙으로 만든 문장)') +
                     카드('us-sec', '섹터 강약', 'S&P 500 섹터 ETF 11개 · 등락률 순') + 카드('us-thm', '테마 · 지수 ETF', '반도체 · 소프트웨어 · 소형주 등') + 카드('us-brd', '관심 종목 강약', '상승 · 하락 수와 강한 · 약한 종목', 1) + '</div>' +
                 '<div class="kr-pane us-pane" data-t="종목"><div class="kr-card"><h4>관심 종목 <small id="us-tbl-t"></small><span class="kr-sort" id="us-sort"></span></h4><div id="us-tbl"></div></div></div>' +
-                '<div class="kr-pane us-pane" data-t="일정">' + 카드('us-cal', '이번 주 일정', '경제지표 · FOMC · 관심 종목 실적 · 옵션 만기 · 시각은 한국 시각', 1) + '</div>' +
+                '<div class="kr-pane us-pane" data-t="일정">' + 카드('us-cal', '캘린더', '경제지표 (예측 · 이전 · 실제) · 연준 발언 · 금리 결정 · 관심 종목 실적 · 옵션 만기 · 시각은 한국 시각', 1) + '</div>' +
                 '<div class="kr-pane us-pane" data-t="us신호">' + 카드('us-sig', '오늘 알림 기록', '가격 알림 · 지지·저항 · 체결 급증 · 시장 경보 · 뉴스 (미국 날짜 기준)', 1) + 카드('us-fz', '화면 멈춤 기록', '0.4초 넘게 화면이 멈춘 때 · 그때 보던 화면 · 깜빡이던 곳 · 직전 알림', 1) + '</div>' +
                 '<div class="kr-pane us-pane" data-t="뉴스"><div class="kr-card kr-wide kr-nsearch"><h4>뉴스 검색 <small>단어 · 종목 · 기간 · 언어</small><span class="kr-nfs">글자 <button type="button" data-fs="-1">가−</button><b class="kr-nfs-v">보통</b><button type="button" data-fs="1">가+</button></span></h4>' +
                     '<form class="kr-nq" id="us-nq"><input name="q" placeholder="예: 엔비디아, Nvidia, 금리" autocomplete="off"><select name="d"><option value="1">하루</option><option value="3">3일</option><option value="7" selected>1주</option><option value="30">한 달</option></select><select name="l"><option value="ko">한국어</option><option value="en">영어</option></select><button type="submit">검색</button></form><div class="kr-nqr" id="us-nqr"></div><div id="us-nsr"></div></div>' +
@@ -14845,31 +14946,53 @@
             var tt = document.getElementById('us-tbl-t'); if (tt) tt.textContent = 행.length + '종목 · ' + (시외 ? '등락률 = 정규장 · 시간외 따로' : '정규장') + ' · 거래량 = 평소 이 시각 대비 · 체결 = 윈폼 키움 체결 (PC 프로그램이 켜져 있을 때)' + ' · 차트 패널에 있는 종목은 누르면 차트로';
         }
         // ── 일정: 오늘부터 7일 ──
+        // ── 캘린더: 세이브티커 경제 일정 + 윈폼 일정 + 관심 종목 실적 · 이벤트 + 옵션 만기 (미국 날짜 기준 · 한국 시각) ──
+        var 미캘 = (function () { var v = 읽기('sz_us_cal', true) || {}; return { 기간: v.기간 || '주', 옮김: 0, 별: v.별 == null ? 2 : +v.별, 종류: v.종류 || {} }; })();
+        var 미캘종류 = [['지표', '지표'], ['연준', '연준 발언'], ['금리', '금리 결정'], ['실적', '실적'], ['만기', '만기'], ['입찰', '국채 입찰'], ['원자재', '원자재'], ['종목', '종목 이벤트']];
+        function 미캘저장() { 저장('sz_us_cal', { 기간: 미캘.기간, 별: 미캘.별, 종류: 미캘.종류 }); }
         function 미일정() {
             var el = document.getElementById('us-cal'); if (!el) return;
-            if (typeof 일정자료 === 'undefined' || typeof 엔진_오늘 !== 'function') { 넣기(el, '<div class="kr-empty">일정 자료 없음</div>'); return; }
-            var 오늘 = 엔진_오늘(), ec = 일정자료.econ || {}, 실 = (일정자료.실적 && 일정자료.실적.종목) || {}, 관 = 미관심(), 관맵 = {}; 관.forEach(function (t) { 관맵[t] = 1; });
-            var 날들 = []; var d0 = new Date(오늘 + 'T12:00:00Z');
-            for (var i = 0; i < 7; i++) { var d = new Date(d0.getTime() + i * 86400e3); 날들.push(d.toISOString().slice(0, 10)); }
-            var 요 = ['일', '월', '화', '수', '목', '금', '토'], 묶 = {}; 날들.forEach(function (x) { 묶[x] = []; });
-            function 넣(날, 순, 시각, 종류, 글, 강, 예글) { if (묶[날]) 묶[날].push({ 순: 순, 시각: 시각, 종류: 종류, 글: 글, 강: 강, 예: 예글 || '' }); }
-            (ec.일정 || []).forEach(function (e) { if (!묶[e.날짜]) return; var k = 일정_한국시각(e.날짜, e.시각); 넣(e.날짜, e.시각 || '99', k ? k.slice(-5) : (e.시각 || '시각 미정'), e.이름.indexOf('FOMC') >= 0 ? 'FOMC' : '지표', 일정_짧은(e.이름) + (e.중요 === false ? ' (참고)' : ''), e.중요 !== false, 예일정(e.이름, e.날짜)); });
-            (ec.이벤트 || []).forEach(function (v) { if (!묶[v.날짜] || !관맵[v.종목]) return; var k = /^\d{2}:\d{2}$/.test(v.시각 || '') ? 일정_한국시각(v.날짜, v.시각) : ''; 넣(v.날짜, v.시각 || '12:00', k ? k.slice(-5) : (v.시각 || '시각 미정'), '이벤트', v.종목 + ' ' + v.이름 + (v.확정 ? '' : ' (예상)'), true); });
-            var 실본 = {};
-            Object.keys(실).forEach(function (t) { var v = 실[t]; if (!v || !묶[v.날짜] || !관맵[t]) return; 실본[t] = 1; 넣(v.날짜, v.시간 === '장전' ? '08:00' : v.시간 === '장후' ? '16:30' : '12:00', v.시간 === '장전' ? '장 전' : v.시간 === '장후' ? '장 마감 후' : '시간 미정', '실적', t + ' ' + 미이름(t).slice(0, 12) + ' 실적' + (v.예상 ? ' (예상)' : ''), true); });
-            var B = 미B(); 관.forEach(function (t) { var v = B[t]; if (!v || !(v.er > 0) || 실본[t]) return; var 날 = new Date((v.er - 5 * 3600) * 1000).toISOString().slice(0, 10); if (묶[날]) 넣(날, '12:00', '시간 미정', '실적', t + ' ' + 미이름(t).slice(0, 12) + ' 실적 (야후)', true); });
-            날들.forEach(function (x) {
-                var d = new Date(x + 'T12:00:00Z'), w = d.getUTCDay(); if (w !== 5) return;
-                var 셋째 = d.getUTCDate() >= 15 && d.getUTCDate() <= 21, 분기 = [2, 5, 8, 11].indexOf(d.getUTCMonth()) >= 0;
-                넣(x, '16:00', '장 마감', '만기', 셋째 ? (분기 ? '분기 옵션·선물 동시 만기 (쿼드러플 위칭) · 거래량 · 변동성 큼' : '월간 옵션 만기 · 오후 변동성 주의') : '주간 옵션 만기', 셋째);
-            });
-            var h = 날들.map(function (x, i) {
-                var d = new Date(x + 'T12:00:00Z'), w = d.getUTCDay(), 목 = 묶[x].sort(function (a, b) { return a.순 < b.순 ? -1 : a.순 > b.순 ? 1 : 0; });
-                if ((w === 0 || w === 6) && !목.length) return '';
-                return '<div class="us-day' + (i === 0 ? ' today' : '') + '"><div class="us-dh">' + (+x.slice(5, 7)) + '/' + (+x.slice(8, 10)) + ' (' + 요[w] + ')' + (i === 0 ? ' <b>오늘</b>' : i === 1 ? ' 내일' : '') + (w === 0 || w === 6 ? ' <small>휴장</small>' : '') + '</div>' +
-                       (목.length ? 목.map(function (r) { return '<div class="us-ev' + (r.강 ? ' strong' : '') + '"><span class="tm">' + esc(r.시각) + '</span><span class="kd k-' + r.종류 + '">' + r.종류 + '</span><span class="tx">' + esc(r.글) + (r.예 ? '<span class="us-pm" title="예측 시장 (칼시 · 폴리마켓)">' + esc(r.예) + '</span>' : '') + '</span></div>'; }).join('') : '<div class="us-ev none">일정 없음</div>') + '</div>';
+            if (typeof 일정자료 === 'undefined' || typeof 엔진_오늘 !== 'function' || typeof 캘_자료 !== 'function') { 넣기(el, '<div class="kr-empty">일정 자료 없음</div>'); return; }
+            var 오늘 = 엔진_오늘(), 시작, 끝;
+            if (미캘.기간 === '오늘') { 시작 = 끝 = 캘_날더(오늘, 미캘.옮김); }
+            else { var 기준 = 캘_날더(오늘, 7 * 미캘.옮김 + (미캘.기간 === '다음주' ? 7 : 0)), w = new Date(기준 + 'T12:00:00Z').getUTCDay(); 시작 = 캘_날더(기준, -((w + 6) % 7)); 끝 = 캘_날더(시작, 6); }
+            var 전체 = 캘_자료(시작, 끝), 행 = 전체.filter(function (r) { return r.별 >= 미캘.별 && 미캘.종류[r.종류] !== false; });
+            var 뉴욕 = 가상_뉴욕시각(), 지금분 = 뉴욕.getHours() * 60 + 뉴욕.getMinutes(), 다음 = null;
+            행.forEach(function (r) { var 분 = 캘_분(r.시); r.지남 = r.날 < 오늘 || (r.날 === 오늘 && 분 != null && 분 < 지금분 - 1); if (!다음 && !r.지남 && 분 != null && (r.날 > 오늘 || 분 >= 지금분) && r.별 >= 2) 다음 = r; });
+            var 요 = ['일', '월', '화', '수', '목', '금', '토'], 별글 = function (n) { return '★★★'.slice(0, n) + '<i>' + '★★★'.slice(n) + '</i>'; };
+            var 머 = '<div class="cal-bar"><span class="kr-seg">' + [['오늘', '오늘'], ['주', '이번 주'], ['다음주', '다음 주']].map(function (x) { return '<button type="button" data-cp="' + x[0] + '" class="' + (미캘.기간 === x[0] ? 'on' : '') + '">' + x[1] + '</button>'; }).join('') + '</span>' +
+                '<span class="cal-nav"><button type="button" data-cm="-1">◀</button><b>' + (+시작.slice(5, 7)) + '/' + (+시작.slice(8, 10)) + (시작 !== 끝 ? ' ~ ' + (+끝.slice(5, 7)) + '/' + (+끝.slice(8, 10)) : ' (' + 요[new Date(시작 + 'T12:00:00Z').getUTCDay()] + ')') + '</b><button type="button" data-cm="1">▶</button>' + (미캘.옮김 ? '<button type="button" data-cm="0">되돌리기</button>' : '') + '</span>' +
+                '<span class="kr-seg">' + [[0, '전체'], [2, '★2 이상'], [3, '★3']].map(function (x) { return '<button type="button" data-cs="' + x[0] + '" class="' + (미캘.별 === x[0] ? 'on' : '') + '">' + x[1] + '</button>'; }).join('') + '</span></div>' +
+                '<div class="cal-kinds">' + 미캘종류.map(function (x) { var n = 전체.filter(function (r) { return r.종류 === x[0] && r.별 >= 미캘.별; }).length; return '<button type="button" data-ck="' + x[0] + '" class="k-' + x[0] + (미캘.종류[x[0]] !== false ? ' on' : '') + '">' + x[1] + ' <small>' + n + '</small></button>'; }).join('') + '</div>';
+            var 묶 = {}; 행.forEach(function (r) { (묶[r.날] = 묶[r.날] || []).push(r); });
+            var 본문 = Object.keys(묶).sort().map(function (d) {
+                var dt = new Date(d + 'T12:00:00Z'), w = dt.getUTCDay();
+                return '<div class="us-day' + (d === 오늘 ? ' today' : '') + '"><div class="us-dh">' + (+d.slice(5, 7)) + '/' + (+d.slice(8, 10)) + ' (' + 요[w] + ')' + (d === 오늘 ? ' <b>오늘</b>' : d === 캘_날더(오늘, 1) ? ' 내일' : '') + ' <small>미국 날짜</small></div>' + 묶[d].map(function (r) {
+                    var 값 = (r.f || r.p || r.a) ? '<span class="cal-v">' + (r.f ? '예측 <b>' + esc(r.f) + '</b>' : '') + (r.p ? ' · 이전 ' + esc(r.p) : '') + (r.a ? ' · 실제 <b class="' + (r.비교 === '상회' ? 'kr-up' : r.비교 === '하회' ? 'kr-dn' : '') + '">' + esc(r.a) + (r.비교 === '상회' ? ' ▲' : r.비교 === '하회' ? ' ▼' : '') + '</b>' : '') + '</span>' : '';
+                    var 분 = 캘_분(r.시), 남 = d === 오늘 && 분 != null && 분 >= 지금분 ? (분 - 지금분 >= 60 ? Math.floor((분 - 지금분) / 60) + '시간 ' : '') + ((분 - 지금분) % 60) + '분 후' : '';
+                    var 끝글 = r.반응 ? '반응 ' + (r.반응.확정 ? '확정 ' + r.반응.확정 : r.반응.일차 ? '1차 ' + r.반응.일차 : r.반응.단계 || '') : r.해석 ? r.해석 : 남;
+                    var 예 = typeof 예일정 === 'function' ? 예일정(r.이름, r.날) : '';
+                    return '<div class="us-ev cal-ev' + (r.별 >= 3 ? ' strong' : '') + (r.지남 ? ' past' : '') + (r === 다음 ? ' next' : '') + '" title="' + esc((r.한날 ? r.한날.replace(/^\d{4}-(\d{2})-(\d{2})$/, '$1/$2') + ' ' : '') + (r.한 || '') + ' 한국 · ' + r.이름 + (r.x ? ' · ' + r.x : '') + ' · 출처 ' + r.출처 + (r.엔진 ? ' · 매매 엔진 일정 (발표 전후 진입 금지 · 반응 판정)' : '')) + '">' +
+                        '<span class="tm">' + esc(r.한 || '미정') + '</span><span class="cal-st">' + 별글(r.별) + '</span><span class="kd k-' + r.종류 + '">' + (r.종류 === '연준' ? '연준' : r.종류) + '</span>' +
+                        '<span class="tx">' + esc(r.이름.replace(/\s*\((매파|중립|비둘기)\s*\/\s*투표권\s*[OX]\)\s*$/, '')) + (r.종류 === '연준' ? ' <em class="cal-hawk ' + (r.성향 === '매파' ? 'h' : r.성향 === '비둘기' ? 'd' : 'n') + '">' + r.성향 + '</em>' + (r.투표 ? '<em class="cal-vote">투표권</em>' : '') : '') + (r.엔진 ? '<em class="cal-eng" title="매매 엔진 일정">엔진</em>' : '') + (예 ? '<span class="us-pm" title="예측 시장 (칼시 · 폴리마켓)">' + esc(예) + '</span>' : '') + 값 + '</span>' +
+                        '<span class="cal-r">' + esc(끝글) + '</span></div>';
+                }).join('') + '</div>';
             }).join('');
-            넣기(el, h + '<div class="kr-sub">미국 날짜 기준 · 시각은 한국 시각 · 경제 일정은 PC 프로그램이 올린 자료 · 실적은 관심 종목만</div>');
+            var sv = 일정자료.save;
+            넣기(el, 머 + (본문 || '<div class="kr-empty">이 기간에 해당하는 일정이 없습니다 · 중요도나 종류 거르기를 바꿔 보세요</div>') +
+                '<div class="kr-sub">미국 날짜 기준 · 시각은 한국 시각 · 경제 일정 = 세이브티커' + (sv && sv.갱신 ? ' (' + esc(String(sv.갱신).slice(5, 16)) + ' 받음)' : ' (아직 없음 · 윈폼 뉴스 수집 PC에서 받음)') + ' + 윈폼 FRED·연준 · 실적 = 관심 종목 · ▲▼ = 실제가 예측보다 높음 · 낮음 · 엔진 = 매매 엔진이 발표 전후 진입을 막는 일정</div>');
+            if (!el._캘이벤트) {
+                el._캘이벤트 = 1;
+                el.addEventListener('click', function (e) {
+                    var b = e.target.closest('button'); if (!b) return;
+                    if (b.hasAttribute('data-cp')) { 미캘.기간 = b.getAttribute('data-cp'); 미캘.옮김 = 0; }
+                    else if (b.hasAttribute('data-cm')) { var v = +b.getAttribute('data-cm'); 미캘.옮김 = v === 0 ? 0 : 미캘.옮김 + v; }
+                    else if (b.hasAttribute('data-cs')) 미캘.별 = +b.getAttribute('data-cs');
+                    else if (b.hasAttribute('data-ck')) { var k = b.getAttribute('data-ck'); 미캘.종류[k] = 미캘.종류[k] === false; }
+                    else return;
+                    미캘저장(); 미일정();
+                });
+            }
         }
         // ── 신호: 오늘 알림 기록 ──
         function 미신호() {
@@ -15982,13 +16105,16 @@
             // ── 일정: 경제지표 · FOMC · 실적 · 옵션 만기 ──
             if (typeof 일정자료 !== 'undefined') {
                 var ec = 일정자료.econ || {};
-                (ec.일정 || []).forEach(function (e) {
-                    if (e.중요 === false) return; var 분 = 한줄_분후(e.날짜, e.시각); if (분 == null) return;
-                    var 이 = typeof 일정_짧은 === 'function' ? 일정_짧은(e.이름) : e.이름, 한 = typeof 일정_한국시각 === 'function' ? (일정_한국시각(e.날짜, e.시각) || '').slice(-5) : '';
-                    var r = (ec.반응 || []).filter(function (x) { return x.날짜 === e.날짜 && x.시각 === e.시각; })[0];
-                    if (분 > 0 && 분 <= 180) 넣(분 <= 30 ? '위험' : '주의', 분 <= 30 ? 97 : 80, (/FOMC/.test(e.이름) ? 'FOMC ' : '') + 이 + ' ' + 한 + ' (' + 분 + '분 후) → 발표 앞뒤 30분 신규 진입 자제');
-                    else if (분 <= 0 && 분 > -60) 넣('주의', 85, 이 + ' 발표 ' + (-분) + '분 지남' + (r && (r.확정 || r.일차) ? ' · 시장 반응 ' + (r.확정 || r.일차) : '') + ' → 첫 반응이 뒤집히는지 15분 확인');
-                    else if (분 > 180) 넣('정보', 42, '오늘 ' + 이 + ' ' + 한 + ' 발표 예정');
+                (typeof 캘_자료 === 'function' ? 캘_자료(t.date, t.date) : []).forEach(function (q) {
+                    if (!/지표|금리/.test(q.종류) || !(q.별 >= 3 || q.엔진)) return; var 분 = 한줄_분후(q.날, q.시); if (분 == null) return;
+                    var 이 = q.이름, 한 = q.한 || '', r = q.반응, 예 = q.f ? ' (예측 ' + q.f + (q.p ? ' · 이전 ' + q.p : '') + ')' : '';
+                    if (분 > 0 && 분 <= 180) 넣(분 <= 30 ? '위험' : '주의', 분 <= 30 ? 97 : 80, 이 + ' ' + 한 + ' (' + 분 + '분 후)' + 예 + ' → 발표 앞뒤 30분 신규 진입 자제');
+                    else if (분 <= 0 && 분 > -60) 넣('주의', 85, 이 + ' 발표 ' + (-분) + '분 지남' + (q.a ? ' · 실제 ' + q.a + (q.f ? ' vs 예측 ' + q.f : '') + (q.비교 && q.비교 !== '일치' ? ' (' + q.비교 + ')' : '') : '') + (q.해석 ? ' → ' + q.해석 : '') + (r && (r.확정 || r.일차) ? ' · 시장 반응 ' + (r.확정 || r.일차) : '') + ' · 첫 반응이 뒤집히는지 15분 확인');
+                    else if (분 > 180) 넣('정보', 42, '오늘 ' + 이 + ' ' + 한 + ' 발표 예정' + 예);
+                });
+                (typeof 캘_자료 === 'function' ? 캘_자료(t.date, t.date) : []).filter(function (q) { return q.종류 === '연준' && q.투표 && q.성향 !== '중립'; }).forEach(function (q) {
+                    var 분 = 한줄_분후(q.날, q.시); if (분 == null || 분 < -30 || 분 > 360) return;
+                    넣('정보', 39, q.이름.replace(/\s*\(.*$/, '') + ' 발언 ' + (q.한 || '') + (분 > 0 ? ' (' + 분 + '분 후)' : ' (진행 중)') + ' · ' + q.성향 + ' · 투표권 → 금리 기대 변화 주의');
                 });
                 var 실 = (일정자료.실적 && 일정자료.실적.종목) || {}, 내일 = new Date(new Date(t.date + 'T12:00:00Z').getTime() + 86400e3).toISOString().slice(0, 10);
                 var 오늘실 = [], 내일실 = [];
@@ -16130,7 +16256,9 @@
         setInterval(function () { if (document.visibilityState !== 'visible') return; 한줄.돌림++; 한줄그리기(); }, 6000);
         // 미장: 차트 탭에서도 시황 한 줄에 쓸 시세표(섹터 · 관심 종목)를 2분마다 받음 (다른 탭은 원래 주기)
         setInterval(function () { if (상태.모드 === 'us' && 미.탭 === '차트' && document.visibilityState === 'visible' && Date.now() - 미.board받음 > 120000) { var 옛 = 미.탭; 미.탭 = '시장'; try { 미자료(false); } finally { 미.탭 = 옛; } } }, 15000);
-        window.미장탭 = { 상태: 미, 탭바꾸기: 미탭바꾸기, 그리기: 미그리기, 자료: 미자료, 단계: 미단계, 멈춤: 멈춤남기기, 계산기: 계산기 };
+        window.미장탭 = { 상태: 미, 탭바꾸기: 미탭바꾸기, 그리기: 미그리기, 자료: 미자료, 단계: 미단계, 멈춤: 멈춤남기기, 계산기: 계산기,
+            다시: function () { if (상태.모드 === 'us' && 미.탭 === '일정') 미그리기예약(); },
+            열기: function (t) { if (상태.모드 !== 'us') { var b = document.querySelector('#mkt-sw button[data-m="us"]'); if (b) b.click(); } setTimeout(function () { 미탭바꾸기(t); }, 30); } };
         window.국장 = { 상태: 상태, 모드바꾸기: 모드바꾸기, 반영: 반영, 그리기: 그리기, 종목: KR종목, 수급통계: 수급통계, 단계: 단계, 누적비율: 누적비율 };
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', 시작); else 시작();
     })();
