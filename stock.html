@@ -16168,7 +16168,7 @@
             try {
                 if (typeof firebase === 'undefined' || !firebase.database || !(firebase.apps && firebase.apps.length)) { setTimeout(소_구독, 3000); return; }
                 소.참조 = firebase.database().ref('social/now');
-                소.참조.on('value', function (snap) { 소.자료 = snap.val() || null; 소.받은 = Date.now(); 소.그림 = ''; 소_알림확인(); if (창열림('SNS')) { 소_그리기(); 소_시세받기(true); } 소_패널배지(); });
+                소.참조.on('value', function (snap) { 소.오류 = ''; 소.자료 = snap.val() || null; 소.받은 = Date.now(); 소.그림 = ''; 소_알림확인(); if (창열림('SNS')) { 소_그리기(); 소_시세받기(true); } 소_패널배지(); }, function (err) { 소.오류 = String(err && (err.code || err.message) || err); 소.참조 = null; 소.그림 = ''; if (창열림('SNS')) 소_그리기(); setTimeout(소_구독, 60000); });
             } catch (e) { setTimeout(소_구독, 5000); }
         }
         setTimeout(소_구독, 1500);
@@ -16270,7 +16270,8 @@
             h = '<div class="sn-top"><div class="sn-stat' + (늦음 ? ' late' : '') + '">' + (d && d.ms ? '갱신 <b>' + 소_전(d.ms) + '</b>' + (늦음 ? ' <em>지연</em>' : '') : '자료 없음') + ' · ' + 표(출.레딧, '레딧') + 표(출.스톡트윗, 'Stocktwits') + 표(출.글, '레딧 글') + '<span class="sn-ev">10분마다</span></div>' +
                 '<div class="sn-ctl">' + 세그('s', [['급상승', '급상승'], ['언급', '언급 많은 순'], ['강세', '강세 비율']]) + 세그('v', [['전체', '전체'], ['관심', '관심 종목']]) +
                 칩('소형', '1달러 미만 제외', S.소형) + 칩('ETF', 'ETF 포함', S.ETF) + '</div></div>';
-            if (!d || !d.목록 || !d.목록.length) h += '<div class="sn-empty">SNS 자료가 아직 없습니다<br><small>윈폼 뉴스 수집 PC가 10분마다 레딧·Stocktwits 순위를 받아 올립니다</small></div>';
+            if (소.오류 && /permission|denied/i.test(소.오류)) h += '<div class="sn-empty">SNS 자료를 읽을 권한이 없습니다<br><small>Firebase 콘솔 → Realtime Database → 규칙에 <b>social</b> 읽기 허용을 추가해 주세요 ("social": { ".read": true, ".write": "auth != null" })</small></div>';
+            else if (!d || !d.목록 || !d.목록.length) h += '<div class="sn-empty">SNS 자료가 아직 없습니다<br><small>' + (소.오류 ? '읽기 오류: ' + esc(소.오류) + ' · ' : '') + '뉴스 수집을 켠 PC(체크박스7)의 윈폼이 10분마다 레딧·Stocktwits 순위를 받아 올립니다</small></div>';
             else {
                 var 급 = 소_행들('급상승').slice(0, 3);
                 if (급.length && S.범위 === '전체') h += '<div class="sn-h">오늘 급상승 TOP 3 <small>어제 이 시각보다 언급이 많이 늘어난 종목</small></div><div class="sn-cards">' + 급.map(소_카드).join('') + '</div>';
