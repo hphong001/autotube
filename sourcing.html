@@ -96,24 +96,24 @@ footer { font-size: calc(var(--font-size-base) * 0.73); color: #667085; padding:
 
 <main>
 <!-- 1. 상품·공급업체 정보 -->
-<section class="card">
+<section class="card" data-section="상품·공급업체 정보">
   <h2>1. 상품·공급업체 정보 <span style="font-size:0.75em; color:var(--muted);">(商品与供应商信息)</span></h2>
   <div class="grid">
-    <div class="field"><label>조사 날짜 <small>(调查日期)</small></label><input id="date" type="date"></div>
-    <div class="field"><label>도시 / 시장 <small>(城市 / 市场)</small></label><input id="market" placeholder="예: 우한 / 한커우베이"></div>
-    <div class="field"><label>상품명 / 모델명 <small>(商品名 / 型号)</small></label><input id="product" placeholder="현지 상품명 포함"></div>
-    <div class="field"><label>업체명 / 매장 번호 <small>(公司名 / 档口号)</small></label><input id="supplier" placeholder="상호, 부스 번호"></div>
+    <div class="field" data-label="조사 날짜"><label>조사 날짜 <small>(调查日期)</small></label><input id="date" type="date"></div>
+    <div class="field" data-label="도시 / 시장"><label>도시 / 시장 <small>(城市 / 市场)</small></label><input id="market" placeholder="예: 우한 / 한커우베이"></div>
+    <div class="field" data-label="상품명 / 모델명"><label>상품명 / 모델명 <small>(商品名 / 型号)</small></label><input id="product" placeholder="현지 상품명 포함"></div>
+    <div class="field" data-label="업체명 / 매장 번호"><label>업체명 / 매장 번호 <small>(公司名 / 档口号)</small></label><input id="supplier" placeholder="상호, 부스 번호"></div>
     
-    <div class="field"><label>담당자 성명 <small>(负责人 姓名)</small></label><input id="contactName" placeholder="담당자 이름"></div>
-    <div class="field"><label>직함 / 부서 <small>(职务 / 部门)</small></label><input id="contactTitle" placeholder="예: 영업매니저 销售经理"></div>
-    <div class="field"><label>전화번호 / 왓츠앱 <small>(电话 / WhatsApp)</small></label><input id="contactPhone" placeholder="전화번호"></div>
-    <div class="field"><label>위챗 ID (WeChat) <small>(微信号)</small></label><input id="wechatId" placeholder="WeChat ID 입력"></div>
+    <div class="field" data-label="담당자 성명"><label>담당자 성명 <small>(负责人 姓名)</small></label><input id="contactName" placeholder="담당자 이름"></div>
+    <div class="field" data-label="직함 / 부서"><label>직함 / 부서 <small>(职务 / 部门)</small></label><input id="contactTitle" placeholder="예: 영업매니저 销售经理"></div>
+    <div class="field" data-label="전화번호 / 왓츠앱"><label>전화번호 / 왓츠앱 <small>(电话 / WhatsApp)</small></label><input id="contactPhone" placeholder="전화번호"></div>
+    <div class="field" data-label="위챗 ID (WeChat)"><label>위챗 ID (WeChat) <small>(微信号)</small></label><input id="wechatId" placeholder="WeChat ID 입력"></div>
 
-    <div class="field"><label>공급 형태 <small>(供应形式)</small></label><select id="factory"><option>미확인 (未确认)</option><option>공장 직영 (工厂直营)</option><option>총판·대리점 (总代·代理)</option><option>도매 재판매 (批发转售)</option></select></div>
-    <div class="field"><label>MOQ 최소 주문량 <small>(最小起订量)</small></label><input id="moq" type="number" min="0"></div>
-    <div class="field"><label>샘플 가격 (CNY) <small>(样品价)</small></label><input id="samplePrice" type="number" min="0" step=".01"></div>
-    <div class="field"><label>견적 유효기간 <small>(报价有效期)</small></label><input id="expiry" placeholder="예: 2026-11-15"></div>
-    <div class="field full"><label>제품 페이지 / 1688 링크 <small>(产品链接)</small></label><input id="url" type="url" placeholder="https://..."></div>
+    <div class="field" data-label="공급 형태"><label>공급 형태 <small>(供应形式)</small></label><select id="factory"><option>미확인 (未确认)</option><option>공장 직영 (工厂直营)</option><option>총판·대리점 (总代·代理)</option><option>도매 재판매 (批发转售)</option></select></div>
+    <div class="field" data-label="MOQ 최소 주문량"><label>MOQ 최소 주문량 <small>(最小起订量)</small></label><input id="moq" type="number" min="0"></div>
+    <div class="field" data-label="샘플 가격 (CNY)"><label>샘플 가격 (CNY) <small>(样品价)</small></label><input id="samplePrice" type="number" min="0" step=".01"></div>
+    <div class="field" data-label="견적 유효기간"><label>견적 유효기간 <small>(报价有效期)</small></label><input id="expiry" placeholder="예: 2026-11-15"></div>
+    <div class="field full" data-label="제품 페이지 / 1688 링크"><label>제품 페이지 / 1688 링크 <small>(产品链接)</small></label><input id="url" type="url" placeholder="https://..."></div>
     
     <div class="field full">
       <label>사진 (상품·포장·명함·규격표) <small>(照片多选: 手机相册/拍照)</small></label>
@@ -125,84 +125,82 @@ footer { font-size: calc(var(--font-size-base) * 0.73); color: #667085; padding:
 </section>
 
 <!-- 2. 규격·품질·포장 -->
-<section class="card">
+<section class="card" data-section="규격·품질·포장">
   <h2>2. 규격·품질·포장 <small>(规格·品质·包装)</small></h2>
   <div class="grid">
-    <div class="field"><label>재질 / 구성 <small>(材质 / 构成)</small></label><input id="material" placeholder="예: ABS, 스테인리스"></div>
-    <div class="field"><label>크기 (가로×세로×높이 mm) <small>(尺寸)</small></label><input id="dimensions"></div>
-    <div class="field"><label>제품 무게 (g) <small>(产品重量)</small></label><input id="weight" type="number" min="0"></div>
-    <div class="field"><label>개별 포장 크기 <small>(独立包装尺寸)</small></label><input id="packSize"></div>
-    <div class="field"><label>포장 후 무게 (g) <small>(带包装重量)</small></label><input id="packWeight" type="number" min="0"></div>
-    <div class="field"><label>색상·옵션·SKU 수 <small>(颜色·SKU数)</small></label><input id="options"></div>
+    <div class="field" data-label="재질 / 구성"><label>재질 / 구성 <small>(材质 / 构成)</small></label><input id="material" placeholder="예: ABS, 스테인리스"></div>
+    <div class="field" data-label="크기 (가로×세로×높이 mm)"><label>크기 (가로×세로×높이 mm) <small>(尺寸)</small></label><input id="dimensions"></div>
+    <div class="field" data-label="제품 무게 (g)"><label>제품 무게 (g) <small>(产品重量)</small></label><input id="weight" type="number" min="0"></div>
+    <div class="field" data-label="개별 포장 크기"><label>개별 포장 크기 <small>(独立包装尺寸)</small></label><input id="packSize"></div>
+    <div class="field" data-label="포장 후 무게 (g)"><label>포장 후 무게 (g) <small>(带包装重量)</small></label><input id="packWeight" type="number" min="0"></div>
+    <div class="field" data-label="색상·옵션·SKU 수"><label>색상·옵션·SKU 수 <small>(颜色·SKU数)</small></label><input id="options"></div>
   </div>
   <h3>현장 확인 <small>(现场检查)</small></h3>
   <div id="quality">
-    <div class="rowcheck"><input type="checkbox" id="q1"><label for="q1">샘플 작동·마감·품질 직접 확인 <small>(确认样品运行及品质)</small></label></div>
-    <div class="rowcheck"><input type="checkbox" id="q2"><label for="q2">불량 기준·교환·환불 조건 확인 <small>(确认不良标准及退换货)</small></label></div>
-    <div class="rowcheck"><input type="checkbox" id="q3"><label for="q3">한글 라벨·원산지 표시·포장 변경 가능 여부 확인 <small>(确认韩文标签及包装定制)</small></label></div>
-    <div class="rowcheck"><input type="checkbox" id="q4"><label for="q4">상표·캐릭터·특허·디자인 침해 여부 확인 <small>(确认商标 及 专利)</small></label></div>
-    <div class="rowcheck"><input type="checkbox" id="q5"><label for="q5">소량 주문·재주문 리드타임 확인 <small>(确认小单 及 补货交期)</small></label></div>
+    <div class="rowcheck" data-check="샘플 작동·마감·품질 직접 확인"><input type="checkbox" id="q1"><label for="q1">샘플 작동·마감·품질 직접 확인 <small>(确认样品运行及品质)</small></label></div>
+    <div class="rowcheck" data-check="불량 기준·교환·환불 조건 확인"><input type="checkbox" id="q2"><label for="q2">불량 기준·교환·환불 조건 확인 <small>(确认不良标准及退换货)</small></label></div>
+    <div class="rowcheck" data-check="한글 라벨·원산지 표시·포장 변경 가능 여부 확인"><input type="checkbox" id="q3"><label for="q3">한글 라벨·원산지 표시·포장 변경 가능 여부 확인 <small>(确认韩文标签及包装定制)</small></label></div>
+    <div class="rowcheck" data-check="상표·캐릭터·특허·디자인 침해 여부 확인"><input type="checkbox" id="q4"><label for="q4">상표·캐릭터·특허·디자인 침해 여부 확인 <small>(确认商标 及 专利)</small></label></div>
+    <div class="rowcheck" data-check="소량 주문·재주문 리드타임 확인"><input type="checkbox" id="q5"><label for="q5">소량 주문·재주문 리드타임 확인 <small>(确认小单 及 补货交期)</small></label></div>
   </div>
 </section>
 
 <!-- 3. 국내 규제·인증 사전 점검 -->
-<section class="card">
+<section class="card" data-section="국내 규제·인증 사전 점검">
   <h2>3. 국내 규제·인증 사전 점검 <small>(韩国 규제 및 认证 사전 점검)</small></h2>
-  <div class="note">체크는 현장 메모용이며 법적 면제 판정이 아닙니다. 정확한 용도·재질·전원·사용 대상에 따라 KC 및 기타 요건이 달라질 수 있습니다. 판매 전 HS 코드와 관련 기관 기준을 확인하세요.</div>
+  <div class="note">체크는 현장 메모용이며 법적 면제 판정이 아닙니다. 판매 전 HS 코드와 관련 기관 기준을 확인하세요.</div>
   <div id="regChecks" style="margin-top:10px;">
-    <div class="rowcheck"><input type="checkbox" id="r1"><label for="r1">KC 대상 여부를 품목·모델 단위로 확인 <small>(确认 KC 认证)</small></label></div>
-    <div class="rowcheck"><input type="checkbox" id="r2"><label for="r2">전기·전자 / 무선 / 배터리 포함 여부 확인 <small>(确认 电气 / 电池)</small></label></div>
-    <div class="rowcheck"><input type="checkbox" id="r3"><label for="r3">어린이제품·식품접촉·화장품·의료·보호용품 해당 여부 확인 <small>(确认 儿童/食品 접촉)</small></label></div>
-    <div class="rowcheck"><input type="checkbox" id="r4"><label for="r4">수입 제한·검역·화학물질·환경 규제 확인 <small>(确认 进口限制)</small></label></div>
-    <div class="rowcheck"><input type="checkbox" id="r5"><label for="r5">한글 표시사항·원산지·사용설명서 확인 <small>(确认韩文 标识)</small></label></div>
-    <div class="rowcheck"><input type="checkbox" id="r6"><label for="r6">HS 코드·관세율·한중 FTA 적용 가능성 확인 <small>(确认 HS编码 및 FTA)</small></label></div>
-    <div class="rowcheck"><input type="checkbox" id="r7"><label for="r7">상표·디자인·특허·정품 여부 확인 <small>(确认 正品/专利)</small></label></div>
+    <div class="rowcheck" data-check="KC 대상 여부를 품목·모델 단위로 확인"><input type="checkbox" id="r1"><label for="r1">KC 대상 여부를 품목·모델 단위로 확인 <small>(确认 KC 认证)</small></label></div>
+    <div class="rowcheck" data-check="전기·전자 / 무선 / 배터리 포함 여부 확인"><input type="checkbox" id="r2"><label for="r2">전기·전자 / 무선 / 배터리 포함 여부 확인 <small>(确认 电气 / 电池)</small></label></div>
+    <div class="rowcheck" data-check="어린이제품·식품접촉·화장품·의료·보호용품 해당 여부 확인"><input type="checkbox" id="r3"><label for="r3">어린이제품·식품접촉·화장품·의료·보호용품 해당 여부 확인 <small>(确认 儿童/食品 접촉)</small></label></div>
+    <div class="rowcheck" data-check="수입 제한·검역·화학물질·환경 규제 확인"><input type="checkbox" id="r4"><label for="r4">수입 제한·검역·화학물질·환경 규제 확인 <small>(确认 进口限制)</small></label></div>
+    <div class="rowcheck" data-check="한글 표시사항·원산지·사용설명서 확인"><input type="checkbox" id="r5"><label for="r5">한글 표시사항·원산지·사용설명서 확인 <small>(确认韩文 标识)</small></label></div>
+    <div class="rowcheck" data-check="HS 코드·관세율·한중 FTA 적용 가능성 확인"><input type="checkbox" id="r6"><label for="r6">HS 코드·관세율·한중 FTA 적용 가능성 확인 <small>(确认 HS编码 및 FTA)</small></label></div>
+    <div class="rowcheck" data-check="상표·디자인·특허·정품 여부 확인"><input type="checkbox" id="r7"><label for="r7">상표·디자인·특허·정품 여부 확인 <small>(确认 正品/专利)</small></label></div>
   </div>
   <div class="grid" style="margin-top:10px">
-    <div class="field"><label>규제 확인 상태 <small>(규제 확인 状态)</small></label><select id="regStatus"><option>미확인 (未确认)</option><option>추가 확인 필요 (需进一步确认)</option><option>요건 확인 완료 (요건 已确认)</option><option>수입·판매 보류 (进口·销售 保留)</option></select></div>
-    <div class="field"><label>HS 코드 <small>(HS 编码)</small></label><input id="hs" placeholder="확인 후 입력"></div>
-    <div class="field"><label>확인 기관 / 담당자 <small>(确认 机构)</small></label><input id="regWho"></div>
-    <div class="field full"><label>규제·인증 메모 (비용·기간·링크) <small>(备注)</small></label><textarea id="regMemo"></textarea></div>
+    <div class="field" data-label="규제 확인 상태"><label>규제 확인 상태 <small>(규제 확인 状态)</small></label><select id="regStatus"><option>미확인 (未确认)</option><option>추가 확인 필요 (需进一步确认)</option><option>요건 확인 완료 (요건 已确认)</option><option>수입·판매 보류 (进口·销售 保留)</option></select></div>
+    <div class="field" data-label="HS 코드"><label>HS 코드 <small>(HS 编码)</small></label><input id="hs" placeholder="확인 후 입력"></div>
+    <div class="field" data-label="확인 기관 / 담당자"><label>확인 기관 / 담당자 <small>(确认 机构)</small></label><input id="regWho"></div>
+    <div class="field full" data-label="규제·인증 메모 (비용·기간·링크)"><label>규제·인증 메모 (비용·기간·링크) <small>(备注)</small></label><textarea id="regMemo"></textarea></div>
   </div>
 </section>
 
 <!-- 4. 원가·수입비용 계산 -->
-<section class="card">
+<section class="card" data-section="원가·수입비용 계산">
   <h2>4. 원가·수입비용 계산 <small>(成本与进口费用计算)</small></h2>
   <div class="grid">
-    <div class="field"><label>초도 수량 (개) <small>(初始数量)</small></label><input id="qty" type="number" min="1" value="50"></div>
-    <div class="field"><label>공급가 / 개 (CNY) <small>(供应价 / 个)</small></label><input id="unitCny" type="number" min="0" step=".01"></div>
-    <div class="field"><label>환율 (원/CNY) <small>(汇率)</small></label><input id="fx" type="number" min="0" step=".01" value="195"></div>
-    <div class="field"><label>중국 내 운송·검품 총액 (원) <small>(中国内 운송·검품)</small></label><input id="chinaShip" type="number" min="0" value="0"></div>
-    <div class="field"><label>국제운송·보험 총액 (원) <small>(国际运费·保险)</small></label><input id="intlShip" type="number" min="0" value="0"></div>
-    <div class="field"><label>관세율 (%) <small>(关税率)</small></label><input id="dutyRate" type="number" min="0" max="100" step=".1" value="0"></div>
-    <div class="field"><label>통관·관세사·기타 총액 (원) <small>(通关·报关行·其他)</small></label><input id="customsOther" type="number" min="0" value="0"></div>
-    <div class="field"><label>국내 입고 운송 총액 (원) <small>(韩国国内 运费)</small></label><input id="domesticShip" type="number" min="0" value="0"></div>
-    <div class="field"><label>라벨·포장·검품 총액 (원) <small>(标签·包装·检品)</small></label><input id="prepTotal" type="number" min="0" value="0"></div>
-    <div class="field"><label>수입 부가세 처리 <small>(进口 增值税 处理)</small></label><select id="vatTreatment"><option value="recover">공제 가능(원가에서 제외) (可抵扣)</option><option value="cost">공제 불가(원가에 포함) (不可抵扣)</option></select></div>
+    <div class="field" data-label="초도 수량 (개)"><label>초도 수량 (개) <small>(初始数量)</small></label><input id="qty" type="number" min="1" value="50"></div>
+    <div class="field" data-label="공급가 / 개 (CNY)"><label>공급가 / 개 (CNY) <small>(供应价 / 个)</small></label><input id="unitCny" type="number" min="0" step=".01"></div>
+    <div class="field" data-label="환율 (원/CNY)"><label>환율 (원/CNY) <small>(汇率)</small></label><input id="fx" type="number" min="0" step=".01" value="195"></div>
+    <div class="field" data-label="중국 내 운송·검품 총액 (원)"><label>중국 내 운송·검품 총액 (원) <small>(中国内 운송·검품)</small></label><input id="chinaShip" type="number" min="0" value="0"></div>
+    <div class="field" data-label="국제운송·보험 총액 (원)"><label>국제운송·보험 총액 (원) <small>(国际运费·保险)</small></label><input id="intlShip" type="number" min="0" value="0"></div>
+    <div class="field" data-label="관세율 (%)"><label>관세율 (%) <small>(关税率)</small></label><input id="dutyRate" type="number" min="0" max="100" step=".1" value="0"></div>
+    <div class="field" data-label="통관·관세사·기타 총액 (원)"><label>통관·관세사·기타 총액 (원) <small>(通关·报关行·其他)</small></label><input id="customsOther" type="number" min="0" value="0"></div>
+    <div class="field" data-label="국내 입고 운송 총액 (원)"><label>국내 입고 운송 총액 (원) <small>(韩国国内 运费)</small></label><input id="domesticShip" type="number" min="0" value="0"></div>
+    <div class="field" data-label="라벨·포장·검품 총액 (원)"><label>라벨·포장·검품 총액 (원) <small>(标签·包装·检品)</small></label><input id="prepTotal" type="number" min="0" value="0"></div>
+    <div class="field" data-label="수입 부가세 처리"><label>수입 부가세 처리 <small>(进口 增值税 处理)</small></label><select id="vatTreatment"><option value="recover">공제 가능(원가에서 제외) (可抵扣)</option><option value="cost">공제 불가(원가에 포함) (不可抵扣)</option></select></div>
     
     <div class="field full" style="background:#eef2ff; border:1px solid #c7d2fe; border-radius:10px; padding:12px; margin-top:4px;">
       <span style="font-size:0.9rem; font-weight:700; color:#3730a3;">💡 4번 항목 기준 한화 총 투자금 (초도 총투입액) / 初始总投资额:</span>
       <strong id="liveCashNeed" style="font-size:1.3rem; color:#1d4ed8; display:block; margin-top:2px;">₩0</strong>
-      <div style="font-size:0.8rem; color:#6b7280; margin-top:2px;">상품대금 + 국내외 운송비 + 관세 + 수입 부가세가 포함된 총 투자 금액입니다.</div>
     </div>
   </div>
-  <p class="hint">단순 추정: 과세가격은 상품대금 + 국제운송·보험으로 계산합니다.</p>
 </section>
 
 <!-- 5. 쿠팡 판매가·수수료·예상 이익 -->
-<section class="card">
+<section class="card" data-section="쿠팡 판매가·수수료·예상 이익">
   <h2>5. 쿠팡 판매가·수수료·예상 이익</h2>
   <div class="grid">
-    <div class="field"><label>쿠팡 판매가 (원)</label><input id="sellPrice" type="number" min="0" value="19900"></div>
-    <div class="field"><label>판매수수료 (%)</label><input id="commission" type="number" min="0" max="100" step=".1" value="10.8"></div>
-    <div class="field"><label>그로스 입출고·배송비 / 개 (원)</label><input id="growthFee" type="number" min="0" value="3500"></div>
-    <div class="field"><label>보관료 배분 / 개 (원)</label><input id="storageFee" type="number" min="0" value="100"></div>
-    <div class="field"><label>광고비 / 판매 1개 (원)</label><input id="adFee" type="number" min="0" value="1000"></div>
-    <div class="field"><label>반품·불량 손실 / 개 (원)</label><input id="returnFee" type="number" min="0" value="500"></div>
-    <div class="field"><label>기타 비용 / 개 (원)</label><input id="otherPerUnit" type="number" min="0" value="0"></div>
-    <div class="field"><label>목표 이익률 (%)</label><input id="targetMargin" type="number" min="0" max="100" value="20"></div>
-    <div class="field full"><label>판매가 부가세 계산</label><select id="salesVat"><option value="yes">과세 상품·일반과세 가정(판매가에서 VAT분 제외)</option><option value="no">부가세 제외 계산이 필요 없는 경우(별도 검토)</option></select></div>
+    <div class="field" data-label="쿠팡 판매가 (원)"><label>쿠팡 판매가 (원)</label><input id="sellPrice" type="number" min="0" value="19900"></div>
+    <div class="field" data-label="판매수수료 (%)"><label>판매수수료 (%)</label><input id="commission" type="number" min="0" max="100" step=".1" value="10.8"></div>
+    <div class="field" data-label="그로스 입출고·배송비 / 개 (원)"><label>그로스 입출고·배송비 / 개 (원)</label><input id="growthFee" type="number" min="0" value="3500"></div>
+    <div class="field" data-label="보관료 배분 / 개 (원)"><label>보관료 배분 / 개 (원)</label><input id="storageFee" type="number" min="0" value="100"></div>
+    <div class="field" data-label="광고비 / 판매 1개 (원)"><label>광고비 / 판매 1개 (원)</label><input id="adFee" type="number" min="0" value="1000"></div>
+    <div class="field" data-label="반품·불량 손실 / 개 (원)"><label>반품·불량 손실 / 개 (원)</label><input id="returnFee" type="number" min="0" value="500"></div>
+    <div class="field" data-label="기타 비용 / 개 (원)"><label>기타 비용 / 개 (원)</label><input id="otherPerUnit" type="number" min="0" value="0"></div>
+    <div class="field" data-label="목표 이익률 (%)"><label>목표 이익률 (%)</label><input id="targetMargin" type="number" min="0" max="100" value="20"></div>
+    <div class="field full" data-label="판매가 부가세 계산"><label>판매가 부가세 계산</label><select id="salesVat"><option value="yes">과세 상품·일반과세 가정(판매가에서 VAT분 제외)</option><option value="no">부가세 제외 계산이 필요 없는 경우(별도 검토)</option></select></div>
   </div>
   <h3>자동 계산 결과</h3>
   <div class="result">
@@ -215,31 +213,30 @@ footer { font-size: calc(var(--font-size-base) * 0.73); color: #667085; padding:
     <div class="metric"><span>관세 추정 총액</span><strong id="dutyAmt">₩0</strong></div>
     <div class="metric"><span>수입 부가세 추정 총액</span><strong id="importVat">₩0</strong></div>
   </div>
-  <p class="hint">*예상 이익률 = 예상 이익 ÷ 고객 결제 판매가.</p>
 </section>
 
 <!-- 6. 경쟁 상품·시장성 -->
-<section class="card">
+<section class="card" data-section="경쟁 상품·시장성">
   <h2>6. 경쟁 상품·시장성</h2>
   <div class="grid">
-    <div class="field"><label>쿠팡 동일 상품 수</label><input id="competitors" type="number" min="0"></div>
-    <div class="field"><label>유사 상품 최저가 (원)</label><input id="lowPrice" type="number" min="0"></div>
-    <div class="field"><label>유사 상품 대표가 (원)</label><input id="avgPrice" type="number" min="0"></div>
-    <div class="field"><label>상위 상품 리뷰 수</label><input id="reviews" type="number" min="0"></div>
-    <div class="field"><label>차별점</label><input id="difference" placeholder="규격·구성·품질·사용 편의"></div>
-    <div class="field"><label>예상 월 판매량 (개)</label><input id="monthlySales" type="number" min="0"></div>
-    <div class="field full"><label>공급업체 상담 메모</label><textarea id="talk" placeholder="가격 구간, MOQ, 샘플, 납기, 독점권, OEM/로고, 불량 보상, 결제 조건"></textarea></div>
-    <div class="field full"><label>다음 조치 / 담당 / 기한</label><textarea id="next" placeholder="예: 샘플 3개 구매, HS 코드 확인, 경쟁 조사"></textarea></div>
+    <div class="field" data-label="쿠팡 동일 상품 수"><label>쿠팡 동일 상품 수</label><input id="competitors" type="number" min="0"></div>
+    <div class="field" data-label="유사 상품 최저가 (원)"><label>유사 상품 최저가 (원)</label><input id="lowPrice" type="number" min="0"></div>
+    <div class="field" data-label="유사 상품 대표가 (원)"><label>유사 상품 대표가 (원)</label><input id="avgPrice" type="number" min="0"></div>
+    <div class="field" data-label="상위 상품 리뷰 수"><label>상위 상품 리뷰 수</label><input id="reviews" type="number" min="0"></div>
+    <div class="field" data-label="차별점"><label>차별점</label><input id="difference" placeholder="규격·구성·품질·사용 편의"></div>
+    <div class="field" data-label="예상 월 판매량 (개)"><label>예상 월 판매량 (개)</label><input id="monthlySales" type="number" min="0"></div>
+    <div class="field full" data-label="공급업체 상담 메모"><label>공급업체 상담 메모</label><textarea id="talk" placeholder="가격 구간, MOQ, 샘플, 납기, 독점권 등"></textarea></div>
+    <div class="field full" data-label="다음 조치 / 담당 / 기한"><label>다음 조치 / 담당 / 기한</label><textarea id="next" placeholder="예: 샘플 3개 구매, HS 코드 확인"></textarea></div>
   </div>
 </section>
 
 <!-- 7. 최종 판단 -->
-<section class="card">
+<section class="card" data-section="최종 판단">
   <h2>7. 최종 판단</h2>
   <div class="grid">
-    <div class="field"><label>상품 평가</label><select id="decision"><option>보류·정보 추가</option><option>샘플 구매</option><option>소량 테스트 후보</option><option>우선 협상</option><option>진행 중단</option></select></div>
-    <div class="field"><label>공급업체 신뢰도 (1~5)</label><select id="trust"><option>미평가</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-    <div class="field"><label>독점·판매권 가능성</label><select id="exclusivity"><option>미확인</option><option>불가</option><option>협의 가능</option><option>서면 계약 제안</option></select></div>
+    <div class="field" data-label="상품 평가"><label>상품 평가</label><select id="decision"><option>보류·정보 추가</option><option>샘플 구매</option><option>소량 테스트 후보</option><option>우선 협상</option><option>진행 중단</option></select></div>
+    <div class="field" data-label="공급업체 신뢰도 (1~5)"><label>공급업체 신뢰도 (1~5)</label><select id="trust"><option>미평가</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+    <div class="field" data-label="독점·판매권 가능성"><label>독점·판매권 가능성</label><select id="exclusivity"><option>미확인</option><option>불가</option><option>협의 가능</option><option>서면 계약 제안</option></select></div>
   </div>
   <div id="warnings" class="note" style="margin-top:12px">가격을 입력하면 손익과 확인사항이 표시됩니다.</div>
 </section>
@@ -279,16 +276,13 @@ footer { font-size: calc(var(--font-size-base) * 0.73); color: #667085; padding:
 const $ = id => document.getElementById(id);
 let photoData = [];
 
-// 글자 크기 조절 함수
 function changeFontSize(sizePx) {
   document.documentElement.style.setProperty('--font-size-base', sizePx + 'px');
   [15, 19, 24].forEach(s => {
     const btn = $('btnSize' + s);
     if(btn) btn.className = (s === sizePx) ? 'active' : '';
   });
-  try {
-    localStorage.setItem('chinaSourcingFontSize', sizePx);
-  } catch(e) {}
+  try { localStorage.setItem('chinaSourcingFontSize', sizePx); } catch(e) {}
 }
 
 const ids = ['date','market','product','supplier','contactName','contactTitle','contactPhone','wechatId','factory','moq','samplePrice','expiry','url','material','dimensions','weight','packSize','packWeight','options','regStatus','hs','regWho','regMemo','qty','unitCny','fx','chinaShip','intlShip','dutyRate','customsOther','domesticShip','prepTotal','vatTreatment','sellPrice','commission','growthFee','storageFee','adFee','returnFee','otherPerUnit','targetMargin','salesVat','competitors','lowPrice','avgPrice','reviews','difference','monthlySales','talk','next','decision','trust','exclusivity','serverUrl','emailTo'];
@@ -318,7 +312,6 @@ function calculate() {
 function calc() {
   let c = calculate();
   if($('liveCashNeed')) $('liveCashNeed').textContent = won(c.cashNeed);
-  
   if($('landed')) $('landed').textContent = won(c.landedUnit);
   if($('profit')) {
     $('profit').textContent = won(c.profit);
@@ -333,57 +326,33 @@ function calc() {
   if($('targetPrice')) $('targetPrice').textContent = won(c.targetPrice);
   if($('dutyAmt')) $('dutyAmt').textContent = won(c.duty);
   if($('importVat')) $('importVat').textContent = won(c.importVat);
-  
-  let w = [];
-  let regSt = $('regStatus') ? $('regStatus').value : '';
-  if (regSt !== '요건 확인 완료') w.push('규제·인증 최종 확인 전입니다.');
-  if (c.profit <= 0) w.push('현재 조건에서 개당 이익이 0원 이하입니다.');
-  if (c.margin < n('targetMargin')) w.push('목표 이익률 미달입니다.');
-  if (!n('unitCny')) w.push('공급가를 입력해야 계산 결과가 의미 있습니다.');
-  if($('warnings')) $('warnings').innerHTML = w.length ? '⚠️ ' + w.map(esc).join('<br>') : '목표 이익률을 충족하는 추정치입니다.';
   return c;
 }
 
-// 위챗(WeChat) 요약 텍스트 복사
 function copyWeChatSummary() {
   let c = calculate();
   let text = `[중국 소싱 현장 조사 요약 / 采购现场调查摘要]
 - 조사일(日期): ${$('date').value}
 - 시장(市场): ${$('market').value}
 - 상품명(商品): ${$('product').value}
-- 공급사(供应商): ${$('supplier').value} (담당자: ${$('contactName').value} / ${$('contactTitle').value})
+- 공급사(供应商): ${$('supplier').value} (담당자: ${$('contactName').value})
 - 위챗(微信ID): ${$('wechatId').value} | 연락처: ${$('contactPhone').value}
 - 초도수량(数量): ${c.qty}개 | 공급가(单价): ¥${c.unitCny}
 - 개당 입고원가(成本): ${won(c.landedUnit)}
 - 초도 총투자금(总投资): ${won(c.cashNeed)}
 - 쿠팡 예상판매가(售价): ${won(c.price)}
-- 상담 메모(备注): ${$('talk').value || '없음'}
-- 다음조치(下一步): ${$('next').value || '없음'}`;
+- 상담 메모(备注): ${$('talk').value || '없음'}`;
 
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(() => {
-      status('📋 위챗 요약 텍스트가 복사되었습니다!');
-    }).catch(() => {
-      fallbackCopyText(text);
-    });
-  } else {
-    fallbackCopyText(text);
-  }
+    navigator.clipboard.writeText(text).then(() => { status('📋 위챗 요약 복사 완료!'); }).catch(() => { fallbackCopyText(text); });
+  } else { fallbackCopyText(text); }
 }
 
 function fallbackCopyText(text) {
   let textArea = document.createElement("textarea");
-  textArea.value = text;
-  textArea.style.position = "fixed";
-  document.body.appendChild(textArea);
-  textArea.focus();
-  textArea.select();
-  try {
-    let successful = document.execCommand('copy');
-    status(successful ? '📋 위챗 요약 복사 완료!' : '복사 실패');
-  } catch (err) {
-    status('클립보드 복사를 지원하지 않는 환경입니다.');
-  }
+  textArea.value = text; textArea.style.position = "fixed";
+  document.body.appendChild(textArea); textArea.focus(); textArea.select();
+  try { document.execCommand('copy'); status('📋 위챗 요약 복사 완료!'); } catch (err) { status('복사 실패'); }
   document.body.removeChild(textArea);
 }
 
@@ -395,7 +364,7 @@ function data() {
 
 function summary() {
   let d = data(), f = d.fields, c = d.calculation;
-  return ['중국 소싱 현장 조사 보고서', '조사일: ' + f.date, '상품: ' + f.product, '업체: ' + f.supplier, '담당자: ' + f.contactName, '공급가: ' + f.unitCny + ' CNY/개', '초도 수량: ' + f.qty, '입고원가: ' + won(c.landedUnit), '총투자금: ' + won(c.cashNeed)].join('\n');
+  return ['중국 소싱 현장 조사 보고서', '조사일: ' + f.date, '상품: ' + f.product, '업체: ' + f.supplier, '공급가: ' + f.unitCny + ' CNY/개', '초도 수량: ' + f.qty, '입고원가: ' + won(c.landedUnit), '총투자금: ' + won(c.cashNeed)].join('\n');
 }
 
 function base() { return (($('product').value || 'sourcing-item').replace(/[^\w가-힣-]+/g, '_')).slice(0, 50) + '_' + ($('date').value || 'date'); }
@@ -404,15 +373,100 @@ function status(t) { if($('sendStatus')) $('sendStatus').textContent = t; }
 
 function downloadJSON() { dl(new Blob([JSON.stringify(data(), null, 2)], { type: 'application/json;charset=utf-8' }), base() + '.json'); status('JSON 파일을 저장했습니다.'); }
 
+// 한글 항목 명칭 매핑 및 이쁘게 디자인된 보고서 HTML 생성
 function reportHTML() {
-  let d = data(), f = d.fields, c = d.calculation;
-  let rows = Object.entries(f).map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join('');
-  let cks = Object.entries(d.checks).map(([k, v]) => `<li>${esc(k)}: ${v ? '확인' : '미확인'}</li>`).join('');
-  let pics = d.photos.map(p => `<figure><img style="max-width:220px;max-height:220px" src="${p.dataUrl}"><figcaption>${esc(p.name)}</figcaption></figure>`).join('');
-  return `<!doctype html><html lang="ko"><meta charset="utf-8"><title>소싱 보고서</title><body style="font-family:Arial,sans-serif;max-width:900px;margin:24px auto;padding:12px"><h1>중국 소싱 현장 조사 보고서</h1><h2>손익 추정</h2><p>입고원가: ${won(c.landedUnit)} / 총투자금: ${won(c.cashNeed)} / 예상 이익: ${won(c.profit)}</p><h2>입력 정보</h2><table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;width:100%">${rows}</table><h2>체크리스트</h2><ul>${cks}</ul><h2>사진</h2><div style="display:flex;flex-wrap:wrap;gap:12px">${pics}</div></body></html>`;
+  let d = data(), c = d.calculation;
+  
+  // DOM에서 각 input/select의 한글 라벨 텍스트를 정밀 추출하여 매핑
+  let labelMap = {};
+  document.querySelectorAll('.field').forEach(el => {
+    let input = el.querySelector('input, select, textarea');
+    let lbl = el.querySelector('label');
+    if(input && lbl) {
+      let cleanText = lbl.textContent.replace(/\([\s\S]*?\)/g, '').trim(); // 중국어/괄호 제거
+      labelMap[input.id] = cleanText;
+    }
+  });
+
+  let checkMap = {};
+  document.querySelectorAll('.rowcheck').forEach(el => {
+    let chk = el.querySelector('input[type=checkbox]');
+    let lbl = el.querySelector('label');
+    if(chk && lbl) {
+      let cleanText = lbl.textContent.replace(/\([\s\S]*?\)/g, '').trim();
+      checkMap[chk.id] = cleanText;
+    }
+  });
+
+  // 섹션별 그룹화 데이터 생성
+  let sectionsHTML = '';
+  document.querySelectorAll('section.card[data-section]').forEach(section => {
+    let secTitle = section.getAttribute('data-section');
+    let rowsHTML = '';
+    
+    section.querySelectorAll('.field').forEach(fieldEl => {
+      let input = fieldEl.querySelector('input, select, textarea');
+      if(input && d.fields[input.id] !== undefined && d.fields[input.id] !== '') {
+        let title = labelMap[input.id] || input.id;
+        let val = d.fields[input.id];
+        rowsHTML += `<tr><th style="width:35%; text-align:left; padding:8px 12px; background:#f8fafc; border:1px solid #e2e8f0; color:#475467;">${esc(title)}</th><td style="padding:8px 12px; border:1px solid #e2e8f0; color:#1e293b;">${esc(val)}</td></tr>`;
+      }
+    });
+
+    if(rowsHTML) {
+      sectionsHTML += `<div style="margin-bottom:20px;"><h3 style="font-size:16px; color:#1e293b; border-bottom:2px solid #1d4ed8; padding-bottom:4px; margin-bottom:8px;">${secTitle}</h3><table style="width:100%; border-collapse:collapse; font-size:14px;">${rowsHTML}</table></div>`;
+    }
+  });
+
+  // 체크리스트 항목 정리
+  let checkHTML = '';
+  let checkedItems = Object.entries(d.checks).filter(([k, v]) => v);
+  if(checkedItems.length > 0) {
+    let listLi = checkedItems.map(([k, v]) => `<li style="margin-bottom:4px; color:#087443; font-weight:600;">✓ ${esc(checkMap[k] || k)}</li>`).join('');
+    checkHTML = `<div style="margin-bottom:20px;"><h3 style="font-size:16px; color:#1e293b; border-bottom:2px solid #087443; padding-bottom:4px; margin-bottom:8px;">현장 및 규제 확인 항목</h3><ul style="padding-left:20px; font-size:14px;">${listLi}</ul></div>`;
+  }
+
+  // 사진 아래에 파일명 명시
+  let picsHTML = '';
+  if(d.photos && d.photos.length > 0) {
+    let figs = d.photos.map(p => `<div style="text-align:center; border:1px solid #cbd5e1; border-radius:8px; padding:8px; background:#f8fafc; width:180px;"><img style="width:160px; height:160px; object-fit:cover; border-radius:6px;" src="${p.dataUrl}"><div style="font-size:12px; color:#334155; margin-top:6px; word-break:break-all; font-weight:600;">${esc(p.name)}</div></div>`).join('');
+    picsHTML = `<div style="margin-bottom:20px;"><h3 style="font-size:16px; color:#1e293b; border-bottom:2px solid #d97706; padding-bottom:4px; margin-bottom:8px;">현장 사진 및 자료</h3><div style="display:flex; flex-wrap:wrap; gap:12px;">${figs}</div></div>`;
+  }
+
+  return `<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>중국 소싱 현장 조사 보고서</title>
+<style>
+  body { font-family: 'Noto Sans KR', Arial, sans-serif; max-width: 900px; margin: 30px auto; padding: 20px; color: #172033; background: #fff; line-height: 1.5; }
+  h1 { font-size: 24px; color: #14213d; border-bottom: 3px solid #14213d; padding-bottom: 10px; margin-bottom: 20px; }
+  .summary-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 15px; margin-bottom: 25px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .summary-item span { font-size: 12px; color: #667085; display: block; }
+  .summary-item strong { font-size: 18px; color: #087443; display: block; margin-top: 2px; }
+</style>
+</head>
+<body>
+  <h1>중국 소싱 현장 조사 보고서 (采购现场调查报告)</h1>
+  
+  <div class="summary-box">
+    <div class="summary-item"><span>개당 총 입고원가</span><strong>${won(c.landedUnit)}</strong></div>
+    <div class="summary-item"><span>초도 총투자금 (총투입액)</span><strong>${won(c.cashNeed)}</strong></div>
+    <div class="summary-item"><span>개당 예상 이익</span><strong style="color:${c.profit>=0?'#087443':'#b42318'}">${won(c.profit)}</strong></div>
+    <div class="summary-item"><span>예상 이익률</span><strong style="color:${c.margin>=20?'#087443':'#b42318'}">${c.margin.toFixed(1)}%</strong></div>
+  </div>
+
+  ${sectionsHTML}
+  ${checkHTML}
+  ${picsHTML}
+
+  <p style="font-size:11px; color:#667085; margin-top:30px; border-top:1px solid #e2e8f0; padding-top:10px;">본 보고서는 현장 조사 보조 도구로 작성되었습니다. 수입 및 판매 전 관세사, 인증기관 등을 통해 최종 조건을 확인하세요.</p>
+</body>
+</html>`;
 }
 
-function downloadReport() { dl(new Blob([reportHTML()], { type: 'text/html;charset=utf-8' }), base() + '_report.html'); status('HTML 보고서를 저장했습니다.'); }
+function downloadReport() { dl(new Blob([reportHTML()], { type: 'text/html;charset=utf-8' }), base() + '_report.html'); status('이쁘게 정돈된 HTML 보고서를 저장했습니다.'); }
+
 function sendEmail() {
   let to = $('emailTo') ? $('emailTo').value.trim() : '', subject = encodeURIComponent('[중국 소싱 현장조사] ' + ($('product').value || '상품')), body = encodeURIComponent(summary());
   location.href = 'mailto:' + encodeURIComponent(to) + '?subject=' + subject + '&body=' + body;
@@ -519,7 +573,7 @@ ids.forEach(id => {
 });
 checks.forEach(id => {
   let el = $(id);
-  if(el) el.addEventListener('change', calc);
+  if(el) el.el.addEventListener('change', calc);
 });
 
 if($('date') && !$('date').value) {
