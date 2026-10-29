@@ -170,17 +170,17 @@ footer { font-size: calc(var(--font-size-base) * 0.73); color: #667085; padding:
 <section class="card" data-section="원가·수입비용 계산">
   <h2>4. 원가·수입비용 계산 <small>(成本与进口费用计算)</small></h2>
   <div class="grid">
-    <div class="field" data-label="포장 단위 선택"><label>포장 단위 선택 <small>(包装单位选择)</small></label><select id="packType" onchange="toggleSetField()"><option value="single">낱개 (单个)</option><option value="set" selected>세트/묶음 (套装/捆绑)</option></select></div>
-    <div class="field" data-label="세트당 구성 개수" id="setCountField"><label>세트 구성 수량 (개) <small>(每套件数)</small></label><input id="setItemCount" type="number" min="1" value="1"></div>
-    <div class="field" data-label="초도 수량 (세트/개)"><label>초도 수량 (박스/세트/개) <small>(初始订购数量)</small></label><input id="qty" type="number" min="1" value="50"></div>
-    <div class="field" data-label="공급가 / 단위 (CNY)"><label>공급가 / 단위 (CNY) <small>(供应价 / 单位)</small></label><input id="unitCny" type="number" min="0" step=".01" value="200"></div>
-    <div class="field" data-label="환율 (원/CNY)"><label>환율 (원/CNY) <small>(汇率)</small></label><input id="fx" type="number" min="0" step=".01" value="195"></div>
-    <div class="field" data-label="중국 내 운송·검품 총액 (원)"><label>중국 내 운송·검품 총액 (원) <small>(中国内 운송·검품)</small></label><input id="chinaShip" type="number" min="0" value="0"></div>
-    <div class="field" data-label="국제운송·보험 총액 (원)"><label>국제운송·보험 총액 (원) <small>(国际运费·保险)</small></label><input id="intlShip" type="number" min="0" value="0"></div>
-    <div class="field" data-label="관세율 (%)"><label>관세율 (%) <small>(关税率)</small></label><input id="dutyRate" type="number" min="0" max="100" step=".1" value="0"></div>
-    <div class="field" data-label="통관·관세사·기타 총액 (원)"><label>통관·관세사·기타 총액 (원) <small>(通关·报关行·其他)</small></label><input id="customsOther" type="number" min="0" value="0"></div>
-    <div class="field" data-label="국내 입고 운송 총액 (원)"><label>국내 입고 운송 총액 (원) <small>(韩国国内 运费)</small></label><input id="domesticShip" type="number" min="0" value="0"></div>
-    <div class="field" data-label="라벨·포장·검품 총액 (원)"><label>라벨·포장·검품 총액 (원) <small>(标签·包装·检品)</small></label><input id="prepTotal" type="number" min="0" value="0"></div>
+    <div class="field" data-label="포장 단위 선택"><label>포장 단위 선택 <small>(包装单位选择)</small></label><select id="packType" onchange="toggleSetField()"><option value="single">낱개 (单个)</option><option value="set">세트/묶음 (套装/捆绑)</option></select></div>
+    <div class="field" data-label="세트 구성 수량" id="setCountField" style="display:none;"><label>세트 구성 수량 (개) <small>(每套件数)</small></label><input id="setItemCount" type="number" min="1" value="1"></div>
+    <div class="field" data-label="초도 수량"><label>초도 수량 (박스/세트/개) <small>(初始订购数量)</small></label><input id="qty" type="number" min="1" value="50"></div>
+    <div class="field" data-label="공급가 / 단위"><label>공급가 / 단위 (CNY) <small>(供应价 / 单位)</small></label><input id="unitCny" type="number" min="0" step=".01"></div>
+    <div class="field" data-label="환율"><label>환율 (원/CNY) <small>(汇率)</small></label><input id="fx" type="number" min="0" step=".01" value="195"></div>
+    <div class="field" data-label="중국 내 운송·검품 총액"><label>중국 내 운송·검품 총액 (원) <small>(中国内 운송·검품)</small></label><input id="chinaShip" type="number" min="0" value="0"></div>
+    <div class="field" data-label="국제운송·보험 총액"><label>국제운송·보험 총액 (원) <small>(国际运费·保险)</small></label><input id="intlShip" type="number" min="0" value="0"></div>
+    <div class="field" data-label="관세율"><label>관세율 (%) <small>(关税率)</small></label><input id="dutyRate" type="number" min="0" max="100" step=".1" value="0"></div>
+    <div class="field" data-label="통관·관세사·기타 총액"><label>통관·관세사·기타 총액 (원) <small>(通关·报关行·其他)</small></label><input id="customsOther" type="number" min="0" value="0"></div>
+    <div class="field" data-label="국내 입고 운송 총액"><label>국내 입고 운송 총액 (원) <small>(韩国国内 运费)</small></label><input id="domesticShip" type="number" min="0" value="0"></div>
+    <div class="field" data-label="라벨·포장·검품 총액"><label>라벨·포장·검품 총액 (원) <small>(标签·包装·检品)</small></label><input id="prepTotal" type="number" min="0" value="0"></div>
     <div class="field" data-label="수입 부가세 처리"><label>수입 부가세 처리 <small>(进口 增值税 处理)</small></label><select id="vatTreatment"><option value="recover">공제 가능(원가에서 제외) (可抵扣)</option><option value="cost">공제 불가(원가에 포함) (不可抵扣)</option></select></div>
     
     <div class="field full" style="background:#eef2ff; border:1px solid #c7d2fe; border-radius:10px; padding:12px; margin-top:4px;">
@@ -196,14 +196,14 @@ footer { font-size: calc(var(--font-size-base) * 0.73); color: #667085; padding:
 <section class="card" data-section="쿠팡 판매가·수수료·예상 이익">
   <h2>5. 쿠팡 판매가·수수료·예상 이익</h2>
   <div class="grid">
-    <div class="field" data-label="쿠팡 판매가 (원)"><label>쿠팡 판매가 (원)</label><input id="sellPrice" type="number" min="0" value="19900"></div>
-    <div class="field" data-label="판매수수료 (%)"><label>판매수수료 (%)</label><input id="commission" type="number" min="0" max="100" step=".1" value="10.8"></div>
-    <div class="field" data-label="그로스 입출고·배송비 / 개 (원)"><label>그로스 입출고·배송비 / 개 (원)</label><input id="growthFee" type="number" min="0" value="3500"></div>
-    <div class="field" data-label="보관료 배분 / 개 (원)"><label>보관료 배분 / 개 (원)</label><input id="storageFee" type="number" min="0" value="100"></div>
-    <div class="field" data-label="광고비 / 판매 1개 (원)"><label>광고비 / 판매 1개 (원)</label><input id="adFee" type="number" min="0" value="1000"></div>
-    <div class="field" data-label="반품·불량 손실 / 개 (원)"><label>반품·불량 손실 / 개 (원)</label><input id="returnFee" type="number" min="0" value="500"></div>
-    <div class="field" data-label="기타 비용 / 개 (원)"><label>기타 비용 / 개 (원)</label><input id="otherPerUnit" type="number" min="0" value="0"></div>
-    <div class="field" data-label="목표 이익률 (%)"><label>목표 이익률 (%)</label><input id="targetMargin" type="number" min="0" max="100" value="20"></div>
+    <div class="field" data-label="쿠팡 판매가"><label>쿠팡 판매가 (원)</label><input id="sellPrice" type="number" min="0" value="19900"></div>
+    <div class="field" data-label="판매수수료"><label>판매수수료 (%)</label><input id="commission" type="number" min="0" max="100" step=".1" value="10.8"></div>
+    <div class="field" data-label="그로스 입출고·배송비 / 개"><label>그로스 입출고·배송비 / 개 (원)</label><input id="growthFee" type="number" min="0" value="3500"></div>
+    <div class="field" data-label="보관료 배분 / 개"><label>보관료 배분 / 개 (원)</label><input id="storageFee" type="number" min="0" value="100"></div>
+    <div class="field" data-label="광고비 / 판매 1개"><label>광고비 / 판매 1개 (원)</label><input id="adFee" type="number" min="0" value="1000"></div>
+    <div class="field" data-label="반품·불량 손실 / 개"><label>반품·불량 손실 / 개 (원)</label><input id="returnFee" type="number" min="0" value="500"></div>
+    <div class="field" data-label="기타 비용 / 개"><label>기타 비용 / 개 (원)</label><input id="otherPerUnit" type="number" min="0" value="0"></div>
+    <div class="field" data-label="목표 이익률"><label>목표 이익률 (%)</label><input id="targetMargin" type="number" min="0" max="100" value="20"></div>
     <div class="field full" data-label="판매가 부가세 계산"><label>판매가 부가세 계산</label><select id="salesVat"><option value="yes">과세 상품·일반과세 가정(판매가에서 VAT분 제외)</option><option value="no">부가세 제외 계산이 필요 없는 경우(별도 검토)</option></select></div>
   </div>
   <h3>자동 계산 결과</h3>
@@ -224,11 +224,11 @@ footer { font-size: calc(var(--font-size-base) * 0.73); color: #667085; padding:
   <h2>6. 경쟁 상품·시장성</h2>
   <div class="grid">
     <div class="field" data-label="쿠팡 동일 상품 수"><label>쿠팡 동일 상품 수</label><input id="competitors" type="number" min="0"></div>
-    <div class="field" data-label="유사 상품 최저가 (원)"><label>유사 상품 최저가 (원)</label><input id="lowPrice" type="number" min="0"></div>
-    <div class="field" data-label="유사 상품 대표가 (원)"><label>유사 상품 대표가 (원)</label><input id="avgPrice" type="number" min="0"></div>
+    <div class="field" data-label="유사 상품 최저가"><label>유사 상품 최저가 (원)</label><input id="lowPrice" type="number" min="0"></div>
+    <div class="field" data-label="유사 상품 대표가"><label>유사 상품 대표가 (원)</label><input id="avgPrice" type="number" min="0"></div>
     <div class="field" data-label="상위 상품 리뷰 수"><label>상위 상품 리뷰 수</label><input id="reviews" type="number" min="0"></div>
     <div class="field" data-label="차별점"><label>차별점</label><input id="difference" placeholder="규격·구성·품질·사용 편의"></div>
-    <div class="field" data-label="예상 월 판매량 (개)"><label>예상 월 판매량 (개)</label><input id="monthlySales" type="number" min="0"></div>
+    <div class="field" data-label="예상 월 판매량"><label>예상 월 판매량 (개)</label><input id="monthlySales" type="number" min="0"></div>
     <div class="field full" data-label="공급업체 상담 메모"><label>공급업체 상담 메모</label><textarea id="talk" placeholder="가격 구간, MOQ, 샘플, 납기, 독점권 등"></textarea></div>
     <div class="field full" data-label="다음 조치 / 담당 / 기한"><label>다음 조치 / 담당 / 기한</label><textarea id="next" placeholder="예: 샘플 3개 구매, HS 코드 확인"></textarea></div>
   </div>
@@ -239,7 +239,7 @@ footer { font-size: calc(var(--font-size-base) * 0.73); color: #667085; padding:
   <h2>7. 최종 판단</h2>
   <div class="grid">
     <div class="field" data-label="상품 평가"><label>상품 평가</label><select id="decision"><option>보류·정보 추가</option><option>샘플 구매</option><option>소량 테스트 후보</option><option>우선 협상</option><option>진행 중단</option></select></div>
-    <div class="field" data-label="공급업체 신뢰도 (1~5)"><label>공급업체 신뢰도 (1~5)</label><select id="trust"><option>미평가</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+    <div class="field" data-label="공급업체 신뢰도"><label>공급업체 신뢰도 (1~5)</label><select id="trust"><option>미평가</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
     <div class="field" data-label="독점·판매권 가능성"><label>독점·판매권 가능성</label><select id="exclusivity"><option>미확인</option><option>불가</option><option>협의 가능</option><option>서면 계약 제안</option></select></div>
   </div>
   <div id="warnings" class="note" style="margin-top:12px">가격을 입력하면 손익과 확인사항이 표시됩니다.</div>
@@ -291,7 +291,10 @@ function changeFontSize(sizePx) {
 
 function toggleSetField() {
   const isSet = $('packType').value === 'set';
-  $('setCountField').style.display = isSet ? 'block' : 'none';
+  const setCountField = $('setCountField');
+  if(setCountField) {
+    setCountField.style.display = isSet ? 'block' : 'none';
+  }
   calc();
 }
 
@@ -343,14 +346,19 @@ function calc() {
   
   if($('liveUnitDesc')) {
     if(c.isSet) {
+      $('liveUnitDesc.innerHTML') = '';
       $('liveUnitDesc').innerHTML = `📦 세트 공급가: <b>¥${c.unitCny.toFixed(2)}</b> (원화 환산: ${won(c.unitCny * c.fx)}) [세트당 ${c.setCnt}개 묶음]`;
-      $('livePieceDesc').style.display = 'block';
-      $('livePieceDesc').innerHTML = `💡 낱개 환산 단가: <b>¥${c.pieceCny.toFixed(2)} / 개</b> (원화 환산: ${won(c.pieceCny * c.fx)}) | 낱개 환산 개당 입고원가: <b>${won(c.landedUnit)}</b>`;
+      if($('livePieceDesc')) {
+        $('livePieceDesc').style.display = 'block';
+        $('livePieceDesc').innerHTML = `💡 낱개 환산 단가: <b>¥${c.pieceCny.toFixed(2)} / 개</b> (원화 환산: ${won(c.pieceCny * c.fx)}) | 낱개 환산 개당 입고원가: <b>${won(c.landedUnit)}</b>`;
+      }
       if($('landedTitle')) $('landedTitle').textContent = '낱개 환산 개당 입고원가';
     } else {
       $('liveUnitDesc').innerHTML = `📦 낱개 공급가: <b>¥${c.unitCny.toFixed(2)}</b> (원화 환산: ${won(c.unitCny * c.fx)})`;
-      $('livePieceDesc').style.display = 'none';
-      $('livePieceDesc').innerHTML = '';
+      if($('livePieceDesc')) {
+        $('livePieceDesc').style.display = 'none';
+        $('livePieceDesc').innerHTML = '';
+      }
       if($('landedTitle')) $('landedTitle').textContent = '개당 총 입고원가';
     }
   }
@@ -409,7 +417,8 @@ function data() {
 
 function summary() {
   let d = data(), f = d.fields, c = d.calculation;
-  return ['중국 소싱 현장 조사 보고서', '조사일: ' + f.date, '상품: ' + f.product, '업체: ' + f.supplier, '공급가: ' + f.unitCny + ' CNY', '초도 수량: ' + f.qty, '입고원가: ' + won(c.landedUnit), '총투자금: ' + won(c.cashNeed)].join('\n');
+  let unitInfo = c.isSet ? `세트가: ¥${c.unitCny} (낱개 환산: ¥${c.pieceCny.toFixed(2)}/개)` : `공급가: ¥${c.unitCny}/개`;
+  return ['중국 소싱 현장 조사 보고서', '조사일: ' + f.date, '상품: ' + f.product, '업체: ' + f.supplier, unitInfo, '초도 수량: ' + f.qty, '낱개 환산 입고원가: ' + won(c.landedUnit), '총투자금: ' + won(c.cashNeed)].join('\n');
 }
 
 function base() { return (($('product').value || 'sourcing-item').replace(/[^\w가-힣-]+/g, '_')).slice(0, 50) + '_' + ($('date').value || 'date'); }
@@ -456,6 +465,11 @@ function reportHTML() {
       }
     });
 
+    // 세트일 경우 보고서 4번 항목(원가 계산) 하단에 참고 단가 행 추가 삽입
+    if(secTitle === '원가·수입비용 계산' && c.isSet) {
+      rowsHTML += `<tr><th style="width:35%; text-align:left; padding:8px 12px; background:#eef2ff; border:1px solid #c7d2fe; color:#3730a3;">💡 낱개 환산 개당 공급가 (참고)</th><td style="padding:8px 12px; background:#eef2ff; border:1px solid #c7d2fe; color:#1d4ed8; font-weight:bold;">¥${c.pieceCny.toFixed(2)} / 개 (원화 약 ${won(c.pieceCny * c.fx)})</td></tr>`;
+    }
+
     if(rowsHTML) {
       sectionsHTML += `<div style="margin-bottom:20px;"><h3 style="font-size:16px; color:#1e293b; border-bottom:2px solid #1d4ed8; padding-bottom:4px; margin-bottom:8px;">${secTitle}</h3><table style="width:100%; border-collapse:collapse; font-size:14px;">${rowsHTML}</table></div>`;
     }
@@ -495,6 +509,7 @@ function reportHTML() {
     <div class="summary-item"><span>초도 총투자금 (총투입액)</span><strong>${won(c.cashNeed)}</strong></div>
     <div class="summary-item"><span>개당 예상 이익</span><strong style="color:${c.profit>=0?'#087443':'#b42318'}">${won(c.profit)}</strong></div>
     <div class="summary-item"><span>예상 이익률</span><strong style="color:${c.margin>=20?'#087443':'#b42318'}">${c.margin.toFixed(1)}%</strong></div>
+    ${c.isSet ? `<div class="summary-item" style="grid-column: 1 / -1; border-top: 1px dashed #bbf7d0; padding-top: 8px;"><span>세트 낱개 환산 단가 참고</span><strong style="color:#1d4ed8;">¥${c.pieceCny.toFixed(2)} / 개 (원화 약 ${won(c.pieceCny * c.fx)})</strong></div>` : ''}
   </div>
 
   ${sectionsHTML}
