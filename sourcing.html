@@ -170,10 +170,10 @@ footer { font-size: calc(var(--font-size-base) * 0.73); color: #667085; padding:
 <section class="card" data-section="원가·수입비용 계산">
   <h2>4. 원가·수입비용 계산 <small>(成本与进口费用计算)</small></h2>
   <div class="grid">
-    <div class="field" data-label="포장 단위 선택"><label>포장 단위 선택 <small>(包装单位选择)</small></label><select id="packType" onchange="toggleSetField()"><option value="single">낱개 (单个)</option><option value="set">세트/묶음 (套装/捆绑)</option></select></div>
-    <div class="field" data-label="세트당 구성 개수" id="setCountField" style="display:none;"><label>세트 구성 수량 (개) <small>(每套件数)</small></label><input id="setItemCount" type="number" min="1" value="1"></div>
+    <div class="field" data-label="포장 단위 선택"><label>포장 단위 선택 <small>(包装单位选择)</small></label><select id="packType" onchange="toggleSetField()"><option value="single">낱개 (单个)</option><option value="set" selected>세트/묶음 (套装/捆绑)</option></select></div>
+    <div class="field" data-label="세트당 구성 개수" id="setCountField"><label>세트 구성 수량 (개) <small>(每套件数)</small></label><input id="setItemCount" type="number" min="1" value="1"></div>
     <div class="field" data-label="초도 수량 (세트/개)"><label>초도 수량 (박스/세트/개) <small>(初始订购数量)</small></label><input id="qty" type="number" min="1" value="50"></div>
-    <div class="field" data-label="공급가 / 단위 (CNY)"><label>공급가 / 단위 (CNY) <small>(供应价 / 单位)</small></label><input id="unitCny" type="number" min="0" step=".01"></div>
+    <div class="field" data-label="공급가 / 단위 (CNY)"><label>공급가 / 단위 (CNY) <small>(供应价 / 单位)</small></label><input id="unitCny" type="number" min="0" step=".01" value="200"></div>
     <div class="field" data-label="환율 (원/CNY)"><label>환율 (원/CNY) <small>(汇率)</small></label><input id="fx" type="number" min="0" step=".01" value="195"></div>
     <div class="field" data-label="중국 내 운송·검품 총액 (원)"><label>중국 내 운송·검품 총액 (원) <small>(中国内 운송·검품)</small></label><input id="chinaShip" type="number" min="0" value="0"></div>
     <div class="field" data-label="국제운송·보험 총액 (원)"><label>국제운송·보험 총액 (원) <small>(国际运费·保险)</small></label><input id="intlShip" type="number" min="0" value="0"></div>
@@ -208,7 +208,7 @@ footer { font-size: calc(var(--font-size-base) * 0.73); color: #667085; padding:
   </div>
   <h3>자동 계산 결과</h3>
   <div class="result">
-    <div class="metric"><span id="landedTitle">낱개 기준 개당 입고원가</span><strong id="landed">₩0</strong></div>
+    <div class="metric"><span id="landedTitle">낱개 환산 개당 입고원가</span><strong id="landed">₩0</strong></div>
     <div class="metric"><span>개당 예상 이익</span><strong id="profit">₩0</strong></div>
     <div class="metric"><span>예상 이익률*</span><strong id="margin">0%</strong></div>
     <div class="metric"><span>초도 총투입액</span><strong id="cashNeed">₩0</strong></div>
@@ -328,7 +328,6 @@ function calculate() {
   let targetDen = rate - n('targetMargin') / 100, tp = targetDen > 0 ? fixed / targetDen : 0;
   let cash = goods + n('chinaShip') + intl + duty + n('customsOther') + n('domesticShip') + n('prepTotal') + vat;
   
-  // 참고 단가 계산 (세트일 때 개당 공급가)
   let pieceCny = isSet ? (unitCny / setCnt) : unitCny;
 
   return { 
@@ -344,23 +343,22 @@ function calc() {
   
   if($('liveUnitDesc')) {
     if(c.isSet) {
-      $('liveUnitDesc.innerHTML') = '';
       $('liveUnitDesc').innerHTML = `📦 세트 공급가: <b>¥${c.unitCny.toFixed(2)}</b> (원화 환산: ${won(c.unitCny * c.fx)}) [세트당 ${c.setCnt}개 묶음]`;
       $('livePieceDesc').style.display = 'block';
       $('livePieceDesc').innerHTML = `💡 낱개 환산 단가: <b>¥${c.pieceCny.toFixed(2)} / 개</b> (원화 환산: ${won(c.pieceCny * c.fx)}) | 낱개 환산 개당 입고원가: <b>${won(c.landedUnit)}</b>`;
-      $('landedTitle').textContent = '낱개 환산 개당 입고원가';
+      if($('landedTitle')) $('landedTitle').textContent = '낱개 환산 개당 입고원가';
     } else {
       $('liveUnitDesc').innerHTML = `📦 낱개 공급가: <b>¥${c.unitCny.toFixed(2)}</b> (원화 환산: ${won(c.unitCny * c.fx)})`;
-      $('livePieceDesc.style.display') = 'none';
+      $('livePieceDesc').style.display = 'none';
       $('livePieceDesc').innerHTML = '';
-      $('landedTitle').textContent = '개당 총 입고원가';
+      if($('landedTitle')) $('landedTitle').textContent = '개당 총 입고원가';
     }
   }
   
   if($('landed')) $('landed').textContent = won(c.landedUnit);
   if($('profit')) {
     $('profit').textContent = won(c.profit);
-    $('profit'].className = c.profit >= 0 ? 'good' : 'bad';
+    $('profit').className = c.profit >= 0 ? 'good' : 'bad';
   }
   if($('margin')) {
     $('margin').textContent = c.margin.toFixed(1) + '%';
@@ -627,6 +625,7 @@ if($('date') && !$('date').value) {
 }
 
 loadLocal();
+toggleSetField();
 calc();
 </script>
 </body>
