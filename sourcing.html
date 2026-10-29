@@ -170,8 +170,10 @@ footer { font-size: calc(var(--font-size-base) * 0.73); color: #667085; padding:
 <section class="card" data-section="원가·수입비용 계산">
   <h2>4. 원가·수입비용 계산 <small>(成本与进口费用计算)</small></h2>
   <div class="grid">
-    <div class="field" data-label="초도 수량 (개)"><label>초도 수량 (개) <small>(初始数量)</small></label><input id="qty" type="number" min="1" value="50"></div>
-    <div class="field" data-label="공급가 / 개 (CNY)"><label>공급가 / 개 (CNY) <small>(供应价 / 个)</small></label><input id="unitCny" type="number" min="0" step=".01"></div>
+    <div class="field" data-label="포장 단위 선택"><label>포장 단위 선택 <small>(包装单位选择)</small></label><select id="packType" onchange="toggleSetField()"><option value="single">낱개 (单个)</option><option value="set">세트/묶음 (套装/捆绑)</option></select></div>
+    <div class="field" data-label="세트당 구성 개수" id="setCountField" style="display:none;"><label>세트 구성 수량 (개) <small>(每套件数)</small></label><input id="setItemCount" type="number" min="1" value="1"></div>
+    <div class="field" data-label="초도 수량 (세트/개)"><label>초도 수량 (박스/세트/개) <small>(初始订购数量)</small></label><input id="qty" type="number" min="1" value="50"></div>
+    <div class="field" data-label="공급가 / 단위 (CNY)"><label>공급가 / 단위 (CNY) <small>(供应价 / 单位)</small></label><input id="unitCny" type="number" min="0" step=".01"></div>
     <div class="field" data-label="환율 (원/CNY)"><label>환율 (원/CNY) <small>(汇率)</small></label><input id="fx" type="number" min="0" step=".01" value="195"></div>
     <div class="field" data-label="중국 내 운송·검품 총액 (원)"><label>중국 내 운송·검품 총액 (원) <small>(中国内 운송·검품)</small></label><input id="chinaShip" type="number" min="0" value="0"></div>
     <div class="field" data-label="국제운송·보험 총액 (원)"><label>국제운송·보험 총액 (원) <small>(国际运费·保险)</small></label><input id="intlShip" type="number" min="0" value="0"></div>
@@ -182,8 +184,9 @@ footer { font-size: calc(var(--font-size-base) * 0.73); color: #667085; padding:
     <div class="field" data-label="수입 부가세 처리"><label>수입 부가세 처리 <small>(进口 增值税 处理)</small></label><select id="vatTreatment"><option value="recover">공제 가능(원가에서 제외) (可抵扣)</option><option value="cost">공제 불가(원가에 포함) (不可抵扣)</option></select></div>
     
     <div class="field full" style="background:#eef2ff; border:1px solid #c7d2fe; border-radius:10px; padding:12px; margin-top:4px;">
-      <span style="font-size:0.9rem; font-weight:700; color:#3730a3;">💡 4번 항목 기준 한화 총 투자금 (초도 총투입액) / 初始总投资额:</span>
+      <span style="font-size:0.9rem; font-weight:700; color:#3730a3;">💡 4번 항목 기준 총 투자금 (초도 총투입액) 및 환산 환산 단가 / 初始总投资额:</span>
       <strong id="liveCashNeed" style="font-size:1.3rem; color:#1d4ed8; display:block; margin-top:2px;">₩0</strong>
+      <div id="liveUnitDesc" style="font-size:0.8rem; color:#475467; margin-top:4px;">낱개 기준 개당 입고원가: ₩0</div>
     </div>
   </div>
 </section>
@@ -204,7 +207,7 @@ footer { font-size: calc(var(--font-size-base) * 0.73); color: #667085; padding:
   </div>
   <h3>자동 계산 결과</h3>
   <div class="result">
-    <div class="metric"><span>개당 총 입고원가</span><strong id="landed">₩0</strong></div>
+    <div class="metric"><span>낱개 기준 개당 입고원가</span><strong id="landed">₩0</strong></div>
     <div class="metric"><span>개당 예상 이익</span><strong id="profit">₩0</strong></div>
     <div class="metric"><span>예상 이익률*</span><strong id="margin">0%</strong></div>
     <div class="metric"><span>초도 총투입액</span><strong id="cashNeed">₩0</strong></div>
@@ -285,7 +288,13 @@ function changeFontSize(sizePx) {
   try { localStorage.setItem('chinaSourcingFontSize', sizePx); } catch(e) {}
 }
 
-const ids = ['date','market','product','supplier','contactName','contactTitle','contactPhone','wechatId','factory','moq','samplePrice','expiry','url','material','dimensions','weight','packSize','packWeight','options','regStatus','hs','regWho','regMemo','qty','unitCny','fx','chinaShip','intlShip','dutyRate','customsOther','domesticShip','prepTotal','vatTreatment','sellPrice','commission','growthFee','storageFee','adFee','returnFee','otherPerUnit','targetMargin','salesVat','competitors','lowPrice','avgPrice','reviews','difference','monthlySales','talk','next','decision','trust','exclusivity','serverUrl','emailTo'];
+function toggleSetField() {
+  const isSet = $('packType').value === 'set';
+  $('setCountField').style.display = isSet ? 'block' : 'none';
+  calc();
+}
+
+const ids = ['date','market','product','supplier','contactName','contactTitle','contactPhone','wechatId','factory','moq','samplePrice','expiry','url','material','dimensions','weight','packSize','packWeight','options','regStatus','hs','regWho','regMemo','packType','setItemCount','qty','unitCny','fx','chinaShip','intlShip','dutyRate','customsOther','domesticShip','prepTotal','vatTreatment','sellPrice','commission','growthFee','storageFee','adFee','returnFee','otherPerUnit','targetMargin','salesVat','competitors','lowPrice','avgPrice','reviews','difference','monthlySales','talk','next','decision','trust','exclusivity','serverUrl','emailTo'];
 const checks = ['q1','q2','q3','q4','q5','r1','r2','r3','r4','r5','r6','r7'];
 
 function n(id) { 
@@ -295,23 +304,46 @@ function n(id) {
   return Number.isFinite(x) ? x : 0; 
 }
 function won(x) { return '₩' + Math.round(x || 0).toLocaleString('ko-KR'); }
-function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 
 function calculate() {
-  let q = Math.max(1, n('qty')), fx = n('fx'), goods = n('unitCny') * fx * q, intl = n('intlShip'), base = goods + intl, duty = base * n('dutyRate') / 100, vat = (base + duty) * .1;
+  let isSet = $('packType') && $('packType').value === 'set';
+  let setCnt = isSet ? Math.max(1, n('setItemCount')) : 1;
+  let inputQty = Math.max(1, n('qty'));
+  
+  // 총 낱개 개수 계산 (세트일 경우 세트수 × 세트당 구성수량)
+  let totalPieces = inputQty * setCnt;
+  let fx = n('fx');
+  
+  // 물품대금 총액 = 단위가격(세트단가 또는 낱개단가) * 환율 * 입력수량
+  let goods = n('unitCny') * fx * inputQty; 
+  let intl = n('intlShip'), base = goods + intl, duty = base * n('dutyRate') / 100, vat = (base + duty) * .1;
   let vatTr = $('vatTreatment') ? $('vatTreatment').value : 'recover';
-  let landed = (goods + n('chinaShip') + intl + duty + n('customsOther') + n('domesticShip') + n('prepTotal') + (vatTr === 'cost' ? vat : 0)) / q;
+  
+  // 낱개 기준 개당 입고원가 = 총 비용 / 총 낱개 개수
+  let landed = (goods + n('chinaShip') + intl + duty + n('customsOther') + n('domesticShip') + n('prepTotal'] + (vatTr === 'cost' ? vat : 0)) / totalPieces;
+  
   let p = n('sellPrice'), salesV = $('salesVat') ? $('salesVat').value : 'yes';
   let rev = salesV === 'yes' ? p / 1.1 : p, com = p * n('commission') / 100, other = n('growthFee') + n('storageFee') + n('adFee') + n('returnFee') + n('otherPerUnit'), profit = rev - com - other - landed, margin = p ? profit / p * 100 : 0;
   let rate = (salesV === 'yes' ? 1 / 1.1 : 1) - n('commission') / 100, fixed = landed + other, be = rate > 0 ? fixed / rate : 0;
   let targetDen = rate - n('targetMargin') / 100, tp = targetDen > 0 ? fixed / targetDen : 0;
   let cash = goods + n('chinaShip') + intl + duty + n('customsOther') + n('domesticShip') + n('prepTotal') + vat;
-  return { qty: q, unitCny: n('unitCny'), fx, goodsTotal: goods, customsBase: base, duty, importVat: vat, landedUnit: landed, landedTotal: landed * q, price: p, revenue: rev, commission: com, profit, margin, breakEven: be, targetPrice: tp, cashNeed: cash };
+  
+  return { 
+    isSet, setCnt, inputQty, totalPieces, unitCny: n('unitCny'), fx, goodsTotal: goods, customsBase: base, duty, importVat: vat, 
+    landedUnit: landed, landedTotal: landed * totalPieces, price: p, revenue: rev, commission: com, profit, margin, 
+    breakEven: be, targetPrice: tp, cashNeed: cash 
+  };
 }
 
 function calc() {
   let c = calculate();
   if($('liveCashNeed')) $('liveCashNeed').textContent = won(c.cashNeed);
+  if($('liveUnitDesc')) {
+    let unitName = c.isSet ? `세트당 ${c.setCnt}개 묶음 (총 낱개 ${c.totalPieces}개)` : `낱개 1개 기준`;
+    $('liveUnitDesc').textContent = `${unitName} | 낱개 환산 개당 입고원가: ${won(c.landedUnit)}`;
+  }
+  
   if($('landed')) $('landed').textContent = won(c.landedUnit);
   if($('profit')) {
     $('profit').textContent = won(c.profit);
@@ -331,14 +363,15 @@ function calc() {
 
 function copyWeChatSummary() {
   let c = calculate();
+  let packDesc = c.isSet ? `세트/묶음 (${c.setCnt}개들이)` : `낱개 (1개)`;
   let text = `[중국 소싱 현장 조사 요약 / 采购现场调查摘要]
 - 조사일(日期): ${$('date').value}
 - 시장(市场): ${$('market').value}
 - 상품명(商品): ${$('product').value}
 - 공급사(供应商): ${$('supplier').value} (담당자: ${$('contactName').value})
-- 위챗(微信ID): ${$('wechatId').value} | 연락처: ${$('contactPhone').value}
-- 초도수량(数量): ${c.qty}개 | 공급가(单价): ¥${c.unitCny}
-- 개당 입고원가(成本): ${won(c.landedUnit)}
+- 포장단위(包装): ${packDesc} | 초도수량(数量): ${c.inputQty}
+- 공급가(单价): ¥${c.unitCny} (${c.isSet ? '세트당' : '개당'})
+- 낱개 환산 원가(成本): ${won(c.landedUnit)}
 - 초도 총투자금(总投资): ${won(c.cashNeed)}
 - 쿠팡 예상판매가(售价): ${won(c.price)}
 - 상담 메모(备注): ${$('talk').value || '없음'}`;
@@ -364,7 +397,7 @@ function data() {
 
 function summary() {
   let d = data(), f = d.fields, c = d.calculation;
-  return ['중국 소싱 현장 조사 보고서', '조사일: ' + f.date, '상품: ' + f.product, '업체: ' + f.supplier, '공급가: ' + f.unitCny + ' CNY/개', '초도 수량: ' + f.qty, '입고원가: ' + won(c.landedUnit), '총투자금: ' + won(c.cashNeed)].join('\n');
+  return ['중국 소싱 현장 조사 보고서', '조사일: ' + f.date, '상품: ' + f.product, '업체: ' + f.supplier, '공급가: ' + f.unitCny + ' CNY', '초도 수량: ' + f.qty, '입고원가: ' + won(c.landedUnit), '총투자금: ' + won(c.cashNeed)].join('\n');
 }
 
 function base() { return (($('product').value || 'sourcing-item').replace(/[^\w가-힣-]+/g, '_')).slice(0, 50) + '_' + ($('date').value || 'date'); }
@@ -373,17 +406,14 @@ function status(t) { if($('sendStatus')) $('sendStatus').textContent = t; }
 
 function downloadJSON() { dl(new Blob([JSON.stringify(data(), null, 2)], { type: 'application/json;charset=utf-8' }), base() + '.json'); status('JSON 파일을 저장했습니다.'); }
 
-// 한글 항목 명칭 매핑 및 이쁘게 디자인된 보고서 HTML 생성
 function reportHTML() {
   let d = data(), c = d.calculation;
-  
-  // DOM에서 각 input/select의 한글 라벨 텍스트를 정밀 추출하여 매핑
   let labelMap = {};
   document.querySelectorAll('.field').forEach(el => {
     let input = el.querySelector('input, select, textarea');
     let lbl = el.querySelector('label');
     if(input && lbl) {
-      let cleanText = lbl.textContent.replace(/\([\s\S]*?\)/g, '').trim(); // 중국어/괄호 제거
+      let cleanText = lbl.textContent.replace(/\([\s\S]*?\)/g, '').trim();
       labelMap[input.id] = cleanText;
     }
   });
@@ -398,7 +428,6 @@ function reportHTML() {
     }
   });
 
-  // 섹션별 그룹화 데이터 생성
   let sectionsHTML = '';
   document.querySelectorAll('section.card[data-section]').forEach(section => {
     let secTitle = section.getAttribute('data-section');
@@ -407,8 +436,11 @@ function reportHTML() {
     section.querySelectorAll('.field').forEach(fieldEl => {
       let input = fieldEl.querySelector('input, select, textarea');
       if(input && d.fields[input.id] !== undefined && d.fields[input.id] !== '') {
+        // 세트가 아닐 때 세트 구성 수량 항목은 보고서에서 생략
+        if(input.id === 'setItemCount' && !c.isSet) return;
         let title = labelMap[input.id] || input.id;
         let val = d.fields[input.id];
+        if(input.id === 'packType') val = (val === 'set') ? `세트/묶음 (세트당 ${c.setCnt}개)` : '낱개';
         rowsHTML += `<tr><th style="width:35%; text-align:left; padding:8px 12px; background:#f8fafc; border:1px solid #e2e8f0; color:#475467;">${esc(title)}</th><td style="padding:8px 12px; border:1px solid #e2e8f0; color:#1e293b;">${esc(val)}</td></tr>`;
       }
     });
@@ -418,7 +450,6 @@ function reportHTML() {
     }
   });
 
-  // 체크리스트 항목 정리
   let checkHTML = '';
   let checkedItems = Object.entries(d.checks).filter(([k, v]) => v);
   if(checkedItems.length > 0) {
@@ -426,7 +457,6 @@ function reportHTML() {
     checkHTML = `<div style="margin-bottom:20px;"><h3 style="font-size:16px; color:#1e293b; border-bottom:2px solid #087443; padding-bottom:4px; margin-bottom:8px;">현장 및 규제 확인 항목</h3><ul style="padding-left:20px; font-size:14px;">${listLi}</ul></div>`;
   }
 
-  // 사진 아래에 파일명 명시
   let picsHTML = '';
   if(d.photos && d.photos.length > 0) {
     let figs = d.photos.map(p => `<div style="text-align:center; border:1px solid #cbd5e1; border-radius:8px; padding:8px; background:#f8fafc; width:180px;"><img style="width:160px; height:160px; object-fit:cover; border-radius:6px;" src="${p.dataUrl}"><div style="font-size:12px; color:#334155; margin-top:6px; word-break:break-all; font-weight:600;">${esc(p.name)}</div></div>`).join('');
@@ -450,7 +480,7 @@ function reportHTML() {
   <h1>중국 소싱 현장 조사 보고서 (采购现场调查报告)</h1>
   
   <div class="summary-box">
-    <div class="summary-item"><span>개당 총 입고원가</span><strong>${won(c.landedUnit)}</strong></div>
+    <div class="summary-item"><span>낱개 환산 개당 입고원가</span><strong>${won(c.landedUnit)}</strong></div>
     <div class="summary-item"><span>초도 총투자금 (총투입액)</span><strong>${won(c.cashNeed)}</strong></div>
     <div class="summary-item"><span>개당 예상 이익</span><strong style="color:${c.profit>=0?'#087443':'#b42318'}">${won(c.profit)}</strong></div>
     <div class="summary-item"><span>예상 이익률</span><strong style="color:${c.margin>=20?'#087443':'#b42318'}">${c.margin.toFixed(1)}%</strong></div>
@@ -465,7 +495,7 @@ function reportHTML() {
 </html>`;
 }
 
-function downloadReport() { dl(new Blob([reportHTML()], { type: 'text/html;charset=utf-8' }), base() + '_report.html'); status('이쁘게 정돈된 HTML 보고서를 저장했습니다.'); }
+function downloadReport() { dl(new Blob([reportHTML()], { type: 'text/html;charset=utf-8' }), base() + '_report.html'); status('보고서를 저장했습니다.'); }
 
 function sendEmail() {
   let to = $('emailTo') ? $('emailTo').value.trim() : '', subject = encodeURIComponent('[중국 소싱 현장조사] ' + ($('product').value || '상품')), body = encodeURIComponent(summary());
@@ -495,6 +525,7 @@ function loadLocal() {
       checks.forEach(id => { if (d.checks && $(id)) $(id).checked = !!d.checks[id]; });
       photoData = d.photos || []; renderPhotos();
     }
+    toggleSetField();
     let savedSize = localStorage.getItem('chinaSourcingFontSize');
     if (savedSize) changeFontSize(parseInt(savedSize));
   } catch (e) {}
@@ -514,6 +545,8 @@ function clearForm() {
   if($('returnFee')) $('returnFee').value = 500;
   if($('targetMargin')) $('targetMargin').value = 20; 
   if($('dutyRate')) $('dutyRate').value = 0;
+  if($('setItemCount')) $('setItemCount').value = 1;
+  toggleSetField();
   checks.forEach(id => { if($(id)) $(id).checked = false; });
   photoData = []; renderPhotos(); calc(); status('새 상품 작성 준비 완료');
 }
@@ -573,7 +606,7 @@ ids.forEach(id => {
 });
 checks.forEach(id => {
   let el = $(id);
-  if(el) el.el.addEventListener('change', calc);
+  if(el) el.addEventListener('change', calc);
 });
 
 if($('date') && !$('date').value) {
