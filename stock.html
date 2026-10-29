@@ -5159,6 +5159,13 @@
             body.wl-folded .wl-strip b { writing-mode: vertical-rl; letter-spacing: 2px; color: #c9cfdc; font-weight: 700; }
         }
         @media (max-width: 1200px) { .wl-fold:not(.wl-mng) { display: none; } }
+        /* 대시보드2 (데이터 PC 전용): 폭과 상관없이 접기 · 접으면 오른쪽 칸 자리(관심 종목 + 잔고·주문)가 차트로 넘어가고 창을 그만큼 줄여 쓸 수 있음 */
+        body.grid-mode .wl-fold:not(.wl-mng) { display: inline-block; }
+        body.grid-mode.wl-folded .content-wrapper { grid-template-columns: minmax(0, 1fr) 30px; min-width: 940px; }
+        body.grid-mode.wl-folded .sidebar { width: 30px !important; min-width: 30px !important; padding: 0 !important; overflow: hidden; }
+        body.grid-mode.wl-folded .sidebar > *:not(.wl-strip) { display: none !important; }
+        body.grid-mode.wl-folded .wl-strip { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 28px; height: 100%; padding: 10px 0; border: 1px solid #2a3042; border-radius: 8px; background: #121722; color: #ffd24a; cursor: pointer; font: inherit; font-size: 12px; }
+        body.grid-mode.wl-folded .wl-strip b { writing-mode: vertical-rl; letter-spacing: 2px; color: #c9cfdc; font-weight: 700; }
         .sidebar {
             width: 240px;
             display: flex;
@@ -23503,7 +23510,7 @@
             var 판 = null; try { 판 = st.chart && st.chart.paneSize(); } catch (e) { }
             var el = st.상자.querySelector('.kc-sg'), x = 수급_켬() && st.종목 ? 키움_수급[st.종목] : null;
             var 숨김 = !x || Date.now() - x.at > 15000 || !판 || 판.width < 120 || 판.height < 50 || st.일봉 || (x.m == null && x.b == null);
-            if (숨김) { if (el) el.style.display = 'none'; if (st.수급높이) { st.수급높이 = 0; if (st.위끝) 키움차트_라벨예약(st); } return; }
+            if (숨김) { if (el) { el.style.display = 'none'; el._꼴 = ''; } if (st.수급높이) { st.수급높이 = 0; if (st.위끝) 키움차트_라벨예약(st); } return; }
             if (!el) { el = document.createElement('div'); el.className = 'kc-sg'; var 칸 = st.상자.querySelector('.kc') || st.상자; 칸.appendChild(el); }
             var 전체폭 = st.상자.clientWidth, 큰 = 전체폭 >= 600;
             var 폭 = Math.max(60, Math.min(큰 ? 170 : 92, Math.floor(판.width * (큰 ? 0.3 : 0.38)), 판.width - 8));
@@ -23514,9 +23521,12 @@
             var 잔 = x.b != null ? '<div class="sg-q' + (x.h > 10 ? ' sg-old' : '') + '" title="호가 잔량 합계 (매수 · 매도) · 큰 주문이 걸렸다 빠지면 크게 바뀜 (참고)">' + (큰 ? '<em>잔량</em> ' : '') +
                       '<b class="sg-bq' + (x.b >= x.a ? ' sg-hi' : '') + '">' + 수급_수(x.b) + '</b><em>/</em><b class="sg-aq' + (x.a > x.b ? ' sg-hi' : '') + '">' + 수급_수(x.a) + '</b></div>' : '';
             var h = 막대 + 잔;
-            el.className = 'kc-sg' + (큰 ? ' sg-big' : '');
-            el.style.cssText = 'display:block;width:' + 폭 + 'px;left:' + Math.max(2, Math.round(판.width - 폭 - 3)) + 'px;top:3px;';
+            var 반 = 'kc-sg' + (큰 ? ' sg-big' : ''), 꼴 = 'display:block;width:' + 폭 + 'px;left:' + Math.max(2, Math.round(판.width - 폭 - 3)) + 'px;top:3px;';
+            if (el.className !== 반) el.className = 반;
+            var 바뀜 = el._꼴 !== 꼴 || el._h !== h;
+            if (el._꼴 !== 꼴) { el.style.cssText = 꼴; el._꼴 = 꼴; }
             if (el._h !== h) { el.innerHTML = h; el._h = h; }
+            if (!바뀜) return;   // 그대로면 높이 재기(화면 다시 계산)도 안 함
             var 높 = el.offsetHeight + 3;
             if (Math.abs((st.수급높이 || 0) - 높) > 1) { st.수급높이 = 높; if (st.위끝) 키움차트_라벨예약(st); }   // 이름표 다시 그리기는 위쪽 끝 이름표가 있을 때만
         }
@@ -23793,6 +23803,7 @@
 
         function 키움차트_전부그리기(st, 처음) {
             if (!st.캔들) return;
+            st.틱첫 = null; st.틱새 = false;   // 모아 둔 틱 그리기는 전체 그리기에 포함됨
             var 정밀 = 키움_정밀(st.봉);
             st.정밀 = 정밀;
             st.캔들.applyOptions({ priceFormat: { type: 'price', precision: 정밀, minMove: Math.pow(10, -정밀) } });
@@ -23860,13 +23871,20 @@
             }
             // 차트가 가려진 동안(미장 다른 탭 · 국장 화면): 봉 자료만 쌓고 그리기는 쉼 → 돌아올 때 한 번에 그림
             if (키움차트_쉼()) { st.밀림 = true; st.마지막틱 = Date.now(); st.마지막et = x.et; if (격자모드) { try { 급등_판단(st); } catch (e) { } } return; }
-            st.캔들.update({ time: b.t, open: b.o, high: b.h, low: b.l, close: b.c });
-            st.거래량.update(키움_거래량점(b));
-            if (!st.일봉 && st.vwap) { if (새) 키움차트_VWAP계산(st); else 키움차트_VWAP끝(st); }
-            if (새) 키움보정_새봉(st);
+            // 그리기는 모아서: 대시보드2 = 차트마다 0.5초에 한 번 · 대시보드1 = 0.25초 (체결이 많아도 그래픽 부담 일정 → 다른 프로그램(영웅문 등)이 느려지지 않게)
+            var 칸 = st.봉.length - 1; st.틱첫 = st.틱첫 == null ? 칸 : Math.min(st.틱첫, 칸); if (새) st.틱새 = true;
             st.마지막틱 = Date.now(); st.마지막et = x.et;
             if (격자모드) { try { 급등_판단(st); } catch (e) { } }
-            if (새) 키움차트_뉴스(st, false);
+            if (!st.틱타) { var 간 = 격자모드 ? 500 : 250; st.틱타 = setTimeout(function () { st.틱타 = 0; 키움차트_틱그리기(st); }, Math.max(16, 간 - (Date.now() - (st.틱그림 || 0)))); }
+        }
+        function 키움차트_틱그리기(st) {
+            var a = st.틱첫, 새 = st.틱새; st.틱첫 = null; st.틱새 = false;
+            if (a == null || !st.캔들 || st.닫힘) return;
+            if (키움차트_쉼()) { st.밀림 = true; return; }
+            st.틱그림 = Date.now();
+            for (var k = Math.max(0, a); k < st.봉.length; k++) { var b = st.봉[k]; try { st.캔들.update({ time: b.t, open: b.o, high: b.h, low: b.l, close: b.c }); st.거래량.update(키움_거래량점(b)); } catch (e) { } }
+            if (!st.일봉 && st.vwap) { if (새) 키움차트_VWAP계산(st); else 키움차트_VWAP끝(st); }
+            if (새) { 키움보정_새봉(st); 키움차트_뉴스(st, false); }
             키움차트_라벨예약(st);
         }
 
@@ -27884,7 +27902,7 @@
             if (cw && !document.getElementById('kr-view')) {
                 var v = document.createElement('div'); v.className = 'kr-view'; v.id = 'kr-view';
                 function 카드(id, 제목, 작은, 넓게) { return '<div class="kr-card' + (넓게 ? ' kr-wide' : '') + '"><h4><span id="' + id + '-h">' + 제목 + '</span> <small id="' + id + '-t">' + (작은 || '') + '</small></h4><div id="' + id + '"></div></div>'; }
-                v.innerHTML = 글자바HTML('kr') + '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<div class="sz-brief" id="kr-brief"></div><span class="kr-stat" id="kr-stat"></span><span class="sz-ver">판 2026.10.29r</span></div>' +
+                v.innerHTML = 글자바HTML('kr') + '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<div class="sz-brief" id="kr-brief"></div><span class="kr-stat" id="kr-stat"></span><span class="sz-ver">판 2026.10.30a</span></div>' +
                     '<div class="kr-two" id="kr-two">' +
                     '<div class="kr-pane" data-t="시장">' +
                         카드('kr-pj', '오늘 장 판정', '', 1) +
@@ -28977,7 +28995,7 @@
         function 미만들기() {
             var cw = document.querySelector('.content-wrapper'); if (!cw || document.getElementById('us-tabbar')) return;
             var bar = document.createElement('div'); bar.className = 'us-tabbar'; bar.id = 'us-tabbar';
-            bar.innerHTML = 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + ({ 예측: '예측시장', 일정: '캘린더' }[t] || t) + '</button>'; }).join('') + (격 ? '' : '<div class="sz-brief" id="us-brief"></div>') + '<span class="us-stat" id="us-stat"></span><span class="sz-ver" title="대시보드 파일 판 (데이터 PC · 브라우저가 같은 파일인지 확인용)">판 2026.10.29r</span>';
+            bar.innerHTML = 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + ({ 예측: '예측시장', 일정: '캘린더' }[t] || t) + '</button>'; }).join('') + (격 ? '' : '<div class="sz-brief" id="us-brief"></div>') + '<span class="us-stat" id="us-stat"></span><span class="sz-ver" title="대시보드 파일 판 (데이터 PC · 브라우저가 같은 파일인지 확인용)">판 2026.10.30a</span>';
             // 대시보드2: 차트 자리를 줄이지 않도록 위 시황 줄(미장/국장 단추 옆)에 작게 2줄 / 대시보드1: 차트 위 한 줄
             var tb = document.querySelector('.top-bar'), sw = document.getElementById('mkt-sw');
             if (격 && tb && sw && sw.parentNode === tb) {
@@ -29061,23 +29079,31 @@
         // ── 미장 시세 묶음 (/us/board · 시장·종목 탭) ──
         //   실패하면 5초 · 15초 · 30초 뒤 다시 (그다음은 평소 간격) · 페이지를 켜면 차트 탭에 있어도 한 번 미리 받아 둠
         function 미보드목록() { var 목 = []; 미섹터.concat(미테마).forEach(function (x) { 목.push(x[0]); }); 미관심().forEach(function (x) { if (목.indexOf(x) < 0) 목.push(x); }); return 목.slice(0, 120); }
+        //   ① 이번 접속에서 아직 못 받았으면 시세만(lite · 1~2초) 먼저 → 표를 바로 채움 ② 이어서 전체(오늘 흐름 포함 · 최대 25초)
         function 미보드받기() {
             var u = URL0(); if (!u || u.indexOf('YOUR-ACCOUNT') >= 0) return;
-            if (미.board받는중 && Date.now() - 미.board받는중 < 15000) return;
+            if (미.board받는중 && Date.now() - 미.board받는중 < 30000) return;
             미.board받는중 = Date.now(); 미.board목록키 = 미보드목록().join(','); 미보드상태();
-            var 컨 = typeof AbortController !== 'undefined' ? new AbortController() : null, 타 = setTimeout(function () { if (컨) 컨.abort(); }, 12000);
-            function 끝() { clearTimeout(타); 미.board받는중 = 0; }
-            fetch(u + '/us/board?s=' + encodeURIComponent(미보드목록().join(',')), 컨 ? { cache: 'no-store', signal: 컨.signal } : { cache: 'no-store' })
-                .then(function (r) { return r.json(); })
-                .then(function (j) {
-                    끝();
-                    if (j && j.종목 && Object.keys(j.종목).length) {
-                        미.board = j; 미.board오류 = null; 미.board재시도 = 0; 미.board새로 = Date.now(); clearTimeout(미.board재시도타);
-                        var 작게 = { ms: j.ms, 종목: {} }; Object.keys(j.종목).forEach(function (t) { var o = Object.assign({}, j.종목[t]); delete o.sp; 작게.종목[t] = o; }); 저장('sz_us_board', 작게);
-                    } else 미보드실패((j && (j.오류 || j.error)) || '자료 없음');
-                    미그리기(); 미보드상태();
-                })
-                .catch(function (e) { 끝(); 미보드실패(e && e.name === 'AbortError' ? '응답 늦음' : '연결 실패'); 미그리기(); 미보드상태(); });
+            var 목 = encodeURIComponent(미보드목록().join(',')), 먼저 = !미.board새로;
+            function 한번(lite, 초, 됨, 안됨) {
+                var 컨 = typeof AbortController !== 'undefined' ? new AbortController() : null, 타 = setTimeout(function () { if (컨) 컨.abort(); }, 초 * 1000);
+                fetch(u + '/us/board?' + (lite ? 'lite=1&' : '') + 's=' + 목, 컨 ? { cache: 'no-store', signal: 컨.signal } : { cache: 'no-store' })
+                    .then(function (r) { return r.json(); })
+                    .then(function (j) { clearTimeout(타); if (j && j.종목 && Object.keys(j.종목).length) 됨(j); else 안됨((j && (j.오류 || j.error)) || '자료 없음'); })
+                    .catch(function (e) { clearTimeout(타); 안됨(e && e.name === 'AbortError' ? '응답 늦음' : '연결 실패'); });
+            }
+            function 받음(j, 전체) {
+                if (!전체 && 미.board && 미.board.종목) Object.keys(j.종목).forEach(function (t) { var o = 미.board.종목[t]; if (o && o.sp) j.종목[t].sp = o.sp; });   // 시세만 받은 경우: 지난 흐름 그림은 남김
+                미.board = j; 미.board오류 = null; 미.board재시도 = 0; 미.board새로 = Date.now(); clearTimeout(미.board재시도타);
+                if (전체) { var 작게 = { ms: j.ms, 종목: {} }; Object.keys(j.종목).forEach(function (t) { var o = Object.assign({}, j.종목[t]); delete o.sp; 작게.종목[t] = o; }); 저장('sz_us_board', 작게); }
+                미그리기(); 미보드상태();
+            }
+            function 전체받기() {
+                한번(false, 25, function (j) { 미.board받는중 = 0; 받음(j, true); },
+                    function (글) { 미.board받는중 = 0; if (미.board새로) { 미보드상태(); return; } 미보드실패(글); 미그리기(); 미보드상태(); });   // 시세는 이미 있음 → 흐름만 다음 차례에
+            }
+            if (먼저) 한번(true, 12, function (j) { 받음(j, false); 전체받기(); }, function () { 전체받기(); });
+            else 전체받기();
         }
         function 미보드실패(글) {
             미.board오류 = 글;
@@ -29092,7 +29118,7 @@
         function 미보드상태() {
             var el = 미el('us-tbl-st'); if (!el) return;
             var 지금 = Date.now(), 글 = '', 쪽 = '';
-            if (미.board받는중) { 글 = '시세 받는 중…'; 쪽 = 'ing'; }
+            if (미.board받는중 && !(미.board새로 && 지금 - 미.board새로 < 120000)) { 글 = '시세 받는 중…'; 쪽 = 'ing'; }
             else if (미.board오류 && 미.board다시 > 지금) { 글 = '받기 실패 (' + 미.board오류 + ') · ' + Math.ceil((미.board다시 - 지금) / 1000) + '초 뒤 다시'; 쪽 = 'bad'; }
             else if (미.board오류 && !미.board새로) { 글 = '받기 실패 (' + 미.board오류 + ') · 잠시 뒤 자동으로 다시'; 쪽 = 'bad'; }
             else if (미.board && 미.board.ms) {
@@ -29279,6 +29305,13 @@
             if (c.종 === '개별' && (미묶.종 === '전체' || 미묶.테마 === '전체') && c.테마) return '<i class="us-ct thm">' + c.테마 + '</i>';
             return '';
         }
+        // 서버 시세 묶음이 아직 없을 때: 실시간 시세(데이터 PC · 차트 시세)로 현재가 · 등락률만 먼저 채움
+        function 미임시시세(t) {
+            var pk = typeof pickQuote === 'function' ? pickQuote(t) : null, q = pk && pk.q;
+            if (!q || !(q.price > 0) || !(q.recvAt > 0) || Date.now() - q.recvAt > 10 * 60000) return null;
+            var 률 = q.changeRate != null ? +q.changeRate : q.changePct != null ? +q.changePct : null;
+            return 미장중() ? { p: q.price, rp: q.price, rc: 률, 임시: true } : { p: q.price, xp: q.price, xc: 률, 임시: true };
+        }
         function 미종목() {
             var el = 미el('us-tbl'); if (!el) return;
             var B = 미B(), 단 = 미단계(), 장중 = 미장중(), 시외 = 단 === '프리' || 단 === '애프터' || 단 === '오버나이트' || /^시외/.test(미.정렬 || '');
@@ -29291,7 +29324,7 @@
             넣기(미el('us-sort'), '<span class="us-sorts">' + 정렬들.map(function (x) { return '<button type="button" data-s="' + x[0] + '" title="' + x[1] + '" class="' + (미.정렬 === x[0] ? 'on' : '') + '">' + x[0] + '</button>'; }).join('') + '</span>' +
                 '<span class="kr-seg us-vw">' + [['목록', '목록'], ['카드', '카드']].map(function (x) { return '<button type="button" data-vw="' + x[0] + '" class="' + (미.보기 === x[0] ? 'on' : '') + '">' + x[1] + '</button>'; }).join('') + '</span>');
             var 보유맵 = {}; (상태.보유.us || []).forEach(function (x) { 보유맵[x.t] = 1; });
-            var 행 = 미관심().map(function (t, i) { var v = B[t] || null; return { t: t, i: i, v: v, c: 종목분류(t), r: v && v.rp > 0 ? v.rc : null, xr: v && v.xp > 0 && v.xc != null ? v.xc : null, 배: 미거래배(v), 고대: v && v.h52 > 0 && v.rp > 0 ? (v.rp / v.h52 - 1) * 100 : null, 저대: v && v.l52 > 0 && v.rp > 0 ? (v.rp / v.l52 - 1) * 100 : null }; });
+            var 행 = 미관심().map(function (t, i) { var v = B[t] || 미임시시세(t); return { t: t, i: i, v: v, c: 종목분류(t), r: v && v.rp > 0 ? v.rc : null, xr: v && v.xp > 0 && v.xc != null ? v.xc : null, 배: 미거래배(v), 고대: v && v.h52 > 0 && v.rp > 0 ? (v.rp / v.h52 - 1) * 100 : null, 저대: v && v.l52 > 0 && v.rp > 0 ? (v.rp / v.l52 - 1) * 100 : null }; });
             var qv = B.QQQ, qq = qv && qv.rp > 0 ? qv.rc : null;
             행.forEach(function (x) {
                 x.fl = 미흐름(x.t);
@@ -30845,10 +30878,15 @@
             if (!w || !x) return;
             if (!약) { if (wv && w._창모양 !== '전체') { w._창모양 = '전체'; try { wv.postMessage(JSON.stringify({ 종류: '창모양', 약식: false, 위: !!상태.보유.약위 })); } catch (e) { } } return; }
             var 몸 = w.querySelector('.hy-box'); if (!몸) return;
-            var r = 몸.getBoundingClientRect(), cw = Math.ceil(몸.scrollWidth), ch = Math.ceil(r.height);
+            // 내용 자체 폭으로 잼 (창 폭 100% 채우기를 잠시 끔 · 안 그러면 창 테두리만큼씩 조금씩 줄어드는 되풀이)
+            var 원최소 = 몸.style.minWidth; 몸.style.minWidth = '0';
+            var r = 몸.getBoundingClientRect(), cw = Math.ceil(r.width), ch = Math.ceil(r.height);
+            몸.style.minWidth = 원최소;
             if (!(cw > 0 && ch > 0)) return;
             var 키 = cw + 'x' + ch + '|' + !!상태.보유.약위;
             if (!강제 && w._창모양 === 키) return;
+            if (!강제 && w._창크기 && Math.abs(w._창크기[0] - cw) <= 2 && Math.abs(w._창크기[1] - ch) <= 2 && w._창모양.split('|')[1] === String(!!상태.보유.약위)) { w._창모양 = 키; return; }   // 2px 이하 차이는 무시
+            w._창크기 = [cw, ch];
             w._창모양 = 키;
             if (wv) { try { wv.postMessage(JSON.stringify({ 종류: '창모양', 약식: true, 위: !!상태.보유.약위, 크기: { w: cw, h: ch } })); } catch (e) { } }
             else if (x.종류 === 'popup') { try { x.win.resizeTo(cw + (x.win.outerWidth - x.win.innerWidth), ch + (x.win.outerHeight - x.win.innerHeight)); } catch (e) { } }
