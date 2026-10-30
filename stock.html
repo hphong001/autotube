@@ -15016,7 +15016,7 @@
         @media (max-width: 640px) { .bs-bar { height: 17px; } .bs-bar .bs-l, .bs-bar .bs-r { line-height: 17px; font-size: 13px; } }
         /* 거래 수준 배지 · 거래가 적으면 막대 흐리게 · 판정 줄 (5분 기준 · 천천히 바뀜) */
         .bs-box > .sec-bar { font-size: 13.5px; } .bs-box > .sec-bar .sec-t { color: #e3e7f0; }
-        .bs-box > .sec-bar .sec-r { font-size: 13px; font-weight: 800; } .bs-ix.up { color: #ff6b6b; } .bs-ix.dn { color: #6aa0ff; } .bs-ix.fl { color: #9aa3b5; }
+        .bs-box > .sec-bar .sec-r { font-size: 13px; font-weight: 800; } .bs-ix.up { color: #ff6b6b; } .bs-ix.dn { color: #6aa0ff; } .bs-ix.upl { color: #c98a8a; } .bs-ix.dnl { color: #8ea6cf; } .bs-ix.fl { color: #9aa3b5; }
         .bs-mk { font-size: 12.5px; color: #9aa3b5; white-space: nowrap; } .bs-mk b.up { color: #ff6b6b; } .bs-mk b.dn { color: #6aa0ff; }
         .bs-jd .bs-mk { margin-left: auto; }
         .bs-more { font-size: 12px; color: #9aa3b5; white-space: pre-line; padding: 3px 2px 0; border-top: 1px dashed #262c3c; display: none; } .bs-box.bs-open .bs-more { display: block; }
@@ -15037,8 +15037,10 @@
         .kc-sg .sg-vl.lv0 { color: #8a93a6; } .kc-sg .sg-vl.lv2 { color: #ffb347; } .kc-sg .sg-vl.lv3 { color: #ff6b6b; }
         .kc-sg.sg-dim .sg-bar { opacity: .45; }
         .kc-sg .sg-ctx { position: absolute; right: 100%; top: 0; margin-right: 8px; font-size: 11.5px; font-weight: 700; line-height: 15px; white-space: nowrap; color: #c9cfdc; text-shadow: 0 0 3px #10131b, 0 0 3px #10131b; }
-        .kc-sg .sg-ctx b { font-weight: 800; } .kc-sg .sg-ctx .up { color: #ff6b6b; } .kc-sg .sg-ctx .dn { color: #6aa0ff; } .kc-sg .sg-ctx .fl { color: #9aa3b5; } .kc-sg .sg-ctx .lv2 { color: #ffb347; } .kc-sg .sg-ctx .lv3 { color: #ff6b6b; } .kc-sg .sg-ctx .lv0 { color: #8a93a6; }
+        .kc-sg .sg-ctx b { font-weight: 800; } .kc-sg .sg-ctx .up { color: #ff6b6b; } .kc-sg .sg-ctx .dn { color: #6aa0ff; } .kc-sg .sg-ctx .upl { color: #c98a8a; } .kc-sg .sg-ctx .dnl { color: #8ea6cf; } .kc-sg .sg-ctx .fl { color: #9aa3b5; } .kc-sg .sg-ctx .lv2 { color: #ffb347; } .kc-sg .sg-ctx .lv3 { color: #ff6b6b; } .kc-sg .sg-ctx .lv0 { color: #8a93a6; }
         .kc-sg .sg-ctx i { font-style: normal; color: #6c7488; margin: 0 5px; }
+        .kc-sg.sg-np .sg-ctx .pv, .kc-sg.sg-min .sg-ctx .cx2 { display: none; }
+        .kc-sg .sg-ctx .pv, .bs-box .pv { color: #7d8598; font-weight: 600; font-size: .92em; margin-left: 1px; } .g-light .kc-sg .sg-ctx .pv { color: #7a8294; }
         .g-light .kc-sg .sg-ctx { color: #2a3142; text-shadow: 0 0 3px #fff, 0 0 3px #fff; }
         .vf-box {
             display: flex;
@@ -17847,7 +17849,32 @@
         // ── 시장 흐름 (데이터 PC가 5초마다 계산): q / s = QQQ · SPY 최근 1분 가격 변화(%) · b / d = 관심 개별 종목 중 1분 매수 우위 / 매도 우위 종목 수 · n = 센 종목 수
         //   데이터 PC 화면 = 웹 메시지 · 브라우저 · 휴대폰 = Firebase system/mkflow (작은 값 하나)
         var 시장흐름 = { v: null, 받은: 0 }, 시장흐름참조 = null;
-        function 시장흐름_받음(v) { if (v && typeof v === 'object') { 시장흐름.v = v; 시장흐름.받은 = Date.now(); } }
+        function 시장흐름_받음(v) {
+            if (!v || typeof v !== 'object') return;
+            시장흐름.v = v; 시장흐름.받은 = Date.now();
+            var 기 = 시장흐름.기록 || (시장흐름.기록 = []), 끝 = 기[기.length - 1];
+            if (!끝 || 끝.v.t !== v.t) 기.push({ at: Date.now(), v: v });
+            while (기.length && Date.now() - 기[0].at > 150000) 기.shift();
+        }
+        // 1분 전 값 (45~120초 전에 받은 값 중 60초에 가장 가까운 값) · 없으면 null
+        function 일분전(기록, 지금) { 지금 = 지금 || Date.now(); var r = null, 차 = 1e9; (기록 || []).forEach(function (x) { var 나 = 지금 - x.at; if (나 >= 45000 && 나 <= 120000 && Math.abs(나 - 60000) < 차) { 차 = Math.abs(나 - 60000); r = x; } }); return r; }
+        function 시장흐름_1분전() { var x = 일분전(시장흐름.기록); return x ? x.v : null; }
+        // 종목별 거래 배수 기록 (체결 자료가 새로 올 때만 1개씩 · 2분 보관)
+        var 배수기록 = {};
+        function 배수_1분전(t, x, 시각) {
+            if (!x || x.b == null || !isFinite(x.b)) return null;
+            var 기 = 배수기록[t] || (배수기록[t] = []), 끝 = 기[기.length - 1];
+            if (!끝 || 끝.k !== 시각) 기.push({ at: Date.now(), k: 시각, b: x.b });
+            while (기.length && Date.now() - 기[0].at > 150000) 기.shift();
+            var 전 = 일분전(기); return 전 ? 전.b : null;
+        }
+        function 지수_1분전(지) { var v = 시장흐름_1분전(); if (!v) return null; var p = 지 === 'SPY' ? (v.s3 != null ? v.s3 : v.s) : (v.q3 != null ? v.q3 : v.q); return p != null && isFinite(p) ? p : null; }
+        function 지수글(p) { var r = Math.round(p * 100) / 100; return (r > 0 ? '▲' : r < 0 ? '▼' : '─') + Math.abs(r).toFixed(2) + '%'; }
+        function 배수글짧게(b) { return (b >= 10 ? b.toFixed(0) : b.toFixed(1)) + '배'; }
+        // 괄호 = 1분 전 값 (값이 같아도 늘 표시 · 1분 전 값이 없을 때만 생략)
+        function 전값_지수(지) { var 전 = 지수_1분전(지.지); return 전 != null && 지.p != null ? ' <span class="pv">(' + 지수글(전) + ')</span>' : ''; }
+        function 전값_수(지금, 전) { return 전 != null ? '<span class="pv">(' + 전 + ')</span>' : ''; }
+        function 전값_배수(지금, 전) { return 전 != null && 지금 != null ? ' <span class="pv">(' + 배수글짧게(전) + ')</span>' : ''; }
         function 시장흐름_구독() {
             if (시장흐름참조 || (window.chrome && window.chrome.webview) || typeof firebase === 'undefined' || !firebase.database) return;
             try { 시장흐름참조 = firebase.database().ref('system/mkflow'); 시장흐름참조.on('value', function (snap) { 시장흐름_받음(snap.val()); }); } catch (e) { }
@@ -17855,11 +17882,13 @@
         function 시장흐름_값() { var v = 시장흐름.v; if (!v) return null; var t = +v.t || 시장흐름.받은; return Date.now() - Math.max(t, 0) < 30000 || Date.now() - 시장흐름.받은 < 15000 ? v : null; }
         // 기준 지수: 빅테크·기술주 = QQQ · 헬스·바이오 · 금융(기타) · 전력·원전 = SPY · QQQ 자신이면 SPY
         function 기준지수(t) { if (t === 'QQQ') return 'SPY'; if (t === 'SPY') return 'QQQ'; var c = 종목분류(t); return c && c.종 === '개별' && /헬스|바이오|기타|전력|원전/.test(c.테마 || '') ? 'SPY' : 'QQQ'; }
+        // QQQ · SPY = 최근 3분 가격 변화 (지금부터 거꾸로 3분 · 3분봉과 비슷한 눈높이) · ±0.03% 이상 = 진한 색 · 그 안 = 부호대로 연한 색 · 0.00% = 회색
         function 지수상태(t) {
-            var v = 시장흐름_값(), 지 = 기준지수(t), p = v ? (지 === 'SPY' ? v.s : v.q) : null;
-            if (p == null || !isFinite(p)) return { 지: 지, p: null, 반: 'fl', 글: 지 + ' ─' };
-            var 반 = p >= 0.05 ? 'up' : p <= -0.05 ? 'dn' : 'fl', 화 = 반 === 'up' ? '▲' : 반 === 'dn' ? '▼' : '─';
-            return { 지: 지, p: p, 반: 반, 글: 지 + ' ' + 화 + Math.abs(p).toFixed(2) + '%' };
+            var v = 시장흐름_값(), 지 = 기준지수(t), p3 = v ? (지 === 'SPY' ? v.s3 : v.q3) : null, p1 = v ? (지 === 'SPY' ? v.s : v.q) : null;
+            var 삼 = p3 != null && isFinite(p3), p = 삼 ? p3 : p1, 분 = 삼 ? '3분' : '1분';
+            if (p == null || !isFinite(p)) return { 지: 지, p: null, 반: 'fl', 글: 지 + ' ─', 분: 분 };
+            var r = Math.round(p * 100) / 100, 반 = r >= 0.03 ? 'up' : r <= -0.03 ? 'dn' : r > 0 ? 'upl' : r < 0 ? 'dnl' : 'fl', 화 = r > 0 ? '▲' : r < 0 ? '▼' : '─';
+            return { 지: 지, p: p, 반: 반, 분: 분, 글: 지 + ' ' + 분 + ' ' + 화 + Math.abs(r).toFixed(2) + '%' };
         }
         function 시장쏠림() { var v = 시장흐름_값(); if (!v || !((v.b || 0) + (v.d || 0) >= 6)) return ''; var r = v.b / (v.b + v.d); return r >= 0.6 ? '매수' : r <= 0.4 ? '매도' : '보통'; }
         var 매매비_기억 = {};
@@ -17890,13 +17919,17 @@
             if (꼬후 && 지금 - m.꼬시작 >= 15000) m.꼬 = 꼬후; else if (!꼬후 && m.꼬 && 지금 - m.꼬시작 >= 15000) m.꼬 = '';
             var 표 = 매매비_표[m.상], v = 시장흐름_값(), 지 = 지수상태(t);
             var 근거 = [t + ' 최근 1분: 거래 평소 ' + (수.b != null ? 수.b.toFixed(2) + '배' : '─') + ' · 매수 ' + Math.round(R * 100) + '% · 매도 ' + (100 - Math.round(R * 100)) + '%' + (x.p1 != null ? ' · 가격 ' + (p1 >= 0 ? '+' : '') + p1.toFixed(2) + '%' : '') + (x.n != null ? ' · 체결 ' + x.n + '건' : ''),
-                      지.p != null ? 지.지 + ' 최근 1분 ' + (지.p >= 0 ? '+' : '') + 지.p.toFixed(2) + '% (' + (지.반 === 'up' ? '상승' : 지.반 === 'dn' ? '하락' : '보합') + ')' : 지.지 + ' 상태 받는 중',
+                      지.p != null ? 지.지 + ' 최근 ' + 지.분 + ' ' + (지.p >= 0 ? '+' : '') + 지.p.toFixed(2) + '% (' + (지.반 === 'up' ? '상승' : 지.반 === 'dn' ? '하락' : 지.반 === 'upl' ? '약한 상승' : 지.반 === 'dnl' ? '약한 하락' : '보합') + ')' : 지.지 + ' 상태 받는 중',
                       v ? '관심종목 (개별 ' + (v.n || 0) + '종목 · 1분): 매수 우위 ▲' + (v.b || 0) + '개 · 매도 우위 ▼' + (v.d || 0) + '개' : '관심종목 흐름 받는 중',
                       표[0] ? '판정: ' + 표[0] + (m.꼬 ? ' · ' + m.꼬 : '') : (m.꼬 ? '시장 비교: ' + m.꼬 : ''),
                       '판정 = 최근 1분 매수 비율 + 거래 수준 · 30초 이상 유지 (집중은 바로 바뀜) · 참고 · 매매 신호 아님'].filter(Boolean).join('\n');
             return { 글: 표[0], 반: 표[1], 꼬: m.꼬, 수: 수, 근거: 근거, 바뀜: m.바뀜 || 0, 지: 지, 시: v };
         }
-        function 관심흐름글(v, 짧게) { if (!v) return ''; return 짧게 ? '관심종목 <b class="up">▲' + (v.b || 0) + '</b> <b class="dn">▼' + (v.d || 0) + '</b>' : '관심종목 매수 우위 <b class="up">▲' + (v.b || 0) + '개</b> · 매도 우위 <b class="dn">▼' + (v.d || 0) + '개</b>'; }
+        function 관심흐름글(v, 짧게) {
+            if (!v) return ''; var 전 = 시장흐름_1분전(), b = v.b || 0, d = v.d || 0, pb = 전 ? 전.b || 0 : null, pd = 전 ? 전.d || 0 : null;
+            return 짧게 ? '관심종목 <b class="up">▲' + b + '</b>' + 전값_수(b, pb) + ' <b class="dn">▼' + d + '</b>' + 전값_수(d, pd)
+                        : '관심종목 매수 우위 <b class="up">▲' + b + '개</b>' + 전값_수(b, pb) + ' · 매도 우위 <b class="dn">▼' + d + '개</b>' + 전값_수(d, pd);
+        }
         // 매수·매도 체결 섹션 (대시보드1 패널 · 지지·저항 위): 최근 1분 매수 ÷ (매수 + 매도) 체결 수량 · 호가 기준 판정 (윈폼)
         function 매매비_패널(i, t) {
             var el = document.getElementById('p' + i + '-bs'); if (!el) return;
@@ -17914,7 +17947,8 @@
             var 받은 = v.시각 > 0 ? +v.시각 : c && c.받은 > 0 ? c.받은 : 0, 초 = 받은 ? Math.max(0, Math.round((Date.now() - 받은) / 1000)) : null;
             var 기울 = 매 >= 65 ? 'bs-buy' : 매 <= 35 ? 'bs-sell' : '';   // 확실히 한쪽이 우세할 때만 진하게
             var 판 = 매매비_판정(t, x), 수 = 판.수; 시장흐름_구독();
-            var 몸 = '<div class="bs-row' + (수.적음 ? ' bs-dim' : '') + '"><span class="bs-vl lv' + 수.lv + '" title="최근 1분 체결량 ÷ 평소(과거 같은 시각) 1분 평균 · 회색 0.7배 미만 · 흰색 보통 · 주황 1.5배 이상 · 빨강 3배 이상">' + 수.글 + '</span>' +
+            var 전배 = 배수_1분전(t, x, v.시각 || (c && c.받은) || 0);
+            var 몸 = '<div class="bs-row' + (수.적음 ? ' bs-dim' : '') + '"><span class="bs-vl lv' + 수.lv + '" title="최근 1분 체결량 ÷ 평소(과거 같은 시각) 1분 평균 · 회색 0.7배 미만 · 흰색 보통 · 주황 1.5배 이상 · 빨강 3배 이상 · 괄호 = 1분 전">' + 수.글 + 전값_배수(수.b, 전배) + '</span>' +
                      '<div class="bs-bar ' + 기울 + '" title="최근 1분 체결 수량 기준 · 매수 = 매도호가에 체결 · 매도 = 매수호가에 체결 (호가 없으면 가격 변화) · 중간 체결 제외 · 프리미엄 실시간 (5초마다)' + (수.적음 ? ' · 거래가 적어 비율은 참고만' : '') + '">' +
                      '<i class="bs-b" style="width:' + 매 + '%"></i><i class="bs-s" style="width:' + 도 + '%"></i>' +
                      '<span class="bs-l">매수 ' + 매 + '%' + (수.적음 ? ' (참고)' : '') + '</span><span class="bs-r">매도 ' + 도 + '%</span></div></div>' +
@@ -17925,8 +17959,8 @@
             var 나이 = '최근 1분' + (초 != null ? ' · ' + (초 < 60 ? 초 + '초 전' : Math.round(초 / 60) + '분 전') : ''), 지 = 판.지;
             var 요약 = (판.글 ? 판.글 + ' · ' : '') + 수.글 + ' · 매수 ' + 매 + '% · 매도 ' + 도 + '% · ' + 판.지.글;   // 접었을 때 한 줄
             var se = document.getElementById('p' + i + '-sec-bs'); if (se && se.textContent !== 요약) se.textContent = 요약;
-            var sr = document.getElementById('p' + i + '-bsr'), 지h = '<span class="bs-ix ' + 지.반 + '">' + 지.글 + '</span>';
-            if (sr && sr._h !== 지h) { sr.innerHTML = 지h; sr._h = 지h; } if (sr) sr.title = 지.지 + ' 최근 1분 가격 변화 · 체결 ' + 나이;
+            var sr = document.getElementById('p' + i + '-bsr'), 지h = '<span class="bs-ix ' + 지.반 + '">' + 지.글 + '</span>' + 전값_지수(지);
+            if (sr && sr._h !== 지h) { sr.innerHTML = 지h; sr._h = 지h; } if (sr) sr.title = 지.지 + ' 최근 ' + 지.분 + ' 가격 변화 · 체결 ' + 나이;
         }
         // 1분 칸 판정 줄을 누르면 근거 펼치기 (휴대폰은 마우스를 올릴 수 없음)
         document.addEventListener('click', function (e) { var j = e.target.closest && e.target.closest('.bs-jd, .bs-row'); if (!j) return; var bx = j.closest('.bs-box'); if (bx) bx.classList.toggle('bs-open'); });
@@ -23610,7 +23644,7 @@
             var 판 = null; try { 판 = st.chart && st.chart.paneSize(); } catch (e) { }
             var el = st.상자.querySelector('.kc-sg'), x = 수급_켬() && st.종목 ? 키움_수급[st.종목] : null;
             var 숨김 = !x || Date.now() - x.at > 15000 || !판 || 판.width < 120 || 판.height < 50 || st.일봉 || (x.m == null && x.b == null);
-            if (숨김) { if (el) { el.style.display = 'none'; el._꼴 = ''; } if (st.수급높이) { st.수급높이 = 0; if (st.위끝) 키움차트_라벨예약(st); } return; }
+            if (숨김) { if (el) { el.style.display = 'none'; el._꼴 = ''; } if (st.수급높이) { st.수급높이 = 0; st.수급폭키 = ''; 키움차트_라벨예약(st); } return; }
             if (!el) { el = document.createElement('div'); el.className = 'kc-sg'; var 칸 = st.상자.querySelector('.kc') || st.상자; 칸.appendChild(el); }
             var 전체폭 = st.상자.clientWidth, 큰 = 전체폭 >= 600;
             var 폭 = Math.max(60, Math.min(큰 ? 170 : 92, Math.floor(판.width * (큰 ? 0.3 : 0.38)), 판.width - 8));
@@ -23621,13 +23655,15 @@
             var 잔 = x.b != null ? '<div class="sg-q' + (x.h > 10 ? ' sg-old' : '') + '" title="호가 잔량 합계 (매수 · 매도) · 큰 주문이 걸렸다 빠지면 크게 바뀜 (참고)">' + (큰 ? '<em>잔량</em> ' : '') +
                       '<b class="sg-bq' + (x.b >= x.a ? ' sg-hi' : '') + '">' + 수급_수(x.b) + '</b><em>/</em><b class="sg-aq' + (x.a > x.b ? ' sg-hi' : '') + '">' + 수급_수(x.a) + '</b></div>' : '';
             var fx = 체결_가져오기(st.종목), fq = fx ? 체결_정리(fx) : null, 수 = fq ? 매매비_수준(fq) : null, 지 = 지수상태(st.종목), 시v = 시장흐름_값();
-            var 배글 = 수 && 수.b != null ? (수.b >= 10 ? 수.b.toFixed(0) : 수.b.toFixed(1)) + '배' : '';
+            var 배글 = 수 && 수.b != null ? (수.b >= 10 ? 수.b.toFixed(0) : 수.b.toFixed(1)) + '배' : '', 전배 = fq ? 배수_1분전(st.종목, fq, fx.시각 || 0) : null;
             if (큰) {   // 큰 칸: 막대 왼쪽 한 줄 = QQQ ▼0.08% · 관심종목 ▲14 ▼28 · 평균대비 2.0배
-                var 줄 = '<b class="' + 지.반 + '">' + 지.글 + '</b>' + (시v ? '<i>·</i>관심종목 <b class="up">▲' + (시v.b || 0) + '</b> <b class="dn">▼' + (시v.d || 0) + '</b>' : '') + (배글 ? '<i>·</i>평균대비 <b class="lv' + 수.lv + '">' + 배글 + '</b>' : '');
+                var 줄 = '<b class="' + 지.반 + '">' + 지.글 + '</b>' + 전값_지수(지) + (시v ? '<span class="cx2"><i>·</i>' + 관심흐름글(시v, true) + '</span>' : '') + (배글 ? '<span class="cx2"><i>·</i>평균대비 <b class="lv' + 수.lv + '">' + 배글 + '</b>' + 전값_배수(수.b, 전배) + '</span>' : '');
                 막대 = '<span class="sg-ctx">' + 줄 + '</span>' + 막대;
             } else if (수 && 수.b != null) 막대 = '<span class="sg-vl lv' + 수.lv + '">' + 배글.replace('배', 'x') + '</span>' + 막대;
-            var 도움 = [st.종목 + ' 최근 1분 매수 ' + (m == null ? '─' : 매 + '%') + (배글 ? ' · 거래 평균대비 ' + 배글 + (수.적음 ? ' (적음 · 참고)' : '') : ''),
-                       지.p != null ? 지.지 + ' 최근 1분 ' + (지.p >= 0 ? '+' : '') + 지.p.toFixed(2) + '%' : '', 시v ? '관심종목 매수 우위 ▲' + (시v.b || 0) + '개 · 매도 우위 ▼' + (시v.d || 0) + '개' : ''].filter(Boolean).join('\n');
+            var 시전 = 시장흐름_1분전(), 지전 = 지수_1분전(지.지);
+            var 도움 = [st.종목 + ' 최근 1분 매수 ' + (m == null ? '─' : 매 + '%') + (배글 ? ' · 거래 평균대비 ' + 배글 + (수.적음 ? ' (적음 · 참고)' : '') + (전배 != null ? ' · 1분 전 ' + 배수글짧게(전배) : '') : ''),
+                       지전 != null ? '1분 전 ' + 지.지 + ' 3분 ' + 지수글(지전) + (시전 ? ' · 관심종목 ▲' + (시전.b || 0) + ' ▼' + (시전.d || 0) : '') : '',
+                       지.p != null ? 지.지 + ' 최근 ' + 지.분 + ' ' + (지.p >= 0 ? '+' : '') + 지.p.toFixed(2) + '%' : '', 시v ? '관심종목 매수 우위 ▲' + (시v.b || 0) + '개 · 매도 우위 ▼' + (시v.d || 0) + '개' : ''].filter(Boolean).join('\n');
             var m5 = '';
             var h = 막대 + m5 + 잔;
             var 반 = 'kc-sg' + (큰 ? ' sg-big' : '') + (수 && 수.적음 ? ' sg-dim' : ''), 꼴 = 'display:block;width:' + 폭 + 'px;left:' + Math.max(2, Math.round(판.width - 폭 - 3)) + 'px;top:3px;';
@@ -23636,9 +23672,19 @@
             if (el._꼴 !== 꼴) { el.style.cssText = 꼴; el._꼴 = 꼴; }
             if (el._h !== h) { el.innerHTML = h; el._h = h; }
             if (el.title !== 도움) el.title = 도움;
+            // 큰 칸 시장 흐름 줄이 왼쪽 '최고' 이름표나 차트 왼쪽 끝에 닿으면: 괄호(1분 전) 먼저 숨김 → 그래도 닿으면 QQQ 만
+            var cx = 큰 && el.querySelector('.sg-ctx');
+            if (cx) {
+                var 칸r = (el.parentNode || st.상자).getBoundingClientRect(), 태그 = st.상자.querySelector('.kc-hh-tag'), 왼끝 = 칸r.left + 4;
+                function 닿음() { var r = cx.getBoundingClientRect(); if (r.left < 왼끝) return true; if (!태그) return false; var t = 태그.getBoundingClientRect(); return r.left < t.right + 6 && r.bottom > t.top && r.top < t.bottom; }
+                el.classList.remove('sg-np', 'sg-min');
+                if (닿음()) { el.classList.add('sg-np'); if (닿음()) el.classList.add('sg-min'); }
+            }
             if (!바뀜) return;   // 그대로면 높이 재기(화면 다시 계산)도 안 함
             var 높 = el.offsetHeight + 3;
-            if (Math.abs((st.수급높이 || 0) - 높) > 1) { st.수급높이 = 높; if (st.위끝) 키움차트_라벨예약(st); }   // 이름표 다시 그리기는 위쪽 끝 이름표가 있을 때만
+            if (Math.abs((st.수급높이 || 0) - 높) > 1) st.수급높이 = 높;
+            var 폭키 = 높 + '|' + 꼴 + '|' + ((el.querySelector('.sg-ctx') || {}).offsetWidth || 0);
+            if (st.수급폭키 !== 폭키) { st.수급폭키 = 폭키; 키움차트_라벨예약(st); }   // 수급 칸 자리·크기가 바뀌면 겹치는 이름표를 다시 비켜 놓음
         }
         function 키움차트_모두재요청() { Object.keys(K차트).forEach(function (i) { var st = K차트[i]; if (st && !st.닫힘 && st.chart) 키움차트_요청(st); }); }
         // 화면이 1분 넘게 가려졌다 다시 보이면 봉을 다시 받음 (그동안 받지 못한 체결 보충)
@@ -24167,6 +24213,10 @@
                 return { 대표: 목[0], 글: 이름.slice(0, 2).join(' · ') + (이름.length > 2 ? ' 외 ' + (이름.length - 2) : '') };   // 2개까지 · 나머지는 마우스로
             }
             var h = '', 아래끝 = -99;
+            // 오른쪽 위 수급 칸(대시보드2)과 겹치는 이름표 = 같은 높이 그대로 두고 수급 칸 왼쪽으로 비켜 놓음 (큰 칸은 맨 윗줄 시장 흐름 글자까지 피함)
+            var 수자리 = null;
+            if (st.수급높이) { try { var sgEl = st.상자.querySelector('.kc-sg'), 상R = (층.parentNode || st.상자).getBoundingClientRect(); if (sgEl && sgEl.style.display !== 'none') { var bR = sgEl.getBoundingClientRect(), cx = sgEl.querySelector('.sg-ctx'), cR = cx ? cx.getBoundingClientRect() : null; 수자리 = { 위: bR.top - 상R.top, 아래: bR.bottom - 상R.top + 2, r1: Math.round(상R.right - bR.left) + 4, r0: cR ? Math.round(상R.right - cR.left) + 4 : 0, c아래: cR ? cR.bottom - 상R.top + 1 : 0 }; } } catch (e) { } }
+            function 비킴(y) { if (!수자리 || y + 15 <= 수자리.위 || y >= 수자리.아래) return 오른; return 수자리.r0 && y < 수자리.c아래 ? Math.max(수자리.r0, 수자리.r1) : 수자리.r1; }
             묶음.forEach(function (g) {
                 var 합 = 이름합(g.목), y = Math.round(합.대표.y) - 8;
                 if (y < 아래끝 + 1) y = 아래끝 + 1;
@@ -24175,7 +24225,7 @@
                 var 제목 = g.목.map(function (x) { return (x.원 || x.n) + ' ' + 키움_가격글(x.v, 정밀); }).join('\n').replace(/"/g, '&quot;').replace(/</g, '&lt;');
                 var 축 = g.목.some(function (x) { return /^(sr1|plan)$/.test(x.k); }), vw = g.목.filter(function (x) { return x.k === 'vwap'; })[0];   // 가격: 축 꼬리표가 있으면 생략 · VWAP 은 항상
                 var 값 = 작게 ? '' : vw ? ' ' + 키움_가격글(vw.v, 정밀) : 축 ? '' : ' ' + 키움_가격글(합.대표.v, 정밀);
-                h += '<div class="kc-l' + (작게 ? ' kc-s' : '') + '" style="top:' + y + 'px;right:' + 오른 + 'px;' + 꾸밈(합.대표.색) + '" title="' + 제목 + '">' + 합.글 + 값 + '</div>';
+                h += '<div class="kc-l' + (작게 ? ' kc-s' : '') + '" style="top:' + y + 'px;right:' + 비킴(y) + 'px;' + 꾸밈(합.대표.색) + '" title="' + 제목 + '">' + 합.글 + 값 + '</div>';
             });
             function 끝표(목, 위쪽) {
                 if (!목.length) return '';
@@ -28012,7 +28062,7 @@
             if (cw && !document.getElementById('kr-view')) {
                 var v = document.createElement('div'); v.className = 'kr-view'; v.id = 'kr-view';
                 function 카드(id, 제목, 작은, 넓게) { return '<div class="kr-card' + (넓게 ? ' kr-wide' : '') + '"><h4><span id="' + id + '-h">' + 제목 + '</span> <small id="' + id + '-t">' + (작은 || '') + '</small></h4><div id="' + id + '"></div></div>'; }
-                v.innerHTML = 글자바HTML('kr') + '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<div class="sz-brief" id="kr-brief"></div><span class="kr-stat" id="kr-stat"></span><span class="sz-ver">판 2026.10.30c</span></div>' +
+                v.innerHTML = 글자바HTML('kr') + '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<div class="sz-brief" id="kr-brief"></div><span class="kr-stat" id="kr-stat"></span><span class="sz-ver">판 2026.10.30f</span></div>' +
                     '<div class="kr-two" id="kr-two">' +
                     '<div class="kr-pane" data-t="시장">' +
                         카드('kr-pj', '오늘 장 판정', '', 1) +
@@ -29105,7 +29155,7 @@
         function 미만들기() {
             var cw = document.querySelector('.content-wrapper'); if (!cw || document.getElementById('us-tabbar')) return;
             var bar = document.createElement('div'); bar.className = 'us-tabbar'; bar.id = 'us-tabbar';
-            bar.innerHTML = 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + ({ 예측: '예측시장', 일정: '캘린더' }[t] || t) + '</button>'; }).join('') + (격 ? '' : '<div class="sz-brief" id="us-brief"></div>') + '<span class="us-stat" id="us-stat"></span><span class="sz-ver" title="대시보드 파일 판 (데이터 PC · 브라우저가 같은 파일인지 확인용)">판 2026.10.30c</span>';
+            bar.innerHTML = 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + ({ 예측: '예측시장', 일정: '캘린더' }[t] || t) + '</button>'; }).join('') + (격 ? '' : '<div class="sz-brief" id="us-brief"></div>') + '<span class="us-stat" id="us-stat"></span><span class="sz-ver" title="대시보드 파일 판 (데이터 PC · 브라우저가 같은 파일인지 확인용)">판 2026.10.30f</span>';
             // 대시보드2: 차트 자리를 줄이지 않도록 위 시황 줄(미장/국장 단추 옆)에 작게 2줄 / 대시보드1: 차트 위 한 줄
             var tb = document.querySelector('.top-bar'), sw = document.getElementById('mkt-sw');
             if (격 && tb && sw && sw.parentNode === tb) {
