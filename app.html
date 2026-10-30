@@ -1,0 +1,994 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>소싱 스테이션 목업</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: ERP 작업공간 — 상단바 / 좌측 모듈 사이드바 / 멀티탭 본문, 모바일은 하단 탭바 + 드로어. 다크 기본(화물 컨테이너 오렌지 포인트). */
+:root{
+  --bg:#0f1519; --panel:#151d23; --panel2:#1b252c; --line:#26333c; --line2:#31404b;
+  --fg:#dde6eb; --muted:#8798a5; --dim:#5d6f7c;
+  --accent:#e58a3c; --accent-ink:#1a1006; --info:#6ea8d9; --good:#5cbf8c; --warn:#e2c159; --bad:#e3665d;
+  --f-ui:"IBM Plex Sans KR","Noto Sans SC",system-ui,-apple-system,"Malgun Gothic","Microsoft YaHei",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  --bg:#eef2f4; --panel:#ffffff; --panel2:#f5f8f9; --line:#dbe3e8; --line2:#c9d4db;
+  --fg:#16212a; --muted:#5b6c78; --dim:#8695a0;
+  --accent:#c4661c; --accent-ink:#ffffff; --info:#2f6fa8; --good:#23885a; --warn:#a07a12; --bad:#c23c33; color-scheme:light}}
+:root[data-theme="light"]{
+  --bg:#eef2f4; --panel:#ffffff; --panel2:#f5f8f9; --line:#dbe3e8; --line2:#c9d4db;
+  --fg:#16212a; --muted:#5b6c78; --dim:#8695a0;
+  --accent:#c4661c; --accent-ink:#ffffff; --info:#2f6fa8; --good:#23885a; --warn:#a07a12; --bad:#c23c33; color-scheme:light}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{height:100%;box-sizing:border-box}
+body{height:100%;margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 var(--f-ui);overflow:hidden}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num,.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+#stage{height:100%}
+#stage.preview{display:flex;align-items:center;justify-content:center;padding:12px;background:repeating-linear-gradient(135deg,var(--bg) 0 14px,var(--panel2) 14px 28px)}
+#stage.preview .app{width:390px;max-width:100%;height:min(820px,100%);border:1px solid var(--line2);border-radius:28px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+
+.app{position:relative;height:100%;display:grid;grid-template-columns:236px minmax(0,1fr);grid-template-rows:54px minmax(0,1fr);grid-template-areas:"top top" "side main";background:var(--bg);overflow:hidden}
+.top{grid-area:top;display:flex;align-items:center;gap:10px;padding-inline:max(14px,env(safe-area-inset-left,0px)) max(14px,env(safe-area-inset-right,0px));background:var(--panel);border-bottom:1px solid var(--line);min-width:0}
+.brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+.brand .mk{width:26px;height:26px;border-radius:6px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font:600 12px var(--f-mono)}
+.brand small{display:block;font:500 10px var(--f-mono);color:var(--muted);letter-spacing:.08em;margin-top:-3px}
+.srch{position:relative;flex:1;max-width:420px;min-width:0}
+.srch input{width:100%;height:34px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);padding:0 10px 0 34px}
+.srch>svg{position:absolute;left:10px;top:8px;color:var(--muted)}
+.srch .res{position:absolute;top:38px;left:0;right:0;background:var(--panel);border:1px solid var(--line2);border-radius:10px;z-index:40;max-height:340px;overflow:auto;padding:4px}
+.srch .res button{display:flex;width:100%;gap:8px;align-items:center;padding:8px 10px;border:0;background:none;border-radius:6px;text-align:left;cursor:pointer}
+.srch .res button:hover,.srch .res button.on{background:var(--panel2)}
+.srch .res small{color:var(--muted);margin-left:auto;font-size:11px}
+.sp{flex:1}
+.tb-r{display:flex;align-items:center;gap:6px;flex:none}
+.ib{height:34px;min-width:34px;padding:0 9px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;white-space:nowrap}
+.ib:hover{border-color:var(--line2)}
+.ib.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;height:34px}
+.seg button{border:0;background:var(--panel2);padding:0 10px;cursor:pointer;font-size:13px}
+.seg button.on{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.rolesel{height:34px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);padding:0 8px;max-width:170px}
+.collect{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);padding:0 10px;height:34px;border:1px solid var(--line);border-radius:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 0 3px color-mix(in srgb,var(--good) 25%,transparent)}
+.lockchip{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 10px;border-radius:8px;background:color-mix(in srgb,var(--warn) 16%,var(--panel2));border:1px solid color-mix(in srgb,var(--warn) 45%,transparent);color:var(--warn);font-size:12px;cursor:pointer}
+.av{width:32px;height:32px;border-radius:50%;background:var(--panel2);border:1px solid var(--line2);display:grid;place-items:center;font-weight:600;font-size:12px;cursor:pointer}
+
+.side{grid-area:side;background:var(--panel);border-right:1px solid var(--line);overflow:auto;padding:10px 8px 24px}
+.grp{margin-bottom:4px}
+.grp>button{display:flex;align-items:center;gap:9px;width:100%;border:0;background:none;padding:8px 8px;border-radius:7px;cursor:pointer;color:var(--muted);font-size:12px;font-weight:600;letter-spacing:.02em}
+.grp>button:hover{color:var(--fg)}
+.grp>button .cv{margin-left:auto;transition:transform .15s}
+.grp.closed>button .cv{transform:rotate(-90deg)}
+.grp.closed .mis{display:none}
+.mi{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;padding:6px 8px 6px 35px;border-radius:7px;cursor:pointer;text-align:left;font-size:13.5px;color:var(--fg)}
+.mi:hover{background:var(--panel2)}
+.mi.on{background:color-mix(in srgb,var(--accent) 16%,var(--panel2));color:var(--fg);box-shadow:inset 2px 0 0 var(--accent)}
+.mi .tg{margin-left:auto;display:flex;gap:4px;align-items:center}
+.mi .tg svg{width:13px;height:13px;color:var(--warn)}
+.ph{font:600 9.5px var(--f-mono);padding:1px 5px;border-radius:4px;border:1px solid var(--line2);color:var(--muted)}
+.ph.p1{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 50%,transparent)}
+.sidefoot{margin:14px 8px 0;padding:10px;border:1px dashed var(--line2);border-radius:8px;font-size:11.5px;color:var(--muted)}
+
+.main{grid-area:main;display:flex;flex-direction:column;min-width:0;min-height:0}
+.tabs{display:flex;gap:2px;padding:6px 10px 0;border-bottom:1px solid var(--line);background:var(--bg);overflow-x:auto;flex:none;scrollbar-width:thin}
+.tab{display:flex;align-items:center;gap:6px;padding:7px 8px 7px 12px;border:1px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;cursor:pointer;white-space:nowrap;font-size:13px;color:var(--muted);background:none}
+.tab.on{background:var(--panel);border-color:var(--line);color:var(--fg);margin-bottom:-1px}
+.tab .x{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:4px}
+.tab .x:hover{background:var(--panel2)}
+.tab .x svg{width:12px;height:12px}
+.view{flex:1;overflow:auto;padding-block:18px 40px;padding-inline:max(18px,env(safe-area-inset-left,0px)) max(18px,env(safe-area-inset-right,0px));min-width:0}
+
+.mh{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 16px;margin-bottom:12px}
+.crumb{font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.mh h1{font-size:22px;line-height:1.25;margin:2px 0 0;letter-spacing:-.015em;text-wrap:balance}
+.mh p{margin:4px 0 0;color:var(--muted);max-width:68ch}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.bdg{font-size:11px;padding:3px 8px;border-radius:99px;border:1px solid var(--line2);color:var(--muted);display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.bdg.acc{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 50%,transparent)}
+.bdg.wrn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 50%,transparent)}
+.bdg svg{width:12px;height:12px}
+.subs{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 16px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.subs button{border:1px solid var(--line);background:var(--panel);border-radius:99px;padding:6px 13px;cursor:pointer;font-size:13px;color:var(--muted)}
+.subs button.on{background:var(--fg);color:var(--bg);border-color:var(--fg);font-weight:600}
+.subs .lbl{font:600 10.5px var(--f-mono);color:var(--dim);letter-spacing:.08em;align-self:center;margin-right:4px}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0}
+.card h3{margin:0 0 10px;font-size:13.5px;display:flex;align-items:center;gap:8px}
+.card h3 small{color:var(--muted);font-weight:400;margin-left:auto;font-size:11.5px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.gl{display:grid;grid-template-columns:260px minmax(0,1fr);gap:14px;align-items:start}
+.stack{display:flex;flex-direction:column;gap:14px;min-width:0}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0}
+.kpi .l{font-size:12px;color:var(--muted)}
+.kpi .v{font:600 22px var(--f-mono);margin-top:4px;letter-spacing:-.02em}
+.kpi .d{font:500 11.5px var(--f-mono);margin-top:2px}
+.up{color:var(--good)} .dn{color:var(--bad)}
+
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.tools input,.tools select,.fld input,.fld select{height:34px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);padding:0 10px;min-width:0}
+.tools .q{flex:1;min-width:140px;max-width:300px}
+.btn{height:34px;padding:0 12px;border-radius:8px;border:1px solid var(--line2);background:var(--panel2);cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-size:13px}
+.btn:hover{border-color:var(--muted)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn svg{width:15px;height:15px}
+.fchip{font-size:12px;padding:4px 10px;border-radius:99px;background:var(--panel2);border:1px solid var(--line);color:var(--muted)}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+table.tb{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
+.tb th{text-align:left;font-weight:600;font-size:11.5px;color:var(--muted);padding:9px 12px;border-bottom:1px solid var(--line);background:var(--panel2);white-space:nowrap;position:sticky;top:0}
+.tb td{padding:8px 12px;border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:middle}
+.tb tr:last-child td{border-bottom:0}
+.tb tbody tr:hover td{background:color-mix(in srgb,var(--panel2) 70%,transparent)}
+.tb tr.click{cursor:pointer}
+.tb .r{text-align:right}
+.kw{display:flex;flex-direction:column;line-height:1.25}
+.kw small{color:var(--dim);font-size:11px}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;padding:2px 8px;border-radius:99px;background:var(--panel2);border:1px solid var(--line2);white-space:nowrap}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--muted)}
+.pill.good::before{background:var(--good)} .pill.warn::before{background:var(--warn)} .pill.bad::before{background:var(--bad)} .pill.info::before{background:var(--info)} .pill.acc::before{background:var(--accent)}
+.mask{display:inline-flex;align-items:center;gap:4px;color:var(--dim);font-family:var(--f-mono)}
+.mask svg{width:12px;height:12px}
+.bar{height:6px;border-radius:9px;background:var(--panel2);overflow:hidden;min-width:60px}
+.bar>i{display:block;height:100%;background:var(--accent);border-radius:9px}
+.scorec{display:flex;align-items:center;gap:8px}
+.scorec .num{width:24px;text-align:right}
+.hbars{display:flex;flex-direction:column;gap:9px}
+.hb{display:grid;grid-template-columns:minmax(90px,170px) minmax(0,1fr) 64px;gap:10px;align-items:center;font-size:12.5px}
+.hb .t{height:12px;border-radius:4px;background:var(--panel2);overflow:hidden}
+.hb .t i{display:block;height:100%;background:var(--accent);border-radius:4px}
+.hb .t i.neg{background:var(--bad)}
+.hb span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+svg.ch{width:100%;height:auto;display:block}
+svg.ch text{font:10.5px var(--f-mono);fill:var(--muted)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:10px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+
+.heat td.h{width:7.5%;text-align:center;font:500 11px var(--f-mono);padding:7px 2px;border-left:1px solid var(--bg)}
+.kanban{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(210px,1fr);gap:12px;overflow-x:auto;padding-bottom:6px}
+.kcol{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px;min-height:260px}
+.kcol h4{margin:0 0 10px;font-size:12.5px;display:flex;justify-content:space-between;color:var(--muted)}
+.kc{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:9px 10px;margin-bottom:8px;font-size:12.5px;cursor:grab}
+.kc b{display:block;font-size:13px;margin-bottom:4px}
+.kc .m{display:flex;justify-content:space-between;color:var(--muted);font-size:11.5px}
+
+.fmap{columns:3 300px;column-gap:14px}
+.fg{break-inside:avoid;margin-bottom:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.fg h3{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:14px}
+.fm{padding:8px 0;border-top:1px solid var(--line)}
+.fm:first-of-type{border-top:0}
+.fm button{border:0;background:none;padding:0;cursor:pointer;font-weight:600;font-size:13px;display:flex;gap:6px;align-items:center;text-align:left}
+.fm button:hover{color:var(--accent)}
+.fm p{margin:2px 0 6px;color:var(--muted);font-size:12px}
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chips span{font-size:11px;padding:2px 7px;border-radius:5px;background:var(--panel2);border:1px solid var(--line);color:var(--muted)}
+.fm.off{opacity:.45}
+
+.fld{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted)}
+.fld input,.fld select{color:var(--fg);width:100%}
+.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.calcout{display:flex;flex-direction:column;gap:8px}
+.calcout .row{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px dashed var(--line)}
+.calcout .big{font:600 30px var(--f-mono);letter-spacing:-.02em}
+
+.switch{position:relative;width:38px;height:22px;flex:none}
+.switch input{opacity:0;width:100%;height:100%;margin:0;position:absolute;cursor:pointer;z-index:1}
+.switch span{position:absolute;inset:0;border-radius:99px;background:var(--line2);transition:.15s}
+.switch span::after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:var(--fg);transition:.15s}
+.switch input:checked+span{background:var(--accent)}
+.switch input:checked+span::after{left:19px;background:var(--accent-ink)}
+.switch input:disabled+span{opacity:.4}
+.mrow{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line);font-size:13px}
+.mrow small{color:var(--muted);display:block;font-size:11.5px}
+.perm{display:flex;gap:3px}
+.perm label{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:5px;border:1px solid var(--line2);font:600 10px var(--f-mono);cursor:pointer;color:var(--dim);user-select:none}
+.perm input{display:none}
+.perm input:checked+label{background:color-mix(in srgb,var(--accent) 22%,var(--panel2));border-color:var(--accent);color:var(--fg)}
+.perm input:disabled+label{cursor:not-allowed}
+.mkt{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.mc{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.mc .zh{font-size:15px;font-weight:700;font-family:"Noto Sans SC",var(--f-ui)}
+.mc .loc{font-size:12px;color:var(--muted)}
+.mc .it{font-size:12.5px}
+.mc .ft{display:flex;gap:6px;margin-top:4px;align-items:center}
+.cq{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 0;border-top:1px solid var(--line)}
+.cq .z{font:700 20px "Noto Sans SC",var(--f-ui)}
+.cq .k{color:var(--muted);font-size:13px}
+.big .cq .z{font-size:30px}
+.scanbox{display:flex;flex-direction:column;align-items:center;gap:12px;padding:26px 16px;border:2px dashed var(--line2);border-radius:14px;text-align:center}
+.scanbox input{width:min(360px,100%);height:48px;font:600 18px var(--f-mono);text-align:center;border-radius:10px;border:1px solid var(--accent);background:var(--panel2)}
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.plan{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.plan.hl{border-color:var(--accent)}
+.plan .pr{font:600 24px var(--f-mono);margin:6px 0 10px}
+.plan ul{margin:0;padding-left:18px;color:var(--muted);font-size:12.5px;display:flex;flex-direction:column;gap:4px}
+.chn{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.tree ul{list-style:none;margin:0;padding-left:16px;border-left:1px dashed var(--line2)}
+.tree>ul{padding-left:0;border:0}
+.tree li{padding:4px 0;font-size:13px}
+.tree li span{color:var(--muted);font-size:11.5px;margin-left:6px}
+.empty{display:flex;flex-direction:column;align-items:center;gap:8px;padding:50px 16px;text-align:center;color:var(--muted)}
+.empty svg{width:40px;height:40px;color:var(--warn)}
+.empty h2{color:var(--fg);margin:0;font-size:18px}
+.note{font-size:12px;color:var(--muted);padding:10px 12px;border-radius:9px;background:var(--panel2);border:1px solid var(--line);margin-top:12px}
+.note b{color:var(--fg)}
+
+.bnav{grid-area:bnav;display:none}
+.scrim{display:none}
+.hamb{display:none}
+
+/* 모바일 레이아웃 (실제 폭 또는 미리보기 모드) */
+.app.is-mobile{grid-template-columns:minmax(0,1fr);grid-template-rows:54px minmax(0,1fr) 62px;grid-template-areas:"top" "main" "bnav"}
+.app.is-mobile .hamb{display:inline-flex}
+.app.is-mobile .srch,.app.is-mobile .collect,.app.is-mobile .dk{display:none}
+.app.is-mobile .brand small{display:none}
+.app.is-mobile .side{position:absolute;z-index:30;top:54px;bottom:0;left:0;width:84%;max-width:320px;transform:translateX(-102%);transition:transform .2s;box-shadow:10px 0 30px rgba(0,0,0,.3)}
+.app.is-mobile.drawer .side{transform:none}
+.app.is-mobile.drawer .scrim{display:block;position:absolute;inset:54px 0 0;background:rgba(0,0,0,.4);z-index:25}
+.app.is-mobile .tabs{display:none}
+.app.is-mobile .view{padding-inline:max(14px,env(safe-area-inset-left,0px)) max(14px,env(safe-area-inset-right,0px))}
+.app.is-mobile .bnav{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--panel);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.app.is-mobile .bnav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10.5px;color:var(--muted);cursor:pointer;min-width:0}
+.app.is-mobile .bnav button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 2px}
+.app.is-mobile .bnav button.on{color:var(--accent)}
+.app.is-mobile .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+.app.is-mobile .g2,.app.is-mobile .g3,.app.is-mobile .gl,.app.is-mobile .form,.app.is-mobile .plans{grid-template-columns:minmax(0,1fr)}
+.app.is-mobile .mh h1{font-size:19px}
+.app.is-mobile .badges{margin-left:0}
+.app.is-mobile .rolesel{max-width:120px}
+.app.is-mobile .mrow{grid-template-columns:minmax(0,1fr) auto}
+.app.is-mobile .mrow .hm{display:none}
+@media (max-width:1100px){.app:not(.is-mobile) .collect{display:none}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.modal{position:fixed;inset:0;background:rgba(5,9,12,.55);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px}
+.dlg{width:min(420px,100%);background:var(--panel);border:1px solid var(--line2);border-radius:16px;padding:22px;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.dlg h2{margin:0 0 6px;font-size:18px;display:flex;gap:8px;align-items:center}
+.dlg h2 svg{color:var(--warn);width:20px;height:20px}
+.dlg p{margin:0 0 14px;color:var(--muted);font-size:13px}
+.pin{display:flex;gap:10px;justify-content:center;margin:12px 0}
+.pin input{width:52px;height:58px;text-align:center;font:600 24px var(--f-mono);border-radius:10px;border:1px solid var(--line2);background:var(--panel2)}
+.dlg .act{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+.err{color:var(--bad);font-size:12.5px;min-height:18px;text-align:center}
+.ulist{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+.ulist button{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);cursor:pointer;text-align:left}
+.ulist button.on{border-color:var(--accent)}
+.ulist small{color:var(--muted);display:block;font-size:11.5px}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:9px 16px;border-radius:10px;font-size:13px;z-index:120;max-width:calc(100% - 32px)}
+.modal[hidden],.toast[hidden],.srch .res[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <div class="app" id="app">
+    <header class="top" id="top"></header>
+    <nav class="side" id="side" aria-label="menu"></nav>
+    <main class="main">
+      <div class="tabs" id="tabs" role="tablist"></div>
+      <div class="view" id="view"></div>
+    </main>
+    <nav class="bnav" id="bnav"></nav>
+    <div class="scrim" id="scrim"></div>
+  </div>
+</div>
+<div class="modal" id="modal" hidden></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* =========================================================
+   1) i18n — 모든 문구는 [한국어, 中文] 쌍으로 관리
+   ========================================================= */
+const UI={
+ app:['소싱 스테이션','采购工作站'], sub:['SOURCING STATION · MOCKUP','SOURCING STATION · MOCKUP'],
+ search:['메뉴·기능 검색  (Ctrl+K)','搜索菜单·功能 (Ctrl+K)'], collecting:['수집 중 2/5','采集中 2/5'],
+ mprev:['모바일','手机'], features:['하위 기능','子功能'], noPerm:['접근 권한이 없습니다','无访问权限'],
+ noPermD:['현재 역할로는 이 메뉴를 볼 수 없습니다. 대표 계정에서 [시스템 › 역할·권한]으로 권한을 줄 수 있습니다.','当前角色无法查看此菜单。可由老板账号在【系统 › 角色·权限】中授权。'],
+ pinT:['민감 정보 잠금','敏感信息已锁定'], pinD:['이 메뉴는 PIN을 다시 입력해야 열립니다. 데모 PIN은 0000입니다.','此菜单需重新输入PIN才能打开。演示PIN为0000。'],
+ unlock:['잠금 해제','解锁'], cancel:['취소','取消'], pinWrong:['PIN이 맞지 않습니다. 다시 입력하세요.','PIN不正确，请重新输入。'],
+ lockNow:['잠금','锁定'], unlocked:['잠금 해제됨','已解锁'],
+ export:['내보내기','导出'], add:['새로 추가','新增'], filters:['필터','筛选'], q:['이 표에서 검색','在此表中搜索'],
+ maskTip:['권한 없음','无权限'], mobileOK:['모바일 지원','支持手机'], sensitive:['민감 · PIN','敏感 · PIN'],
+ dummy:['더미 데이터','演示数据'], more:['전체 메뉴','全部菜单'], logout:['로그아웃','退出登录'], login:['로그인','登录'],
+ loginT:['계정 선택','选择账号'], loginD:['데모용 계정입니다. 비밀번호는 아무 값이나 입력하세요.','演示账号，密码可任意输入。'], pw:['비밀번호','密码'],
+ demoAct:['데모 화면입니다. 실제 버전에서 동작합니다.','演示界面，正式版中可用。'], saved:['저장했습니다','已保存'],
+ offTitle:['꺼진 모듈입니다','模块已关闭'], offD:['[시스템 › 모듈 관리]에서 다시 켤 수 있습니다.','可在【系统 › 模块管理】中重新开启。'],
+ editOnlyOwner:['권한 편집은 대표 역할만 할 수 있습니다.','只有老板角色可以编辑权限。'],
+ phase:['개발 단계','开发阶段'], plan:['요금제','套餐'], core:['핵심(끌 수 없음)','核心(不可关闭)'],
+ open:['열기','打开'], copy:['중국어 복사','复制中文'], copied:['복사했습니다','已复制'], unverified:['방문 미확인','未实地确认'],
+ rows:['건','条'], noRes:['결과가 없습니다','没有结果']
+};
+let S;
+const li=()=>S.lang==='ko'?0:1;
+const t=k=>UI[k]?UI[k][li()]:k;
+const L=a=>Array.isArray(a)?a[li()]:a;
+
+/* =========================================================
+   2) 역할·권한 기본값  (V 보기 / E 수정 / X 내보내기 / D 삭제)
+   ========================================================= */
+const ROLES={owner:['대표','老板'],admin:['관리자','管理员'],md:['MD(상품기획)','MD(商品企划)'],logistics:['물류 담당','物流专员'],accounting:['회계 담당','会计'],agent:['중국 현지 에이전트','中国当地代理']};
+const DEF_PERMS={
+ owner:{home:'VEXD',market:'VEXD',coupang:'VEXD',pipeline:'VEXD',sourcing:'VEXD',product:'VEXD',pricing:'VEXD',channel:'VEXD',order:'VEXD',wh:'VEXD',ads:'VEXD',finance:'VEXD',report:'VEXD',system:'VEXD'},
+ admin:{home:'VEX',market:'VEX',coupang:'VEX',pipeline:'VEXD',sourcing:'VEX',product:'VEXD',pricing:'VEX',channel:'VEX',order:'VEXD',wh:'VEXD',ads:'VEX',report:'VEX',system:'V'},
+ md:{home:'V',market:'VEX',coupang:'VEX',pipeline:'VEXD',sourcing:'VEX',product:'VE',pricing:'VE',report:'V'},
+ logistics:{home:'V',product:'V',channel:'V',order:'VEX',wh:'VEXD'},
+ accounting:{home:'V',pricing:'V',channel:'V',order:'V',finance:'VEX',report:'VEX'},
+ agent:{home:'V',sourcing:'VE'}
+};
+const DEF_FIELDS={owner:['cost','margin'],admin:['cost','margin'],md:['cost','margin'],logistics:[],accounting:['cost','margin'],agent:['cost']};
+const FIELD_LBL={cost:['원가·공급가 보기','查看成本·采购价'],margin:['판매가 대비 마진·이익 보기','查看利润·利润率']};
+const USERS=[
+ {id:'hp',n:['HP','HP'],role:'owner',ini:'HP',last:'10-30 12:41',tfa:true},
+ {id:'kms',n:['김민수','金敏洙'],role:'md',ini:'김',last:'10-30 11:02',tfa:true},
+ {id:'pjh',n:['박지훈','朴志勋'],role:'logistics',ini:'박',last:'10-30 09:15',tfa:false},
+ {id:'lsy',n:['이서연','李瑞妍'],role:'accounting',ini:'이',last:'10-29 18:20',tfa:true},
+ {id:'wl',n:['왕레이','王磊'],role:'agent',ini:'王',last:'10-30 10:47',tfa:false}
+];
+const PHASES={1:['P1 발굴','P1 发掘'],2:['P2 소싱·검증','P2 采购·验证'],3:['P3 상품·채널','P3 商品·渠道'],4:['P4 물류','P4 物流'],5:['P5 광고·정산','P5 广告·结算'],6:['P6 SaaS','P6 SaaS']};
+const PLANS={free:['무료','免费'],pro:['프로','专业版'],biz:['비즈니스','企业版']};
+
+/* =========================================================
+   3) 모듈 매니페스트 — 메뉴·권한·활성화·요금제가 모두 여기서 그려짐
+      새 기능 = 여기에 한 줄 추가
+   ========================================================= */
+const F=(n,tpl,cfg={})=>Object.assign({n,tpl},cfg);
+const M=(id,n,d,o,f)=>Object.assign({id,n,d,f},o);
+const ST1=['rising','stable','new','falling'];
+const GROUPS=[
+{id:'home',n:['홈','首页'],ic:'home',mods:[
+ M('dashboard',['대시보드','仪表盘'],['역할에 맞는 위젯만 보이는 첫 화면','按角色显示组件的首页'],{p:1,m:1,core:1,plan:'free'},[
+  F(['위젯 보드','组件看板'],'dash'),
+  F(['알림 센터','通知中心'],'table',{c:'time ntype msg status',st:['pending','done']}),
+  F(['오늘 할 일','今日待办'],'table',{c:'todo user due status',st:['pending','progress','done']})]),
+ M('featuremap',['전체 기능 맵','全部功能地图'],['모든 모듈과 하위 기능을 한 장으로 보기','一页查看所有模块与子功能'],{p:1,core:1,plan:'free'},[F(['기능 맵','功能地图'],'fmap')])
+]},
+{id:'market',n:['시장분석','市场分析'],ic:'chart',mods:[
+ M('kw-explore',['키워드 탐색','关键词探索'],['계절성·성장률·경쟁도로 수만 개 키워드를 거르는 메인 화면','按季节性·增长·竞争度筛选数万关键词'],{p:1,m:1,plan:'free'},[
+  F(['필터 탐색','筛选探索'],'kwgrid'),
+  F(['저장된 필터','已存筛选'],'table',{c:'fname cond count date user',rows:5}),
+  F(['연관 키워드 확장','相关词扩展'],'table',{c:'seed kw vol comp status',st:['new','stable']})]),
+ M('niche',['니치 상세','细分详情'],['수요·계절·쿠팡 경쟁·소싱처·마진을 한 화면에 모은 허브','汇集需求·季节·竞争·货源·利润的核心页'],{p:1,m:1,plan:'free'},[F(['니치 360°','细分360°'],'niche')]),
+ M('rising',['급상승·신규 키워드','飙升·新词'],['매월 자동 계산되는 성장 키워드와 반짝 유행 경보','每月自动计算增长词与短期热潮预警'],{p:1,m:1,plan:'pro'},[
+  F(['급상승 TOP','飙升榜'],'table',{c:'rank kw vol yoy spark score',sortYoy:1}),
+  F(['신규 등장','新出现'],'table',{c:'kw firstseen vol seed status',st:['new']}),
+  F(['반짝 유행 경보','短期热潮预警'],'table',{c:'kw peakdrop vol verdict'})]),
+ M('season',['시즌 캘린더','季节日历'],['월별 계절지수 히트맵과 발주 권장 시점','月度季节指数热图与建议下单时间'],{p:1,plan:'pro'},[
+  F(['계절지수 히트맵','季节指数热图'],'heat'),
+  F(['발주 캘린더','下单日历'],'table',{c:'kw peak rise orderby lead'})]),
+ M('cat-rank',['카테고리 랭킹','类目排行'],['뜨는 카테고리와 지는 카테고리','上升与下降的类目'],{p:1,plan:'pro'},[
+  F(['성장 카테고리','增长类目'],'bars',{set:'cat'}),
+  F(['카테고리 트리','类目树'],'tree')]),
+ M('universe',['키워드 유니버스','关键词库'],['씨앗 키워드·블랙리스트·규제 사전 관리','管理种子词·黑名单·监管词库'],{p:1,plan:'free'},[
+  F(['씨앗 키워드','种子词'],'table',{c:'seed cat expanded date status',st:['done','progress']}),
+  F(['블랙리스트','黑名单'],'table',{c:'bword reason user date'}),
+  F(['규제 키워드 사전','监管词库'],'table',{c:'rword cert risk'})])
+]},
+{id:'coupang',n:['쿠팡 검증','酷澎验证'],ic:'search',mods:[
+ M('serp',['경쟁 구조 분석','竞争结构分析'],['키워드별 쿠팡 상위 상품의 리뷰·로켓·광고 구조','各关键词酷澎前排商品的评论·火箭·广告结构'],{p:1,plan:'pro'},[
+  F(['검색결과 스냅샷','搜索结果快照'],'table',{c:'rank product price reviews rocket ad'}),
+  F(['경쟁 지표','竞争指标'],'kpibars',{k:[[['리뷰 중앙값(상위10)','前10评论中位数'],'312','-8%'],[['상위3 점유율','前3占比'],'41%','-3%p'],[['신규 진입자','新进入者'],'6/10','+2'],[['주간 순위 교체','周排名变动'],'3.2','+0.4']]})]),
+ M('tracker',['상품 추적','商品追踪'],['후보 상품의 일일 리뷰 증가와 가격 변동','候选商品每日评论增长与价格变化'],{p:1,m:1,plan:'pro'},[
+  F(['리뷰 속도','评论增速'],'line',{set:'reviews',c:'product reviews delta price'}),
+  F(['가격 변동','价格变动'],'table',{c:'product price pchange date'})]),
+ M('estimate',['판매량 추정','销量估算'],['리뷰 작성률 가정치와 실측 보정','评论率假设值与实测校正'],{p:1,plan:'pro'},[
+  F(['추정 설정','估算设置'],'form',{fields:[[['리뷰 작성률(가정)','评论率(假设)'],'2.5 %'],[['내 판매 실측 보정','实测校正'],['켜기','开启']],[['추정 기간','估算周期'],['최근 28일','近28天']],[['표시','显示'],['"추정" 라벨 표시','显示"估算"标签']]]})])
+]},
+{id:'pipeline',n:['후보 관리','候选管理'],ic:'flag',mods:[
+ M('board',['후보 파이프라인','候选看板'],['발굴부터 본판매·탈락까지 칸반으로 관리','从发掘到正式销售·淘汰的看板管理'],{p:2,m:1,plan:'pro'},[F(['칸반 보드','看板'],'kanban')]),
+ M('decisions',['판단 기록·백테스트','决策记录·回测'],['통과·탈락 사유를 남기고 3개월 뒤 적중률 검증','记录通过/淘汰理由，3个月后验证命中率'],{p:2,plan:'pro'},[
+  F(['판단 기록','决策记录'],'table',{c:'kw decision reason user date'}),
+  F(['백테스트 결과','回测结果'],'bars',{set:'backtest'})]),
+ M('watch',['관심 목록','关注列表'],['직원별로 지켜보는 키워드와 상품','员工各自关注的关键词与商品'],{p:2,m:1,plan:'free'},[F(['관심 목록','关注列表'],'table',{c:'kw score user date'})])
+]},
+{id:'sourcing',n:['중국 소싱','中国采购'],ic:'globe',mods:[
+ M('markets',['시장·산업벨트 DB','市场·产业带库'],['품목별 추천 도매시장과 공장 밀집지 (오프라인 조회)','按品类推荐批发市场与工厂集群（可离线）'],{p:2,m:1,plan:'pro'},[
+  F(['전국 도매시장','全国批发市场'],'markets'),
+  F(['우한 상세','武汉详情'],'markets',{wuhan:1}),
+  F(['산업벨트','产业带'],'belts')]),
+ M('suppliers',['공급사','供应商'],['공장·도매상 정보와 거래 평가','工厂·批发商信息与合作评价'],{p:2,plan:'pro'},[
+  F(['공급사 목록','供应商列表'],'table',{c:'supplier city stype moq lead status',st:['active','hold']}),
+  F(['공급사 평가','供应商评分'],'table',{c:'supplier quality delivery comm score'})]),
+ M('quotes',['견적·샘플','报价·样品'],['같은 품목의 견적 비교와 샘플 진행','同品类报价比较与样品进度'],{p:2,plan:'pro'},[
+  F(['견적 비교','报价比较'],'table',{c:'product supplier cost moq lead'}),
+  F(['샘플 추적','样品追踪'],'table',{c:'product supplier date status',st:['pending','transit','arrived','done']})]),
+ M('po',['발주(PO)','采购单'],['발주서 작성과 생산 진행 관리','创建采购单与生产进度管理'],{p:3,plan:'biz'},[
+  F(['발주 목록','采购单列表'],'table',{c:'pono supplier qty cost status',st:['progress','done','pending']}),
+  F(['생산 진행','生产进度'],'table',{c:'pono product progress eta'})]),
+ M('import',['수입·통관','进口·清关'],['선적 추적, HS코드·관세율, 인증 확인','货运追踪、HS编码·关税、认证确认'],{p:3,plan:'biz'},[
+  F(['선적 추적','货运追踪'],'table',{c:'pono smode eta status',st:['transit','customs','arrived']}),
+  F(['HS·관세 조회','HS·关税查询'],'table',{c:'product hs duty cert'}),
+  F(['인증 체크','认证检查'],'table',{c:'product cert risk status',st:['done','pending','warn']})]),
+ M('trip',['출장 플래너','出差计划'],['방문 일정과 시장·공장 방문 기록','行程安排与市场·工厂拜访记录'],{p:2,m:1,plan:'pro'},[
+  F(['출장 일정','出差行程'],'table',{c:'date city place purpose'}),
+  F(['방문 기록','拜访记录'],'table',{c:'date supplier memo user'})]),
+ M('checklist',['현장 체크리스트','现场清单'],['시장 상인에게 보여주는 중국어 질문 카드','给市场商户看的中文问题卡'],{p:2,m:1,plan:'free'},[F(['질문 카드','问题卡'],'checklist')])
+]},
+{id:'product',n:['상품·SKU','商品·SKU'],ic:'box',mods:[
+ M('sku',['상품 마스터','商品主档'],['모든 채널이 공유하는 SKU 원본','所有渠道共用的SKU主数据'],{p:3,plan:'pro'},[
+  F(['SKU 목록','SKU列表'],'table',{c:'sku product option cost price stock'}),
+  F(['옵션·구성','规格·组合'],'table',{c:'sku option bundle stock'})]),
+ M('cost',['원가 관리','成本管理'],['위안 원가·운송·관세를 합친 실제 입고 원가','人民币成本+运费+关税的实际到岸成本'],{p:3,s:1,plan:'pro'},[
+  F(['원가 구성','成本构成'],'bars',{set:'costmix'}),
+  F(['원가 이력','成本历史'],'table',{c:'sku cost fx landed date'})]),
+ M('barcode',['바코드·라벨','条码·标签'],['로켓그로스 바코드 발급과 라벨 템플릿','火箭成长条码生成与标签模板'],{p:4,plan:'biz'},[
+  F(['바코드 발급','条码生成'],'table',{c:'sku barcode product date'}),
+  F(['라벨 템플릿','标签模板'],'form',{fields:[[['라벨 크기','标签尺寸'],['50×30mm','40×20mm']],[['프린터','打印机'],['Zebra ZD421','TSC TE244']],[['표기 항목','标注项'],['상품명·바코드·원산지','品名·条码·原产地']],[['언어','语言'],['한국어','韩语']]]})]),
+ M('compliance',['인증·규제','认证·合规'],['KC·식약처 등 품목별 인증 상태','KC·食药处等品类认证状态'],{p:3,plan:'pro'},[F(['인증 현황','认证现况'],'table',{c:'product cert risk status',st:['done','pending','warn']})])
+]},
+{id:'pricing',n:['마진·가격','利润·定价'],ic:'calc',mods:[
+ M('margin',['마진 계산기','利润计算器'],['위안 원가→로켓그로스 순이익 즉시 계산','人民币成本→火箭成长净利即时计算'],{p:2,m:1,plan:'free'},[F(['계산기','计算器'],'calc')]),
+ M('simulate',['가격 시뮬레이션','价格模拟'],['판매가·광고비 변화에 따른 이익 곡선','售价·广告费变化下的利润曲线'],{p:2,plan:'pro'},[F(['이익 곡선','利润曲线'],'line',{set:'price'})]),
+ M('fees',['수수료 테이블','费率表'],['카테고리별 판매·물류 수수료 (Wing 기준 갱신)','各类目销售·物流费率（按Wing更新）'],{p:2,plan:'pro'},[F(['수수료','费率'],'table',{c:'cat feerate rocketfee date'})])
+]},
+{id:'channel',n:['판매 채널','销售渠道'],ic:'store',mods:[
+ M('connect',['채널 연결','渠道连接'],['쿠팡·스마트스토어·11번가 등 API 연결','连接酷澎·SmartStore·11街等API'],{p:3,plan:'biz'},[F(['연결 현황','连接状态'],'channels')]),
+ M('listing',['상품 등록·연동','商品上架·同步'],['SKU를 채널별 상품으로 등록하고 재고 동기화','将SKU上架到各渠道并同步库存'],{p:3,plan:'biz'},[F(['등록 상품','已上架商品'],'table',{c:'sku channel price stock status',st:['active','pending','hold']})]),
+ M('rocket',['로켓그로스 입고','火箭成长入库'],['입고 요청과 쿠팡 센터 보관 현황','入库申请与酷澎仓储现况'],{p:3,plan:'biz'},[
+  F(['입고 요청','入库申请'],'table',{c:'reqno sku qty eta status',st:['pending','transit','done']}),
+  F(['보관 현황','仓储现况'],'table',{c:'sku stock days storagefee'})])
+]},
+{id:'order',n:['주문·배송','订单·物流'],ic:'truck',mods:[
+ M('orders',['주문 처리','订单处理'],['모든 채널 주문을 한 목록에서 처리','在一个列表中处理所有渠道订单'],{p:3,m:1,plan:'biz'},[F(['주문 목록','订单列表'],'table',{c:'orderno channel product qty price status',st:['pending','progress','shipped']})]),
+ M('invoice',['송장 출력','运单打印'],['택배사 연동 송장 일괄 출력','对接快递公司批量打印运单'],{p:4,plan:'biz'},[
+  F(['출력 대기','待打印'],'table',{c:'orderno carrier tracking status',st:['pending','done']}),
+  F(['택배사 연동','快递对接'],'channels',{set:'carrier'})]),
+ M('returns',['반품·교환','退换货'],['반품 회수와 재입고 처리','退货回收与重新入库'],{p:4,m:1,plan:'biz'},[F(['반품 목록','退货列表'],'table',{c:'orderno product reason status',st:['pending','progress','done']})]),
+ M('cs',['고객 문의(CS)','客服'],['채널 문의를 모아 답변','汇总各渠道咨询并回复'],{p:4,m:1,plan:'biz'},[F(['문의 목록','咨询列表'],'table',{c:'time channel product msg status',st:['pending','done']})])
+]},
+{id:'wh',n:['창고·재고','仓库·库存'],ic:'wh',mods:[
+ M('stock',['재고 현황','库存现况'],['자체 창고 + 쿠팡 센터 재고 통합','自有仓+酷澎仓库存汇总'],{p:4,m:1,plan:'biz'},[F(['재고','库存'],'kpitable',{c:'sku product loc stock safety status',st:['ok','warn','alert'],k:[[['총 SKU','SKU总数'],'128',''],[['부족 SKU','缺货SKU'],'5','+2'],[['재고 금액','库存金额'],'cost',''],[['회전일수','周转天数'],'34','-3']]})]),
+ M('inbound',['입고','入库'],['중국 선적분 입고 검수','中国到货入库验收'],{p:4,m:1,plan:'biz'},[F(['입고 목록','入库列表'],'table',{c:'pono sku qty date status',st:['pending','done']})]),
+ M('outbound',['출고','出库'],['주문·로켓그로스 출고 처리','订单·火箭成长出库处理'],{p:4,m:1,plan:'biz'},[F(['출고 목록','出库列表'],'table',{c:'orderno sku qty loc status',st:['pending','shipped']})]),
+ M('scan',['바코드 스캔','扫码'],['스캐너·휴대폰으로 입출고·실사 처리','用扫码枪·手机处理出入库·盘点'],{p:4,m:1,plan:'biz'},[F(['스캔','扫码'],'scan')]),
+ M('count',['재고 실사','盘点'],['전산 재고와 실물 재고 대조','系统库存与实物库存核对'],{p:4,m:1,plan:'biz'},[F(['실사 결과','盘点结果'],'table',{c:'sku loc stock counted diff',st:['matched','diff']})]),
+ M('location',['로케이션','库位'],['선반·칸 위치 관리','货架·格位管理'],{p:4,plan:'biz'},[F(['로케이션','库位'],'table',{c:'loc sku stock'})])
+]},
+{id:'ads',n:['광고·마케팅','广告·营销'],ic:'mega',mods:[
+ M('ads-perf',['광고 성과','广告效果'],['쿠팡 광고 ROAS와 키워드별 효율','酷澎广告ROAS与关键词效率'],{p:5,plan:'biz'},[F(['성과','效果'],'line',{set:'roas',c:'kw adspend roas clicks'})]),
+ M('reviewer',['체험단','体验团'],['공식 체험단 진행 관리 (리뷰 조작 금지)','官方体验团管理（禁止刷评）'],{p:5,plan:'biz'},[F(['진행 현황','进行状况'],'table',{c:'product qty date status',st:['progress','done']})]),
+ M('reviews',['리뷰 분석','评论分析'],['경쟁 상품 부정 리뷰 → 공장 개선 포인트','竞品差评→工厂改进点'],{p:5,plan:'pro'},[
+  F(['부정 리뷰 키워드','差评关键词'],'bars',{set:'neg'}),
+  F(['리뷰 원문','评论原文'],'table',{c:'product rating rtext date'})])
+]},
+{id:'finance',n:['정산·자금','结算·资金'],ic:'wallet',mods:[
+ M('settle',['마켓 정산 대조','平台结算对账'],['채널 정산금과 주문 금액 자동 대조','渠道结算款与订单金额自动核对'],{p:5,s:1,plan:'biz'},[F(['정산 대조','结算对账'],'table',{c:'date channel amount fee payout status',st:['matched','diff']})]),
+ M('pnl',['손익(P&L)','损益'],['SKU·월별 손익','按SKU·月份的损益'],{p:5,s:1,plan:'biz'},[F(['손익','损益'],'kpibars',{set:'pnl',k:[[['매출','销售额'],'margin',''],[['매출원가','销售成本'],'margin',''],[['광고비','广告费'],'margin',''],[['순이익','净利润'],'margin','']]})]),
+ M('cashflow',['자금 흐름','现金流'],['입금 예정·지출 예정·잔고 예측','预计收入·支出·余额预测'],{p:5,s:1,plan:'biz'},[F(['자금 흐름','现金流'],'line',{set:'cash',c:'date item amount status',st:['paid','unpaid']})]),
+ M('expense',['지출 관리','支出管理'],['물류·광고·발주 대금 지출 기록','物流·广告·采购款支出记录'],{p:5,s:1,plan:'biz'},[F(['지출 목록','支出列表'],'table',{c:'date expcat amount user status',st:['paid','unpaid']})]),
+ M('fx',['환율·대중 송금','汇率·对华付款'],['위안화 송금 기록과 환율 추이','人民币付款记录与汇率走势'],{p:5,s:1,plan:'biz'},[F(['송금 기록','付款记录'],'table',{c:'date supplier amountcny fx amount status',st:['paid','pending']})]),
+ M('tax',['부가세 자료','增值税资料'],['분기별 매출·매입 자료 정리','按季度整理销项·进项资料'],{p:5,s:1,plan:'biz'},[F(['부가세','增值税'],'table',{c:'quarter amount vat status',st:['done','pending']})])
+]},
+{id:'report',n:['리포트','报表'],ic:'report',mods:[
+ M('weekly',['주간 리포트','周报'],['매주 자동 생성되는 니치 랭킹·변화 요약','每周自动生成的细分排名·变化摘要'],{p:2,m:1,plan:'pro'},[F(['이번 주','本周'],'kpitable',{c:'rank kw score yoy status',st:ST1,k:[[['신규 후보','新候选'],'7','+3'],[['점수 상승','评分上升'],'18','+5'],[['탈락','淘汰'],'4','-1'],[['수집 키워드','采集关键词'],'12,480','+640']]})]),
+ M('custom',['커스텀 리포트','自定义报表'],['원하는 지표를 골라 리포트 만들기','自选指标生成报表'],{p:6,plan:'biz'},[F(['리포트 만들기','创建报表'],'form',{fields:[[['데이터','数据'],['키워드','关键词']],[['기간','期间'],['최근 12개월','近12个月']],[['지표','指标'],['검색량·CV·성장률','搜索量·CV·增长率']],[['보내기','发送'],['매주 월요일','每周一']]]})])
+]},
+{id:'system',n:['시스템','系统'],ic:'gear',mods:[
+ M('collector',['수집기 관리','采集器管理'],['API 한도·작업 큐·스케줄·로그','API额度·任务队列·计划·日志'],{p:1,plan:'free'},[
+  F(['API 한도','API额度'],'quota'),
+  F(['작업 큐','任务队列'],'table',{c:'job progress eta status',st:['progress','pending','done']}),
+  F(['스케줄','计划'],'table',{c:'job cron next status',st:['active','inactive']}),
+  F(['로그','日志'],'table',{c:'time job msg status',st:['ok','warn','alert']})]),
+ M('sys-modules',['모듈 관리','模块管理'],['기능 켜기/끄기, 단계·요금제 확인','开关功能，查看阶段·套餐'],{p:1,core:1,plan:'free'},[F(['모듈','模块'],'modules')]),
+ M('roles',['역할·권한','角色·权限'],['역할 × 모듈 권한 매트릭스와 민감 필드','角色×模块权限矩阵与敏感字段'],{p:1,s:1,core:1,plan:'free'},[F(['권한 매트릭스','权限矩阵'],'roles')]),
+ M('users',['사용자','用户'],['직원 계정과 역할 지정','员工账号与角色分配'],{p:1,core:1,plan:'free'},[F(['사용자','用户'],'users')]),
+ M('security',['보안','安全'],['PIN·자동 잠금·민감 메뉴·로그인 기록','PIN·自动锁定·敏感菜单·登录记录'],{p:1,s:1,core:1,plan:'free'},[F(['보안 설정','安全设置'],'security'),F(['로그인 기록','登录记录'],'table',{c:'time user device ip status',st:['ok','alert']})]),
+ M('audit',['감사 로그','审计日志'],['누가 언제 무엇을 보고·수정·내보냈는지','谁何时查看·修改·导出了什么'],{p:1,plan:'pro'},[F(['감사 로그','审计日志'],'table',{c:'time user action module'})]),
+ M('integrations',['연동·API 키','接口·密钥'],['네이버·쿠팡 등 API 키 (암호화 저장)','Naver·酷澎等API密钥（加密保存）'],{p:1,s:1,plan:'free'},[F(['API 키','API密钥'],'table',{c:'service keymask status date',st:['active','inactive']})]),
+ M('general',['일반 설정','常规设置'],['언어·테마·시작 화면','语言·主题·起始页'],{p:1,core:1,plan:'free'},[F(['일반','常规'],'general')]),
+ M('license',['라이선스·요금제','许可·套餐'],['설치형 판매·SaaS 전환 대비 요금제 구조','为安装版销售·SaaS准备的套餐结构'],{p:6,plan:'free'},[F(['요금제','套餐'],'plans')])
+]}
+];
+const MODS={};GROUPS.forEach(g=>g.mods.forEach(m=>{m.g=g;MODS[m.id]=m}));
+
+/* =========================================================
+   4) 더미 데이터 — 키워드는 계절 패턴을 가진 시계열로 생성해서 화면끼리 숫자가 맞게
+   ========================================================= */
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let x=Math.imul(seed^seed>>>15,1|seed);x=x+Math.imul(x^x>>>7,61|x)^x;return((x^x>>>14)>>>0)/4294967296}}
+const hs=s=>{let h=2166136261;for(const c of s)h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0};
+const pick=(R,a)=>a[Math.floor(R()*a.length)];
+const ri=(R,a,b)=>Math.floor(a+R()*(b-a+1));
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+const MON=[['1월','1月'],['2월','2月'],['3월','3月'],['4월','4月'],['5월','5月'],['6월','6月'],['7월','7月'],['8월','8月'],['9월','9月'],['10월','10月'],['11월','11月'],['12월','12月']];
+const KWRAW=[
+ ['냄비뚜껑 거치대','锅盖架','flat',.8,0,9800,'주방용품'],['욕실 수납선반','浴室置物架','flat',.05,0,21000,'욕실용품'],
+ ['싱크대 배수구 거름망','水槽过滤网','flat',.28,0,16500,'주방용품'],['문틈 바람막이','门缝挡风条','winter',.15,0,7400,'생활용품'],
+ ['차량용 컵홀더','车载杯架','flat',.1,0,8800,'자동차용품'],['케이블 정리함','理线盒','flat',.36,0,6900,'생활용품'],
+ ['압축봉 행거','伸缩杆衣架','flat',.2,0,12400,'생활용품'],['서랍 칸막이','抽屉隔板','flat',.47,0,5600,'생활용품'],
+ ['신발 정리대','鞋架','flat',.07,0,18800,'생활용품'],['접이식 빨래건조대','折叠晾衣架','flat',-.12,0,24500,'생활용품'],
+ ['모니터 받침대','显示器增高架','flat',.31,0,11200,'사무용품'],['다용도 후크','多用途挂钩','flat',.12,0,9300,'생활용품'],
+ ['휴대용 선풍기','便携风扇','summer',.05,1,64000,'계절가전'],['무릎담요','膝盖毯','winter',.02,0,15800,'생활용품'],
+ ['캠핑 의자','露营椅','springfall',-.06,0,27000,'캠핑'],['방풍 비닐','防风膜','winter',.1,0,8200,'생활용품'],
+ ['장우산 꽂이','伞架','rainy',.06,0,4300,'생활용품'],['차량용 햇빛가리개','车用遮阳挡','summer',.04,0,13500,'자동차용품']];
+const CATZH={'주방용품':'厨房用品','욕실용품':'浴室用品','생활용품':'生活用品','자동차용품':'汽车用品','사무용품':'办公用品','계절가전':'季节家电','캠핑':'露营'};
+function sIdx(type,m){const c=(p,w)=>Math.exp(-Math.pow(Math.min(Math.abs(m-p),12-Math.abs(m-p))/w,2));
+ if(type==='summer')return .35+2.9*c(6,1.3);if(type==='winter')return .4+2.2*c(11.3,1.6);
+ if(type==='springfall')return .55+1.3*c(4.5,1)+1.1*c(9.3,1);if(type==='rainy')return .7+1.4*c(6.5,1);return 1+.07*Math.sin(m/1.9)}
+const KWD=KWRAW.map((a,i)=>{const R=rng(i*97+5);const [ko,zh,type,g,reg,base,cat]=a;
+ const series=[];for(let k=0;k<36;k++){const m=(k+10)%12;series.push(base*sIdx(type,m)*Math.pow(1+g,(k-35)/12)*(.93+R()*.14))}
+ const last=series.slice(-12),mean=last.reduce((s,v)=>s+v,0)/12,sd=Math.sqrt(last.reduce((s,v)=>s+(v-mean)**2,0)/12);
+ const cv=sd/mean, prevY=series.slice(-24,-12).reduce((s,v)=>s+v,0)/12, yoy=(mean/prevY-1);
+ const idx=Array.from({length:12},(_,m)=>sIdx(type,m)/(Array.from({length:12},(_,q)=>sIdx(type,q)).reduce((s,v)=>s+v,0)/12));
+ const peak=idx.indexOf(Math.max(...idx)); let rise=peak;while(idx[(rise+11)%12]>1.05&&rise!==(peak+1)%12)rise=(rise+11)%12;
+ const revMed=Math.round((g>.3?120:400)+R()*(g>.3?400:9000)), newRatio=Math.max(0,Math.min(10,Math.round((g>.25?5:1)+R()*4)));
+ let score=Math.round(100*(.3*Math.max(0,1-cv/1.2)+.3*Math.min(1,Math.max(0,(yoy+.1)/.9))+.2*Math.max(0,1-revMed/10000)+.2*newRatio/10));
+ if(reg)score=Math.round(score*.4);
+ return {i,ko,zh,type,g,reg,vol:Math.round(mean/10)*10,cv,yoy,idx,peak,rise,revMed,newRatio,score,series,cat}});
+const KWS=[...KWD].sort((a,b)=>b.score-a.score);
+const SUPP=['义乌市佳美日用品有限公司','台州黄岩宏达塑料厂','阳江市利刃五金制品厂','宁波顺通家居用品','永康市鑫达工具厂','临沂汇丰小商品','深圳市创联电子','余姚市美居塑业'];
+const CITY=[['이우','义乌'],['타이저우','台州'],['양장','阳江'],['닝보','宁波'],['융캉','永康'],['린이','临沂'],['선전','深圳'],['위야오','余姚']];
+const PSUF=[['프리미엄','高级款'],['2단','两层'],['대형','大号'],['슬림','纤薄款'],['스테인리스','不锈钢']];
+const STATUS={rising:['상승','上升','good'],stable:['안정','稳定','info'],new:['신규','新','acc'],falling:['하락','下降','bad'],pending:['대기','待处理','warn'],progress:['진행중','进行中','info'],done:['완료','完成','good'],hold:['보류','暂缓',''],fail:['탈락','淘汰','bad'],ok:['정상','正常','good'],warn:['주의','注意','warn'],alert:['경고','警告','bad'],shipped:['출고','已发货','good'],transit:['운송중','运输中','info'],customs:['통관중','清关中','warn'],arrived:['도착','已到达','good'],paid:['지급완료','已付款','good'],unpaid:['미지급','未付款','warn'],matched:['일치','一致','good'],diff:['차이','有差异','bad'],active:['사용중','启用','good'],inactive:['중지','停用','']};
+const pill=k=>{const s=STATUS[k]||[k,k,''];return `<span class="pill ${s[2]}">${L(s)}</span>`};
+const kwCell=k=>`<span class="kw">${L([k.ko,k.zh])}${li()?`<small>${k.ko}</small>`:''}</span>`;
+const mask=()=>`<span class="mask" title="${t('maskTip')}">${ic('lock')}••••</span>`;
+const krw=n=>'₩'+fmt(n), cny=n=>'¥'+n.toFixed(2);
+const pct=(v,d=0)=>`<span class="num ${v>=0?'up':'dn'}">${v>=0?'+':''}${(v*100).toFixed(d)}%</span>`;
+function spark(vals,w=84,h=24){const mx=Math.max(...vals),mn=Math.min(...vals),sx=w/(vals.length-1),sy=v=>h-3-(v-mn)/(mx-mn||1)*(h-6);
+ const pts=vals.map((v,i)=>`${(i*sx).toFixed(1)},${sy(v).toFixed(1)}`).join(' ');const lx=(vals.length-1)*sx;
+ return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="1.6"/><circle cx="${lx}" cy="${sy(vals[vals.length-1])}" r="2.4" fill="var(--accent)"/></svg>`}
+const scoreBar=s=>`<span class="scorec"><span class="num">${s}</span><span class="bar" style="width:70px"><i style="width:${s}%"></i></span></span>`;
+const dt=(R)=>`2026-${String(ri(R,8,10)).padStart(2,'0')}-${String(ri(R,1,28)).padStart(2,'0')}`;
+const tm=(R)=>`10-${String(ri(R,24,30))} ${String(ri(R,8,19)).padStart(2,'0')}:${String(ri(R,0,59)).padStart(2,'0')}`;
+const prod=(R,i)=>{const k=KWD[i%KWD.length],s=PSUF[ri(R,0,PSUF.length-1)];return `<span class="kw">${L([k.ko,k.zh])} ${L(s)}${li()?`<small>${k.ko}</small>`:''}</span>`};
+const usr=R=>L(pick(R,USERS).n);
+const CHN=[['쿠팡','酷澎'],['스마트스토어','SmartStore'],['11번가','11街']];
+
+/* 컬럼 사전: [헤더, 생성함수, 정렬(r), 민감필드] — 표는 컬럼 키 목록만 적으면 됨 */
+const COLS={
+ kw:[['키워드','关键词'],(R,i,k)=>kwCell(k)], vol:[['월 검색량','月搜索量'],(R,i,k)=>`<span class="num">${fmt(k.vol)}</span>`,'r'],
+ yoy:[['전년 대비','同比'],(R,i,k)=>pct(k.yoy),'r'], cv:[['CV','CV'],(R,i,k)=>`<span class="num">${k.cv.toFixed(2)}</span>`,'r'],
+ spark:[['12개월 추이','12个月走势'],(R,i,k)=>spark(k.series.slice(-12))], peak:[['피크월','高峰月'],(R,i,k)=>L(MON[k.peak])],
+ rise:[['상승 시작','起涨月'],(R,i,k)=>L(MON[k.rise])], orderby:[['발주 권장','建议下单'],(R,i,k)=>`<b>${L(MON[(k.rise+9)%12])}</b>`],
+ lead:[['리드타임','交期'],(R)=>`<span class="num">${ri(R,25,75)}${li()?'天':'일'}</span>`,'r'],
+ revMed:[['상위10 리뷰 중앙값','前10评论中位数'],(R,i,k)=>`<span class="num">${fmt(k.revMed)}</span>`,'r'],
+ newRatio:[['신규 진입자','新进入者'],(R,i,k)=>`<span class="num">${k.newRatio}/10</span>`,'r'],
+ score:[['니치 점수','细分评分'],(R,i,k)=>scoreBar(k.score)],
+ comp:[['경쟁도','竞争度'],(R)=>pill(pick(R,['ok','warn','alert'])).replace(/정상|正常/,L(['낮음','低'])).replace(/주의|注意/,L(['중간','中'])).replace(/경고|警告/,L(['높음','高']))],
+ status:[['상태','状态'],(R,i,k,f)=>pill(pick(R,f.st||ST1))], rank:[['순위','排名'],(R,i)=>`<span class="num">${i+1}</span>`,'r'],
+ product:[['상품','商品'],(R,i)=>prod(R,i)], price:[['판매가','售价'],(R)=>`<span class="num">${krw(ri(R,9,49)*1000-100)}</span>`,'r'],
+ reviews:[['리뷰 수','评论数'],(R)=>`<span class="num">${fmt(ri(R,20,9000))}</span>`,'r'], delta:[['일 증가','日增'],(R)=>`<span class="num up">+${ri(R,0,38)}</span>`,'r'],
+ rocket:[['로켓','火箭'],(R)=>R()>.35?pill('active').replace(/사용중|启用/,L(['로켓','火箭'])):'—'], ad:[['광고','广告'],(R)=>R()>.6?'AD':'—'],
+ pchange:[['변동','变动'],(R)=>pct((R()-.55)*.2,1),'r'],
+ supplier:[['공급사','供应商'],(R,i)=>`<span style="font-family:'Noto Sans SC'">${SUPP[i%SUPP.length]}</span>`], city:[['도시','城市'],(R,i)=>L(CITY[i%CITY.length])],
+ stype:[['유형','类型'],(R)=>L(pick(R,[['공장','工厂'],['도매상','批发商'],['무역회사','贸易公司']]))],
+ cost:[['원가(¥)','成本(¥)'],(R)=>`<span class="num">${cny(ri(R,300,4500)/100)}</span>`,'r','cost'],
+ landed:[['입고원가','到岸成本'],(R)=>`<span class="num">${krw(ri(R,25,110)*100)}</span>`,'r','cost'],
+ fx:[['환율','汇率'],(R)=>`<span class="num">${(188+R()*8).toFixed(1)}</span>`,'r'],
+ moq:[['MOQ','起订量'],(R)=>`<span class="num">${fmt(ri(R,1,20)*100)}</span>`,'r'], qty:[['수량','数量'],(R)=>`<span class="num">${fmt(ri(R,1,60)*10)}</span>`,'r'],
+ sku:[['SKU','SKU'],(R,i)=>`<span class="mono">SS-${String(1001+i*7)}</span>`], option:[['옵션','规格'],(R)=>L(pick(R,[['화이트','白色'],['그레이','灰色'],['블랙','黑色'],['2개입','2只装']]))],
+ bundle:[['구성','组合'],(R)=>L(pick(R,[['단품','单品'],['2+1 세트','2+1套装'],['리필 포함','含替换装']]))],
+ stock:[['재고','库存'],(R)=>`<span class="num">${fmt(ri(R,0,900))}</span>`,'r'], safety:[['안전재고','安全库存'],(R)=>`<span class="num">${ri(R,5,12)*10}</span>`,'r'],
+ counted:[['실사 수량','盘点数'],(R)=>`<span class="num">${fmt(ri(R,0,900))}</span>`,'r'], diff:[['차이','差异'],(R)=>{const d=R()>.7?ri(R,-6,3):0;return `<span class="num ${d<0?'dn':''}">${d}</span>`},'r'],
+ margin:[['마진율','利润率'],(R)=>`<span class="num">${(12+R()*24).toFixed(1)}%</span>`,'r','margin'],
+ amount:[['금액','金额'],(R)=>`<span class="num">${krw(ri(R,30,980)*10000)}</span>`,'r','margin'],
+ amountcny:[['위안 금액','人民币金额'],(R)=>`<span class="num">¥${fmt(ri(R,8,90)*1000)}</span>`,'r','cost'],
+ fee:[['수수료','手续费'],(R)=>`<span class="num">${krw(ri(R,3,90)*10000)}</span>`,'r','margin'], payout:[['지급액','支付额'],(R)=>`<span class="num">${krw(ri(R,30,900)*10000)}</span>`,'r','margin'],
+ vat:[['부가세','增值税'],(R)=>`<span class="num">${krw(ri(R,10,90)*10000)}</span>`,'r','margin'],
+ storagefee:[['보관료','仓储费'],(R)=>`<span class="num">${krw(ri(R,2,60)*1000)}</span>`,'r','margin'], days:[['보관일수','仓储天数'],(R)=>`<span class="num">${ri(R,5,120)}</span>`,'r'],
+ user:[['담당자','负责人'],(R)=>usr(R)], date:[['일자','日期'],(R)=>`<span class="num">${dt(R)}</span>`], time:[['일시','时间'],(R)=>`<span class="num">${tm(R)}</span>`],
+ due:[['기한','期限'],(R)=>`<span class="num">10-${ri(R,30,31)}</span>`], eta:[['도착 예정','预计到达'],(R)=>`<span class="num">2026-11-${String(ri(R,2,28)).padStart(2,'0')}</span>`],
+ channel:[['채널','渠道'],(R)=>L(pick(R,CHN))], orderno:[['주문번호','订单号'],(R)=>`<span class="mono">${ri(R,2000,9999)}${ri(R,100000,999999)}</span>`],
+ pono:[['발주번호','采购单号'],(R,i)=>`<span class="mono">PO-2610-${String(i+11).padStart(3,'0')}</span>`], reqno:[['요청번호','申请号'],(R,i)=>`<span class="mono">RG-${4810+i}</span>`],
+ carrier:[['택배사','快递'],(R)=>L(pick(R,[['CJ대한통운','CJ大韩通运'],['한진택배','韩进快递'],['롯데택배','乐天快递'],['우체국','邮局']]))],
+ tracking:[['송장번호','运单号'],(R)=>`<span class="mono">${ri(R,5000,6999)}-${ri(R,1000,9999)}-${ri(R,1000,9999)}</span>`],
+ loc:[['로케이션','库位'],(R)=>`<span class="mono">${pick(R,['A','B','C'])}-${String(ri(R,1,12)).padStart(2,'0')}-${String(ri(R,1,6)).padStart(2,'0')}</span>`],
+ progress:[['진행률','进度'],(R)=>{const p=ri(R,10,100);return `<span class="scorec"><span class="num">${p}%</span><span class="bar" style="width:80px"><i style="width:${p}%"></i></span></span>`}],
+ seed:[['씨앗','种子词'],(R,i,k)=>L([k.cat,CATZH[k.cat]])], cat:[['카테고리','类目'],(R,i,k)=>L([k.cat,CATZH[k.cat]])],
+ expanded:[['확장 키워드','扩展词数'],(R)=>`<span class="num">${fmt(ri(R,80,640))}</span>`,'r'], firstseen:[['최초 발견','首次出现'],(R)=>`<span class="num">${dt(R)}</span>`],
+ peakdrop:[['최고점 대비','较峰值'],(R)=>`<span class="num dn">-${ri(R,30,72)}%</span>`,'r'],
+ verdict:[['판정','判定'],()=>pill('alert').replace(/경고|警告/,L(['진입 늦음','入场已晚']))],
+ fname:[['필터 이름','筛选名称'],(R,i)=>L([['비계절·성장','非季节·增长'],['초보 진입 가능','新手可进入'],['여름 시즌 준비','夏季准备'],['소형·경량','小型·轻量'],['주방 니치','厨房细分']][i%5])],
+ cond:[['조건','条件'],(R,i)=>`<span class="mono" style="font-size:12px">${['CV≤0.25 · YoY≥30%','리뷰중앙값≤500','peak=6~8','₩15k~50k','cat=주방'][i%5]}</span>`],
+ count:[['결과','结果数'],(R)=>`<span class="num">${ri(R,12,420)}</span>`,'r'],
+ bword:[['제외 단어','排除词'],(R,i)=>['후기','할인','쿠폰','다이소','이케아','최저가'][i%6]], reason:[['사유','原因'],(R,i)=>L([['구매 의도 아님','非购买意图'],['브랜드명','品牌名'],['노이즈','噪音'],['파손 반품','破损退货'],['단순 변심','无理由退货']][i%5])],
+ rword:[['규제 단어','监管词'],(R,i)=>['유아','어린이','충전','블루투스','텀블러','화장품','건강','배터리'][i%8]],
+ cert:[['필요 인증','所需认证'],(R,i)=>L([['KC 어린이제품','KC儿童产品'],['KC 전기안전','KC电气安全'],['전파인증','无线电认证'],['식품용기 신고','食品容器申报'],['해당 없음','无需认证']][i%5])],
+ risk:[['위험도','风险'],(R,i)=>pill(['alert','alert','warn','warn','ok'][i%5])],
+ hs:[['HS코드','HS编码'],(R)=>`<span class="mono">${ri(R,3924,9403)}.${ri(R,10,90)}</span>`], duty:[['관세율','关税率'],(R)=>`<span class="num">${pick(R,[0,6.5,8,13])}%</span>`,'r'],
+ smode:[['운송','运输'],(R)=>L(pick(R,[['해상 LCL','海运拼箱'],['해상 FCL','海运整箱'],['항공','空运']]))],
+ place:[['방문처','拜访地点'],(R,i)=>L([['이우 국제상무성 2구','义乌国际商贸城二区'],['양장 칼·주방도구 공장','阳江刀具厨具工厂'],['타이저우 황옌 플라스틱 공장','台州黄岩塑料厂'],['광저우 이더루','广州一德路']][i%4])],
+ purpose:[['목적','目的'],(R,i)=>L([['샘플 수령','取样'],['단가 협상','价格谈判'],['공장 실사','工厂考察'],['패키지 확인','包装确认']][i%4])],
+ memo:[['메모','备注'],(R,i)=>L([['MOQ 300 협상 가능','起订量可谈至300'],['한국어 라벨 가능','可贴韩语标签'],['샘플비 환급 조건','样品费可返还'],['출고 전 검수 필요','出货前需验货']][i%4])],
+ quality:[['품질','质量'],(R)=>`<span class="num">${(3+R()*2).toFixed(1)}</span>`,'r'], delivery:[['납기','交期'],(R)=>`<span class="num">${(3+R()*2).toFixed(1)}</span>`,'r'], comm:[['소통','沟通'],(R)=>`<span class="num">${(3+R()*2).toFixed(1)}</span>`,'r'],
+ decision:[['판단','决定'],(R)=>pill(pick(R,['done','fail','hold'])).replace(/완료|完成/,L(['통과','通过']))],
+ todo:[['할 일','待办'],(R,i)=>L([['냄비뚜껑 거치대 샘플 3종 비교','锅盖架3款样品对比'],['10월 키워드 유니버스 갱신 확인','确认10月关键词库更新'],['양장 공장 견적 회신','回复阳江工厂报价'],['규제 사전에 "보온" 추가','监管词库添加"保温"'],['관세율 재확인','重新确认关税率']][i%5])],
+ ntype:[['유형','类型'],(R,i)=>L([['급상승','飙升'],['리뷰 급증','评论激增'],['수집 오류','采集错误'],['시즌 임박','季节临近']][i%4])],
+ msg:[['내용','内容'],(R,i)=>L([['서랍 칸막이 YoY +47%','抽屉隔板同比+47%'],['추적 상품 3건 일 리뷰 +30 이상','3个追踪商品日增评论30+'],['데이터랩 일일 한도 80% 도달','数据实验室日额度达80%'],['문틈 바람막이 상승 시작','门缝挡风条开始上涨'],['배송 언제 오나요?','什么时候发货？']][i%5])],
+ job:[['작업','任务'],(R,i)=>L([['데이터랩 추이 수집','数据实验室趋势采集'],['키워드도구 확장','关键词工具扩展'],['쿠팡 검색결과 스냅샷','酷澎搜索快照'],['상품 리뷰 추적','商品评论追踪'],['니치 점수 재계산','细分评分重算']][i%5])],
+ cron:[['주기','周期'],(R,i)=>L([['매월 1일','每月1日'],['매월 1일','每月1日'],['매주 월','每周一'],['매일 06:00','每天06:00'],['매주 월 07:00','每周一07:00']][i%5])],
+ next:[['다음 실행','下次运行'],(R)=>`<span class="num">2026-11-0${ri(R,1,3)} 06:00</span>`],
+ service:[['서비스','服务'],(R,i)=>['Naver DataLab','Naver SearchAd','Coupang Open API','Naver Commerce','공공데이터포털'][i%5]],
+ keymask:[['키','密钥'],()=>`<span class="mono">••••••••${Math.random().toString(16).slice(2,6)}</span>`],
+ action:[['작업','操作'],(R,i)=>L([['열람','查看'],['수정','修改'],['내보내기','导出'],['권한 변경','权限变更'],['PIN 해제','PIN解锁']][i%5])],
+ module:[['모듈','模块'],(R)=>L(pick(R,Object.values(MODS)).n)], device:[['기기','设备'],(R)=>pick(R,['Windows · WebView2','iPhone · Safari','Android · Chrome'])],
+ ip:[['IP','IP'],(R)=>`<span class="mono">${ri(R,1,223)}.${ri(R,0,255)}.x.x</span>`],
+ quarter:[['분기','季度'],(R,i)=>`2026 Q${(i%4)+1}`], expcat:[['항목','项目'],(R,i)=>L([['국제 운송','国际运输'],['광고비','广告费'],['발주 대금','采购款'],['포장재','包装材料'],['로켓그로스 물류비','火箭成长物流费']][i%5])],
+ item:[['항목','项目'],(R,i)=>L([['쿠팡 정산 입금','酷澎结算入账'],['공장 잔금 송금','工厂尾款'],['광고비','广告费'],['해상운임','海运费']][i%4])],
+ feerate:[['판매 수수료','销售费率'],(R)=>`<span class="num">${(7.8+R()*3.5).toFixed(1)}%</span>`,'r'], rocketfee:[['그로스 물류비','物流费'],(R)=>`<span class="num">${krw(ri(R,22,48)*100)}</span>`,'r'],
+ adspend:[['광고비','广告费'],(R)=>`<span class="num">${krw(ri(R,5,90)*1000)}</span>`,'r','margin'], roas:[['ROAS','ROAS'],(R)=>`<span class="num">${ri(R,180,640)}%</span>`,'r'], clicks:[['클릭','点击'],(R)=>`<span class="num">${fmt(ri(R,40,900))}</span>`,'r'],
+ rating:[['별점','评分'],(R)=>'★'.repeat(ri(R,1,2))+'<span style="color:var(--dim)">'+'★'.repeat(3)+'</span>'],
+ rtext:[['리뷰','评论'],(R,i)=>L([['흡착이 약해서 자꾸 떨어져요','吸盘太弱老掉'],['나사 구멍이 안 맞아요','螺丝孔对不上'],['생각보다 작아요','比想象中小'],['도금이 벗겨졌어요','镀层脱落'],['포장이 찌그러져 왔어요','包装压坏了']][i%5])],
+ barcode:[['바코드','条码'],(R)=>`<span class="mono">880${ri(R,1000000000,9999999999)}</span>`]
+};
+
+/* =========================================================
+   5) 상태 · 저장
+   ========================================================= */
+const KEY='ss-mock-v1';
+function load(){let d={};try{d=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+ S={lang:d.lang||'ko',theme:d.theme||null,role:d.role||'owner',mprev:false,enabled:d.enabled||{},unlockUntil:0,
+  tabs:['dashboard'],active:'dashboard',sub:{},perms:JSON.parse(JSON.stringify(DEF_PERMS)),fields:JSON.parse(JSON.stringify(DEF_FIELDS)),
+  sens:{},closed:{},niche:0,scans:[],autolock:5,mktQ:'',mktP:'',bigCheck:false}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({lang:S.lang,theme:S.theme,role:S.role,enabled:S.enabled}))}catch(e){}}
+const can=(g,c='V')=>(S.perms[S.role][g]||'').includes(c);
+const fcan=f=>S.fields[S.role].includes(f);
+const isOn=m=>m.core||S.enabled[m.id]!==false;
+const isSens=m=>S.sens[m.id]!==undefined?S.sens[m.id]:!!m.s;
+const isLocked=m=>isSens(m)&&Date.now()>S.unlockUntil;
+const visible=m=>isOn(m)&&can(m.g.id);
+const isMobile=()=>S.mprev||matchMedia('(max-width: 820px)').matches;
+
+/* =========================================================
+   6) 아이콘
+   ========================================================= */
+const IC={home:'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',chart:'M4 20V11M10 20V5M16 20v-7M2 20h20',search:'M11 4a7 7 0 1 1 0 14 7 7 0 0 1 0-14zM21 21l-5-5',flag:'M5 21V4h12l-2.5 4L17 12H5',
+ globe:'M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zM3 12h18M12 3c3.2 3.5 3.2 14.5 0 18M12 3c-3.2 3.5-3.2 14.5 0 18',box:'M3 7.5l9-4.5 9 4.5v9L12 21l-9-4.5zM3 7.5L12 12l9-4.5M12 12v9',
+ calc:'M5 3h14v18H5zM8 7h8M8 11.5h1M12 11.5h1M16 11.5h0M8 15.5h1M12 15.5h1M16 15.5v3',store:'M3 9l2-5h14l2 5M3 9h18v11H3zM9 20v-6h6v6',truck:'M2 6h12v10H2zM14 10h4l3 3v3h-7M6 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4z',
+ wh:'M3 21V9l9-5 9 5v12M7 21v-8h10v8M7 17h10',mega:'M3 10v4h4l6 4V6L7 10zM17 8.5a5 5 0 0 1 0 7',wallet:'M3 7h18v13H3zM3 7l13-4v4M16 13.5h2',report:'M6 3h9l4 4v14H6zM9 12h7M9 16h7M9 8h3',
+ gear:'M12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6zM12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9L7 7M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1',lock:'M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4',
+ menu:'M4 6h16M4 12h16M4 18h16',moon:'M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z',phone:'M8 2h8a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM11 18h2',
+ x:'M6 6l12 12M18 6L6 18',copy:'M8 8h12v12H8zM4 16V4h12',plus:'M12 5v14M5 12h14',dl:'M12 4v11M7 10l5 5 5-5M5 20h14',grid:'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z',
+ cv:'M6 9l6 6 6-6',dots:'M5 12h.01M12 12h.01M19 12h.01',mob:'M8 3h8v18H8zM11 18h2'};
+const ic=n=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="${IC[n]||IC.dots}"/></svg>`;
+
+/* =========================================================
+   7) 차트 (인라인 SVG — 오프라인 동작)
+   ========================================================= */
+function lineChart(series,labels,{h=220,money=false}={}){
+ const W=640,H=h,pl=46,pr=14,pt=14,pb=26,all=series.flatMap(s=>s.v),mx=Math.max(...all)*1.08,mn=Math.min(0,Math.min(...all));
+ const x=i=>pl+i*(W-pl-pr)/(labels.length-1),y=v=>pt+(1-(v-mn)/(mx-mn))*(H-pt-pb);
+ const cols=['var(--accent)','var(--info)','var(--good)'];let g='';
+ for(let k=0;k<=4;k++){const v=mn+(mx-mn)*k/4;g+=`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${pl-6}" y="${y(v)+3.5}" text-anchor="end">${money?Math.round(v/1e4)+(li()?'万':'만'):fmt(v)}</text>`}
+ const step=Math.ceil(labels.length/8);labels.forEach((l,i)=>{if(i%step===0||i===labels.length-1)g+=`<text x="${x(i)}" y="${H-8}" text-anchor="middle">${l}</text>`});
+ series.forEach((s,si)=>{const p=s.v.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  if(si===0)g+=`<polygon points="${pl},${y(mn)} ${p} ${x(s.v.length-1)},${y(mn)}" fill="var(--accent)" opacity=".1"/>`;
+  g+=`<polyline points="${p}" fill="none" stroke="${cols[si]}" stroke-width="2" ${si?'stroke-dasharray="5 4"':''}/><circle cx="${x(s.v.length-1)}" cy="${y(s.v[s.v.length-1])}" r="3.5" fill="${cols[si]}"/>`});
+ return `<svg class="ch" viewBox="0 0 ${W} ${H}" role="img">${g}</svg><div class="legend">${series.map((s,i)=>`<span><i style="background:${cols[i]}"></i>${L(s.n)}</span>`).join('')}</div>`}
+function hbars(rows,{max,fmtv=v=>fmt(v)}={}){const m=max||Math.max(...rows.map(r=>Math.abs(r[1])));
+ return `<div class="hbars">${rows.map(r=>`<div class="hb"><span>${L(r[0])}</span><span class="t"><i class="${r[1]<0?'neg':''}" style="width:${Math.abs(r[1])/m*100}%"></i></span><span class="num" style="text-align:right">${fmtv(r[1])}</span></div>`).join('')}</div>`}
+
+/* =========================================================
+   8) 공통 표
+   ========================================================= */
+function table(f,key,{rows,kwList,click}={}){
+ const cols=f.c.split(' ');const R=rng(hs(key));const n=rows||f.rows||8;const g=MODS[key.split(':')[0]]?.g.id;
+ const list=kwList||(f.sortYoy?[...KWD].sort((a,b)=>b.yoy-a.yoy):KWS);
+ let h=`<div class="tools"><input class="q" id="q-${key}" placeholder="${t('q')}"><span class="fchip">${t('filters')} 2</span><span class="fchip">${t('dummy')}</span><span class="sp"></span>`;
+ if(g&&can(g,'X'))h+=`<button class="btn" data-demo>${ic('dl')}${t('export')}</button>`;
+ if(g)h+=`<button class="btn pri" data-demo ${can(g,'E')?'':'disabled title="'+t('noPerm')+'"'}>${ic('plus')}${t('add')}</button>`;
+ h+=`</div><div class="tw"><table class="tb"><thead><tr>${cols.map(c=>`<th class="${COLS[c]?.[2]==='r'?'r':''}">${L(COLS[c]?.[0]||[c,c])}</th>`).join('')}</tr></thead><tbody>`;
+ for(let i=0;i<n;i++){const k=list[i%list.length];
+  h+=`<tr ${cols.includes('kw')?`class="click" data-niche="${k.i}"`:''}>${cols.map(c=>{const d=COLS[c];if(!d)return '<td>—</td>';
+   const sens=d[3];return `<td class="${d[2]==='r'?'r':''}">${sens&&!fcan(sens)?mask():d[1](R,i,k,f)}</td>`}).join('')}</tr>`}
+ return h+`</tbody></table></div>`}
+
+/* =========================================================
+   9) 화면 템플릿
+   ========================================================= */
+const T={};
+T.table=(m,f,k)=>table(f,k);
+T.kpis=(arr)=>`<div class="kpis">${arr.map(a=>{let v=a[1];if(v==='cost'||v==='margin'){v=fcan(v)?krw(v==='cost'?48200000:31800000):mask()}
+ return `<div class="kpi"><div class="l">${L(a[0])}</div><div class="v">${v}</div><div class="d ${String(a[2]).startsWith('-')?'dn':'up'}">${a[2]||'&nbsp;'}</div></div>`}).join('')}</div>`;
+T.kpitable=(m,f,k)=>T.kpis(f.k)+table(f,k);
+T.kpibars=(m,f,k)=>{if(f.set==='pnl'){const ok=fcan('margin');const kk=f.k.map((a,i)=>[a[0],ok?krw([86400000,41200000,9800000,18600000][i]):'margin',ok?['+12%','+9%','+21%','+6%'][i]:'']);
+  return T.kpis(kk)+`<div class="card"><h3>${L(['월별 순이익','月度净利润'])}</h3>${ok?hbars(MON.slice(4,10).map((mm,i)=>[mm,[8.2,9.1,11.4,10.2,14.8,18.6][i]*1e6]),{fmtv:v=>krw(v)}):`<div class="empty">${ic('lock')}<p>${t('maskTip')}</p></div>`}</div>`}
+ return T.kpis(f.k)+`<div class="card"><h3>${L(['상위 10개 상품 리뷰 분포','前10商品评论分布'])}<small>${L(['키워드: ','关键词：'])}${L([KWS[0].ko,KWS[0].zh])}</small></h3>${hbars([1,2,3,4,5,6,7,8,9,10].map((r,i)=>[[`${r}위`,`第${r}名`],[2840,1210,640,412,318,290,184,120,88,41][i]]))}</div>`};
+T.line=(m,f,k)=>{const lab=MON.map(L);let s,money=false;
+ if(f.set==='reviews'){const a=KWS[0],b=KWS[1];s=[{n:[a.ko,a.zh],v:Array.from({length:28},(_,i)=>Math.round(40+i*6.3+Math.sin(i)*5))},{n:[b.ko,b.zh],v:Array.from({length:28},(_,i)=>Math.round(30+i*2.1+Math.cos(i)*4))}];return `<div class="card">${lineChart(s,Array.from({length:28},(_,i)=>String(i+3)),{})}</div><div style="height:14px"></div>`+table(f,k)}
+ if(f.set==='price'){const p=Array.from({length:12},(_,i)=>12900+i*2000);s=[{n:['광고비 10%','广告费10%'],v:p.map(x=>x*0.78-9800)},{n:['광고비 20%','广告费20%'],v:p.map(x=>x*0.68-9800)}];if(!fcan('margin'))return `<div class="card"><div class="empty">${ic('lock')}<h2>${t('maskTip')}</h2></div></div>`;
+  return `<div class="card"><h3>${L(['판매가별 개당 이익','各售价单件利润'])}</h3>${lineChart(s,p.map(x=>Math.round(x/1000)+'k'),{})}</div>`}
+ if(f.set==='roas'){s=[{n:['ROAS %','ROAS %'],v:[210,240,236,280,310,302,350,390,372,410,430,452]},{n:['광고비(천원)','广告费(千韩元)'],v:[120,140,150,148,160,175,170,182,190,188,200,210]}];return `<div class="card">${lineChart(s,lab)}</div><div style="height:14px"></div>`+table(f,k)}
+ if(f.set==='cash'){if(!fcan('margin'))return `<div class="card"><div class="empty">${ic('lock')}<h2>${t('maskTip')}</h2></div></div>`;
+  s=[{n:['잔고','余额'],v:[42,38,51,47,44,58,62,55,49,61,66,72].map(x=>x*1e6)},{n:['예측','预测'],v:[42,38,51,47,44,58,62,55,49,61,63,68].map(x=>x*1e6)}];money=true;return `<div class="card">${lineChart(s,lab,{money})}</div><div style="height:14px"></div>`+table(f,k)}
+ return ''};
+T.bars=(m,f,k)=>{let rows,o={};
+ if(f.set==='cat')rows=[[['생활용품 › 정리·수납','生活用品›收纳'],46],[['주방용품 › 주방수납','厨房用品›厨房收纳'],38],[['사무용품 › 데스크 정리','办公用品›桌面整理'],27],[['자동차용품 › 차량수납','汽车用品›车载收纳'],14],[['욕실용품 › 욕실수납','浴室用品›浴室收纳'],6],[['캠핑 › 의자·테이블','露营›桌椅'],-9],[['생활용품 › 빨래건조','生活用品›晾晒'],-14]],o.fmtv=v=>(v>0?'+':'')+v+'%';
+ if(f.set==='backtest')rows=[[['통과 판단 → 3개월 후 성장','通过→3个月后增长'],72],[['통과 판단 → 정체','通过→停滞'],19],[['통과 판단 → 하락','通过→下降'],9],[['탈락 판단 → 실제 성장(놓침)','淘汰→实际增长(错过)'],14]],o.fmtv=v=>v+'%',o.max=100;
+ if(f.set==='neg')rows=[[['흡착력 약함','吸力弱'],128],[['나사 규격 불일치','螺丝规格不符'],84],[['크기 작음','尺寸小'],61],[['도금 벗겨짐','镀层脱落'],47],[['포장 파손','包装破损'],33]];
+ if(f.set==='costmix'){if(!fcan('cost'))return `<div class="card"><div class="empty">${ic('lock')}<h2>${t('maskTip')}</h2><p>${L(FIELD_LBL.cost)}</p></div></div>`;
+  rows=[[['제품 원가(¥12.5)','产品成本(¥12.5)'],2400],[['국제 운송','国际运输'],620],[['관세 8%','关税8%'],242],[['포장·라벨','包装·标签'],180],[['국내 운송','国内运输'],150]],o.fmtv=v=>krw(v)}
+ return `<div class="card">${hbars(rows,o)}</div>${f.set==='backtest'?`<div class="note">${L(['<b>백테스트</b>는 3개월 전 판단과 실제 결과를 비교해 니치 점수 가중치를 조정하는 데 씁니다.','<b>回测</b>用于比较3个月前的判断与实际结果，以调整细分评分权重。'])}</div>`:''}`};
+T.tree=()=>{const tr=[[['주방용품','厨房用品'],412,[[['주방수납','厨房收纳'],188,[[['냄비·뚜껑 정리','锅·盖收纳'],34],[['양념통','调料瓶'],51]]],[['싱크대 용품','水槽用品'],96,[]]]],[['생활용품','生活用品'],1240,[[['정리·수납','收纳整理'],530,[[['서랍 정리','抽屉整理'],77],[['행거','衣架'],64]]],[['빨래·건조','洗晒'],120,[]]]],[['자동차용품','汽车用品'],380,[[['차량 수납','车载收纳'],92,[]]]]];
+ const r=a=>`<ul>${a.map(x=>`<li>${L(x[0])}<span>${fmt(x[1])} ${L(['키워드','关键词'])}</span>${x[2]&&x[2].length?r(x[2]):''}</li>`).join('')}</ul>`;
+ return `<div class="card tree">${r(tr)}</div><div class="note">${L(['쿠팡 Open API 카테고리 목록(판매자 가입 후) 또는 쿠팡 카테고리 페이지 1회 수집으로 채웁니다.','通过酷澎Open API类目列表（注册卖家后）或一次性采集酷澎类目页填充。'])}</div>`};
+T.form=(m,f)=>`<div class="card"><div class="form">${f.fields.map((x,i)=>`<label class="fld">${L(x[0])}${Array.isArray(x[1])?`<select id="ff-${m.id}-${i}"><option>${L(x[1])}</option></select>`:`<input id="ff-${m.id}-${i}" value="${x[1]}">`}</label>`).join('')}</div><div class="tools" style="margin:14px 0 0"><span class="sp"></span><button class="btn pri" data-demo ${can(m.g.id,'E')?'':'disabled'}>${L(['저장','保存'])}</button></div></div>`;
+
+/* 대시보드: 위젯마다 필요한 권한 그룹이 있어 역할별로 다르게 보임 */
+T.dash=()=>{const w=[];
+ if(can('market'))w.push(T.kpis([[['추적 키워드','追踪关键词'],'12,480','+640'],[['급상승','飙升'],'37','+5'],[['시즌 임박','季节临近'],'9',''],[['후보 파이프라인','候选管道'],'14','+3']]));
+ else if(can('order')||can('wh'))w.push(T.kpis([[['오늘 출고 대기','今日待出库'],'42','+8'],[['입고 예정','预计入库'],'3',''],[['재고 부족 SKU','缺货SKU'],'5','+2'],[['반품 대기','待退货'],'2','']]));
+ else if(can('sourcing'))w.push(T.kpis([[['진행 중 견적','进行中报价'],'6',''],[['샘플 발송','样品发出'],'3','+1'],[['출장 일정','出差行程'],'11-12',''],[['신규 공급사','新供应商'],'2','']]));
+ const cards=[];
+ if(can('market'))cards.push(`<div class="card"><h3>${L(['급상승 키워드','飙升关键词'])}<small>${L(['전년 대비','同比'])}</small></h3>${miniKw([...KWD].filter(k=>!k.reg).sort((a,b)=>b.yoy-a.yoy).slice(0,5))}</div>`);
+ if(can('market'))cards.push(`<div class="card"><h3>${L(['다가오는 시즌 (발주 권장)','即将到来的季节（建议下单）'])}</h3>${miniSeason()}</div>`);
+ if(can('coupang'))cards.push(`<div class="card"><h3>${L(['상품 추적 알림','商品追踪提醒'])}</h3>${table({c:'product delta reviews',rows:4},'tracker:dash').replace(/<div class="tools">[\s\S]*?<\/div>/,'')}</div>`);
+ if(can('pipeline'))cards.push(`<div class="card"><h3>${L(['파이프라인','候选管道'])}</h3>${hbars([[['발굴','发掘'],14],[['검토','评估'],6],[['샘플','样品'],3],[['테스트 판매','试销'],1]])}</div>`);
+ if(can('sourcing'))cards.push(`<div class="card"><h3>${L(['소싱 진행','采购进度'])}</h3>${table({c:'product supplier status',st:['pending','transit','arrived'],rows:3},'quotes:dash').replace(/<div class="tools">[\s\S]*?<\/div>/,'')}</div>`);
+ if(can('order')||can('wh'))cards.push(`<div class="card"><h3>${L(['오늘 물류','今日物流'])}</h3>${hbars([[['출고 대기','待出库'],42],[['출고 완료','已出库'],118],[['입고 검수','入库验收'],3],[['반품 회수','退货回收'],2]])}</div>`);
+ if(can('finance')){const fm=MODS.cashflow;cards.push(`<div class="card"><h3>${ic('lock')}${L(['자금 요약','资金摘要'])}<small>${L(['민감','敏感'])}</small></h3>${isLocked(fm)?`<div class="empty" style="padding:20px">${ic('lock')}<p>${t('pinD')}</p><button class="btn pri" data-unlock>${t('unlock')}</button></div>`:hbars([[['이번 달 순이익','本月净利润'],18600000],[['통장 잔고','账户余额'],72400000],[['다음 주 지급 예정','下周应付'],-9200000]],{fmtv:v=>krw(v)})}</div>`)}
+ if(can('system'))cards.push(`<div class="card"><h3>${L(['수집 상태','采集状态'])}<small>${L(['오늘','今天'])}</small></h3>${quotaBars()}</div>`);
+ return w.join('')+`<div class="g2">${cards.join('')}</div><div class="note">${L(['<b>역할을 바꿔 보세요.</b> 오른쪽 위 역할 선택에서 "물류 담당"을 고르면 위젯·메뉴·원가 표시가 바뀝니다.','<b>试试切换角色。</b>在右上角选择"物流专员"，组件·菜单·成本显示会随之变化。'])}</div>`};
+const miniKw=list=>`<div class="tw" style="border:0"><table class="tb" style="min-width:0">${list.map(k=>`<tr class="click" data-niche="${k.i}"><td>${kwCell(k)}</td><td>${spark(k.series.slice(-12),70,22)}</td><td class="r">${pct(k.yoy)}</td></tr>`).join('')}</table></div>`;
+const miniSeason=()=>{const now=9;const l=KWD.filter(k=>k.type!=='flat').map(k=>({k,d:(k.rise-now+12)%12})).sort((a,b)=>a.d-b.d).slice(0,5);
+ return `<div class="tw" style="border:0"><table class="tb" style="min-width:0">${l.map(({k})=>`<tr class="click" data-niche="${k.i}"><td>${kwCell(k)}${k.reg?` <span class="pill bad">${L(['규제','监管'])}</span>`:''}</td><td>${L(['피크','高峰'])} ${L(MON[k.peak])}</td><td class="r"><b>${L(['발주','下单'])} ${L(MON[(k.rise+9)%12])}</b></td></tr>`).join('')}</table></div>`};
+function quotaBars(){const q=[[['네이버 데이터랩 API','Naver 数据实验室API'],612,1000],[['네이버 키워드도구','Naver 关键词工具'],4210,8000],[['쿠팡 검색결과 (안전 한도)','酷澎搜索（安全上限）'],1240,3000],[['쿠팡 상품 추적','酷澎商品追踪'],860,1000]];
+ return `<div class="hbars">${q.map(r=>`<div class="hb"><span>${L(r[0])}</span><span class="t"><i style="width:${r[1]/r[2]*100}%;${r[1]/r[2]>.8?'background:var(--warn)':''}"></i></span><span class="num" style="text-align:right">${fmt(r[1])}/${fmt(r[2])}</span></div>`).join('')}</div>`}
+T.quota=()=>`<div class="card"><h3>${L(['오늘 사용량','今日用量'])}<small>${L(['한도 초과 시 다음 날 이어서 수집 (과금 없음)','超额后次日继续采集（不收费）'])}</small></h3>${quotaBars()}</div><div class="note">${L(['정확한 일일 한도는 각 서비스 콘솔에서 확인 후 설정에 입력합니다.','准确的每日额度请在各服务控制台确认后填入设置。'])}</div>`;
+
+/* 키워드 탐색 */
+T.kwgrid=(m,f,k)=>`<div class="gl"><div class="card"><h3>${t('filters')}</h3><div class="stack" style="gap:10px">
+ <label class="fld">${L(['월 검색량','月搜索量'])}<input id="kf1" value="3,000 ~ 50,000"></label>
+ <label class="fld">${L(['계절성 CV 최대','季节性CV上限'])}<input id="kf2" value="0.25"></label>
+ <label class="fld">${L(['전년 대비 최소','同比下限'])}<input id="kf3" value="+20%"></label>
+ <label class="fld">${L(['상위10 리뷰 중앙값 최대','前10评论中位数上限'])}<input id="kf4" value="1,000"></label>
+ <label class="fld">${L(['카테고리','类目'])}<select id="kf5"><option>${L(['전체','全部'])}</option></select></label>
+ <label class="fld">${L(['피크월','高峰月'])}<select id="kf6"><option>${L(['상관없음','不限'])}</option>${MON.map(x=>`<option>${L(x)}</option>`).join('')}</select></label>
+ <div class="mrow" style="grid-template-columns:1fr auto;border:0;padding:4px 0">${L(['규제 품목 제외','排除监管品类'])}<span class="switch"><input type="checkbox" id="kf7" checked><span></span></span></div>
+ <button class="btn pri" data-demo>${L(['필터 저장','保存筛选'])}</button></div></div>
+ <div>${table({c:'kw vol cv yoy spark revMed newRatio score',rows:KWS.length},k,{kwList:KWS})}<div class="note">${L(['행을 누르면 <b>니치 상세</b>가 새 탭으로 열립니다. 점수 = 계절 안정성 30 + 성장 30 + 낮은 경쟁 20 + 신규 진입 20 (규제 품목은 감점).','点击行会在新标签打开<b>细分详情</b>。评分 = 季节稳定30 + 增长30 + 低竞争20 + 新进入20（监管品类扣分）。'])}</div></div></div>`;
+
+/* 니치 상세 (허브) */
+T.niche=()=>{const k=KWD[S.niche];const lab36=Array.from({length:36},(_,i)=>`${(['24','25','26'])[Math.floor((i+10)/12)]}.${((i+10)%12)+1}`);
+ const mk=MARKETS.filter(x=>x[8]==='household'||x[8]==='kitchen').slice(0,3);
+ const price=19900,landed=fcan('cost')?krw(5480):mask(),mg=fcan('margin')?'27.4%':mask();
+ return `<div class="tools" style="margin-bottom:14px"><select id="nichesel" style="min-width:220px">${KWS.map(x=>`<option value="${x.i}" ${x.i===k.i?'selected':''}>${L([x.ko,x.zh])} · ${x.score}</option>`).join('')}</select>
+ ${k.reg?`<span class="pill bad">${L(['규제 품목 (KC 인증 필요)','监管品类（需KC认证）'])}</span>`:`<span class="pill good">${L(['규제 해당 없음','无监管'])}</span>`}<span class="pill info">${L([k.cat,CATZH[k.cat]])}</span><span class="sp"></span>
+ <button class="btn" data-demo>${ic('plus')}${L(['관심 목록','关注'])}</button><button class="btn pri" data-demo>${L(['파이프라인에 추가','加入候选管道'])}</button></div>
+ ${T.kpis([[['월 검색량','月搜索量'],fmt(k.vol),''],[['계절성 CV','季节性CV'],k.cv.toFixed(2),k.cv<.25?L(['비계절','非季节']):L(['계절','季节'])],[['전년 대비','同比'],(k.yoy>=0?'+':'')+(k.yoy*100).toFixed(0)+'%',''],[['니치 점수','细分评分'],String(k.score),'']])}
+ <div class="g2"><div class="card"><h3>${L(['검색량 추이 36개월','搜索量走势36个月'])}<small>DataLab × SearchAd</small></h3>${lineChart([{n:[k.ko,k.zh],v:k.series.map(Math.round)}],lab36,{h:200})}</div>
+ <div class="card"><h3>${L(['월별 계절지수','月度季节指数'])}<small>${L(['1.0 = 연평균','1.0 = 年均'])}</small></h3>${hbars(MON.map((mm,i)=>[mm,+k.idx[i].toFixed(2)]),{fmtv:v=>v.toFixed(2)})}</div>
+ <div class="card"><h3>${L(['쿠팡 경쟁 구조','酷澎竞争结构'])}<small>${L(['상위 10','前10'])}</small></h3>${hbars([[['리뷰 중앙값','评论中位数'],k.revMed],[['신규 진입자(/10)','新进入者(/10)'],k.newRatio],[['로켓 비율(%)','火箭占比(%)'],70],[['광고 상품(/10)','广告商品(/10)'],3]])}</div>
+ <div class="card"><h3>${L(['추천 소싱처','推荐货源'])}<small>${L(['시장·산업벨트 DB 연동','关联市场·产业带库'])}</small></h3>${mk.map(x=>`<div class="mrow" style="grid-template-columns:1fr auto"><span><b style="font-family:'Noto Sans SC'">${x[5]}</b><small>${L([x[2],x[3]])} · ${L([x[6],x[7]])}</small></span><button class="btn" data-copy="${x[5]}">${ic('copy')}</button></div>`).join('')}</div>
+ <div class="card"><h3>${L(['마진 요약','利润摘要'])}<small>${L(['기준 판매가','基准售价'])} ${krw(price)}</small></h3><div class="calcout"><div class="row"><span>${L(['입고 원가','到岸成本'])}</span><span class="num">${landed}</span></div><div class="row"><span>${L(['광고비 포함 마진율','含广告利润率'])}</span><span class="num">${mg}</span></div></div></div>
+ <div class="card"><h3>${L(['판단 기록','决策记录'])}</h3><div class="calcout"><div class="row"><span>10-12 · HP</span><span>${L(['샘플 3종 요청','要3款样品'])}</span></div><div class="row"><span>10-03 · ${L(['김민수','金敏洙'])}</span><span>${L(['부정 리뷰 "흡착 약함" → 개선 가능','差评"吸力弱"→可改进'])}</span></div></div></div></div>`};
+
+/* 시즌 히트맵 */
+T.heat=()=>{const rows=[...KWD].sort((a,b)=>a.peak-b.peak);
+ return `<div class="tw"><table class="tb heat"><thead><tr><th>${L(['키워드','关键词'])}</th>${MON.map(x=>`<th class="r">${L(x)}</th>`).join('')}<th>CV</th></tr></thead><tbody>${rows.map(k=>`<tr class="click" data-niche="${k.i}"><td>${kwCell(k)}</td>${k.idx.map(v=>{const p=Math.max(0,Math.min(100,(v-.3)/2.6*100));return `<td class="h" style="background:color-mix(in srgb,var(--accent) ${p.toFixed(0)}%,var(--panel2));color:${p>55?'var(--accent-ink)':'var(--fg)'}">${v.toFixed(1)}</td>`}).join('')}<td class="num">${k.cv.toFixed(2)}</td></tr>`).join('')}</tbody></table></div>
+ <div class="note">${L(['진할수록 그 달에 검색이 몰립니다. 해상 운송 2~3개월을 고려해 <b>상승 시작 3개월 전 발주</b>를 권장합니다.','颜色越深表示该月搜索越集中。考虑海运2~3个月，建议<b>起涨前3个月下单</b>。'])}</div>`};
+
+/* 칸반 */
+T.kanban=()=>{const st=[['발굴','发掘'],['검토','评估'],['샘플','样品'],['테스트 판매','试销'],['본판매','正式销售'],['탈락','淘汰']];
+ return `<div class="kanban">${st.map((s,si)=>{const items=KWS.filter((k,i)=>i%6===si);return `<div class="kcol"><h4>${L(s)}<span class="num">${items.length}</span></h4>${items.map(k=>`<div class="kc" data-niche="${k.i}"><b>${L([k.ko,k.zh])}</b><div class="m"><span>${L(['점수','评分'])} ${k.score}</span><span>${L(USERS[k.i%4].n)}</span></div></div>`).join('')}</div>`}).join('')}</div>`};
+
+/* 중국 도매시장 DB (첨부 자료 기반, 방문 미확인 상태) */
+const MARKETS=[
+['저장성','浙江','이우','义乌','이우 국제상무성','义乌国际商贸城','생활잡화·우산·가방·문구·완구·액세서리·주방용품','日用杂货·雨伞·箱包·文具·玩具·饰品·厨房用品','household'],
+['저장성','浙江','항저우','杭州','쓰지칭 의류시장','四季青服装市场','여성·남성의류, 패션잡화','女装·男装·时尚配饰','fashion'],
+['저장성','浙江','사오싱 커차오','绍兴柯桥','중국경방성','中国轻纺城','원단·섬유·커튼·침구·의류 부자재','面料·纺织·窗帘·床品·辅料','textile'],
+['저장성','浙江','하이닝','海宁','중국피혁성','中国皮革城','가죽의류·가죽가방·신발·모피','皮衣·皮包·鞋·皮草','leather'],
+['저장성','浙江','융캉','永康','중국과기오금성','中国科技五金城','공구·철물·금속 생활용품·하드웨어','工具·五金·金属日用品·硬件','hardware'],
+['저장성','浙江','원저우','温州','원저우 신발 상권','温州鞋业商圈','신발·가죽제품·안경·라이터','鞋·皮具·眼镜·打火机','shoes'],
+['저장성','浙江','타이저우','台州','두차오 안경시장','杜桥眼镜市场','안경테·선글라스·안경 부품','镜架·太阳镜·眼镜配件','eyewear'],
+['저장성','浙江','닝보','宁波','닝보 의류·생활용품 상권','宁波服装日用品商圈','의류·문구·생활잡화·가전 관련','服装·文具·日用杂货·家电相关','household'],
+['광둥성','广东','광저우','广州','바이마 의류시장','白马服装市场','중고급 남녀 의류','中高档男女装','fashion'],
+['광둥성','广东','광저우','广州','십삼행','十三行服装批发市场','여성의류·패션의류·캐주얼','女装·时装·休闲装','fashion'],
+['광둥성','广东','광저우','广州','사허 상권','沙河商圈','저가 여성의류·온라인용 의류','低价女装·电商服装','fashion'],
+['광둥성','广东','광저우','广州','중다 원단시장','中大布匹市场','원단·섬유·봉제 부자재','面料·纺织·缝纫辅料','textile'],
+['광둥성','广东','광저우','广州','바이윈 가죽시장','白云世界皮具贸易中心','가방·지갑·가죽 액세서리','箱包·钱包·皮具配饰','bags'],
+['광둥성','广东','광저우','广州','잔시 신발 상권','站西鞋城','운동화·구두·신발 부자재','运动鞋·皮鞋·鞋材','shoes'],
+['광둥성','广东','광저우','广州','이더루','一德路','완구·선물용품·장식품·포장용품','玩具·礼品·装饰品·包装用品','toys'],
+['광둥성','广东','광저우','广州','메이보성','美博城','미용용품·미용기기·화장품 관련','美容用品·美容仪器·化妆品相关','beauty'],
+['광둥성','广东','선전','深圳','화창베이','华强北','전자제품·휴대폰 액세서리·부품·LED','电子产品·手机配件·元器件·LED','electronics'],
+['광둥성','广东','선전','深圳','수이베이','水贝','귀금속·주얼리','贵金属·珠宝','jewelry'],
+['광둥성','广东','선전','深圳','난유','南油','중고급 여성의류·디자인 의류','中高档女装·设计款服装','fashion'],
+['광둥성','广东','포산','佛山','러총 가구성','乐从家具城','가정용·사무용 가구, 소파, 침대','家用·办公家具·沙发·床','furniture'],
+['광둥성','广东','포산','佛山','중국도자성','中国陶瓷城','타일·도자기·욕실용품·건축자재','瓷砖·陶瓷·卫浴·建材','ceramic'],
+['광둥성','广东','중산 구전','中山古镇','구전 등조시장','古镇灯饰市场','조명·LED·실내외 등기구','照明·LED·室内外灯具','lighting'],
+['광둥성','广东','산터우 청하이','汕头澄海','청하이 완구 상권','澄海玩具商圈','플라스틱 완구·RC카·교육용 완구','塑料玩具·遥控车·益智玩具','toys'],
+['광둥성','广东','둥관','东莞','후먼 의류시장','虎门服装市场','의류·패션·봉제 제품','服装·时尚·缝制品','fashion'],
+['푸젠성','福建','스스','石狮','스스 의류성','石狮服装城','남성의류·캐주얼·스포츠웨어','男装·休闲装·运动服','fashion'],
+['푸젠성','福建','진장','晋江','진장 신발 산업단지','晋江鞋业产业带','운동화·스포츠화·신발 부자재','运动鞋·鞋材','shoes'],
+['장쑤성','江苏','창수','常熟','창수 의류상청','常熟服装城','남성의류·패딩·점퍼·캐주얼','男装·羽绒服·夹克·休闲装','fashion'],
+['장쑤성','江苏','난퉁','南通','디에스차오','叠石桥','침구·이불·베개·커튼·홈텍스타일','床品·被子·枕头·窗帘·家纺','textile'],
+['장쑤성','江苏','쑤저우','苏州','웨딩용품 상권','苏州婚纱商圈','웨딩드레스·웨딩 장식','婚纱·婚庆装饰','wedding'],
+['산둥성','山东','린이','临沂','린이 소상품성','临沂小商品城','생활잡화·주방용품·철물·문구·자동차용품','日用杂货·厨房用品·五金·文具·汽车用品','kitchen'],
+['산둥성','山东','칭다오 지모','青岛即墨','지모 의류시장','即墨服装市场','의류·아동복·니트','服装·童装·针织','fashion'],
+['허베이성','河北','바이고우','白沟','바이거우 가방시장','白沟箱包市场','캐리어·핸드백·백팩','拉杆箱·手袋·背包','bags'],
+['허난성','河南','정저우','郑州','인지상무성','银基商贸城','의류·패션잡화','服装·时尚配饰','fashion'],
+['랴오닝성','辽宁','선양','沈阳','우아이시장','五爱市场','의류·신발·가방·생활잡화','服装·鞋·箱包·日用杂货','household'],
+['쓰촨성','四川','청두','成都','허화츠','荷花池','의류·신발·가방·소상품','服装·鞋·箱包·小商品','household'],
+['후난성','湖南','주저우','株洲','인구아동복성','银谷童装城','아동복·유아의류','童装·婴幼儿服装','kids'],
+['장시성','江西','징더전','景德镇','징더전 도자기 상권','景德镇陶瓷商圈','도자기·식기·장식용 도자기','陶瓷·餐具·装饰瓷','ceramic'],
+['윈난성','云南','쿤밍','昆明','뤄스완 국제상무성','螺蛳湾国际商贸城','의류·신발·가방·생활용품','服装·鞋·箱包·日用品','household'],
+['베이징','北京','베이징','北京','톈이 도매시장 상권','天意小商品批发市场','생활잡화·문구·선물·장식품','日用杂货·文具·礼品·装饰品','household'],
+['상하이','上海','상하이','上海','치푸루 의류시장','七浦路服装市场','의류·패션잡화·외투·신발','服装·配饰·外套·鞋','fashion']];
+const WUHAN=[
+['한정제 소상품 중심시장','汉正街小商品中心市场','생활잡화·문구·액세서리·주방용품','日用杂货·文具·饰品·厨房用品','차오커우구','硚口区'],
+['다자제 의류 도매시장','大夹街服装批发市场','여성·남성의류·캐주얼','女装·男装·休闲装','차오커우구 다자제 219호','硚口区大夹街219号'],
+['한정제 브랜드 의류 광장','汉正街品牌服饰批发广场','브랜드 의류·패션 의류','品牌服装·时装','차오커우구 둬푸루','硚口区多福路'],
+['진정마오 한파 의류 본부','金正茂汉派服装总部','우한 스타일 남녀 의류','汉派男女装','한정제 777호','汉正街777号'],
+['한정제 제일대로 속옷시장','汉正街第一大道内衣专业批发市场','속옷·양말·이너웨어','内衣·袜子·家居服','한정제 제일대로','汉正街第一大道'],
+['리상 일용화장품시장','利商日用化妆品市场','생활화장품·미용용품','日化·美容用品','한정제 572호','汉正街572号'],
+['한커우베이 국제상품교역센터','汉口北国际商品交易中心','생활잡화·가방·신발·의류·호텔용품·철물·가전·가구','日用杂货·箱包·鞋·服装·酒店用品·五金·家电·家具','황피구 한커우베이','黄陂区汉口北'],
+['우한 롱텅 제일대로','武汉龙腾第一大道','남성의류·패션','男装·时装','한정제 상권','汉正街商圈'],
+['한정제 주방용품 상권','汉正街厨具市场','주방용품·식기·조리도구','厨房用品·餐具·厨具','옌허다다오 일대','沿河大道一带']];
+T.markets=(m,f)=>{const mob=can('sourcing','E');
+ if(f.wuhan)return `<div class="note" style="margin:0 0 12px">${L(['우한은 후베이성 성도로 중부 물류·유통 중심지입니다. 대표 상권은 <b>한정제(汉正街)</b>와 <b>한커우베이(汉口北)</b>입니다.','武汉是湖北省会、华中物流流通中心。代表商圈为<b>汉正街</b>与<b>汉口北</b>。'])}</div><div class="mkt">${WUHAN.map(x=>`<div class="mc"><div class="zh">${x[1]}</div><div class="loc">${L([x[0],x[0]])} · ${L([x[4],x[5]])}</div><div class="it">${L([x[2],x[3]])}</div><div class="ft"><span class="pill warn">${t('unverified')}</span><span class="sp"></span><button class="btn" data-copy="${x[1]}">${ic('copy')}${t('copy')}</button></div></div>`).join('')}</div>`;
+ const q=S.mktQ.trim(),p=S.mktP;const list=MARKETS.filter(x=>(!p||x[1]===p)&&(!q||x.join(' ').includes(q)));
+ return `<div class="tools"><input class="q" id="mktq" placeholder="${L(['품목·도시·시장명 검색 (예: 주방, 义乌)','搜索品类·城市·市场 (如：厨房、义乌)'])}" value="${q.replace(/"/g,'')}"><select id="mktp"><option value="">${L(['전체 성','全部省份'])}</option>${[...new Set(MARKETS.map(x=>x[1]))].map(z=>{const r=MARKETS.find(x=>x[1]===z);return `<option value="${z}" ${p===z?'selected':''}>${L([r[0],r[1]])}</option>`}).join('')}</select><span class="fchip">${list.length} ${t('rows')}</span><span class="sp"></span><button class="btn" data-demo ${mob?'':'disabled'}>${ic('plus')}${L(['방문 메모 추가','添加拜访备注'])}</button></div>
+ <div class="mkt">${list.map(x=>`<div class="mc"><div class="zh">${x[5]}</div><div class="loc">${L([x[0],x[1]])} · ${L([x[2],x[3]])} · ${L([x[4],x[5]])}</div><div class="it">${L([x[6],x[7]])}</div><div class="ft"><span class="pill warn">${t('unverified')}</span><span class="sp"></span><button class="btn" data-copy="${x[5]}">${ic('copy')}${t('copy')}</button></div></div>`).join('')||`<div class="empty">${t('noRes')}</div>`}</div>
+ <div class="note">${L(['출처: 사용자 제공 정리 자료. 시장은 이전·축소될 수 있어 <b>방문 확인일</b>을 기록해 검증 상태를 관리합니다. 로컬 DB라 중국 현지에서 인터넷 없이 조회됩니다.','来源：用户提供的整理资料。市场可能搬迁或缩小，通过记录<b>实地确认日期</b>管理验证状态。本地数据库，在中国无网络也可查询。'])}</div>`};
+T.belts=()=>{const b=[['양장','阳江','칼·가위·주방도구','刀剪·厨具'],['타이저우 황옌','台州黄岩','플라스틱 생활용품·금형','塑料日用品·模具'],['닝보 위야오','宁波余姚','소형 가전·플라스틱','小家电·塑料'],['융캉','永康','공구·철물·보온병','五金工具·保温杯'],['윈허','云和','목재 완구','木制玩具'],['안지','安吉','의자·대나무 제품','椅业·竹制品'],['차오저우','潮州','도자기·위생도기','陶瓷·卫浴'],['이우','义乌','소상품 전반','小商品']];
+ return `<div class="tw"><table class="tb"><thead><tr><th>${L(['지역','地区'])}</th><th>中文</th><th>${L(['주력 품목','主力品类'])}</th><th>${L(['검증','验证'])}</th></tr></thead><tbody>${b.map(x=>`<tr><td>${x[0]}</td><td style="font-family:'Noto Sans SC'">${x[1]}</td><td>${L([x[2],x[3]])}</td><td>${pill('pending').replace(/대기|待处理/,t('unverified'))}</td></tr>`).join('')}</tbody></table></div><div class="note">${L(['산업벨트(产业带)는 공장 밀집 지역입니다. 도매시장보다 <b>공장 직거래</b>에 유리합니다. 참고용 초기 데이터이며 검증이 필요합니다.','产业带是工厂聚集区，比批发市场更适合<b>工厂直采</b>。为参考初始数据，需验证。'])}</div>`};
+
+/* 현장 체크리스트 */
+const CHECK=[['现货还是订货？','재고 상품인가요, 주문 생산인가요?'],['最低起订量是多少？','최소 주문 수량(MOQ)은 얼마인가요?'],['可以拿样品吗？','샘플을 구매할 수 있나요?'],['可以贴韩国标签吗？','한국어 라벨을 붙일 수 있나요?'],['可以提供出口单据吗？','수출 서류를 제공할 수 있나요?'],['是否可以直接联系工厂？','제조 공장과 직접 연락할 수 있나요?'],['交货期多久？','납기는 얼마나 걸리나요?'],['可以定制包装吗？','포장을 맞춤 제작할 수 있나요?'],['价格含税吗？能开发票吗？','가격에 세금이 포함되나요? 발표(영수증) 발행되나요?'],['支持哪些付款方式？','어떤 결제 방식을 지원하나요?']];
+T.checklist=()=>`<div class="tools"><span class="fchip">${CHECK.length} ${L(['문항','题'])}</span><span class="sp"></span><button class="btn ${S.bigCheck?'pri':''}" id="bigcheck">${L(['현장 모드 (큰 글씨)','现场模式（大字）'])}</button></div><div class="card ${S.bigCheck?'big':''}">${CHECK.map((c,i)=>`<div class="cq"><div><div class="z">${i+1}. ${c[0]}</div><div class="k">${c[1]}</div></div><button class="btn" data-copy="${c[0]}">${ic('copy')}</button></div>`).join('')}</div><div class="note">${L(['전자제품·완구·화장품·어린이용품은 국내 수입·판매 인증을 먼저 확인하세요.','电子产品·玩具·化妆品·儿童用品须先确认韩国进口·销售认证。'])}</div>`;
+
+/* 마진 계산기 */
+T.calc=(m)=>{if(!fcan('margin'))return `<div class="card"><div class="empty">${ic('lock')}<h2>${t('maskTip')}</h2><p>${L(FIELD_LBL.margin)}</p></div></div>`;
+ const fl=[['price',['판매가 (원)','售价 (韩元)'],19900],['cny',['위안 원가 (¥)','人民币成本 (¥)'],12.5],['fx',['환율 (원/¥)','汇率 (韩元/¥)'],192],['ship',['개당 국제운송 (원)','单件国际运费'],620],['duty',['관세율 (%)','关税率 (%)'],8],['pack',['포장·라벨 (원)','包装·标签'],180],['fee',['쿠팡 판매수수료 (%)','酷澎佣金 (%)'],10.8],['rg',['로켓그로스 물류비 (원)','火箭成长物流费'],3200],['ad',['광고비 (% 매출)','广告费 (%销售额)'],10]];
+ return `<div class="g2"><div class="card"><h3>${L(['입력','输入'])}<small>${L(['기존 계산기 로직 연결 예정','将接入现有计算器逻辑'])}</small></h3><div class="form">${fl.map(x=>`<label class="fld">${L(x[1])}<input id="c-${x[0]}" class="num" type="number" step="any" value="${x[2]}"></label>`).join('')}</div></div><div class="card"><h3>${L(['결과','结果'])}<small>${L(['부가세 별도','不含增值税'])}</small></h3><div class="calcout" id="calcout"></div></div></div>`};
+function runCalc(){const g=id=>parseFloat(document.getElementById('c-'+id)?.value)||0;const o=document.getElementById('calcout');if(!o)return;
+ const price=g('price'),landed=g('cny')*g('fx')*(1+g('duty')/100)+g('ship')+g('pack'),fee=price*g('fee')/100,ad=price*g('ad')/100,rg=g('rg'),profit=price-landed-fee-ad-rg,mr=price?profit/price:0;
+ o.innerHTML=`<div class="l" style="color:var(--muted);font-size:12px">${L(['개당 순이익','单件净利润'])}</div><div class="big ${profit<0?'dn':''}">${krw(profit)}</div><div class="num ${mr<.15?'dn':'up'}">${L(['마진율','利润率'])} ${(mr*100).toFixed(1)}% ${mr<.15?L(['· 목표 15% 미달','· 未达目标15%']):''}</div>
+ ${[[['입고 원가','到岸成本'],landed],[['판매 수수료','销售佣金'],fee],[['로켓그로스 물류비','火箭成长物流费'],rg],[['광고비','广告费'],ad]].map(r=>`<div class="row"><span>${L(r[0])}</span><span class="num">${krw(r[1])}</span></div>`).join('')}`}
+
+T.channels=(m,f)=>{const c=f.set==='carrier'?[['CJ대한통운','CJ大韩通运','active'],['한진택배','韩进快递','inactive'],['롯데택배','乐天快递','inactive'],['우체국택배','邮局快递','inactive']]
+ :[['쿠팡 Wing (로켓그로스)','酷澎 Wing（火箭成长）','inactive','사업자 등록 후 연결','注册营业执照后连接'],['네이버 스마트스토어','Naver SmartStore','inactive','커머스API','Commerce API'],['11번가','11街','inactive','확장 예정','计划扩展'],['G마켓·옥션','Gmarket·Auction','inactive','확장 예정','计划扩展'],['자사몰 (Shopify)','自营店 (Shopify)','inactive','드롭쉬핑 프로젝트와 연동','与代发项目联动']];
+ return `<div class="chn">${c.map(x=>`<div class="card"><h3>${L([x[0],x[1]])}</h3>${pill(x[2]).replace(/중지|停用/,L(['미연결','未连接'])).replace(/사용중|启用/,L(['연결됨','已连接']))}${x[3]?`<p style="color:var(--muted);font-size:12px;margin:8px 0">${L([x[3],x[4]])}</p>`:'<p></p>'}<button class="btn" data-demo ${can(m.g.id,'E')?'':'disabled'}>${L(['연결 설정','连接设置'])}</button></div>`).join('')}</div>`};
+T.scan=()=>`<div class="scanbox"><div style="font-weight:600">${L(['바코드를 스캔하거나 입력 후 Enter','扫描条码或输入后按Enter'])}</div><input id="scanin" inputmode="numeric" placeholder="880…" autocomplete="off"><div class="seg"><button class="on">${L(['입고','入库'])}</button><button>${L(['출고','出库'])}</button><button>${L(['실사','盘点'])}</button></div><small style="color:var(--muted)">${L(['USB 스캐너는 키보드처럼 입력되어 웹·데스크톱 모두 동작합니다. 휴대폰 카메라 스캔은 모바일 앱에서 지원 예정.','USB扫码枪按键盘输入，网页·桌面均可用。手机摄像头扫码将在移动端支持。'])}</small></div>
+ <div style="height:14px"></div><div class="tw"><table class="tb"><thead><tr><th>${L(['시각','时间'])}</th><th>${L(['바코드','条码'])}</th><th>SKU</th><th class="r">${L(['수량','数量'])}</th></tr></thead><tbody id="scanlist">${scanRows()}</tbody></table></div>`;
+const scanRows=()=>S.scans.length?S.scans.map(s=>`<tr><td class="num">${s.t}</td><td class="mono">${s.c}</td><td class="mono">${s.k}</td><td class="r num">+1</td></tr>`).join(''):`<tr><td colspan="4" style="color:var(--muted)">${L(['아직 스캔 기록이 없습니다. 위 칸에 아무 숫자나 넣고 Enter를 눌러 보세요.','暂无扫码记录。在上方输入任意数字并按Enter试试。'])}</td></tr>`;
+
+/* 기능 맵 */
+T.fmap=()=>{const tot=Object.values(MODS),feat=tot.reduce((s,m)=>s+m.f.length,0);
+ return `<div class="tools"><span class="fchip">${GROUPS.length} ${L(['그룹','组'])}</span><span class="fchip">${tot.length} ${L(['모듈','模块'])}</span><span class="fchip">${feat} ${L(['하위 기능','子功能'])}</span><span class="sp"></span>${Object.entries(PHASES).map(([k,v])=>`<span class="ph ${k==1?'p1':''}">${L(v)}</span>`).join('')}</div>
+ <div class="fmap">${GROUPS.map(g=>`<div class="fg"><h3>${ic(g.ic)}${L(g.n)}${can(g.id)?'':`<span class="bdg wrn">${ic('lock')}${t('noPerm')}</span>`}</h3>${g.mods.map(m=>`<div class="fm ${isOn(m)?'':'off'}"><button data-open="${m.id}">${L(m.n)} <span class="ph ${m.p==1?'p1':''}">P${m.p}</span>${m.m?ic('mob'):''}${isSens(m)?ic('lock'):''}</button><p>${L(m.d)}</p><div class="chips">${m.f.map(f=>`<span>${L(f.n)}</span>`).join('')}</div></div>`).join('')}</div>`).join('')}</div>`};
+
+/* 설정: 모듈 관리 */
+T.modules=()=>`<div class="note" style="margin:0 0 12px">${L(['끈 모듈은 모든 역할의 메뉴에서 사라집니다. 이 설정은 나중에 <b>요금제·라이선스</b>와 같은 스위치로 연결됩니다.','关闭的模块会从所有角色菜单中消失。此设置以后会与<b>套餐·许可</b>使用同一开关。'])}</div>${GROUPS.map(g=>`<div class="card" style="margin-bottom:12px"><h3>${ic(g.ic)}${L(g.n)}</h3>${g.mods.map(m=>`<div class="mrow"><span>${L(m.n)}<small>${L(m.d)}</small></span><span class="ph hm ${m.p==1?'p1':''}">${L(PHASES[m.p])}</span><span class="bdg hm">${L(PLANS[m.plan])}</span><span class="hm" style="color:var(--muted);width:20px">${m.m?ic('mob'):''}</span><span class="switch" title="${m.core?t('core'):''}"><input type="checkbox" data-mod="${m.id}" ${isOn(m)?'checked':''} ${m.core||S.role!=='owner'?'disabled':''}><span></span></span></div>`).join('')}</div>`).join('')}`;
+
+/* 설정: 역할·권한 매트릭스 */
+T.roles=()=>{const own=S.role==='owner',rk=Object.keys(ROLES);
+ return `${own?'':`<div class="note" style="margin:0 0 12px">${t('editOnlyOwner')}</div>`}<div class="tw"><table class="tb"><thead><tr><th>${L(['모듈 그룹','模块组'])}</th>${rk.map(r=>`<th>${L(ROLES[r])}</th>`).join('')}</tr></thead><tbody>
+ ${GROUPS.map(g=>`<tr><td>${L(g.n)}</td>${rk.map(r=>`<td><span class="perm">${'VEXD'.split('').map(c=>{const id=`p-${r}-${g.id}-${c}`;return `<input type="checkbox" id="${id}" data-perm="${r}|${g.id}|${c}" ${(S.perms[r][g.id]||'').includes(c)?'checked':''} ${own&&r!=='owner'?'':'disabled'}><label for="${id}" title="${{V:L(['보기','查看']),E:L(['수정','编辑']),X:L(['내보내기','导出']),D:L(['삭제','删除'])}[c]}">${c}</label>`}).join('')}</span></td>`).join('')}</tr>`).join('')}
+ ${Object.keys(FIELD_LBL).map(fk=>`<tr><td><b>${L(FIELD_LBL[fk])}</b></td>${rk.map(r=>`<td><span class="switch"><input type="checkbox" data-field="${r}|${fk}" ${S.fields[r].includes(fk)?'checked':''} ${own&&r!=='owner'?'':'disabled'}><span></span></span></td>`).join('')}</tr>`).join('')}
+ </tbody></table></div><div class="note">${L(['V 보기 · E 수정 · X 내보내기 · D 삭제. <b>원가·마진 필드 권한</b>은 메뉴 접근과 별개로 모든 화면의 해당 숫자를 가립니다. 실제 버전에서는 같은 검사를 <b>서버 API에서도</b> 합니다.','V查看·E编辑·X导出·D删除。<b>成本·利润字段权限</b>独立于菜单权限，会遮盖所有页面中的相应数字。正式版中<b>服务器API</b>也会做同样检查。'])}</div>`};
+T.users=()=>`<div class="tools"><span class="fchip">${USERS.length} ${L(['명','人'])}</span><span class="sp"></span><button class="btn pri" data-demo ${S.role==='owner'?'':'disabled'}>${ic('plus')}${L(['직원 초대','邀请员工'])}</button></div><div class="tw"><table class="tb"><thead><tr><th>${L(['이름','姓名'])}</th><th>${L(['역할','角色'])}</th><th>${L(['2단계 인증','两步验证'])}</th><th>${L(['최근 로그인','最近登录'])}</th><th>${L(['상태','状态'])}</th></tr></thead><tbody>${USERS.map(u=>`<tr><td><span style="display:flex;gap:8px;align-items:center"><span class="av" style="width:26px;height:26px;font-size:11px">${u.ini}</span>${L(u.n)}</span></td><td>${L(ROLES[u.role])}</td><td>${u.tfa?pill('active').replace(/사용중|启用/,'ON'):pill('warn').replace(/주의|注意/,'OFF')}</td><td class="num">${u.last}</td><td>${pill('active')}</td></tr>`).join('')}</tbody></table></div>`;
+T.security=()=>`<div class="g2"><div class="card"><h3>PIN</h3><div class="stack" style="gap:10px"><label class="fld">${L(['현재 PIN','当前PIN'])}<input id="sec1" type="password" value="0000"></label><label class="fld">${L(['새 PIN','新PIN'])}<input id="sec2" type="password" placeholder="••••"></label><label class="fld">${L(['자동 잠금','自动锁定'])}<select id="sec3">${[1,5,15,30].map(x=>`<option ${S.autolock===x?'selected':''} value="${x}">${x}${L(['분','分钟'])}</option>`).join('')}</select></label><button class="btn pri" data-demo>${L(['저장','保存'])}</button></div></div>
+ <div class="card"><h3>${L(['PIN이 필요한 메뉴','需要PIN的菜单'])}</h3>${Object.values(MODS).filter(m=>m.s||S.sens[m.id]!==undefined||['finance','pricing','system'].includes(m.g.id)).map(m=>`<div class="mrow" style="grid-template-columns:1fr auto"><span>${L(m.n)}<small>${L(m.g.n)}</small></span><span class="switch"><input type="checkbox" data-sens="${m.id}" ${isSens(m)?'checked':''} ${S.role==='owner'?'':'disabled'}><span></span></span></div>`).join('')}</div></div>`;
+T.general=()=>`<div class="card"><div class="form"><label class="fld">${L(['언어','语言'])}<select id="gen-lang"><option value="ko" ${S.lang==='ko'?'selected':''}>한국어</option><option value="zh" ${S.lang==='zh'?'selected':''}>中文(简体)</option></select></label>
+ <label class="fld">${L(['테마','主题'])}<select id="gen-theme"><option value="">${L(['시스템 따라감','跟随系统'])}</option><option value="dark" ${S.theme==='dark'?'selected':''}>${L(['다크','深色'])}</option><option value="light" ${S.theme==='light'?'selected':''}>${L(['라이트','浅色'])}</option></select></label>
+ <label class="fld">${L(['시작 화면','起始页'])}<select id="gen-start"><option>${L(MODS.dashboard.n)}</option><option>${L(MODS['kw-explore'].n)}</option></select></label>
+ <label class="fld">${L(['통화 표시','货币显示'])}<select id="gen-cur"><option>KRW ₩ + CNY ¥</option></select></label></div><div class="note">${L(['다국어는 번역 키 구조라 나중에 영어 등도 사전만 추가하면 됩니다.','多语言采用翻译键结构，以后添加英语等只需增加词典。'])}</div></div>`;
+T.plans=()=>{const pl=[['free',['무료','免费'],'₩0',[['키워드 탐색','关键词探索'],['마진 계산기','利润计算器'],['현장 체크리스트','现场清单']]],['pro',['프로','专业版'],'₩49,000',[['급상승·시즌 캘린더','飙升·季节日历'],['쿠팡 경쟁·상품 추적','酷澎竞争·商品追踪'],['소싱 DB·견적','货源库·报价'],['리포트','报表']]],['biz',['비즈니스','企业版'],'₩149,000',[['채널 연동·주문·송장','渠道·订单·运单'],['창고·바코드','仓库·条码'],['정산·자금','结算·资金'],['직원 5명+ · 권한','员工5人+·权限']]]];
+ return `<div class="plans">${pl.map((p,i)=>`<div class="plan ${i===1?'hl':''}"><b>${L(p[1])}</b><div class="pr">${p[2]}<small style="font-size:12px;color:var(--muted)">/${L(['월','月'])}</small></div><ul>${p[3].map(x=>`<li>${L(x)}</li>`).join('')}</ul><div style="margin-top:10px;font-size:11.5px;color:var(--muted)">${Object.values(MODS).filter(m=>m.plan===p[0]).length} ${L(['모듈','模块'])}</div></div>`).join('')}</div><div class="note">${L(['가격은 예시입니다. 모듈의 <b>요금제</b> 값이 그대로 라이선스 키·SaaS 구독에 연결되도록 설계합니다.','价格为示例。设计上模块的<b>套餐</b>值将直接关联许可证密钥·SaaS订阅。'])}</div>`};
+
+/* =========================================================
+   10) 렌더링
+   ========================================================= */
+const $=id=>document.getElementById(id);
+function renderTop(){const u=USERS.find(x=>x.role===S.role)||USERS[0];const left=Math.max(0,S.unlockUntil-Date.now());
+ $('top').innerHTML=`<button class="ib hamb" id="hamb" aria-label="menu">${ic('menu')}</button>
+ <div class="brand"><span class="mk">SS</span><span>${t('app')}<small>${t('sub')}</small></span></div>
+ <div class="srch">${ic('search')}<input id="gsearch" placeholder="${t('search')}" autocomplete="off"><div class="res" id="gres" hidden></div></div><span class="sp"></span>
+ <div class="tb-r">${left>0?`<button class="lockchip" id="relock" title="${t('lockNow')}">${ic('lock')}<span id="lockleft">${Math.floor(left/60000)}:${String(Math.floor(left/1000)%60).padStart(2,'0')}</span></button>`:''}
+ <span class="collect dk"><span class="dot"></span>${t('collecting')}</span>
+ <div class="seg"><button data-lang="ko" class="${S.lang==='ko'?'on':''}">한</button><button data-lang="zh" class="${S.lang==='zh'?'on':''}">中</button></div>
+ <button class="ib dk" id="themebtn" title="theme">${ic('moon')}</button>
+ <button class="ib ${S.mprev?'on':''}" id="mprev" title="${t('mprev')}">${ic('phone')}<span class="dk">${t('mprev')}</span></button>
+ <select class="rolesel" id="rolesel" title="role">${Object.keys(ROLES).map(r=>`<option value="${r}" ${S.role===r?'selected':''}>${L(ROLES[r])}</option>`).join('')}</select>
+ <button class="av" id="avatar" title="${t('logout')}">${u.ini}</button></div>`}
+function renderSide(){$('side').innerHTML=GROUPS.map(g=>{const ms=g.mods.filter(visible);if(!ms.length)return '';
+ return `<div class="grp ${S.closed[g.id]?'closed':''}"><button data-grp="${g.id}">${ic(g.ic)}${L(g.n)}<span class="cv">${ic('cv')}</span></button><div class="mis">${ms.map(m=>`<button class="mi ${S.active===m.id?'on':''}" data-open="${m.id}">${L(m.n)}<span class="tg">${isSens(m)?ic('lock'):''}${m.p>1?`<span class="ph">P${m.p}</span>`:''}</span></button>`).join('')}</div></div>`}).join('')
+ +`<div class="sidefoot">${L(['역할','角色'])}: <b>${L(ROLES[S.role])}</b><br>${L(['보이는 메뉴','可见菜单'])} ${Object.values(MODS).filter(visible).length} / ${Object.keys(MODS).length}</div>`}
+function renderTabs(){S.tabs=S.tabs.filter(id=>MODS[id]&&visible(MODS[id]));if(!S.tabs.length)S.tabs=['dashboard'];if(!S.tabs.includes(S.active))S.active=S.tabs[0];
+ $('tabs').innerHTML=S.tabs.map(id=>`<button class="tab ${S.active===id?'on':''}" role="tab" data-tab="${id}">${L(MODS[id].n)}${S.tabs.length>1?`<span class="x" data-close="${id}">${ic('x')}</span>`:''}</button>`).join('')}
+function renderMain(){const m=MODS[S.active];const v=$('view');
+ if(!m){v.innerHTML='';return}
+ let head=`<div class="mh"><div><div class="crumb">${ic(m.g.ic)}${L(m.g.n)}</div><h1>${L(m.n)}</h1><p>${L(m.d)}</p></div><div class="badges"><span class="bdg ${m.p==1?'acc':''}">${L(PHASES[m.p])}</span><span class="bdg">${L(PLANS[m.plan])}</span>${m.m?`<span class="bdg">${ic('mob')}${t('mobileOK')}</span>`:''}${isSens(m)?`<span class="bdg wrn">${ic('lock')}${t('sensitive')}</span>`:''}<span class="bdg">${t('dummy')}</span></div></div>`;
+ if(!can(m.g.id)){v.innerHTML=head+`<div class="empty">${ic('lock')}<h2>${t('noPerm')}</h2><p>${t('noPermD')}</p></div>`;return}
+ if(!isOn(m)){v.innerHTML=head+`<div class="empty">${ic('box')}<h2>${t('offTitle')}</h2><p>${t('offD')}</p></div>`;return}
+ if(isLocked(m)){v.innerHTML=head+`<div class="empty">${ic('lock')}<h2>${t('pinT')}</h2><p>${t('pinD')}</p><button class="btn pri" data-unlock>${t('unlock')}</button></div>`;return}
+ const si=S.sub[m.id]||0,f=m.f[si];
+ const subs=m.f.length>1?`<div class="subs"><span class="lbl">${t('features')}</span>${m.f.map((x,i)=>`<button data-sub="${i}" class="${i===si?'on':''}">${L(x.n)}</button>`).join('')}</div>`:`<div class="subs"><span class="lbl">${t('features')}</span><button class="on">${L(f.n)}</button></div>`;
+ v.innerHTML=head+subs+(T[f.tpl]?T[f.tpl](m,f,`${m.id}:${si}`):'');
+ if(f.tpl==='calc')runCalc()}
+function renderBottom(){const ms=Object.values(MODS).filter(m=>m.m&&visible(m)).slice(0,4);
+ $('bnav').innerHTML=ms.map(m=>`<button data-open="${m.id}" class="${S.active===m.id?'on':''}">${ic(m.g.ic)}<span>${L(m.n)}</span></button>`).join('')+`<button id="bmore">${ic('grid')}<span>${t('more')}</span></button>`}
+function applyShell(){document.documentElement.lang=S.lang==='ko'?'ko':'zh-CN';
+ if(S.theme)document.documentElement.setAttribute('data-theme',S.theme);else document.documentElement.removeAttribute('data-theme');
+ $('stage').classList.toggle('preview',S.mprev);$('app').classList.toggle('is-mobile',isMobile())}
+function render(){applyShell();renderTop();renderSide();renderTabs();renderMain();renderBottom()}
+function open(id,{sub}={}){const m=MODS[id];if(!m)return;if(!S.tabs.includes(id)){S.tabs.push(id);if(S.tabs.length>8)S.tabs.shift()}S.active=id;if(sub!==undefined)S.sub[id]=sub;
+ $('app').classList.remove('drawer');try{if(location.hash!=='#'+id)history.replaceState(null,'','#'+id)}catch(e){}
+ renderSide();renderTabs();renderMain();renderBottom();$('view').scrollTop=0}
+function toast(msg){const el=$('toast');el.textContent=msg;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,1900)}
+
+/* PIN 모달 */
+function pinModal(){const md=$('modal');md.hidden=false;
+ md.innerHTML=`<div class="dlg" role="dialog" aria-modal="true"><h2>${ic('lock')}${t('pinT')}</h2><p>${t('pinD')}</p><div class="pin">${[0,1,2,3].map(i=>`<input id="pin${i}" maxlength="1" inputmode="numeric" type="password" aria-label="PIN ${i+1}">`).join('')}</div><div class="err" id="pinerr"></div><div class="act"><button class="btn" id="pincancel">${t('cancel')}</button><button class="btn pri" id="pinok">${t('unlock')}</button></div></div>`;
+ const ins=[0,1,2,3].map(i=>$('pin'+i));ins[0].focus();
+ ins.forEach((el,i)=>{el.addEventListener('input',()=>{if(el.value&&i<3)ins[i+1].focus();if(i===3&&el.value)tryPin()});el.addEventListener('keydown',e=>{if(e.key==='Backspace'&&!el.value&&i)ins[i-1].focus();if(e.key==='Enter')tryPin()})});
+ function tryPin(){const v=ins.map(x=>x.value).join('');if(v==='0000'){S.unlockUntil=Date.now()+S.autolock*60000;md.hidden=true;render();toast(t('unlocked'))}else{$('pinerr').textContent=t('pinWrong');ins.forEach(x=>x.value='');ins[0].focus()}}
+ $('pinok').onclick=tryPin;$('pincancel').onclick=()=>md.hidden=true}
+function loginModal(){const md=$('modal');md.hidden=false;let sel=S.role;
+ const draw=()=>{md.innerHTML=`<div class="dlg" role="dialog" aria-modal="true"><h2>${t('loginT')}</h2><p>${t('loginD')}</p><div class="ulist">${USERS.map(u=>`<button data-u="${u.role}" class="${sel===u.role?'on':''}"><span class="av">${u.ini}</span><span>${L(u.n)}<small>${L(ROLES[u.role])}</small></span></button>`).join('')}</div><label class="fld">${t('pw')}<input id="lpw" type="password" value="demo"></label><div class="act"><button class="btn" id="lcancel">${t('cancel')}</button><button class="btn pri" id="lok">${t('login')}</button></div></div>`;
+  md.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>{sel=b.dataset.u;draw()});$('lcancel').onclick=()=>md.hidden=true;$('lok').onclick=()=>{S.role=sel;S.unlockUntil=0;save();md.hidden=true;render()}};draw()}
+
+/* =========================================================
+   11) 이벤트 (위임)
+   ========================================================= */
+document.addEventListener('click',e=>{const el=e.target.closest('button,[data-niche],[data-tab],.tab');if(!el)return;const d=el.dataset;
+ if(e.target.closest('[data-close]')){const id=e.target.closest('[data-close]').dataset.close;S.tabs=S.tabs.filter(x=>x!==id);if(S.active===id)S.active=S.tabs[S.tabs.length-1];renderTabs();renderSide();renderMain();e.stopPropagation();return}
+ if(d.open){open(d.open);return} if(d.tab){open(d.tab);return}
+ if(d.niche!==undefined){S.niche=+d.niche;if(MODS.niche&&visible(MODS.niche))open('niche');return}
+ if(d.sub!==undefined){S.sub[S.active]=+d.sub;renderMain();return}
+ if(d.grp){S.closed[d.grp]=!S.closed[d.grp];renderSide();return}
+ if(d.lang){S.lang=d.lang;save();render();return}
+ if(d.unlock!==undefined){pinModal();return}
+ if(d.demo!==undefined){if(!el.disabled)toast(t('demoAct'));return}
+ if(d.copy){const txt=d.copy;const done=()=>toast(t('copied')+': '+txt);try{navigator.clipboard.writeText(txt).then(done,()=>toast(txt))}catch(err){toast(txt)}return}
+ if(el.id==='hamb'){$('app').classList.toggle('drawer');return}
+ if(el.id==='bmore'){$('app').classList.add('drawer');return}
+ if(el.id==='themebtn'){const dark=S.theme?S.theme==='dark':!matchMedia('(prefers-color-scheme: light)').matches;S.theme=dark?'light':'dark';save();applyShell();return}
+ if(el.id==='mprev'){S.mprev=!S.mprev;render();return}
+ if(el.id==='relock'){S.unlockUntil=0;render();return}
+ if(el.id==='avatar'){loginModal();return}
+ if(el.id==='bigcheck'){S.bigCheck=!S.bigCheck;renderMain();return}
+});
+$('scrim').addEventListener('click',()=>$('app').classList.remove('drawer'));
+document.addEventListener('change',e=>{const el=e.target,d=el.dataset;
+ if(el.id==='rolesel'){S.role=el.value;S.unlockUntil=0;save();render();toast(L(ROLES[S.role]));return}
+ if(d.mod){S.enabled[d.mod]=el.checked;save();renderSide();renderTabs();renderBottom();return}
+ if(d.perm){const [r,g,c]=d.perm.split('|');let s=S.perms[r][g]||'';s=el.checked?s+c:s.replace(c,'');S.perms[r][g]=s;renderSide();return}
+ if(d.field){const [r,f]=d.field.split('|');const a=S.fields[r];el.checked?a.includes(f)||a.push(f):a.splice(a.indexOf(f),1);return}
+ if(d.sens){S.sens[d.sens]=el.checked;renderSide();return}
+ if(el.id==='nichesel'){S.niche=+el.value;renderMain();return}
+ if(el.id==='mktp'){S.mktP=el.value;renderMain();return}
+ if(el.id==='gen-lang'){S.lang=el.value;save();render();return}
+ if(el.id==='gen-theme'){S.theme=el.value||null;save();applyShell();return}
+ if(el.id==='sec3'){S.autolock=+el.value;return}
+});
+document.addEventListener('input',e=>{const el=e.target;
+ if(el.id&&el.id.startsWith('c-'))runCalc();
+ if(el.id==='mktq'){S.mktQ=el.value;const pos=el.selectionStart;renderMain();const n=$('mktq');n.focus();try{n.setSelectionRange(pos,pos)}catch(err){}}
+ if(el.id==='gsearch')searchMenu(el.value)});
+document.addEventListener('keydown',e=>{
+ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('gsearch')?.focus()}
+ if(e.target.id==='scanin'&&e.key==='Enter'&&e.target.value.trim()){const now=new Date();S.scans.unshift({t:now.toTimeString().slice(0,8),c:e.target.value.trim(),k:'SS-'+(1001+Math.floor(Math.random()*20)*7)});S.scans=S.scans.slice(0,12);e.target.value='';$('scanlist').innerHTML=scanRows()}
+ if(e.target.id==='gsearch'&&e.key==='Enter'){const b=document.querySelector('#gres button');if(b)b.click()}
+ if(e.key==='Escape'){$('modal').hidden=true;const r=$('gres');if(r)r.hidden=true}});
+document.addEventListener('focusout',e=>{if(e.target.id==='gsearch')setTimeout(()=>{const r=$('gres');if(r)r.hidden=true},150)});
+function searchMenu(q){const r=$('gres');q=q.trim().toLowerCase();if(!q){r.hidden=true;return}const out=[];
+ Object.values(MODS).filter(visible).forEach(m=>{const nm=(m.n[0]+' '+m.n[1]).toLowerCase();if(nm.includes(q)||(m.d[0]+m.d[1]).toLowerCase().includes(q))out.push([m.id,L(m.n),L(m.g.n),undefined]);
+  m.f.forEach((f,i)=>{if((f.n[0]+' '+f.n[1]).toLowerCase().includes(q))out.push([m.id,L(f.n),L(m.n),i])})});
+ r.innerHTML=out.slice(0,12).map(o=>`<button data-go="${o[0]}" data-gs="${o[3]??''}">${L(['→','→'])} ${o[1]}<small>${o[2]}</small></button>`).join('')||`<div style="padding:10px;color:var(--muted)">${t('noRes')}</div>`;r.hidden=false;
+ r.querySelectorAll('button').forEach(b=>b.onmousedown=ev=>{ev.preventDefault();open(b.dataset.go,{sub:b.dataset.gs===''?undefined:+b.dataset.gs});r.hidden=true;$('gsearch').value=''})}
+matchMedia('(max-width: 820px)').addEventListener('change',()=>{applyShell()});
+matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{});
+window.addEventListener('hashchange',()=>{const id=location.hash.slice(1);if(MODS[id]&&id!==S.active)open(id)});
+setInterval(()=>{const el=$('lockleft');const left=S.unlockUntil-Date.now();
+ if(el){if(left<=0){render();return}el.textContent=`${Math.floor(left/60000)}:${String(Math.floor(left/1000)%60).padStart(2,'0')}`}},1000);
+
+load();
+{const h=location.hash.slice(1);if(MODS[h]&&h!=='dashboard'){S.tabs.push(h);S.active=h}}
+render();
+</script>
+
+</body>
+</html>
