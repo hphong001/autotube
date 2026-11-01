@@ -8194,6 +8194,7 @@
             line-height: 14px;
             box-shadow: 0 1px 4px rgba(0, 0, 0, .3);
         }
+        .kc-hh-tag.kc-ll { background: rgba(30, 90, 210, .9); }
         /* 윈폼 차트 #hh-tag 와 같은 색 */
 
         .kc-cr {
@@ -12755,6 +12756,13 @@
             display: none;
         }
 
+        .sz-live { display: flex; gap: 12px; align-items: baseline; font-size: 11.5px; color: #9aa3b5; white-space: nowrap; order: 99; margin-left: auto; }
+        .sz-live b { color: #e3e7f0; } .sz-live .lv-con.warn b { color: #ffb347; } .sz-live .lv-con.full b { color: #ff6b6b; }
+        .grid-mode .top-bar .us-tabbar { position: relative; }
+        .grid-mode .top-bar .us-tabbar .sz-live { position: absolute; left: 0; right: 0; bottom: calc(100% + 8px); margin: 0; justify-content: space-between; gap: 10px; font-size: 12.5px; overflow: visible; }   /* 탭 버튼 위쪽 빈 공간에 (버튼과 간격) */
+        .g-light .sz-live { color: #5d6577; } .g-light .sz-live b { color: #1f2533; }
+        .sz-wait { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 99999; display: flex; flex-direction: column; gap: 3px; align-items: center; text-align: center; max-width: calc(100vw - 24px); padding: 10px 18px; border-radius: 10px; background: rgba(20, 24, 36, .97); border: 1px solid #f5c542; color: #e7e9f0; box-shadow: 0 6px 24px rgba(0, 0, 0, .5); font-size: 14px; }
+        .sz-wait b { color: #f5c542; font-size: 15px; } .sz-wait small { color: #8b93a7; font-size: 12px; }
         .grid-mode .top-bar .us-tabbar .sz-ver {
             display: none;
         }
@@ -20407,7 +20415,15 @@
                   else 관심_재시도 = setTimeout(관심_조회, 3000);   // 실패 → 3초 뒤 다시
               });
         }
-        setInterval(function () { if (Date.now() - 관심_조회시각 >= 관심_간격) 관심_조회(); 관심_가격표시(); 관심_정렬단추(); }, 2000);
+        // 관심 종목 시세 조회 간격: 실시간 시세(야후 실시간 · 데이터 PC)가 대부분(80% 이상) 살아 있으면 30초 · 아니면 10초 (Worker 무료 요청 아낌 · 화면 갱신 속도는 실시간 그대로)
+        function 관심_조회간격() {
+            try {
+                var 목 = WATCH_LIST.map(function (w) { return w.ticker; }).filter(function (t) { return t !== 'SPX'; }); if (!목.length) return 관심_간격;
+                var 산 = 목.filter(function (t) { var pk = pickQuote(t), q = pk && pk.q; return q && q.price > 0 && q.recvAt > 0 && Date.now() - q.recvAt < 30000; }).length;
+                return 산 / 목.length >= 0.8 ? 30000 : 관심_간격;
+            } catch (e) { return 관심_간격; }
+        }
+        setInterval(function () { if (Date.now() - 관심_조회시각 >= 관심_조회간격()) 관심_조회(); 관심_가격표시(); 관심_정렬단추(); }, 2000);
         document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && Date.now() - 관심_조회시각 >= 관심_간격) 관심_조회(); });
 
         function 관심_값(t) {
@@ -20507,7 +20523,7 @@
         //   흐린 띠 = 프리·애프터 · ● = 지금 가격(실시간 값으로 끝점을 이어 붙임) · 거래 없는 구간은 건너뜀
         // ════════════════════════════════════════════════════════
         var 미니선 = {}, 미니_요청중 = {}, 미니_실패 = {};
-        function 미니_보관(키) { var x = 미니선[키]; if (!x) return 0; return x.v && x.v.mode === '24h' ? 300000 : 키.slice(-2) === '1m' ? 60000 : 120000; }
+        function 미니_보관(키) { var x = 미니선[키]; if (!x) return 0; return x.v && x.v.mode === '24h' ? 300000 : 키.slice(-2) === '1m' ? 60000 : 300000; }   // 5분봉 실선 = 5분마다 (봉이 5분 단위라 더 자주 받아도 같음)
         function 미니_패널칸(i) {
             if (패널_숨김(i)) return null;
             var a = document.getElementById('p' + i + '-mini'), b = document.getElementById('p' + i + '-mini2');
@@ -23540,7 +23556,7 @@
         var 키움_LWC약속 = null;
         var 키움_분봉표 = { '1': '1분', '3': '3분', '5': '5분', '10': '10분', '15': '15분', '30': '30분', '60': '1시간', 'D': '일봉' };
         var 키움_봉초표 = { '1': 60, '3': 180, '5': 300, '10': 600, '15': 900, '30': 1800, '60': 3600, 'D': 86400 };
-        var 키움_표시항목 = [['sr1', '지지·저항 가까운 1개씩'], ['sr2', '지지·저항 2번째'], ['sr3', '지지·저항 3번째'], ['plan', '매매 신호·보유'], ['vwap', 'VWAP'], ['vp', '매물대'], ['zone', '반등·막힘 구간'], ['opt', '옵션 (MaxPain·콜벽·풋벽)'], ['pc', '전일 종가'], ['hh', '최고가 (보이는 구간)'], ['news', '뉴스 ▼'], ['pj', '판정 레이블 (마지막 캔들 위)']];
+        var 키움_표시항목 = [['sr1', '지지·저항 가까운 1개씩'], ['sr2', '지지·저항 2번째'], ['sr3', '지지·저항 3번째'], ['plan', '매매 신호·보유'], ['vwap', 'VWAP'], ['vp', '매물대'], ['zone', '반등·막힘 구간'], ['opt', '옵션 (MaxPain·콜벽·풋벽)'], ['pc', '전일 종가'], ['hh', 격자모드 ? '최고·최저가 (보이는 구간)' : '최고가 (보이는 구간)'], ['news', '뉴스 ▼'], ['pj', '판정 레이블 (마지막 캔들 위)']];
         var 키움_우선 = { plan: 0, sr: 1, sr1: 1, sr2: 1, sr3: 1, vwap: 2, vp: 3, zone: 4, opt: 5, pc: 6 };
         var 키움_기본개수 = 격자모드 ? 90 : 120;
         var 키움설정키 = 격자모드 ? 'sz_grid_kchart' : 'sz_kchart';
@@ -23675,7 +23691,7 @@
             // 큰 칸 시장 흐름 줄이 왼쪽 '최고' 이름표나 차트 왼쪽 끝에 닿으면: 괄호(1분 전) 먼저 숨김 → 그래도 닿으면 QQQ 만
             var cx = 큰 && el.querySelector('.sg-ctx');
             if (cx) {
-                var 칸r = (el.parentNode || st.상자).getBoundingClientRect(), 태그 = st.상자.querySelector('.kc-hh-tag'), 왼끝 = 칸r.left + 4;
+                var 칸r = (el.parentNode || st.상자).getBoundingClientRect(), 태그 = st.상자.querySelector('.kc-hh-tag:not(.kc-ll)'), 왼끝 = 칸r.left + 4;
                 function 닿음() { var r = cx.getBoundingClientRect(); if (r.left < 왼끝) return true; if (!태그) return false; var t = 태그.getBoundingClientRect(); return r.left < t.right + 6 && r.bottom > t.top && r.top < t.bottom; }
                 el.classList.remove('sg-np', 'sg-min');
                 if (닿음()) { el.classList.add('sg-np'); if (닿음()) el.classList.add('sg-min'); }
@@ -24297,15 +24313,28 @@
             if (!키움_표시켬(st.i, 'hh') || !st.봉.length || 판.width < 200 || 판.height < 110) return '';
             var r = st.chart.timeScale().getVisibleLogicalRange(); if (!r) return '';
             var a = Math.max(0, Math.floor(r.from)), b = Math.min(st.봉.length - 1, Math.ceil(r.to)); if (a > b) return '';
-            var 최고 = -Infinity, 곳 = -1;
-            for (var k = a; k <= b; k++) if (st.봉[k].h > 최고) { 최고 = st.봉[k].h; 곳 = k; }
+            var 최고 = -Infinity, 곳 = -1, 최저 = Infinity;
+            for (var k = a; k <= b; k++) { if (st.봉[k].h > 최고) { 최고 = st.봉[k].h; 곳 = k; } if (st.봉[k].l > 0 && st.봉[k].l < 최저) 최저 = st.봉[k].l; }
             if (곳 < 0) return '';
-            var y = st.캔들.priceToCoordinate(최고); if (y == null || y < 0 || y > 판.height) return '';
-            var 종 = st.봉[st.봉.length - 1].c, 차 = (최고 - 종) / 최고 * 100;
-            var 색 = 'rgba(200,0,0,.65)';
-            return '<div class="kc-hh kc-hh-line" style="top:' + Math.round(y) + 'px;width:' + 판.width + 'px;border-color:' + 색 + '"></div>' +
-                   '<div class="kc-hh kc-hh-tag" style="top:' + Math.max(0, Math.round(y) - 15) + 'px;' + 'left:6px">최고 ' + 키움_가격글(최고, 정밀) +
-                   ' (' + (차 > 0 ? '-' : '') + Math.abs(차).toFixed(2) + '%)</div>';
+            var 종 = st.봉[st.봉.length - 1].c, h = '';
+            var y = st.캔들.priceToCoordinate(최고);
+            if (y != null && y >= 0 && y <= 판.height) {
+                var 차 = (최고 - 종) / 최고 * 100, 색 = 'rgba(200,0,0,.65)';
+                h += '<div class="kc-hh kc-hh-line" style="top:' + Math.round(y) + 'px;width:' + 판.width + 'px;border-color:' + 색 + '"></div>' +
+                     '<div class="kc-hh kc-hh-tag" style="top:' + Math.max(0, Math.round(y) - 15) + 'px;' + 'left:6px">최고 ' + 키움_가격글(최고, 정밀) +
+                     ' (' + (차 > 0 ? '-' : '') + Math.abs(차).toFixed(2) + '%)</div>';
+            }
+            // 대시보드2: 화면에 보이는 봉의 최저가 (왼쪽 아래 · 파란 점선) · % = 현재가 기준 (최저 ÷ 현재가 − 1 → 현재가에서 몇 % 내려가면 최저)
+            if (격자모드 && isFinite(최저) && 최저 > 0 && 종 > 0) {
+                var y2 = st.캔들.priceToCoordinate(최저);
+                if (y2 != null && y2 >= 0 && y2 <= 판.height) {
+                    var 차2 = (최저 / 종 - 1) * 100, Y = Math.round(y2), 아래 = Y + 18 <= 판.height * 0.84;   // 아래 거래량 막대와 겹치면 이름표를 선 위로
+                    h += '<div class="kc-hh kc-hh-line kc-ll" style="top:' + Y + 'px;width:' + 판.width + 'px;border-color:rgba(40,110,230,.7)"></div>' +
+                         '<div class="kc-hh kc-hh-tag kc-ll" style="top:' + (아래 ? Y + 2 : Math.max(0, Y - 15)) + 'px;left:6px">최저 ' + 키움_가격글(최저, 정밀) +
+                         ' (' + (차2 < 0 ? '−' : 차2 > 0 ? '+' : '') + Math.abs(차2).toFixed(2) + '%)</div>';
+                }
+            }
+            return h;
         }
         function 키움차트_개수기록(st) {
             if (!st.준비 || Date.now() < (st.개수무시 || 0)) return;
@@ -26541,6 +26570,119 @@
             document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && (!통계_방문 || Date.now() - (통계_방문.l || 0) >= 통계_방문간격)) 통계_방문확인(); });
         }
 
+        // ════════════════════════════════════════════════════════
+        // ★ 동시 접속 제한 + 지금 접속자 수 (Firebase presence · 완전 무료 운영용)
+        //   - 자리: 일반 45 + 본인(본인 기기 · 데이터 PC 화면) 5 = 50 · 늘릴 때는 아래 두 숫자만 바꾸면 됨 (Firebase 무료 한도 = 연결 100개)
+        //   - 접속하면 presence/{세션} 에 자리 표시 (창을 닫거나 연결이 끊기면 Firebase 가 자동으로 지움) · 3분마다 살아 있음 신호
+        //   - 먼저 들어온 순서로 자리 배정 · 자리가 없으면 대기 안내 + Worker 요청 멈춤 + 30초마다 다시 확인
+        //   - 본인 자리가 다 찼으면 일반 자리로 · 규칙(권한)이 없거나 오류면 막지 않음 (그냥 들어감)
+        //   - 본인 기기: 탭 버튼 위에 '지금 보는 사람 · 연결된 화면' 표시 (봇 · 자동화 브라우저 · 5분 넘게 신호 없는 자리는 셈에서 뺌)
+        // ════════════════════════════════════════════════════════
+        var 입장 = { 일반최대: 45, 본인최대: 5, sid: null, ref: null, 대기: false, 목록: {}, 들음: false, 재시도: null, 신호: null, 확인중: false };
+        function 입장_본인() { try { return 윈폼창() || (typeof 통계_본인 === 'function' && !!통계_본인()); } catch (e) { return false; } }
+        function 입장_지금() { return Date.now() + (typeof fbServerOffset !== 'undefined' ? fbServerOffset || 0 : 0); }
+        function 입장_기기() { var ua = navigator.userAgent || ''; return /iPad|Tablet/i.test(ua) || (/Android/i.test(ua) && !/Mobile/i.test(ua)) ? '태블릿' : /Mobi|iPhone|Android/i.test(ua) ? '휴대폰' : 'PC'; }
+        function 입장_신선(x) { return x && (+x.l || +x.t || 0) > 0 && 입장_지금() - (+x.l || +x.t) < 5 * 60000; }
+        // 대기 중에는 Worker 요청을 보내지 않음 (하루 무료 요청 한도 보호)
+        (function () {
+            if (!window.fetch || window.__입장fetch) return; window.__입장fetch = true;
+            var 원 = window.fetch.bind(window);
+            window.fetch = function (u, o) {
+                try { var 주소 = typeof u === 'string' ? u : (u && u.url) || ''; if (입장.대기 && typeof CLOSE_WORKER_URL === 'string' && CLOSE_WORKER_URL && 주소.indexOf(CLOSE_WORKER_URL) === 0) return Promise.reject(new Error('접속 대기 중')); } catch (e) { }
+                return 원(u, o);
+            };
+        })();
+        function 입장_시작() {
+            if (입장.sid || typeof firebase === 'undefined' || !firebase.database) return;
+            입장.sid = 'p' + (Date.now().toString(36) + Math.random().toString(36).slice(2, 8)).slice(-12);
+            document.addEventListener('visibilitychange', function () { if (입장.ref && !입장.대기) 입장.ref.update({ v: document.visibilityState === 'visible', l: firebase.database.ServerValue.TIMESTAMP }).catch(function () { }); });
+            // 창·탭을 닫을 때 자리를 바로 비움 (연결 끊김 감지를 기다리지 않음 · 뒤로 가기 캐시로 돌아오면 다시 자리 확인)
+            window.addEventListener('pagehide', function () { try { if (입장.ref) { 입장.ref.remove(); 입장.ref = null; } clearInterval(입장.신호); } catch (e) { } });
+            window.addEventListener('pageshow', function (e) { if (e.persisted && !입장.ref && !입장.확인중) 입장_확인(); });
+            입장_확인();
+        }
+        function 입장_확인() {
+            if (입장.확인중) return; 입장.확인중 = true;
+            clearTimeout(입장.재시도);
+            var db = firebase.database(), 본 = 입장_본인();
+            try { if (입장.대기 && db.goOnline) db.goOnline(); } catch (e) { }
+            var ref = db.ref('presence/' + 입장.sid);
+            var 값 = { t: firebase.database.ServerValue.TIMESTAMP, l: firebase.database.ServerValue.TIMESTAMP, me: 본, v: document.visibilityState === 'visible', dv: 입장_기기(), bot: !!navigator.webdriver, g: 격자모드 ? 2 : 1 };
+            function 끝(들어감, 글) {
+                입장.확인중 = false;
+                if (들어감) {
+                    var 전대기 = 입장.대기; 입장.대기 = false; 입장.ref = ref; 입장_안내(null);
+                    clearInterval(입장.신호); 입장.신호 = setInterval(function () { if (입장.ref) 입장.ref.update({ l: firebase.database.ServerValue.TIMESTAMP }).catch(function () { }); }, 3 * 60000);
+                    if (전대기) { try { 관심_조회(); 미니_확인(); } catch (e) { } }
+                    if (입장_본인()) 입장_듣기();
+                    return;
+                }
+                입장.대기 = true; 입장.ref = null; clearInterval(입장.신호);
+                try { ref.onDisconnect().cancel(); } catch (e) { }
+                ref.remove().catch(function () { }).then(function () { try { if (db.goOffline) db.goOffline(); } catch (e) { } });
+                입장_안내(글);
+                입장.재시도 = setTimeout(입장_확인, 30000);
+            }
+            var 막힘없음 = function (e) { console.warn('[접속 제한] 확인 실패 → 그냥 들어감 (Firebase 규칙 presence 확인)', e && e.message); 끝(true); };
+            try {
+                ref.onDisconnect().remove();
+                ref.set(값).then(function () {
+                    return db.ref('presence').once('value').then(function (snap) {
+                        var 모두 = snap.val() || {}, 본인목 = [], 일반목 = [];
+                        Object.keys(모두).forEach(function (k) { var x = 모두[k]; if (!x || (k !== 입장.sid && !입장_신선(x))) return; (x.me ? 본인목 : 일반목).push({ k: k, t: +x.t || 0 }); });
+                        function 순서(a, b) { return a.t - b.t || (a.k < b.k ? -1 : 1); }
+                        본인목.sort(순서); 일반목.sort(순서);
+                        var 내 = function (목) { for (var i = 0; i < 목.length; i++) if (목[i].k === 입장.sid) return i; return -1; };
+                        if (본) {
+                            var bi = 내(본인목);
+                            if (bi >= 0 && bi < 입장.본인최대) return 끝(true);
+                            // 본인 자리가 다 참 → 일반 자리 중 남은 곳 (본인 초과분이 일반 자리를 먼저 쓰지 않도록 일반 인원 + 앞선 본인 초과분)
+                            var 앞초과 = Math.max(0, bi - 입장.본인최대);
+                            if (일반목.length + 앞초과 < 입장.일반최대) return 끝(true);
+                            return 끝(false, { 현재: Math.min(입장.일반최대 + 입장.본인최대, 일반목.length + 본인목.length - 1), 최대: 입장.일반최대 + 입장.본인최대 });
+                        }
+                        var ni = 내(일반목), 본초과 = Math.max(0, 본인목.length - 입장.본인최대);
+                        if (ni >= 0 && ni + 본초과 < 입장.일반최대) return 끝(true);
+                        끝(false, { 현재: Math.min(입장.일반최대, 일반목.length - 1 + 본초과), 최대: 입장.일반최대, 순번: ni >= 0 ? ni + 본초과 - 입장.일반최대 + 1 : 0 });
+                    });
+                }).catch(막힘없음);
+            } catch (e) { 막힘없음(e); }
+        }
+        function 입장_안내(글) {
+            var el = document.getElementById('sz-wait');
+            if (!글) { if (el) el.remove(); return; }
+            if (!el) { el = document.createElement('div'); el.id = 'sz-wait'; el.className = 'sz-wait'; document.body.appendChild(el); }
+            el.innerHTML = '<b>접속자가 많아 잠시 대기 중입니다</b><span>' + (글.순번 > 0 ? '대기 ' + 글.순번 + '번째 · ' : '') + '자리가 나면 자동으로 연결됩니다.</span>';   // 최대 인원은 보여 주지 않음
+        }
+        // 본인 기기: 접속자 목록을 바뀐 것만 받아 둠 (child 이벤트 · 전체를 매번 받지 않음) → 5초마다 표시
+        function 입장_듣기() {
+            if (입장.들음) return; 입장.들음 = true;
+            var r = firebase.database().ref('presence');
+            r.on('child_added', function (s) { 입장.목록[s.key] = s.val(); });
+            r.on('child_changed', function (s) { 입장.목록[s.key] = s.val(); });
+            r.on('child_removed', function (s) { delete 입장.목록[s.key]; });
+            setInterval(입장_표시, 5000); setTimeout(입장_표시, 1500);
+        }
+        function 입장_표시() {
+            var el = document.getElementById('sz-live'); if (!el) return;
+            if (!입장_본인()) { el.style.display = 'none'; return; }
+            var 보 = 0, 연결 = 0, 본 = 0, 봇 = 0, 기 = { PC: 0, 휴대폰: 0, 태블릿: 0 };
+            Object.keys(입장.목록).forEach(function (k) {
+                var x = 입장.목록[k]; if (!입장_신선(x)) return;
+                if (x.bot) { 봇++; return; }
+                연결++;
+                if (x.v) { 보++; 기[x.dv] = (기[x.dv] || 0) + 1; if (x.me) 본++; }
+            });
+            var 최대 = 입장.일반최대 + 입장.본인최대, 반 = 연결 >= 최대 ? ' full' : 연결 >= 최대 * 0.9 ? ' warn' : '';
+            var 나눔 = ['PC', '휴대폰', '태블릿'].filter(function (d) { return 기[d]; }).map(function (d) { return d + ' ' + 기[d]; });
+            var 짧 = 격자모드;   // 대시보드2 = 탭 버튼 폭 안에 들어가게 짧게 (전체 글은 마우스를 올리면)
+            var h = '<span class="lv-who">👥 ' + (짧 ? '' : '지금 보는 사람 ') + '<b>' + 보 + '명</b>' + (보 ? ' (' + 나눔.join(짧 ? '·' : ' · ') + (본 ? (짧 ? '·본인 ' : ' · 이 중 본인 ') + 본 : '') + ')' : '') + '</span>' +
+                    '<span class="lv-con' + 반 + '">🔌 ' + (짧 ? '' : '연결된 화면 ') + '<b>' + 연결 + '</b> / ' + 최대 + '</span>';
+            if (el._h !== h) { el.innerHTML = h; el._h = h; }
+            el.title = '지금 보는 사람 = 화면을 띄워 보고 있는 수 (숨긴 탭 제외)\n연결된 화면 = 숨긴 탭까지 자리를 차지한 화면 수 · 최대 ' + 최대 + ' (일반 ' + 입장.일반최대 + ' + 본인 ' + 입장.본인최대 + ')' + (봇 ? '\n자동화 브라우저 ' + 봇 + '개는 뺌' : '');
+            el.style.display = '';
+        }
+
         // ── 탭 제목 깜빡임 (탭이 숨겨져 있을 때만) ──
         var 탭_원래제목 = document.title, 탭_타이머 = null;
         function 탭_깜빡임(글) {
@@ -27925,6 +28067,7 @@
             try { 패널_적용(); } catch (e) { console.warn('[패널]', e); }
             try { 알림기록_오늘(); 알림기록_배지(); 화면_적용(); 이동_그리기(); } catch (e) { }
             if (!격자모드) { try { 통계_시작(); } catch (e) { } }   // 대시보드2 는 방문 기록 안 함
+            try { 입장_시작(); } catch (e) { console.warn('[접속 제한]', e); }   // 동시 접속 자리 확인 (대시보드1 · 2 모두)
             try { 관심_조회(); } catch (e) { }                       // 관심종목 시세: 시작하자마자 첫 조회
             setTimeout(function () { try { 미니_확인(); 미니_모두그리기(true); } catch (e) { } }, 300);   // 미니 라인차트
             try { 뉴스_설정적용(); 뉴스_구독(); 뉴스_상태구독(); 뉴스_화면갱신(); } catch (e) { console.warn('[뉴스]', e); }   // 세이브 뉴스
@@ -28062,7 +28205,7 @@
             if (cw && !document.getElementById('kr-view')) {
                 var v = document.createElement('div'); v.className = 'kr-view'; v.id = 'kr-view';
                 function 카드(id, 제목, 작은, 넓게) { return '<div class="kr-card' + (넓게 ? ' kr-wide' : '') + '"><h4><span id="' + id + '-h">' + 제목 + '</span> <small id="' + id + '-t">' + (작은 || '') + '</small></h4><div id="' + id + '"></div></div>'; }
-                v.innerHTML = 글자바HTML('kr') + '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<div class="sz-brief" id="kr-brief"></div><span class="kr-stat" id="kr-stat"></span><span class="sz-ver">판 2026.10.30f</span></div>' +
+                v.innerHTML = 글자바HTML('kr') + '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<div class="sz-brief" id="kr-brief"></div><span class="kr-stat" id="kr-stat"></span><span class="sz-ver">판 2026.11.01e</span></div>' +
                     '<div class="kr-two" id="kr-two">' +
                     '<div class="kr-pane" data-t="시장">' +
                         카드('kr-pj', '오늘 장 판정', '', 1) +
@@ -29155,7 +29298,7 @@
         function 미만들기() {
             var cw = document.querySelector('.content-wrapper'); if (!cw || document.getElementById('us-tabbar')) return;
             var bar = document.createElement('div'); bar.className = 'us-tabbar'; bar.id = 'us-tabbar';
-            bar.innerHTML = 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + ({ 예측: '예측시장', 일정: '캘린더' }[t] || t) + '</button>'; }).join('') + (격 ? '' : '<div class="sz-brief" id="us-brief"></div>') + '<span class="us-stat" id="us-stat"></span><span class="sz-ver" title="대시보드 파일 판 (데이터 PC · 브라우저가 같은 파일인지 확인용)">판 2026.10.30f</span>';
+            bar.innerHTML = '<div class="sz-live" id="sz-live" style="display:none"></div>' + 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + ({ 예측: '예측시장', 일정: '캘린더' }[t] || t) + '</button>'; }).join('') + (격 ? '' : '<div class="sz-brief" id="us-brief"></div>') + '<span class="us-stat" id="us-stat"></span><span class="sz-ver" title="대시보드 파일 판 (데이터 PC · 브라우저가 같은 파일인지 확인용)">판 2026.11.01e</span>';
             // 대시보드2: 차트 자리를 줄이지 않도록 위 시황 줄(미장/국장 단추 옆)에 작게 2줄 / 대시보드1: 차트 위 한 줄
             var tb = document.querySelector('.top-bar'), sw = document.getElementById('mkt-sw');
             if (격 && tb && sw && sw.parentNode === tb) {
