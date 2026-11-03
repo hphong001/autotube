@@ -7771,6 +7771,157 @@
         }
 
         /* 대시보드2 차트 위 수급 상자 (윈폼) */
+        /* ── AI 분석 (대시보드2) ── */
+        .kc-ai { position: absolute; left: 2px; bottom: 2px; z-index: 6; font: inherit; font-size: 10.5px; font-weight: 800; line-height: 14px; padding: 1px 6px; border-radius: 4px; border: 1px solid #5b4a1c; background: rgba(32, 26, 10, .92); color: #f5c542; cursor: pointer; }
+        .kc-ai:hover { background: #f5c542; color: #1a1406; }
+        /* ── 종목 선택 창 (공통) ── */
+        .tkp-dim { position: fixed; inset: 0; z-index: 10050; background: transparent; } .tkp-dim.sheet { background: rgba(0, 0, 0, .45); }
+        .tkp { position: fixed; z-index: 10051; display: flex; flex-direction: column; max-height: 70vh; background: #10131b; color: #e7e9f0; border: 1px solid #3a4256; border-radius: 10px; box-shadow: 0 12px 36px rgba(0, 0, 0, .6); font-size: 14px; overflow: hidden; }
+        .tkp.sheet { left: 0; right: 0; bottom: 0; top: auto; max-height: 78vh; height: 78vh; border-radius: 14px 14px 0 0; font-size: 15.5px; }
+        .tkp-h { display: flex; gap: 8px; align-items: center; padding: 10px; border-bottom: 1px solid #262c3c; background: #0e1119; }
+        .tkp-q { flex: 1; min-width: 0; font: inherit; font-size: 15px; padding: 7px 10px; border-radius: 8px; border: 1px solid #3a4256; background: #0a0c12; color: #fff; outline: none; } .tkp-q:focus { border-color: #f5c542; }
+        .tkp.sheet .tkp-q { font-size: 16px; padding: 10px 12px; }
+        .tkp-x { font: inherit; font-size: 18px; background: none; border: 0; color: #9aa3b5; cursor: pointer; padding: 2px 6px; }
+        .tkp-l { flex: 1; min-height: 0; overflow: auto; padding: 4px 8px 10px; overscroll-behavior: contain; }
+        .tkp-g { position: sticky; top: -4px; z-index: 1; padding: 8px 4px 4px; font-size: 12px; font-weight: 800; color: #9fb4ff; background: #10131b; } .tkp-g small { color: #6c7488; font-weight: 600; }
+        .tkp-c { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 2px 6px; } .tkp.sheet .tkp-c { grid-template-columns: 1fr; }
+        .tkp-c.rec { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+        .tkp-i { display: flex; align-items: baseline; gap: 8px; width: 100%; min-width: 0; text-align: left; font: inherit; padding: 6px 8px; border-radius: 7px; border: 1px solid transparent; background: none; color: inherit; cursor: pointer; }
+        .tkp.sheet .tkp-i { padding: 11px 10px; }
+        .tkp-i b { font-weight: 900; color: #fff; min-width: 54px; letter-spacing: .3px; } .tkp-i span { flex: 1; min-width: 0; color: #c9cfdc; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .tkp-i:hover, .tkp-i.kb { background: #1a2033; border-color: #3a4a7a; } .tkp-i.on { background: #2a2310; border-color: #6a5418; } .tkp-i.on b { color: #f5c542; }
+        .tkp-i.dis { opacity: .45; cursor: default; } .tkp-i.dis:hover { background: none; border-color: transparent; }
+        .tkp-t { font-style: normal; font-size: 11px; font-weight: 800; padding: 0 6px; border-radius: 8px; white-space: nowrap; } .tkp-t.own { color: #ffb347; border: 1px solid #6a4a1c; } .tkp-t.pn { color: #9aa3b5; border: 1px solid #3a4256; }
+        .tkp-none { padding: 24px 8px; text-align: center; color: #8b93a7; }
+        .tkp.light { background: #fff; color: #1b2030; border-color: #c9cfdc; } .tkp.light .tkp-h, .tkp.light .tkp-g { background: #f3f5f9; } .tkp.light .tkp-q { background: #fff; color: #111; border-color: #c9cfdc; }
+        .tkp.light .tkp-i b { color: #111; } .tkp.light .tkp-i span { color: #444b5c; } .tkp.light .tkp-i:hover, .tkp.light .tkp-i.kb { background: #e8eefc; border-color: #9fb4ff; } .tkp.light .tkp-i.on { background: #fff6dc; border-color: #e0b84a; } .tkp.light .tkp-i.on b { color: #9a6b00; }
+        .ticker-select, select[data-k="t"] { cursor: pointer; }
+        .ai-win { position: fixed; z-index: 9990; right: 24px; top: 70px; width: min(620px, calc(100vw - 32px)); height: min(760px, calc(100vh - 90px)); min-width: 300px; min-height: 180px; max-width: calc(100vw - 8px); max-height: calc(100vh - 8px); resize: both; overflow: hidden; display: flex; flex-direction: column; background: #10131b; color: #e7e9f0; border: 1px solid #2f3648; border-radius: 10px; box-shadow: 0 10px 34px rgba(0, 0, 0, .55); font-size: 13.5px; }
+        .ai-hd { display: flex; flex-direction: column; gap: 2px; padding: 6px 12px 8px; border-bottom: 1px solid #262c3c; cursor: move; user-select: none; background: #0e1119; border-radius: 10px 10px 0 0; }
+        .ai-hd1 { display: flex; align-items: center; gap: 8px; }
+        /* 내용: 창을 줄이면 세로·가로 스크롤 (글자 확대는 안쪽 상자에만 → 스크롤 길이가 맞게) */
+        .ai-bd { flex: 1 1 auto; min-height: 0; overflow: auto; padding: 10px 12px 14px; }
+        .ai-in { zoom: var(--ai-z, 1); display: flex; flex-direction: column; gap: 10px; min-width: 340px; }
+        .ai-bd::-webkit-scrollbar { width: 12px; height: 12px; } .ai-bd::-webkit-scrollbar-thumb { background: #3a4256; border-radius: 6px; border: 2px solid #10131b; } .ai-bd::-webkit-scrollbar-track { background: #0c0f16; }
+        /* 밖으로 뺀 창: 바깥 창 전체를 채움 */
+        .ai-win.ai-ext { position: fixed; left: 0 !important; top: 0 !important; right: auto !important; width: 100vw !important; height: 100vh !important; max-width: none; max-height: none; min-width: 0; min-height: 0; resize: none; border: 0; border-radius: 0; box-shadow: none; }
+        .ai-win.ai-ext .ai-hd { cursor: default; border-radius: 0; }
+        .ai-hd .ai-out { font: inherit; font-size: 12px; font-weight: 700; padding: 1px 9px; margin-left: 6px; border-radius: 5px; border: 1px solid #4a5a8a; background: #18203a; color: #c9d6ff; cursor: pointer; }
+        .ai-use { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; padding: 6px 10px; border-radius: 8px; background: #121622; border: 1px solid #222838; }
+        .ai-use > span { font-size: 12.5px; font-weight: 800; color: #9fb4ff; } .ai-use label { display: flex; gap: 5px; align-items: center; cursor: pointer; font-weight: 800; }
+        .ai-use .ai-both { font-size: 12px; font-weight: 700; color: #f5c542; padding: 1px 8px; border-radius: 10px; border: 1px solid #6a5418; background: #221c0c; }
+        .ai-tabs { display: flex; gap: 4px; border-bottom: 1px solid #2f3648; }
+        .ai-tab { font: inherit; font-size: 13px; font-weight: 800; padding: 5px 14px; border: 1px solid #2f3648; border-bottom: 0; border-radius: 7px 7px 0 0; background: #121622; color: #9aa3b5; cursor: pointer; margin-bottom: -1px; }
+        .ai-tab.on { background: #1a2033; color: #fff; border-color: #4a5a8a; } .ai-tab:disabled { opacity: .45; cursor: default; }
+        .ai-agree { font-size: 13px; padding: 5px 9px; border-radius: 7px; margin-bottom: 4px; line-height: 1.45; } .ai-agree b { font-weight: 900; }
+        .ai-agree.a-ok { background: #10241a; color: #9be8b3; border: 1px solid #2f6a3a; } .ai-agree.a-ok b { color: #5ee08a; }
+        .ai-agree.a-part { background: #221c0c; color: #ffe39a; border: 1px solid #6a5418; } .ai-agree.a-part b { color: #f5c542; }
+        .ai-agree.a-no { background: #2a1214; color: #ffb3b3; border: 1px solid #6a2a30; } .ai-agree.a-no b { color: #ff8a8a; }
+        .ai-agree.a-one { background: #151a27; color: #c9cfdc; border: 1px solid #2f3648; }
+        .ai-p { white-space: pre-line; }
+        /* 영역 구분: ① 분석 요청 (푸른 회색 상자) · ② 분석 결과 (노란 줄 아래) */
+        .ai-req { display: flex; flex-direction: column; gap: 8px; padding: 10px 12px 12px; border-radius: 12px; background: #161b29; border: 1px solid #2c3550; }
+        .ai-req.fold { gap: 8px; padding-bottom: 10px; }
+        .ai-sh { display: flex; align-items: center; gap: 8px; } .ai-sh b { font-size: 14px; font-weight: 900; color: #c9d6ff; }
+        .ai-sh .sum { font-size: 12px; color: #8b93a7; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .ai-sh .ai-fold { margin-left: auto; white-space: nowrap; }
+        .ai-sh .n, .ai-tk .n { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; font-size: 12px; font-weight: 900; flex: 0 0 auto; }
+        .ai-sh .n { background: #2c3550; color: #c9d6ff; } .ai-tk .n { background: #f5c542; color: #1a1406; align-self: center; }
+        .ai-req .ai-grp, .ai-req .ai-use { background: #10131b; }
+        .ai-res { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; padding-top: 2px; border-top: 3px solid #f5c542; }
+        .ai-empty { padding: 22px 12px; text-align: center; color: #6c7488; font-size: 13px; border: 1px dashed #2f3648; border-radius: 10px; }
+        .ai-grp { display: flex; flex-direction: column; gap: 5px; padding: 8px 10px; border-radius: 9px; background: #121622; border: 1px solid #222838; }
+        .ai-grp .gt { font-size: 12.5px; font-weight: 800; color: #9fb4ff; } .ai-grp .gt small { font-weight: 500; color: #6c7488; }
+        .ai-grp .ai-style { padding: 0; background: none; border: 0; }
+        .ai-free { display: flex; gap: 8px; align-items: flex-start; } .ai-free textarea { flex: 1; min-width: 0; font: inherit; font-size: 13px; resize: vertical; min-height: 38px; padding: 6px 8px; border-radius: 7px; border: 1px solid #2f3648; background: #0c0f16; color: #e7e9f0; }
+        .ai-free textarea:focus { outline: none; border-color: #f5c542; }
+        .ai-h6 { font-size: 12.5px; font-weight: 800; color: #9fb4ff; margin: 4px 0 -4px; }
+        .ai-ul { margin: 0; padding: 8px 12px 8px 28px; border-radius: 9px; background: #141826; border: 1px solid #262c3c; line-height: 1.55; color: #d6dae4; font-size: 13px; } .ai-ul.warn { color: #ffcf8a; }
+        .ai-kv { display: grid; grid-template-columns: max-content 1fr; gap: 5px 12px; padding: 8px 12px; border-radius: 9px; background: #141826; border: 1px solid #262c3c; font-size: 13px; line-height: 1.5; }
+        .ai-kv .k { color: #8b93a7; font-weight: 700; white-space: nowrap; } .ai-kv .v { color: #d6dae4; } .ai-kv .v b { color: #fff; }
+        .ai-p { margin: 4px 0 2px; color: #e7e9f0; line-height: 1.55; font-size: 13.5px; }
+        .ai-card.dq { border-color: #3a4a7a; } .ai-pl { margin: 0; padding-left: 18px; color: #d6dae4; } .ai-pl b { color: #fff; }
+        .ai-secs { display: flex; flex-wrap: wrap; gap: 4px 16px; align-items: center; }
+        .ai-hd select { font: inherit; font-size: 13px; background: #141826; color: #e7e9f0; border: 1px solid #2f3648; border-radius: 6px; padding: 2px 6px; }
+        .ai-hd .ai-x { font: inherit; font-size: 18px; background: none; border: 0; color: #9aa3b5; cursor: pointer; }
+        .ai-hd .ai-fs { display: inline-flex; gap: 2px; margin-left: auto; } .ai-hd .ai-fs button { font: inherit; font-size: 12px; padding: 1px 7px; border-radius: 5px; border: 1px solid #2f3648; background: #141826; color: #c9cfdc; cursor: pointer; } .ai-hd .ai-fs b { font-size: 12px; color: #9aa3b5; padding: 0 4px; align-self: center; }
+        .ai-hd .ai-fs + .ai-x { margin-left: 6px; }
+        /* 맨 위 제목 + 종목: 2.5배 (어떤 종목의 분석인지 바로 보이게) · 좁으면 이름부터 줄임 · 가격은 다음 줄로 */
+        /* 머리 줄: 글자 크기(가−/가+)에 맞춰 같이 커짐 */
+        .ai-hd { zoom: var(--ai-z, 1); }
+        .ai-hd .ai-ttl { font-size: 17px; font-weight: 900; color: #f5c542; white-space: nowrap; }
+        .ai-hd .ai-vis { font: inherit; font-size: 12px; font-weight: 700; padding: 1px 9px; margin-left: auto; border-radius: 5px; border: 1px solid #3a4256; background: #141826; color: #8b93a7; cursor: pointer; white-space: nowrap; }
+        .ai-hd .ai-vis.on { border-color: #2f6a3a; background: #10241a; color: #5ee08a; } .ai-hd .ai-vis + .ai-fs { margin-left: 6px; }
+        /* 결과 제목: [AI 분석 요청] 아래 · 스크롤해도 맨 위에 붙어 있음 (어떤 종목의 결과인지) */
+        .ai-tk { position: sticky; top: -14px; z-index: 3; display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 12px; line-height: 1.2; min-width: 0; padding: 6px 2px 6px; margin: 0 -2px; background: #10131b; border-bottom: 1px solid #262c3c; }
+        .ai-tk .ttl { font-size: 22px; font-weight: 800; color: #f5c542; white-space: nowrap; }
+        .ai-tk .tk { font-size: 30px; font-weight: 900; color: #fff; letter-spacing: .5px; white-space: nowrap; }
+        .ai-tk .nm { font-size: 21px; font-weight: 700; color: #c9cfdc; flex: 0 1 auto; min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .ai-tk .px { font-size: 26px; font-weight: 800; color: #e7e9f0; white-space: nowrap; font-variant-numeric: tabular-nums; }
+        .ai-tk .ch { font-size: 22px; font-weight: 800; color: #9aa3b5; white-space: nowrap; font-variant-numeric: tabular-nums; } .ai-tk .ch.up { color: #ff6b6b; } .ai-tk .ch.dn { color: #6aa0ff; }
+        .ai-tk .grp { display: inline-flex; align-items: baseline; gap: 8px; white-space: nowrap; }
+        .ai-tk .lb { font-size: 13px; font-weight: 700; color: #8b93a7; white-space: nowrap; align-self: center; } .ai-tk .px.px2 { font-size: 21px; } .ai-tk .ch.ch2 { font-size: 18px; }
+        .ai-tk .none { font-size: 14px; font-weight: 700; color: #6c7488; } .ai-tk .none.ing { color: #f5c542; }
+        .ai-qs label.off { color: #6c7488; } .ai-qs label small { font-size: 11.5px; }
+        .ai-mon.wait { animation: none; background: #151a27; border-color: #3a4a7a; } .ai-mon.wait .h { color: #9fb4ff; }
+        /* 결정 카드 · 조건 확인 · 상황 변경 */
+        .ai-dec { padding: 10px 12px; border-radius: 9px; border: 1px solid #2f3648; background: #141826; display: flex; flex-direction: column; gap: 5px; }
+        .ai-dec .d1 { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; } .ai-dec .d1 b { font-size: 21px; font-weight: 900; margin-right: 4px; }
+        .ai-dec.k-buy { background: #12190f; border-color: #2f5a2a; } .ai-dec.k-buy .d1 b { color: #5ee08a; }
+        .ai-dec.k-cond { background: #1a1810; border-color: #5b4a1c; } .ai-dec.k-cond .d1 b { color: #f5c542; }
+        .ai-dec.k-wait .d1 b { color: #c9cfdc; } .ai-dec.k-no { background: #1b1012; border-color: #5a2a30; } .ai-dec.k-no .d1 b { color: #ff8a8a; }
+        .ai-dec .d2 { color: #e7e9f0; }
+        .ai-style { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; padding: 6px 10px; border-radius: 8px; background: #141826; border: 1px solid #262c3c; }
+        .ai-style > span { color: #9aa3b5; font-weight: 700; font-size: 13px; } .ai-style label { display: flex; gap: 5px; align-items: center; cursor: pointer; font-weight: 800; }
+        .ai-sm { font-size: 13px; font-weight: 700; color: #f5c542; } .ai-sm.dim { color: #8b93a7; font-weight: 600; } .ai-ref { font-size: 12.5px; color: #9aa3b5; }
+        /* 감시 줄: 줄 전체가 천천히 깜빡임 · 칸이 ✔ 로 바뀌면 2초 반짝 */
+        .ai-mon { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; padding: 9px 12px; border-radius: 9px; border: 1px solid #6a5418; background: #221c0c; animation: aimon 1.6s ease-in-out infinite; }
+        @keyframes aimon { 0%, 100% { background: #1d180b; border-color: #5a4614; } 50% { background: #3d300c; border-color: #f5c542; } }
+        .ai-mon .h { font-size: 15.5px; font-weight: 900; color: #f5c542; margin-right: 4px; }
+        .ai-mon .pl { padding: 2px 10px; border-radius: 12px; font-size: 13px; font-weight: 800; border: 1px solid; white-space: nowrap; }
+        .ai-mon .pl.y { color: #5ee08a; border-color: #2f6a3a; background: #10241a; } .ai-mon .pl.n { color: #d6dae4; border-color: #3a4256; background: #151a27; }
+        .ai-mon .pl.fl { animation: aipl .5s ease-in-out 4; } @keyframes aipl { 50% { background: #5ee08a; color: #0b1a10; } }
+        .ai-mon .tm { margin-left: auto; font-size: 12px; color: #8b93a7; font-weight: 600; }
+        .ai-mon.ok { animation: none; background: #10241a; border-color: #5ee08a; } .ai-mon.ok .h { color: #5ee08a; }
+        .ai-mon.off { animation: none; background: #151a27; border-color: #2f3648; } .ai-mon.off .h { color: #8b93a7; }
+        /* 관망: 가격 띠 */
+        .ai-band { padding: 12px 14px 10px; border: 1px solid #262c3c; border-radius: 10px; background: #0e1119; max-width: 460px; box-sizing: border-box; }
+        .ai-band .ttl { font-size: 12px; color: #8b93a7; margin-bottom: 38px; }
+        .ai-band .bar { position: relative; height: 8px; border-radius: 4px; background: linear-gradient(90deg, rgba(255,107,107,.55), rgba(255,255,255,.08) 50%, rgba(94,224,138,.55)); }
+        .ai-band .e { position: absolute; top: -6px; width: 3px; height: 20px; border-radius: 2px; } .ai-band .e.dn { left: 0; background: #ff6b6b; } .ai-band .e.up { right: 0; background: #5ee08a; }
+        .ai-band .now { position: absolute; top: -7px; width: 22px; height: 22px; margin-left: -11px; border-radius: 50%; background: #f5c542; box-shadow: 0 0 0 4px rgba(245,197,66,.18); }
+        .ai-band .nowl { position: absolute; top: -30px; font-size: 13px; font-weight: 800; white-space: nowrap; }
+        .ai-band .lab { display: flex; justify-content: space-between; gap: 12px; margin-top: 12px; } .ai-band .lab > div { max-width: 49%; } .ai-band .lab .up { text-align: right; }
+        .ai-band .lab b { display: block; font-size: 14.5px; font-weight: 900; } .ai-band .lab .dn b, .ai-band .lab .dn i { color: #ff6b6b; } .ai-band .lab .up b, .ai-band .lab .up i { color: #5ee08a; }
+        .ai-band .lab span { display: block; font-size: 11.5px; color: #9aa3b5; margin-top: 2px; } .ai-band .lab i { font-style: normal; font-weight: 800; }
+        /* 질문별 답 (기본 펼침) */
+        .ai-ans { border: 1px solid #262c3c; border-radius: 10px; background: #141826; } .ai-ans .row { padding: 8px 12px; border-top: 1px solid #1f2433; } .ai-ans .row:first-child { border-top: 0; }
+        .ai-ans .q { display: flex; align-items: center; gap: 8px; } .ai-ans .qq { flex: 1; color: #9aa3b5; font-size: 13px; } .ai-ans ul { margin: 4px 0 0; padding-left: 18px; color: #d6dae4; font-size: 13px; line-height: 1.55; } .ai-ans .row + .row { margin-top: 0; }
+        .ai-chk { font-size: 13px; color: #f5c542; font-weight: 700; } .ai-chk.ok { color: #5ee08a; } .ai-chk.dim { color: #8b93a7; font-weight: 600; }
+        .ai-chk-l { display: flex; flex-direction: column; gap: 1px; margin-top: 3px; font-weight: 600; } .ai-chk-l .y { color: #5ee08a; } .ai-chk-l .n { color: #c9cfdc; }
+        .ai-inv { font-size: 14px; font-weight: 800; color: #ffb347; padding: 6px 8px; border-radius: 7px; background: #2a1d0c; border: 1px solid #6a4a1c; }
+        .ai-again { font: inherit; font-size: 13px; font-weight: 800; margin-left: 8px; padding: 2px 10px; border-radius: 6px; border: 1px solid #f5c542; background: #f5c542; color: #1a1406; cursor: pointer; }
+        .ai-watch { font-size: 11.5px; color: #6c7488; cursor: help; } .ai-news { font-size: 12px; color: #9aa3b5; }
+        .gone { opacity: .45; filter: grayscale(1); } .ai-dec.gone { opacity: 1; filter: none; } .ai-dec.gone .d1, .ai-dec.gone .d2 { opacity: .5; }
+        .ai-ladw { border: 1px solid #262c3c; border-radius: 8px; background: #0e1119; padding: 6px 6px 4px; } .ai-lad { display: block; max-width: 640px; }
+        .ai-cap { font-size: 11.5px; color: #6c7488; padding: 2px 4px 0; }
+        .ai-sec { font-size: 13px; color: #9fb4ff; }
+        /* 대시보드2 차트 위 AI 계획 선 */
+        .kc-ai-ln { position: absolute; left: 0; height: 0; border-top: 1px dashed; pointer-events: none; opacity: .85; }
+        .kc-ai-tg { position: absolute; font-size: 11px; font-weight: 800; white-space: nowrap; pointer-events: none; color: #10131b; border-radius: 3px; padding: 1px 6px; line-height: 14px; box-shadow: 0 1px 4px rgba(0, 0, 0, .35); opacity: .92; }
+        .ai-qs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; } .ai-qs label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
+        .ai-own { font-size: 12.5px; color: #ffb347; }
+        .ai-act { display: flex; gap: 8px; align-items: center; } .ai-act button { font: inherit; font-weight: 800; padding: 5px 14px; border-radius: 7px; border: 1px solid #f5c542; background: #f5c542; color: #1a1406; cursor: pointer; }
+        .ai-act button.ai-cancel { background: none; color: #ff8a8a; border-color: #6a2a2a; } .ai-act button:disabled { opacity: .45; cursor: default; }
+        .ai-st { font-size: 12.5px; color: #9aa3b5; } .ai-st.err { color: #ff8a8a; } .ai-st.ing { color: #f5c542; }
+        .ai-sum { padding: 8px 10px; border-radius: 8px; background: #151a27; border: 1px solid #262c3c; } .ai-sum b { color: #f5c542; }
+        .ai-card { padding: 8px 10px; border-radius: 8px; background: #141826; border: 1px solid #262c3c; display: flex; flex-direction: column; gap: 4px; }
+        .ai-card.own { border-color: #6a4a1c; } .ai-card h5 { margin: 0; font-size: 13px; color: #c9cfdc; }
+        .ai-cl { font-weight: 800; font-size: 14.5px; } .ai-cl.up { color: #ff6b6b; } .ai-cl.dn { color: #6aa0ff; } .ai-cl.fl { color: #f5c542; }
+        .ai-cf { font-size: 11.5px; padding: 0 6px; border-radius: 4px; border: 1px solid #2f3648; color: #9aa3b5; margin-left: 6px; }
+        .ai-card ul { margin: 0; padding-left: 18px; color: #c9cfdc; } .ai-px3 { font-size: 12.5px; color: #9aa3b5; } .ai-px3 b { color: #e7e9f0; }
+        .ai-warn { font-size: 12.5px; color: #ffb347; } .ai-raw { white-space: pre-wrap; font-size: 12px; color: #9aa3b5; background: #0c0f16; border: 1px solid #262c3c; border-radius: 6px; padding: 8px; max-height: 260px; overflow: auto; }
+        .ai-tg { font: inherit; font-size: 12px; background: none; border: 0; color: #6aa0ff; cursor: pointer; padding: 0; text-align: left; }
+        .ai-tgs { display: flex; gap: 14px; } .ai-bad { font-size: 12.5px; color: #ff8a8a; font-weight: 700; }
         .kc-sg { position: absolute; z-index: 4; pointer-events: auto; display: none; font-size: 11px; line-height: 1.15; font-variant-numeric: tabular-nums; }
         .kc-sg .sg-bar { position: relative; display: flex; height: 12px; border-radius: 3px; overflow: hidden; background: #2a3042; box-shadow: 0 0 0 1px rgba(0,0,0,.45); }
         .kc-sg .sg-bar i { display: block; height: 100%; }
@@ -17298,6 +17449,135 @@
             refreshAllDropdowns();
             console.log('[종목] 콤보박스 갱신: ' + WATCH_LIST.length + '종목');
         }
+        // ════════════════════════════════════════════════════════
+        // ★ 종목 선택 창 (공통): 종목 콤보박스(3개 패널 · 대시보드2 차트 · 계산기 종목)를 누르면
+        //   검색 칸 + 최근 고른 종목 + 묶음(시장·지수 / 레버리지·인버스 / 섹터 ETF / 그 밖 ETF / 개별 테마별) · 묶음 안은 A~Z
+        //   - 콤보박스(select)는 그대로 두고 값만 바꿔 change 를 보냄 → 기존 처리(패널 전환 · 같은 종목 막기 등) 그대로
+        //   - 다른 칸에 떠 있어 고를 수 없는 종목은 흐리게 + 'N번 칸' · 보유 종목은 '보유' 표시
+        //   - PC = 콤보박스 아래에 작은 창 · 좁은 화면(휴대폰) = 아래에서 올라오는 큰 목록 · ↑↓ Enter Esc
+        // ════════════════════════════════════════════════════════
+        var 종선 = { 열림: null, 최근: (function () { try { var v = JSON.parse(localStorage.getItem('sz_pick_recent') || '[]'); return Array.isArray(v) ? v.slice(0, 6) : []; } catch (e) { return []; } })() };
+        function 종선_대상(el) { return !!(el && el.tagName === 'SELECT' && !el.disabled && (el.classList.contains('ticker-select') || el.matches('select[data-k="t"]'))); }
+        function 종선_글(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+        function 종선_묶음(t) {
+            if (/^\d{6}$/.test(t)) return { 키: '국내', 순: 0 };   // 국장 (계산기)
+            var c; try { c = 종목분류(t); } catch (e) { c = { 종: '개별', 테마: '기타' }; }
+            if (c.종 === '시장') return { 키: '시장 · 지수', 순: 0 };
+            if (c.종 === 'ETF') {
+                if (c.섹터) return { 키: '섹터 ETF', 순: 2 };
+                if (c.배 && Math.abs(c.배) > 1) return { 키: '레버리지 · 인버스 ETF', 순: 1 };
+                return { 키: 'ETF', 순: 3 };
+            }
+            var 테 = c.테마 || '기타', i = 종목테마순.indexOf(테);
+            if (테 === '기타') return { 키: '기타', 순: 999 };
+            return { 키: 테, 순: 10 + (i >= 0 ? i : 80) };
+        }
+        function 종선_항목(sel) {
+            var 칸 = typeof panelTickers !== 'undefined' ? panelTickers : [], 내칸 = -1;
+            var m = /ticker-select-(\d+)/.exec(sel.id || ''); if (m) 내칸 = +m[1];
+            return Array.prototype.map.call(sel.options, function (o) {
+                var v = o.value, 국 = /^\d{6}$/.test(v), 이름 = 국 ? String(o.text || '').replace(/\s*\(?\d{6}\)?\s*/, '').trim() || v : (typeof tickerName === 'function' ? tickerName(v) : '') || v;
+                var 다른칸 = 칸.indexOf(v); if (다른칸 === 내칸) 다른칸 = -1;
+                var 보 = false; try { 보 = !!(window.종선_보유 && window.종선_보유(v)); } catch (e) { }
+                return { v: v, 이름: 이름, 막힘: !!o.disabled, 칸: 다른칸, 보유: 보 };
+            }).filter(function (x) { return x.v; });
+        }
+        function 종선_행(x, 지금값, 키) {
+            var 꼬 = (x.보유 ? '<i class="tkp-t own">보유</i>' : '') + (x.칸 >= 0 ? '<i class="tkp-t pn">' + (x.칸 + 1) + '번 칸' + (x.막힘 ? '에 있음' : '') + '</i>' : '');
+            return '<button type="button" class="tkp-i' + (x.v === 지금값 ? ' on' : '') + (x.막힘 ? ' dis' : '') + '" data-v="' + 종선_글(x.v) + '"' + (x.막힘 ? ' disabled' : '') + (키 ? ' data-k="' + 키 + '"' : '') + '><b>' + 종선_글(x.v) + '</b><span>' + 종선_글(x.이름) + '</span>' + 꼬 + '</button>';
+        }
+        function 종선_목록글(목, q, 지금값) {
+            q = String(q || '').trim().toUpperCase().replace(/\s+/g, '');
+            if (q) {   // 검색: 티커 앞부분 일치 → 티커 포함 → 이름 포함 · 같은 점수는 A~Z
+                var 맞 = 목.map(function (x) { var T = x.v.toUpperCase(), N = String(x.이름).toUpperCase().replace(/\s+/g, ''); var s = T === q ? 0 : T.indexOf(q) === 0 ? 1 : T.indexOf(q) >= 0 ? 2 : N.indexOf(q) >= 0 ? 3 : 9; return { x: x, s: s }; })
+                    .filter(function (z) { return z.s < 9; }).sort(function (a, b) { return a.s - b.s || (a.x.v < b.x.v ? -1 : 1); });
+                return 맞.length ? '<div class="tkp-g">검색 결과 ' + 맞.length + '개</div><div class="tkp-c">' + 맞.map(function (z) { return 종선_행(z.x, 지금값); }).join('') + '</div>' : '<div class="tkp-none">"' + 종선_글(q) + '" 와 맞는 종목이 없습니다</div>';
+            }
+            var h = '', 있는 = {}; 목.forEach(function (x) { 있는[x.v] = x; });
+            var 최 = 종선.최근.filter(function (v) { return 있는[v]; });
+            if (최.length) h += '<div class="tkp-g">최근 고른 종목</div><div class="tkp-c rec">' + 최.map(function (v) { return 종선_행(있는[v], 지금값, 'r'); }).join('') + '</div>';
+            var 묶 = {}, 순 = {};
+            목.forEach(function (x) { var g = 종선_묶음(x.v); (묶[g.키] = 묶[g.키] || []).push(x); 순[g.키] = g.순; });
+            Object.keys(묶).sort(function (a, b) { return 순[a] - 순[b] || (a < b ? -1 : 1); }).forEach(function (k) {
+                var 줄 = 묶[k].slice().sort(function (a, b) { return a.v < b.v ? -1 : a.v > b.v ? 1 : 0; });
+                h += '<div class="tkp-g">' + 종선_글(k) + ' <small>' + 줄.length + '</small></div><div class="tkp-c">' + 줄.map(function (x) { return 종선_행(x, 지금값); }).join('') + '</div>';
+            });
+            return h;
+        }
+        function 종선_닫기() {
+            var o = 종선.열림; if (!o) return; 종선.열림 = null;
+            try { o.판.remove(); o.막.remove(); } catch (e) { }
+            try { o.sel.focus({ preventScroll: true }); } catch (e) { }
+        }
+        function 종선_고름(v) {
+            var o = 종선.열림; if (!o || !v) return;
+            var sel = o.sel; 종선_닫기();
+            종선.최근 = [v].concat(종선.최근.filter(function (x) { return x !== v; })).slice(0, 6);
+            try { localStorage.setItem('sz_pick_recent', JSON.stringify(종선.최근)); } catch (e) { }
+            if (sel.value === v) return;
+            sel.value = v;
+            sel.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        function 종선_열기(sel) {
+            if (종선.열림) { var 같 = 종선.열림.sel === sel; 종선_닫기(); if (같) return; }
+            var d = sel.ownerDocument, w = d.defaultView || window, 목 = 종선_항목(sel); if (!목.length) return;
+            var 좁 = w.innerWidth < 640, 밝 = d.body && d.body.classList.contains('g-light');
+            var 막 = d.createElement('div'); 막.className = 'tkp-dim' + (좁 ? ' sheet' : '');
+            var 판 = d.createElement('div'); 판.className = 'tkp' + (좁 ? ' sheet' : '') + (밝 ? ' light' : '');
+            판.innerHTML = '<div class="tkp-h"><input class="tkp-q" type="search" placeholder="티커 또는 이름 (예: TSLA, 테슬라)" autocomplete="off" spellcheck="false"><button type="button" class="tkp-x" title="닫기 (Esc)">✕</button></div><div class="tkp-l"></div>';
+            d.body.appendChild(막); d.body.appendChild(판);
+            var 입 = 판.querySelector('.tkp-q'), 목록 = 판.querySelector('.tkp-l');
+            종선.열림 = { sel: sel, 판: 판, 막: 막 };
+            function 그리기() { 목록.innerHTML = 종선_목록글(목, 입.value, sel.value); 표시(목록.querySelector('.tkp-i.on:not(.dis)') || null, true); }
+            var 고른칸 = null;
+            function 표시(b, 스크롤) { if (고른칸) 고른칸.classList.remove('kb'); 고른칸 = b; if (b) { b.classList.add('kb'); if (스크롤) try { b.scrollIntoView({ block: 'nearest' }); } catch (e) { } } }
+            function 움직(n) {
+                var 모두 = Array.prototype.filter.call(목록.querySelectorAll('.tkp-i'), function (b) { return !b.disabled; }); if (!모두.length) return;
+                var i = 모두.indexOf(고른칸); i = i < 0 ? (n > 0 ? 0 : 모두.length - 1) : Math.max(0, Math.min(모두.length - 1, i + n)); 표시(모두[i], true);
+            }
+            if (!좁) {   // PC: 콤보박스 바로 아래 (아래 공간이 모자라면 위)
+                var r = sel.getBoundingClientRect(), W = Math.min(560, w.innerWidth - 16), 높 = Math.min(560, Math.round(w.innerHeight * 0.7));
+                var L = Math.max(8, Math.min(r.left, w.innerWidth - W - 8)), 아래 = w.innerHeight - r.bottom - 10, 위 = r.top - 10;
+                판.style.width = W + 'px'; 판.style.left = L + 'px';
+                if (아래 >= Math.min(높, 320) || 아래 >= 위) { 판.style.top = (r.bottom + 4) + 'px'; 판.style.maxHeight = Math.max(220, Math.min(높, 아래)) + 'px'; }
+                else { 판.style.bottom = (w.innerHeight - r.top + 4) + 'px'; 판.style.maxHeight = Math.max(220, Math.min(높, 위)) + 'px'; }
+            }
+            그리기();
+            입.addEventListener('input', function () { 그리기(); var 첫 = 목록.querySelector('.tkp-i:not(.dis)'); if (입.value.trim()) 표시(첫, true); });
+            입.addEventListener('keydown', function (e) {
+                if (e.key === 'ArrowDown') { e.preventDefault(); 움직(1); }
+                else if (e.key === 'ArrowUp') { e.preventDefault(); 움직(-1); }
+                else if (e.key === 'Enter') { e.preventDefault(); var b = 고른칸 || 목록.querySelector('.tkp-i:not(.dis)'); if (b && !b.disabled) 종선_고름(b.getAttribute('data-v')); }
+                else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); 종선_닫기(); }
+            });
+            판.addEventListener('click', function (e) {
+                var b = e.target.closest('.tkp-i'); if (b && !b.disabled) { 종선_고름(b.getAttribute('data-v')); return; }
+                if (e.target.closest('.tkp-x')) 종선_닫기();
+            });
+            판.addEventListener('mousemove', function (e) { var b = e.target.closest('.tkp-i'); if (b && !b.disabled && b !== 고른칸) 표시(b, false); });
+            막.addEventListener('pointerdown', function (e) { e.preventDefault(); 종선_닫기(); });
+            if (!좁) setTimeout(function () { try { 입.focus({ preventScroll: true }); } catch (e) { } }, 0);   // 휴대폰은 자판이 화면을 가리지 않게 바로 띄우지 않음
+        }
+        // 문서마다 한 번 연결 (대시보드 · 밖으로 뺀 창)
+        function 종선_연결(d) {
+            if (!d || d._종선) return; d._종선 = true;
+            d.addEventListener('pointerdown', function (e) {   // PC 마우스: 원래 콤보박스 목록 대신
+                var s = e.target && e.target.closest && e.target.closest('select'); if (!종선_대상(s) || e.pointerType === 'touch' || e.button !== 0) return;
+                e.preventDefault(); 종선_열기(s);
+            }, true);
+            d.addEventListener('mousedown', function (e) { var s = e.target && e.target.closest && e.target.closest('select'); if (종선_대상(s)) e.preventDefault(); }, true);
+            d.addEventListener('touchend', function (e) {   // 터치: 손을 뗄 때 (원래 선택 화면이 뜨지 않게)
+                var s = e.target && e.target.closest && e.target.closest('select'); if (!종선_대상(s)) return;
+                e.preventDefault(); 종선_열기(s);
+            }, { capture: true, passive: false });
+            d.addEventListener('keydown', function (e) {   // 콤보박스에 초점이 있을 때 키보드로 열기
+                if (종선.열림 && e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); 종선_닫기(); return; }
+                var s = e.target; if (!종선_대상(s) || 종선.열림) return;
+                if (e.key === 'Enter' || e.key === ' ' || e.key === 'F4' || (e.altKey && e.key === 'ArrowDown')) { e.preventDefault(); 종선_열기(s); }
+            }, true);
+            (d.defaultView || window).addEventListener('resize', function () { if (종선.열림 && 종선.열림.sel.ownerDocument === d) 종선_닫기(); });
+        }
+        종선_연결(document);
 
         function loadServerTickerNames() {
             try {
@@ -23636,6 +23916,7 @@
             else if (m.종류 === '틱') (m.목록 || []).forEach(키움차트_틱);
             else if (m.종류 === '수급') 수급_받음(m.목록 || {});
             else if (m.종류 === '시장흐름') 시장흐름_받음(m.값);
+            else if (m.종류 === 'AI진행' || m.종류 === 'AI결과' || m.종류 === 'AI오류') { if (window.AI_받기) window.AI_받기(m); }
             else if (m.종류 === '시세') {
                 var 지금 = Date.now(), 목 = m.목록 || {};
                 Object.keys(목).forEach(function (t) { var a = 목[t]; if (!Array.isArray(a) || !(a[0] > 0)) return; 키움묶음[t] = { price: +a[0], changeRate: +a[1], change: a[1] != null && +a[1] > -100 ? +a[0] - +a[0] / (1 + +a[1] / 100) : 0, volume: +a[2] || 0, recvAt: 지금, 묶음: true }; });
@@ -23787,7 +24068,8 @@
         function 키움차트_열기(i, 종목) {
             var box = document.getElementById('chart-' + i); if (!box) return;
             키움차트_닫기(i);
-            box.innerHTML = '<div class="kc"><div class="kc-c"></div><div class="kc-lb"></div><div class="kc-msg"></div><div class="kc-st" style="display:none"></div><div class="kc-tip"></div><div class="kc-fl" style="display:none"></div></div>';
+            box.innerHTML = '<div class="kc"><div class="kc-c"></div><div class="kc-lb"></div><div class="kc-msg"></div><div class="kc-st" style="display:none"></div><div class="kc-tip"></div><div class="kc-fl" style="display:none"></div>' +
+                (격자모드 && 키움.윈폼 ? '<button type="button" class="kc-ai" data-i="' + i + '" title="AI 분석 (ChatGPT · 데이터 PC)">AI</button>' : '') + '</div>';
             var 칸 = 키움설정_칸(i), 분 = String(panelIntervals[i] || '3');
             if (!키움_분봉표[분]) 분 = '3';
             var 개수 = Number(칸.개수);
@@ -24254,6 +24536,7 @@
             st.위끝 = 위.length > 0;   // 위쪽 끝 이름표가 있을 때만 수급 상자 높이가 이름표 자리에 영향
             h += 끝표(위, true) + 끝표(아래, false);
             h += 키움차트_최고가글(st, 판, 오른, 정밀, C);
+            if (window.AI_차트글) { try { h += window.AI_차트글(st, 판, 정밀); } catch (e) { } }
             h += 키움차트_판정글(st, 판, C);
             if (층._h !== h) { 층.innerHTML = h; 층._h = h; 키움차트_라벨비킴(층); }
             if (st.수급높이 || (수급_켬() && 키움_수급[st.종목])) { var 수판 = st.chart.paneSize(), 수키 = 수판.width + 'x' + 수판.height; if (st.수급판 !== 수키) { st.수급판 = 수키; 수급_그리기(st); } }
@@ -28205,7 +28488,7 @@
             if (cw && !document.getElementById('kr-view')) {
                 var v = document.createElement('div'); v.className = 'kr-view'; v.id = 'kr-view';
                 function 카드(id, 제목, 작은, 넓게) { return '<div class="kr-card' + (넓게 ? ' kr-wide' : '') + '"><h4><span id="' + id + '-h">' + 제목 + '</span> <small id="' + id + '-t">' + (작은 || '') + '</small></h4><div id="' + id + '"></div></div>'; }
-                v.innerHTML = 글자바HTML('kr') + '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<div class="sz-brief" id="kr-brief"></div><span class="kr-stat" id="kr-stat"></span><span class="sz-ver">판 2026.11.01e</span></div>' +
+                v.innerHTML = 글자바HTML('kr') + '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<div class="sz-brief" id="kr-brief"></div><span class="kr-stat" id="kr-stat"></span><span class="sz-ver">판 2026.11.03a</span></div>' +
                     '<div class="kr-two" id="kr-two">' +
                     '<div class="kr-pane" data-t="시장">' +
                         카드('kr-pj', '오늘 장 판정', '', 1) +
@@ -29294,11 +29577,775 @@
                    '<path d="' + 선 + '" fill="none" stroke="#ff5d5d" stroke-width="1.6" vector-effect="non-scaling-stroke" clip-path="url(#' + id + 'u)"/>' +
                    '<path d="' + 선 + '" fill="none" stroke="#4d8dff" stroke-width="1.6" vector-effect="non-scaling-stroke" clip-path="url(#' + id + 'd)"/></svg>';
         }
+        // ════════════════════════════════════════════════════════
+        // ★ AI 분석 창 (대시보드2 · 데이터 PC 전용): 차트 왼쪽 아래 [AI] → 질문 고르기 → 프롬프트 1개를 데이터 PC 로 보냄 → ChatGPT 답(JSON)
+        //   결과 = 결정 카드 → 가격 사다리(가격마다 근거) → 진입 조건 실시간 확인(✔/✖) → 상황 변경 감시(무효 · 다시 분석) → 질문별 답(접힘)
+        //   롱만 (숏 계획 없음) · 가격·근거는 보낸 자료 숫자만 · 손익비는 화면 계산 · 뉴스는 배경 참고만
+        // ════════════════════════════════════════════════════════
+        // 질문: [키, 질문, 결론 선택지]
+        var AI_질문목록 = [
+            ['매수', '지금 단타 매수 타이밍인가?', '매수 | 조건부 매수 | 관망 | 매수 금지'],
+            ['매도', '지금 단타 매도(익절·정리) 타이밍인가?', '매도 | 일부 매도 | 보유 | 관망'],
+            ['오늘', '오늘 이 종목 흐름 예상', '상승 | 하락 | 횡보 | 변동성 큼'],
+            ['흐름', '앞으로 30~60분 주가 흐름 예상', '상승 | 하락 | 횡보 | 변동성 큼'],
+            ['시장', '지금 시장 상황 요약', '위험 선호 | 중립 | 위험 회피']
+        ];
+        // 진입 조건 · 상황 변경(무효) 기준 — 숫자 조정은 여기서
+        var AI_기준 = { 돌파거래: 1.5, 매수비: 0.55, 눌림폭: 0.15, 마름배: 1.0, 종목변동: 1.0, 지수변동: 0.5, VIX상승: 5, 배수급증: 3, 흐름차: 5, 일정전분: 15, 오래됨분: 60, 손익비: 1.5, 급증봉: 3 };
+        function AI_저장읽기(k, 기본) { try { var v = JSON.parse(localStorage.getItem(k) || 'null'); return v == null ? 기본 : v; } catch (e) { return 기본; } }
+        function AI_저장(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
+        var AI_방식목록 = ['눌림', '돌파', 'AI 판단'];
+        var AI창 = { i: null, 번호: 0, 진행: null, 결과: {}, 펼침: (function () { var v = AI_저장읽기('sz_ai_open', null); return v && typeof v === 'object' ? v : { ans: true }; })(), 방식: (function () { var v = AI_저장읽기('sz_ai_style', '눌림'); return AI_방식목록.indexOf(v) >= 0 ? v : '눌림'; })(), 직접: String(AI_저장읽기('sz_ai_free', '') || ''), el: null, 외: null, 탭: 'all', 요청접힘: AI_저장읽기('sz_ai_reqfold', false) === true, 보기: AI_저장읽기('sz_ai_show', true) !== false, 사용: (function () { var v = AI_저장읽기('sz_ai_use', null); v = Array.isArray(v) ? v.filter(function (x) { return x === 'gpt' || x === 'gemini'; }) : []; return v.length ? v : ['gpt']; })(), 글자: Math.max(0.8, Math.min(1.8, +AI_저장읽기('sz_ai_fs', 1) || 1)), 고름: (function () { var v = AI_저장읽기('sz_ai_q', null); return Array.isArray(v) && v.length ? v : ['매수', '흐름']; })() };
+        try { if (typeof 알림_종류 !== 'undefined' && !알림_종류.AI) 알림_종류.AI = { 아이콘: '🤖', 이름: 'AI 분석', 유지: 60000 }; } catch (e) { }
+        function AI_창() { var w = AI창.el; return w && w.isConnected ? w : null; }
+        function AI_이름(k) { return k === 'gemini' ? 'Gemini' : 'ChatGPT'; }
+        window.AI_디버그 = { 상태: AI창, 그리기: function () { var w = AI_창(); if (w) w._h = ''; AI창_그리기(); } };   // 시험·점검용
+        window.종선_보유 = function (t) { return !!AI_보유(t); };   // 종목 선택 창 '보유' 표시
+        function AI_보유(t) { var x = ((상태.보유 && 상태.보유.us) || []).filter(function (h) { return h.t === t; })[0]; return x && x.가 > 0 && x.수 > 0 ? x : null; }
+        function AI_장열림() { var t = marketPhase().type; return t === 'REG'; }
+        function AI_현재가(t) { var p = pickQuote(t), q = p && p.q; return q && q.price > 0 ? q.price : 0; }
+        function AI_값(id) { var v = 시황_값[id]; return v && v.p > 0 ? v.p : 0; }
+        function AI_분(b) { return Math.floor((b.t % 86400) / 60); }
+        function AI_시분(m) { return ('0' + Math.floor(m / 60)).slice(-2) + ':' + ('0' + m % 60).slice(-2); }
+        // 이 종목의 분봉 차트 (여러 칸에 있으면 봉 간격이 가장 짧은 것)
+        function AI_차트상태(t) {
+            var 고른 = null;
+            Object.keys(K차트).forEach(function (k) {
+                var s2 = K차트[k]; if (!s2 || s2.종목 !== t || !s2.봉 || s2.봉.length < 2 || s2.일봉) return;
+                var g = Infinity, b = s2.봉; for (var n = Math.max(1, b.length - 10); n < b.length; n++) g = Math.min(g, b[n].t - b[n - 1].t);
+                if (!고른 || g < 고른.g) 고른 = { st: s2, g: g };
+            });
+            return 고른 ? 고른.st : null;
+        }
+        // 3분봉: 차트 봉(뉴욕 시각 기준 초)을 3분 단위로 묶음 (차트 봉이 3분보다 크면 그대로) · 마지막 묶음 = 아직 만들어지는 중
+        function AI_3분봉(t) {
+            var st = AI_차트상태(t); if (!st) return [];
+            var 봉 = st.봉, 간 = 180, g = Infinity;
+            for (var n = Math.max(1, 봉.length - 10); n < 봉.length; n++) g = Math.min(g, 봉[n].t - 봉[n - 1].t);
+            if (isFinite(g) && g > 180) 간 = g;
+            var 목 = [], 끝 = null;
+            봉.forEach(function (b) {
+                var k = Math.floor(b.t / 간);
+                if (!끝 || 끝.k !== k) { 끝 = { k: k, t: k * 간, o: b.o, h: b.h, l: b.l, c: b.c, v: b.v || 0 }; 목.push(끝); }
+                else { 끝.h = Math.max(끝.h, b.h); 끝.l = Math.min(끝.l, b.l); 끝.c = b.c; 끝.v += b.v || 0; }
+            });
+            return 목;
+        }
+        // 봉 자료: ① 마지막 정규장 15분봉 요약 ② 지금 정규장이면 최근 3분봉 20개 / 아니면 시간외 범위만
+        function AI_봉자료(t) {
+            var st = AI_차트상태(t);
+            if (!st) return [];
+            var 봉 = st.봉, 자 = st.정밀 || 2, L = [];
+            function 날(b) { return Math.floor(b.t / 86400); }
+            function 수(v) { return Number(v).toFixed(자); }
+            var 마지막 = null; for (var k = 봉.length - 1; k >= 0; k--) { var m0 = AI_분(봉[k]); if (m0 >= 570 && m0 < 960) { 마지막 = 날(봉[k]); break; } }
+            if (마지막 != null) {
+                var 묶 = {}, 순 = [];
+                봉.forEach(function (b) { var m = AI_분(b); if (날(b) !== 마지막 || m < 570 || m >= 960) return; var g = Math.floor((m - 570) / 15) * 15 + 570; var o = 묶[g]; if (!o) { o = 묶[g] = { g: g, o: b.o, h: b.h, l: b.l, c: b.c, v: 0 }; 순.push(g); } o.h = Math.max(o.h, b.h); o.l = Math.min(o.l, b.l); o.c = b.c; o.v += b.v || 0; });
+                if (순.length) L.push('- 정규장 15분봉 (' + new Date(마지막 * 86400000).toISOString().slice(5, 10).replace('-', '/') + ', 시각 ET 시가/고가/저가/종가/거래량): ' + 순.map(function (g) { var o = 묶[g]; return AI_시분(g) + ' ' + [o.o, o.h, o.l, o.c].map(수).join('/') + '/' + Math.round(o.v); }).join(' · '));
+            }
+            if (AI_장열림()) {
+                var 삼 = AI_3분봉(t).slice(-21, -1);   // 다 만들어진 3분봉 20개
+                if (삼.length) {
+                    var 평 = 삼.reduce(function (s, b) { return s + b.v; }, 0) / 삼.length;
+                    L.push('- 최근 ' + 삼.length + '개 3분봉 (지금 정규장, 시각 ET 시가/고가/저가/종가/거래량 · 거래량 평균 ' + Math.round(평) + '): ' + 삼.map(function (b) { return AI_시분(AI_분(b)) + ' ' + [b.o, b.h, b.l, b.c].map(수).join('/') + '/' + Math.round(b.v); }).join(' · '));
+                }
+            } else if (마지막 != null) {
+                var 외 = 봉.filter(function (b) { var m = AI_분(b); return 날(b) > 마지막 || (날(b) === 마지막 && m >= 960); });
+                if (외.length) { var 고 = Math.max.apply(null, 외.map(function (b) { return b.h; })), 저 = Math.min.apply(null, 외.map(function (b) { return b.l; })); L.push('- 정규장 마감 뒤 시간외: 범위 ' + 수(저) + '~' + 수(고) + ' · 마지막 ' + 수(외[외.length - 1].c) + ' (거래가 적어 참고만)'); }
+            }
+            return L;
+        }
+        // 거래 급증 3분봉: 마지막 정규장 날 3분봉 중 거래량이 그날 평균의 3배 이상 (많은 순 6개 → 시간순) — 뉴스 시각과 상관없는 실제 움직임
+        function AI_급증봉(t) {
+            var st = AI_차트상태(t), 자 = (st && st.정밀) || 2, 봉 = AI_3분봉(t); if (!봉.length) return '';
+            var 정 = 봉.filter(function (b) { var m = AI_분(b); return m >= 570 && m < 960; }); if (!정.length) return '';
+            var 날 = Math.floor(정[정.length - 1].t / 86400), 그날 = 정.filter(function (b) { return Math.floor(b.t / 86400) === 날; });
+            if (AI_장열림() && 그날.length && 그날[그날.length - 1] === 봉[봉.length - 1]) 그날 = 그날.slice(0, -1);   // 만들어지는 중인 봉 빼기
+            if (그날.length < 5) return '';
+            var 평 = 그날.reduce(function (s, b) { return s + b.v; }, 0) / 그날.length; if (!(평 > 0)) return '';
+            var 큰 = 그날.filter(function (b) { return b.v >= 평 * AI_기준.급증봉; }).sort(function (a, b) { return b.v - a.v; }).slice(0, 6).sort(function (a, b) { return a.t - b.t; });
+            return '- 거래 급증 3분봉 (' + new Date(날 * 86400000).toISOString().slice(5, 10).replace('-', '/') + ' 정규장, 그날 3분 평균 ' + Math.round(평) + '의 ' + AI_기준.급증봉 + '배 이상, 시각 ET 가격 변동 · 배수 · 종가): ' +
+                   (큰.length ? 큰.map(function (b) { return AI_시분(AI_분(b)) + ' ' + fmtPct((b.c / b.o - 1) * 100) + ' ' + (b.v / 평).toFixed(1) + '배 종가 ' + Number(b.c).toFixed(자); }).join(' · ') : '없음');
+        }
+        // 오늘 경제 일정 (시각 있는 지표 · FOMC) — 상황 변경 감시용
+        function AI_일정목록() {
+            var 뉴욕 = 가상_뉴욕시각(), 지금분 = 뉴욕.getHours() * 60 + 뉴욕.getMinutes(), 목 = [];
+            try { 일정_줄들().forEach(function (x) { if (x.종류 !== '지표' && x.종류 !== 'FOMC') return; var m = /^(\d{2}):(\d{2})$/.exec(x.시각 || ''); if (!m) return; 목.push({ 이름: String(x.이름).replace(/<[^>]+>/g, '').replace(/^★/, '').split(' · ')[0], 분: +m[1] * 60 + +m[2] }); }); } catch (e) { }
+            return { 지금분: 지금분, 목: 목 };
+        }
+        // 분석할 때의 상황 (상황 변경 감시 기준)
+        function AI_스냅(t) {
+            var 시v = AI_장열림() ? 시장흐름_값() : null;
+            return { at: Date.now(), 가: AI_현재가(t), qqq: AI_값('neon-qqq'), spy: AI_값('neon-spy'), vix: AI_값('neon-vix'), 흐: 시v ? { b: 시v.b || 0, d: 시v.d || 0 } : null, 일: AI_일정목록(), 장외: !AI_장열림() };
+        }
+        function AI_프롬프트(i, 고른, 직접) {
+            var t = panelTickers[i], now = Date.now(), 장 = marketPhase(), 열림 = AI_장열림(), L = [];
+            var 세션 = { REG: '정규장', PRE: '프리마켓', POST: '애프터마켓', NIGHT: '오버나이트', WEEKEND: '주말 휴장', HOLIDAY: '휴장일' }[장.type] || 장.label || 장.type;
+            L.push('<자료 생성="' + AI_시각(now, 'America/New_York') + ' ET / ' + AI_시각(now, 'Asia/Seoul') + ' KST" 세션="' + 세션 + '">');
+            // 시장
+            var 시장 = [['neon-qqq', 'QQQ'], ['neon-spy', 'SPY'], ['neon-nq', '나스닥선물'], ['neon-vix', 'VIX'], ['neon-tnx', '미국채10년'], ['neon-dxy', '달러인덱스'], ['neon-cl', 'WTI'], ['neon-gold', '금'], ['neon-btc', '비트코인'], ['neon-usdkrw', '원달러']].map(function (x) {
+                var v = 시황_값[x[0]]; return v && v.p > 0 ? x[1] + ' ' + 시황_숫자(v.p) + ' (' + fmtPct(v.c) + ')' : x[1] + ' 자료 없음';
+            });
+            L.push('[시장 환경]' + (장.type === 'WEEKEND' || 장.type === 'HOLIDAY' ? ' (휴장 중 · 지표는 마지막 거래 시점 값)' : ''));
+            L.push('- ' + 시장.join(' · '));
+            var fgv = document.querySelector('#neon-fg .val'), fgn = fgv ? parseFloat(fgv.textContent) : NaN;
+            if (isFinite(fgn)) L.push('- 공포탐욕지수 ' + fgn + ' (0 = 극단적 공포 · 100 = 극단적 탐욕)');
+            var 시v = 시장흐름_값(), 시전 = 시장흐름_1분전();
+            if (열림) ['QQQ', 'SPY'].forEach(function (지) { var p = 시v ? (지 === 'SPY' ? (시v.s3 != null ? 시v.s3 : 시v.s) : (시v.q3 != null ? 시v.q3 : 시v.q)) : null, 전 = 지수_1분전(지); if (p != null) L.push('- ' + 지 + ' 최근 3분 ' + fmtPct(p) + (전 != null ? ' (1분 전 ' + fmtPct(전) + ')' : '')); });
+            if (열림 && 시v) L.push('- 관심 개별 종목(' + (시v.n || 0) + '개) 최근 1분: 매수 우위 ' + (시v.b || 0) + '개 · 매도 우위 ' + (시v.d || 0) + '개' + (시전 ? ' (1분 전 ' + (시전.b || 0) + ' / ' + (시전.d || 0) + ')' : ''));
+            if (시장경보) L.push('- 시장 경보: ' + 시장경보.단계 + ' · ' + 시장경보.짧은글);
+            try { var 평 = (typeof 한줄 !== 'undefined' && 한줄.us) || []; 평.slice(0, 5).forEach(function (x) { L.push('- 시황 평가 [' + x.lv + ']: ' + String(x.t).replace(/\s+/g, ' ').trim()); }); } catch (e) { }
+            try { var 일 = 일정_줄들().filter(function (x) { return !x.지남; }).slice(0, 6); if (일.length) L.push('- 오늘 일정(ET): ' + 일.map(function (x) { return x.시각 + ' ' + String(x.이름).replace(/<[^>]+>/g, '') + ' [' + x.상태 + ']'; }).join(' · ')); } catch (e) { }
+            // 종목
+            L.push('\n[종목] ' + t + ' (' + tickerName(t) + ')');
+            try { L.push(AI_종목(i, true).split('\n').slice(1).join('\n')); } catch (e) { L.push('- 종목 정리 오류: ' + e.message); }
+            var fx = 체결_가져오기(t), x = fx ? 체결_정리(fx) : null;
+            if (x && 열림) {
+                var 판 = 매매비_판정(t, x), 전배 = 배수_1분전(t, x, fx.시각 || 0), 상 = 체결_상태판정(t, x);
+                L.push('- 최근 1분 체결: 매수 ' + (x.r != null ? Math.round(x.r * 100) + '%' : '자료 없음') + ' · 거래 평소 대비 ' + (x.b != null ? x.b.toFixed(2) + '배' : '자료 없음') + (전배 != null ? ' (1분 전 ' + 전배.toFixed(2) + '배)' : '') +
+                       ' · 가격 1분 ' + (x.p1 != null ? fmtPct(x.p1) : '자료 없음') + ' · 5분 ' + (x.p5 != null ? fmtPct(x.p5) : '자료 없음') + (x.w != null ? ' · 15분 고저 중 ' + Math.round(x.w * 100) + '% 위치' : '') + (x.n != null ? ' · 1분 체결 ' + x.n + '건' : ''));
+                L.push('- 체결 상태: ' + (상 || '보통') + ' · 판정: ' + ((판 && 판.글) || '특이 없음') + (판 && 판.꼬 ? ' · ' + 판.꼬 : ''));
+                var 수 = typeof 키움_수급 !== 'undefined' ? 키움_수급[t] : null;
+                if (수 && 수.b != null && Date.now() - (수.at || 0) < 15000) L.push('- 호가 잔량 합계: 매수 ' + 수.b + ' · 매도 ' + 수.a);
+            }
+            AI_봉자료(t).forEach(function (l) { L.push(l); });
+            var 급 = AI_급증봉(t); if (급) L.push(급);
+            try { var 뉴 = 뉴스_종목목록(t, 2).filter(function (n) { return Date.now() - n.x.t < 36 * 3600000; }).slice(0, 8); L.push('- 최근 뉴스 제목(36시간, 매체 시각 KST · 배경 참고용): ' + (뉴.length ? 뉴.map(function (n) { return AI_시각(n.x.t, 'Asia/Seoul').slice(5, 16) + ' ' + ((n.x.lb || []).indexOf('속보') >= 0 ? '[속보] ' : '') + String(n.x.ti || '').replace(/\s+/g, ' ').slice(0, 120); }).join(' / ') : '없음')); } catch (e) { }
+            var 보 = AI_보유(t), 현 = AI_현재가(t);
+            if (보) L.push('\n[내 보유]\n- 평균 단가 ' + Number(보.가).toFixed(2) + ' · ' + 보.수 + '주' + (현 > 0 ? ' · 현재 손익 ' + fmtPct((현 / 보.가 - 1) * 100) : ''));
+            L.push('{{내매매기준}}');
+            L.push('</자료>');
+            // 요청
+            var 질 = 고른.map(function (k, n) { var q2 = AI_질문목록.filter(function (z) { return z[0] === k; })[0]; return { n: n + 1, 질문: q2 ? q2[1] : k, 선택: q2 ? q2[2] : '' }; });
+            직접 = String(직접 || '').trim();
+            if (직접) 질.push({ n: 질.length + 1, 질문: '직접 질문: ' + 직접, 선택: '', 직접: true });
+            if (!고른.length) {   // 직접 질문만: 자료 + 내 질문 → 직접답변 하나 (결정·계획·감시 없음)
+                L.push('\n<요청>\n너는 미국 주식 단타(보유 수 분~1시간) 분석가다. 위 자료만 근거로 ' + t + ' 에 대한 내 질문에 답해라.\n\n규칙\n' +
+                    (열림 ? '' : '- 지금은 정규장이 아니다(' + 세션 + '). 필요하면 다음 정규장 개장 직후 기준으로 답하라.\n') +
+                    '- 숫자는 자료에 있는 값만 써라. 자료에 없는 사실(새 뉴스·실적 수치 등)은 지어내지 마라. 자료로 답할 수 없으면 그렇다고 써라.\n' +
+                    '- 롱(매수)만 한다. 숏(공매도) 의견은 내지 마라.\n' +
+                    '- 근거는 2~3개, 근거마다 자료의 숫자를 하나 이상 인용하고 그 숫자가 뜻하는 것을 함께 써라 (예: "거래량 0.76배 → 힘 없음"). 가격을 말하면 그 가격이 나온 자료 항목 이름을 함께 써라.\n' +
+                    '- 뉴스 제목은 배경 참고만 하라. 가격 움직임의 원인으로 단정하지 마라.\n' +
+                    '- 한국어로 짧게.\n\n내 질문\n' + 직접 +
+                    '\n\n출력: 아래 형식의 ```json 코드 블록 하나로만 답하라. 코드 블록 밖에는 아무 글도 쓰지 마라. 예시 숫자 123.45 는 실제 자료 가격으로 바꾸거나 빈 목록으로 써라.\n```json\n' +
+                    JSON.stringify({ 종목: t, 직접답변: { 질문: '내 질문 한 줄 요약', 결론: '한 줄', 답: '2~4문장 (자료 숫자 인용)', 근거: ['자료 숫자 인용 1', '자료 숫자 인용 2'], 관련가격: [{ 가격: 123.45, 이유: '자료 항목 + 가격' }] }, 주의: ['위험 요소'], 자료부족: ['부족한 자료'] }, null, 1) + '\n```\n</요청>');
+                return L.filter(function (x) { return x !== ''; }).join('\n');
+            }
+            var B = AI_기준, 방 = AI창.방식 || '눌림';
+            L.push('\n<요청>\n너는 미국 주식 단타(보유 수 분~1시간) 분석가다. 위 자료만 근거로 ' + t + ' 에 대한 질문에 답해라.\n\n규칙\n' +
+                (열림 ? '' : '- 지금은 정규장이 아니다(' + 세션 + '). "지금"은 다음 정규장 개장 직후 기준으로 판단하라.\n') +
+                '- 롱(매수)만 한다. 숏(공매도) 계획은 내지 마라. 계획.방향은 "롱" 또는 "없음".\n' +
+                '- 숫자는 자료에 있는 값만 써라. 진입·손절·목표·기준선·관찰 가격은 자료에 적힌 가격(지지·저항·매물대·VWAP·고가·저가·종가·옵션 행사가·봉 가격) 중에서만 골라라. 맞는 가격이 없으면 null.\n' +
+                '- 가격마다 이유를 꼭 써라: 진입이유·손절이유·목표1이유·목표2이유(관찰은 위이유·아래이유). 이유 = 그 가격이 나온 자료 항목 이름 + 그 가격 숫자 (예: "저항 R1 251.20 ●●●", "오늘 고가 253.10", "VWAP 249.80 아래"). 30자 이내. 이유를 댈 수 없는 가격은 null.\n' +
+                '- 가격은 따옴표 없는 숫자로 써라. 손익비는 계산해서 쓰지 마라 (화면에서 계산한다). 가격 순서: 손절 < 진입 < 목표1 < 목표2.\n' +
+                '- 손익비(목표1까지 이익 ÷ 손절까지 손실)가 ' + B.손익비 + ' 미만이 될 계획은 내지 말고 결정을 "관망"으로 하라.\n' +
+                '- 내 매매 방식: ' + (방 === 'AI 판단' ? '정해 두지 않음. 지금 상황에 가장 맞는 진입유형(눌림·돌파·즉시)을 골라라.\n'
+                    : 방 + ' 매수만 한다. 진입유형은 "' + 방 + '"만 써라. ' + 방 + ' 자리가 없으면 결정을 "관망"으로 하고 관찰 가격을 써라. 다른 방식이 더 맞아 보이면 참고에 한 줄로만 써라 (계획으로 쓰지 마라). 결정 "매수"(즉시)는 쓰지 말고, 지금 바로 ' + 방 + ' 자리여도 "조건부 매수"로 써라 (화면이 조건을 바로 확인한다).\n') +
+                '- 진입유형 정의 (화면이 3분봉·체결로 자동 확인한다): 눌림 = 상승 추세(가격이 VWAP 위 · 오늘 고가 근처를 다녀옴) 중 되돌림이 기준선(VWAP·지지·이전 저항) ±' + B.눌림폭 + '% 에 닿고 + 내려오는 동안 3분봉 거래량이 최근 20개 평균 이하 + 기준선 위 3분봉 양봉 종가 + 1분 매수 비율 ' + Math.round(B.매수비 * 100) + '% 이상 (상승 추세 여부는 네가 판단) / 돌파 = 기준선 위 3분봉 종가 + 그 봉 거래량이 최근 3분봉 20개 평균의 ' + B.돌파거래 + '배 이상 + 1분 매수 비율 ' + Math.round(B.매수비 * 100) + '% 이상 / 즉시 = 조건 없이 지금 진입.\n' +
+                '- 결정과 계획을 맞춰라: 매수 = 진입유형 즉시 · 조건부 매수 = 눌림 또는 돌파 (진입은 기준선 근처 가격) · 관망·매수 금지 = 계획.방향 "없음"이고 관찰.위(넘으면 롱 검토할 가격)·관찰.아래(깨지면 ' + (보 ? '보유 정리 검토' : '위험 신호') + '인 가격)를 이유와 함께 써라.\n' +
+                '- 조건짧게 = 15자 이내 (예: "249.80 눌림 확인", "251.20 돌파 확인", "즉시 진입").\n' +
+                '- 근거는 질문마다 2개, 근거마다 자료의 숫자를 하나 이상 인용하고 그 숫자가 뜻하는 것을 함께 써라 (예: "VWAP 398.92 아래 종가 397.50 → 매도 우위", "거래량 0.76배 → 힘 없음"). 숫자만 옮겨 적지 마라. 자료에 없는 사실(새 뉴스·실적 수치 등)을 지어내지 마라.\n' +
+                '- 뉴스 제목은 배경 참고만 하라. 매체마다 시각이 달라 가격 움직임의 원인으로 단정할 수 없다. 결정·가격·근거는 가격·거래량·체결 수급 숫자로만 쓰고, 거래 급증 봉과 뉴스의 관계는 "관련 가능성"으로만 써라.\n' +
+                '- [시스템 판단]을 그대로 따르지 말고 먼저 자료로 독립 판단한 뒤, 시스템비교에 동의 여부를 써라.\n' +
+                '- 확신도: 상 = 방향 점수 ±2 이상 + 거래량 배수 1.0배 이상 + 근거 레벨이 ●●● 셋 다 / 중 = 둘 / 하 = 하나 이하.\n' +
+                (보 ? '- 보유 중이다. 먼저 "보유하지 않았다면 지금 이 가격에 새로 사겠는가"를 판단하고, 그 결과로 보유관리 결론을 내라. 평균 단가는 손익 확인에만 쓰고 판단 근거로 쓰지 마라. 정리가격·익절가격에도 이유를 써라.\n' : '') +
+                '- 한국어로 짧게. 결론은 질문마다 적힌 선택지 중 하나만.\n\n질문\n' + 질.map(function (q2) { return q2.n + '. ' + q2.질문 + (q2.선택 ? ' (결론 선택지: ' + q2.선택 + ')' : q2.직접 ? ' (결론 한 줄 + 답 2~4문장 · 자료 숫자 인용)' : ''); }).join('\n') +
+                '\n결정 (선택지: 매수 | 조건부 매수 | 관망 | 매수 금지) · 계획 · 관찰은 질문과 상관없이 항상 써라.' +
+                (보 ? '\n보유관리 (결론 선택지: 계속 보유 | 일부 익절 | 전량 정리 | 손절 · 추가매수: 예 | 아니오 | 조건부)' : '') +
+                '\n\n출력: 아래 형식의 ```json 코드 블록 하나로만 답하라. 코드 블록 밖에는 아무 글도 쓰지 마라. 예시 숫자 123.45 는 실제 자료 가격으로 바꾸거나 null 로 써라.\n```json\n' + AI_형식(질, !!보, t) + '\n```\n</요청>');
+            return L.filter(function (x) { return x !== ''; }).join('\n');
+        }
+        function AI_형식(질, 보유, t) {
+            var o = { 종목: t, 기준가격: 123.45, 결정: '매수|조건부 매수|관망|매수 금지', 확신도: '상|중|하', 요약: '결정 이유 한 줄 (자료 숫자 인용)', 시스템비교: { 판단: '동의|부분 동의|반대', 이유: '한 줄' } };
+            if (보유) o.보유관리 = { 결론: '계속 보유|일부 익절|전량 정리|손절', 추가매수: '예|아니오|조건부', 이유: ['근거1', '근거2'], 정리가격: 123.45, 정리이유: '자료 항목 + 가격', 익절가격: 123.45, 익절이유: '자료 항목 + 가격' };
+            var 방 = AI창.방식 || '눌림';
+            o.계획 = { 방향: '롱|없음', 진입유형: 방 === 'AI 판단' ? '눌림|돌파|즉시' : 방, 기준선: 123.45, 조건짧게: '15자 이내', 진입조건: '어디서 무엇을 확인하면 진입 (한 문장)', 진입: 123.45, 진입이유: '자료 항목 + 가격', 손절: 123.45, 손절이유: '자료 항목 + 가격', 목표1: 123.45, 목표1이유: '자료 항목 + 가격', 목표2: null, 목표2이유: '', 무효조건: '짧게' };
+            o.관찰 = { 위: null, 위이유: '', 아래: null, 아래이유: '' };
+            o.참고 = '다른 방식이 더 맞을 때만 한 줄 (없으면 빈 글)';
+            o.답변 = 질.map(function (q) { return q.직접 ? { 질문: q.질문, 결론: '한 줄', 답: '2~4문장 (자료 숫자 인용)', 확신도: '상|중|하', 근거: ['자료 숫자 인용 1', '자료 숫자 인용 2'] } : { 질문: q.질문, 결론: q.선택 || '짧게', 확신도: '상|중|하', 근거: ['자료 숫자 인용 1', '자료 숫자 인용 2'] }; });
+            o.주의 = ['위험 요소']; o.자료부족 = ['부족한 자료'];
+            return JSON.stringify(o, null, 1);
+        }
+        function AI_글(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+        function AI_결론색(s) { s = String(s || ''); return /매수|상승|예|보유|진입/.test(s) && !/아니오|금지/.test(s) ? 'up' : /매도|하락|정리|손절|아니오|금지/.test(s) ? 'dn' : 'fl'; }
+        // ── 결과 정리 · 검사 (화면에서 직접): 가격이 보낸 자료에 있는지 · 가격마다 이유(출처 숫자) · 롱 순서 · 손익비 계산 ──
+        function AI_숫자(v) { if (v == null || v === '' || v === 'null') return null; var n = typeof v === 'number' ? v : parseFloat(String(v).replace(/[^0-9.\-]/g, '')); return isFinite(n) && n > 0 ? n : null; }
+        function AI_자료숫자(프) { var 목 = [], 끝 = String(프 || '').indexOf('</자료>'); String(끝 > 0 ? 프.slice(0, 끝) : 프 || '').replace(/(\d[\d,]*\.?\d*)/g, function (m) { var n = parseFloat(m.replace(/,/g, '')); if (isFinite(n) && n >= 0) 목.push(n); return m; }); return 목; }
+        function AI_있음(목, v) { for (var k = 0; k < 목.length; k++) if (Math.abs(목[k] - v) <= 0.0051) return true; return false; }
+        function AI_글숫자(s) { var 목 = []; String(s || '').replace(/(\d[\d,]*\.?\d*)/g, function (m) { var n = parseFloat(m.replace(/,/g, '')); if (isFinite(n)) 목.push(n); return m; }); return 목; }
+        // 이유: '' = 이유 없음 · '출처' = 이유에 그 가격 숫자가 없음 · 'ok'
+        function AI_이유상태(이유, 가) { 이유 = String(이유 || '').trim(); if (이유.length < 2) return ''; return AI_있음(AI_글숫자(이유), 가) ? 'ok' : '출처'; }
+        // 사다리에 쓸 짧은 이유 (가격 숫자는 이미 이름표에 있으니 뺌)
+        function AI_짧은이유(이유, 가) {
+            var s = String(이유 || '').trim(); if (!s) return '';
+            if (가 != null) s = s.replace(/(\d[\d,]*\.?\d*)/g, function (m) { var n = parseFloat(m.replace(/,/g, '')); return Math.abs(n - 가) <= 0.0051 ? '' : m; });
+            return s.replace(/\s{2,}/g, ' ').replace(/^[\s·,:]+|[\s·,:]+$/g, '').trim() || String(이유).trim();
+        }
+        function AI_계획(j) {
+            var p = (j && j.계획) || {}, o = (j && j.관찰) || {}, 숫 = AI_숫자, 유 = String(p.진입유형 || '');
+            return {
+                방향: String(p.방향 || '없음'), 유형: /돌파/.test(유) ? '돌파' : /눌림|지지/.test(유) ? '눌림' : /즉시/.test(유) ? '즉시' : '',
+                기준선: 숫(p.기준선), 진입: 숫(p.진입), 손절: 숫(p.손절), 목표1: 숫(p.목표1), 목표2: 숫(p.목표2),
+                진입이유: p.진입이유 || '', 손절이유: p.손절이유 || '', 목표1이유: p.목표1이유 || '', 목표2이유: p.목표2이유 || '',
+                조건짧게: String(p.조건짧게 || '').slice(0, 24), 진입조건: p.진입조건 || '', 무효조건: p.무효조건 || '',
+                위: 숫(o.위), 위이유: o.위이유 || '', 아래: 숫(o.아래), 아래이유: o.아래이유 || ''
+            };
+        }
+        function AI_롱(c) { return /롱|매수/.test(c.방향) && !/숏/.test(c.방향) && c.진입 != null; }
+        function AI_검사(c, 목, 방식) {
+            var 경 = [], rr = null;
+            if (/숏|공매도/.test(c.방향)) 경.push('숏 계획은 쓰지 않음 (롱만)');
+            var 롱 = AI_롱(c);
+            var 항 = 롱 ? [['진입', c.진입, c.진입이유], ['손절', c.손절, c.손절이유], ['목표1', c.목표1, c.목표1이유], ['목표2', c.목표2, c.목표2이유], ['기준선', c.기준선, null]]
+                        : [['▲ 관찰', c.위, c.위이유], ['▼ 관찰', c.아래, c.아래이유]];
+            항.forEach(function (x) {
+                if (x[1] == null) return;
+                if (목 && !AI_있음(목, x[1])) 경.push(x[0] + ' ' + x[1] + ' = 보낸 자료에 없는 가격');
+                if (x[0] === '기준선') return;
+                var s = AI_이유상태(x[2], x[1]);
+                if (!s) 경.push(x[0] + ' 근거 없음'); else if (s === '출처') 경.push(x[0] + ' 근거에 가격 출처 없음');
+            });
+            if (롱) {
+                if (c.손절 == null || c.목표1 == null) 경.push('손절 또는 목표1 가격 없음');
+                else {
+                    var 위험 = c.진입 - c.손절, 이익 = c.목표1 - c.진입;
+                    if (위험 <= 0 || 이익 <= 0) 경.push('가격 순서가 맞지 않음 (손절 < 진입 < 목표1)');
+                    else { rr = 이익 / 위험; if (rr < AI_기준.손익비) 경.push('손익비 1:' + rr.toFixed(2) + ' → 기준 1:' + AI_기준.손익비 + ' 미달'); }
+                    if (c.목표2 != null && c.목표2 <= c.목표1) 경.push('목표2 가 목표1 보다 낮음');
+                }
+                if (!c.유형) 경.push('진입유형 없음 (눌림 · 돌파 · 즉시)');
+                else if (방식 && 방식 !== 'AI 판단' && c.유형 !== 방식) 경.push('내 매매 방식(' + 방식 + ')과 다른 진입유형: ' + c.유형);
+            }
+            return { rr: rr, 경: 경, 롱: 롱 };
+        }
+        // ── 진입 조건 실시간 확인: 3분봉(다 만들어진 봉) · 거래량(최근 20개 평균 대비) · 1분 매수 비율 (체결 자료가 없으면 가격·거래량만) ──
+        //   눌림 = 기준선 도착 · 내려오는 동안 거래 마름 · 양봉 종가 기준선 위 · 매수 비율 / 돌파 = 종가 위 · 거래 1.5배 · 매수 비율
+        function AI_조건(t, c) {
+            if (!AI_롱(c)) return { 목: [], 다: false };
+            if (c.유형 === '즉시' || !c.유형) return { 목: [], 다: true, 즉시: true };
+            var 기 = c.기준선 || c.진입, B = AI_기준, 봉 = AI_3분봉(t), 완목 = 봉.slice(0, -1), 완 = 완목.length ? 완목[완목.length - 1] : null, 앞 = 완목.slice(-21, -1);
+            var 평 = 앞.length ? 앞.reduce(function (s, b) { return s + b.v; }, 0) / 앞.length : 0, 현 = AI_현재가(t);
+            var fx = AI_장열림() ? 체결_가져오기(t) : null, x = fx ? 체결_정리(fx) : null, r = x && x.r != null ? x.r : null, 목 = [];
+            if (c.유형 === '돌파') {
+                목.push({ 키: '종가', 글: '3분 종가 위', 긴: '3분봉 종가 ' + (완 ? Number(완.c).toFixed(2) : '?') + ' > 기준선 ' + 기, ok: !!(완 && 완.c > 기) });
+                var 배 = 완 && 평 > 0 ? 완.v / 평 : null;
+                목.push({ 키: '거래', 글: '거래 ' + (배 != null ? 배.toFixed(1) : '?') + '배 / ' + B.돌파거래 + '배↑', 긴: '그 3분봉 거래량 평균의 ' + (배 != null ? 배.toFixed(2) + '배' : '자료 없음') + ' (기준 ' + B.돌파거래 + '배 이상)', ok: 배 != null && 배 >= B.돌파거래 });
+            } else {
+                var 폭 = B.눌림폭 / 100, 닿음 = function (b) { return b && b.l <= 기 * (1 + 폭) && b.h >= 기 * (1 - 폭); };
+                var 도착 = (현 > 0 && Math.abs(현 / 기 - 1) <= 폭) || 완목.slice(-3).some(닿음);
+                목.push({ 키: '도착', 글: '기준선 도착', 긴: '기준선 ' + 기 + ' ±' + B.눌림폭 + '% 도착 (최근 3분봉 3개 · 현재 ' + (현 > 0 ? 현.toFixed(2) : '?') + ')', ok: !!도착 });
+                // 내려온 봉 = 최근 10개 중 가장 높은 봉 다음 ~ 마지막 봉 앞 (없으면 마지막 봉 앞 2개)
+                var 열 = 완목.slice(-10), 고i = 0; 열.forEach(function (b, n) { if (b.h >= 열[고i].h) 고i = n; });
+                var 내 = 열.slice(고i + 1, -1); if (!내.length) 내 = 열.slice(-3, -1);
+                var 내평 = 내.length ? 내.reduce(function (s, b) { return s + b.v; }, 0) / 내.length : null, 마 = 내평 != null && 평 > 0 ? 내평 / 평 : null;
+                목.push({ 키: '마름', 글: '거래 마름 ' + (마 != null ? 마.toFixed(1) + '배' : '?'), 긴: '내려오는 동안 3분봉 거래량 평균의 ' + (마 != null ? 마.toFixed(2) + '배' : '자료 없음') + ' (기준 ' + B.마름배 + '배 이하)', ok: 마 != null && 마 <= B.마름배 });
+                목.push({ 키: '양봉', 글: '양봉 종가 위', 긴: '마지막 3분봉 ' + (완 ? (완.c > 완.o ? '양봉' : '음봉') + ' · 종가 ' + Number(완.c).toFixed(2) : '자료 없음') + ' (양봉 + 기준선 ' + 기 + ' 이상)', ok: !!(완 && 완.c > 완.o && 완.c >= 기) });
+            }
+            if (r != null) 목.push({ 키: '매수', 글: '매수 ' + Math.round(r * 100) + '%', 긴: '1분 매수 비율 ' + Math.round(r * 100) + '% (기준 ' + Math.round(B.매수비 * 100) + '% 이상)', ok: r >= B.매수비 });
+            return { 목: 목, 다: 목.length > 0 && 목.every(function (z) { return z.ok; }), 체결없음: r == null };
+        }
+        // ── 상황 변경 감시: 하나라도 걸리면 분석 무효 (이유 글 반환) ──
+        function AI_무효검사(t, 결, c) {
+            var s = 결.스냅; if (!s) return null;
+            var 현 = AI_현재가(t), 열 = AI_장열림(), B = AI_기준, 롱 = AI_롱(c);
+            if (현 > 0) {
+                if (롱 && c.손절 != null && 현 <= c.손절) return '손절가 ' + c.손절 + ' 이탈 (현재 ' + 현.toFixed(2) + ')';
+                if (롱 && !결.진입닿음 && c.목표1 != null && 현 >= c.목표1) return '진입 전에 목표1 ' + c.목표1 + ' 도달 (기회 지나감)';
+                if (!롱 && c.위 != null && 현 >= c.위) return '지켜볼 가격 ▲ ' + c.위 + ' 도달';
+                if (!롱 && c.아래 != null && 현 <= c.아래) return '지켜볼 가격 ▼ ' + c.아래 + ' 이탈';
+                if (s.가 > 0) { var 변 = (현 / s.가 - 1) * 100; if (롱 ? 변 <= -B.종목변동 : Math.abs(변) >= B.종목변동) return t + ' ' + fmtPct(변) + ' (분석 뒤)'; }
+            }
+            var 지수 = [['QQQ', AI_값('neon-qqq'), s.qqq], ['SPY', AI_값('neon-spy'), s.spy]];
+            for (var k = 0; k < 지수.length; k++) { var a = 지수[k]; if (a[1] > 0 && a[2] > 0) { var 지변 = (a[1] / a[2] - 1) * 100; if (Math.abs(지변) >= B.지수변동) return a[0] + ' ' + fmtPct(지변) + ' (분석 뒤)'; } }
+            var vx = AI_값('neon-vix'); if (vx > 0 && s.vix > 0 && (vx / s.vix - 1) * 100 >= B.VIX상승) return 'VIX ' + fmtPct((vx / s.vix - 1) * 100) + ' (분석 뒤)';
+            if (열 && s.흐) {
+                var 시v = 시장흐름_값();
+                if (시v) { var 전 = s.흐.b - s.흐.d, 지 = (시v.b || 0) - (시v.d || 0); if (전 * 지 < 0 && Math.abs(전) >= B.흐름차 && Math.abs(지) >= B.흐름차) return '관심종목 흐름 뒤집힘 ▲' + s.흐.b + ' ▼' + s.흐.d + ' → ▲' + (시v.b || 0) + ' ▼' + (시v.d || 0); }
+            }
+            if (시장경보 && 시장경보.시각 > s.at) return '시장 ' + (시장경보.단계 === '위험' ? '경보' : '주의') + ' · ' + 시장경보.짧은글;
+            if (열) {
+                var fx = 체결_가져오기(t), x = fx ? 체결_정리(fx) : null;
+                if (x) { var 상 = 체결_상태판정(t, x); if (상 === '하락 이탈' || 상 === '거래 끊김') return '체결 상태 ' + 상; if (x.b != null && x.b >= B.배수급증) return '거래 급증 평소의 ' + x.b.toFixed(1) + '배'; }
+            }
+            if (s.일 && s.일.목.length) {
+                var 지금 = AI_일정목록();
+                if (지금.지금분 >= s.일.지금분) for (var n = 0; n < s.일.목.length; n++) {
+                    var e = s.일.목[n]; if (e.분 <= s.일.지금분) continue;
+                    if (지금.지금분 >= e.분) return e.이름 + ' 발표됨 (분석 뒤)';
+                    if (e.분 - 지금.지금분 <= B.일정전분 && e.분 - s.일.지금분 > B.일정전분) return e.이름 + ' 발표 ' + (e.분 - 지금.지금분) + '분 전';
+                }
+            }
+            if (Date.now() - s.at >= B.오래됨분 * 60000) return '분석한 지 ' + B.오래됨분 + '분 지남 (오래된 분석)';
+            return null;
+        }
+        function AI_새뉴스(t, at) { try { return 뉴스_종목목록(t, 2).filter(function (n) { return n.x.t > at; }).length; } catch (e) { return 0; } }
+        function AI_알림(t, 글, 짧, 무효) {
+            var 시 = 알림_시각();
+            try { 알림_띄우기({ 종류: 'AI', 종목: t, 시각: 시, 글: 글, 짧은글: 짧, 유지ms: 60000, 단추들: 무효 ? [{ 글: '다시 분석', 기본: true, 할일: function () { AI_다시(t); } }, { 글: '닫기', 할일: function () { } }] : null }); } catch (e) { }
+            try { 알림기록_추가({ t: Date.now(), 시각: 시, 종류: 'AI', 종목: t, 글: 글.split('\n')[0] }); } catch (e) { }
+            try { 알림_소리와음성('AI', 무효 ? '하강' : '차임', t + ', ' + 짧); } catch (e) { }
+        }
+        function AI_차트다시(t) {
+            Object.keys(K차트).forEach(function (k) { var st = K차트[k]; if (!st || st.종목 !== t || !st.상자 || !st.chart) return; var 층 = st.상자.querySelector('.kc-lb'); if (층) 층._h = ''; try { 키움차트_라벨(st); } catch (e) { } });
+        }
+        // 2초마다: 진입 도달 · 상황 변경(무효) · 진입 조건 → 알림 (AI 창을 닫아도 계속)
+        function AI_감시() {
+            var 지금감시 = Date.now(); if (지금감시 - (AI창.감시at || 0) < 1500) return; AI창.감시at = 지금감시;
+            Object.keys(AI창.결과).forEach(function (t) {
+                var 결 = AI창.결과[t]; if (!결 || !결.결과 || 결.무효 || !결.스냅) return;
+                if (결.스냅.장외) {   // 개장 전 분석: 정규장이 열릴 때까지 감시 대기 (시간외 얇은 가격으로 무효 처리하지 않음)
+                    if (!AI_장열림()) { 결.체크 = { 목: [], 대기: true }; 결.체크at = Date.now(); return; }
+                    var 새 = AI_스냅(t); 결.스냅 = 새; 결.개장at = Date.now(); 결.개장전 = true;   // 개장 순간을 새 기준으로
+                }
+                if (결.개장전 && !결.개장알림 && 결.개장at && Date.now() - 결.개장at >= 5 * 60000) { 결.개장알림 = Date.now(); AI_알림(t, '개장 5분 지남 — 개장 전 자료로 만든 분석입니다\n지금 자료로 다시 분석하는 것을 권합니다.', '개장 뒤 다시 분석 권장', true); }
+                var c = AI_계획(결.결과), 현 = AI_현재가(t), 롱 = AI_롱(c);
+                if (롱 && !결.진입닿음 && 현 > 0 && (c.유형 === '즉시' || (c.유형 === '눌림' ? 현 <= c.진입 * (1 + AI_기준.눌림폭 / 100) : 현 >= c.진입))) 결.진입닿음 = Date.now();
+                var 이유 = null; try { 이유 = AI_무효검사(t, 결, c); } catch (e) { }
+                if (이유) { 결.무효 = { 이유: 이유, at: Date.now() }; AI_알림(t, '⚠ 상황 변경 — ' + 이유 + '\nAI 분석 결과가 무효가 되었습니다. 지금 자료로 다시 분석하세요.', '상황 변경', true); AI_차트다시(t); return; }
+                var k = {}; try { k = AI_조건(t, c); } catch (e) { k = { 목: [], 다: false }; }
+                var 전 = (결.체크 && 결.체크.목) || []; 결.반짝 = 결.반짝 || {};
+                (k.목 || []).forEach(function (z) { var q = 전.filter(function (y) { return y.키 === z.키; })[0]; if (z.ok && q && !q.ok) 결.반짝[z.키] = Date.now(); });
+                결.체크 = k; 결.체크at = Date.now();
+                if (롱 && k.다 && !k.즉시 && !결.충족) { 결.충족 = Date.now(); AI_알림(t, '진입 조건 충족 — ' + (c.조건짧게 || c.유형) + '\n진입 ' + c.진입 + ' · 손절 ' + (c.손절 != null ? c.손절 : '─') + ' · 목표1 ' + (c.목표1 != null ? c.목표1 : '─'), '진입 조건 충족', false); AI_차트다시(t); }
+            });
+            if (AI_창()) AI창_그리기();
+        }
+        setInterval(AI_감시, 2000);
+        // ── 대시보드2 차트 위 AI 계획 선 (키움차트_라벨 에서 부름) · 무효가 되면 지움 ──
+        window.AI_차트글 = function (st, 판, 정밀) {
+            if (!격자모드 || !st || st.일봉 || !st.캔들) return '';
+            var 결 = AI창.결과[st.종목]; if (!결 || !결.결과 || 결.무효) return '';
+            var c = AI_계획(결.결과), 롱 = AI_롱(c), 보 = AI_보유(st.종목), k = 결.체크 || { 목: [] }, 선;
+            var 진글 = 'AI 진입 ', 꼬 = 결.충족 ? ' · 조건 충족' : (k.목 && k.목.length ? ' · 조건 ' + k.목.filter(function (z) { return z.ok; }).length + '/' + k.목.length : '');
+            if (롱) 선 = [['AI 목표2 ', c.목표2, '#3fd47a', ''], ['AI 목표1 ', c.목표1, '#3fd47a', ''], [진글, c.진입, '#f5c542', 꼬], ['AI 손절 ', c.손절, '#ff5d5d', '']];
+            else 선 = [['AI ▲ ', c.위, '#3fd47a', ' 넘으면 롱 검토'], ['AI ▼ ', c.아래, '#ff5d5d', 보 ? ' 깨지면 보유 정리 검토' : ' 깨지면 위험']];
+            var 작 = 판.width < 420, h = '', x = Math.round(판.width * 0.3);
+            선.forEach(function (a) {
+                if (a[1] == null) return;
+                var y = st.캔들.priceToCoordinate(a[1]); if (y == null || !isFinite(y) || y < 0 || y > 판.height) return;
+                var Y = Math.round(y);
+                h += '<div class="kc-hh kc-ai-ln" style="top:' + Y + 'px;width:' + 판.width + 'px;border-color:' + a[2] + '"></div>';
+                if (!작) h += '<div class="kc-hh kc-ai-tg" style="top:' + Math.max(0, Y - 15) + 'px;left:' + x + 'px;background:' + a[2] + '">' + a[0] + 키움_가격글(a[1], 정밀) + a[3] + '</div>';
+            });
+            return h;
+        };
+        // ── 가격 사다리 (롱 계획): 왼쪽 좁은 3분봉 선 + 오른쪽 한 줄 이름표 (가격 · 진입가 대비 % · 근거) · 진입만 3줄 (근거 → 조건 꼬리표 → 체크리스트) ──
+        function AI_폭(s, 크기) { var w = 0; String(s).split('').forEach(function (ch) { w += /[ᄀ-ᇿ　-鿿가-힯☀-➿■-◿←-⇿]/.test(ch) ? 1.0 : ch === ' ' ? 0.3 : 0.6; }); return w * (크기 || 13); }
+        function AI_자르기(s, 최대, 크기) { s = String(s || ''); if (AI_폭(s, 크기) <= 최대) return s; while (s.length > 1 && AI_폭(s + '…', 크기) > 최대) s = s.slice(0, -1); return s.length > 1 ? s + '…' : ''; }
+        function AI_사다리(t, 결, c) {
+            var 열림 = AI_장열림(), 현 = AI_현재가(t), 보 = AI_보유(t), k = 결.체크 || { 목: [] }, 봉 = AI_3분봉(t);
+            if (!열림) { var 정 = 봉.filter(function (b) { var m = AI_분(b); return m >= 570 && m < 960; }); if (정.length) { var 날 = Math.floor(정[정.length - 1].t / 86400); 봉 = 정.filter(function (b) { return Math.floor(b.t / 86400) === 날; }); } }   // 장이 닫혀 있으면 마지막 정규장 봉
+            봉 = 봉.slice(-24);
+            var 종 = 봉.map(function (b) { return b.c; });
+            if (열림 && 현 > 0 && 종.length) 종[종.length - 1] = 현;   // 점이 항상 선 끝
+            function 퍼(a, b) { var v = (a / b - 1) * 100; return (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(2) + '%'; }
+            var W = 570, X0 = 8, X1 = 200, LX = X1 + 16, 가능 = W - LX - 4, 회 = '#8b93a7', L = [];
+            function 이름표(v, 색, 앞글, 둘째, 이유, 덧) {
+                var parts = [[앞글, 15, 900, 색]]; if (둘째) parts.push([둘째, 13, 700, 덧 && 덧.dim ? 회 : 색]);
+                var 쓴 = parts.reduce(function (s2, q) { return s2 + AI_폭(q[0], q[1]) + 8; }, 0);
+                var 근 = 이유 ? AI_자르기(AI_짧은이유(이유, v), 가능 - 쓴, 12.5) : ''; if (근) parts.push([근, 12.5, 400, 회]);
+                var o = { v: v, c: 색, parts: parts }; for (var k2 in (덧 || {})) o[k2] = 덧[k2]; return o;
+            }
+            if (c.목표2 != null) L.push(이름표(c.목표2, '#5ee08a', '목표2 ' + c.목표2.toFixed(2), 퍼(c.목표2, c.진입) + ' 수익', c.목표2이유));
+            if (c.목표1 != null) L.push(이름표(c.목표1, '#5ee08a', '목표1 ' + c.목표1.toFixed(2), 퍼(c.목표1, c.진입) + ' 수익', c.목표1이유));
+            L.push(이름표(c.진입, '#f5c542', '진입 ' + c.진입.toFixed(2), '', c.진입이유, { tag: c.유형 === '즉시' || !c.유형 ? '즉시 진입' : '조건: ' + (c.조건짧게 || (c.유형 + ' 확인')), ok: !!결.충족 || !!k.즉시, chk: k.목 && k.목.length ? k.목 : null }));
+            if (현 > 0) L.push(이름표(현, '#e7e9f0', '현재 ' + 현.toFixed(2), (결.진입닿음 ? '진입가 대비 ' + 퍼(현, c.진입) : '진입까지 ' + 퍼(c.진입, 현)), '', { dim: 1 }));
+            if (c.손절 != null) L.push(이름표(c.손절, '#ff6b6b', '손절 ' + c.손절.toFixed(2), 퍼(c.손절, c.진입) + ' 손실' + (보 ? ' · 보유 정리' : ''), c.손절이유));
+            L.forEach(function (a) { a.h = 20 + (a.tag ? 22 : 0) + (a.chk ? 19 : 0); });
+            var 합 = L.reduce(function (s2, a) { return s2 + a.h; }, 0), H = Math.max(190, 합 + 30);
+            var 다 = 결.다른 ? [결.다른.목표2, 결.다른.목표1, 결.다른.진입, 결.다른.손절].filter(function (v) { return v != null; }) : [];
+            var 값 = 종.concat(L.map(function (a) { return a.v; })).concat(다), lo = Math.min.apply(null, 값), hi = Math.max.apply(null, 값), 여 = (hi - lo) * 0.06 || hi * 0.002; lo -= 여; hi += 여;
+            var 위 = 12, 아래 = H - 20;
+            function y(v) { return 위 + (hi - v) / (hi - lo) * (아래 - 위); }
+            function x(n) { return X0 + (종.length > 1 ? n / (종.length - 1) : 1) * (X1 - X0); }
+            var s2 = '', 간 = (function () { var r0 = (hi - lo) / 4, e = Math.pow(10, Math.floor(Math.log10(r0))), f = r0 / e; return (f < 1.5 ? 1 : f < 3.5 ? 2 : f < 7.5 ? 5 : 10) * e; })(), 자 = 간 < 1 ? (간 < 0.1 ? 2 : 1) : 0;
+            for (var g = Math.ceil(lo / 간) * 간; g <= hi; g += 간) s2 += '<line x1="' + X0 + '" x2="' + X1 + '" y1="' + y(g).toFixed(1) + '" y2="' + y(g).toFixed(1) + '" stroke="#1c2130"/><text x="' + (X0 + 2) + '" y="' + (y(g) - 3).toFixed(1) + '" fill="#4a5266" font-size="10">' + g.toFixed(자) + '</text>';
+            if (c.목표1 != null) s2 += '<rect x="' + X0 + '" y="' + y(c.목표2 || c.목표1).toFixed(1) + '" width="' + (X1 - X0) + '" height="' + Math.max(0, y(c.진입) - y(c.목표2 || c.목표1)).toFixed(1) + '" fill="rgba(70,200,110,.09)"/>';
+            if (c.손절 != null) s2 += '<rect x="' + X0 + '" y="' + y(c.진입).toFixed(1) + '" width="' + (X1 - X0) + '" height="' + Math.max(0, y(c.손절) - y(c.진입)).toFixed(1) + '" fill="rgba(235,85,85,.13)"/>';
+            L.forEach(function (a) { if (!a.dim) s2 += '<line x1="' + X0 + '" x2="' + X1 + '" y1="' + y(a.v).toFixed(1) + '" y2="' + y(a.v).toFixed(1) + '" stroke="' + a.c + '" stroke-width="1.8"/>'; });
+            if (결.다른) [[결.다른.목표2, '#5ee08a'], [결.다른.목표1, '#5ee08a'], [결.다른.진입, '#f5c542'], [결.다른.손절, '#ff6b6b']].forEach(function (a) { if (a[0] != null) s2 += '<line x1="' + X0 + '" x2="' + X1 + '" y1="' + y(a[0]).toFixed(1) + '" y2="' + y(a[0]).toFixed(1) + '" stroke="' + a[1] + '" stroke-width="1" stroke-dasharray="3 4" opacity=".55"/>'; });
+            if (종.length > 1) {
+                var 점 = 종.map(function (v, n) { return x(n).toFixed(1) + ',' + y(v).toFixed(1); });
+                s2 += '<path d="M' + x(0).toFixed(1) + ',' + 아래 + ' L' + 점.join(' L') + ' L' + x(종.length - 1).toFixed(1) + ',' + 아래 + 'Z" fill="rgba(201,207,220,.07)"/>';
+                s2 += '<polyline points="' + 점.join(' ') + '" fill="none" stroke="#dfe3ec" stroke-width="2"/>';
+                s2 += '<circle cx="' + x(종.length - 1).toFixed(1) + '" cy="' + y(종[종.length - 1]).toFixed(1) + '" r="5" fill="#f5c542" stroke="#10131b" stroke-width="2"/>';
+            }
+            L.sort(function (a, b) { return b.v - a.v; });
+            var 끝 = -99;
+            L.forEach(function (a) {
+                var yy = y(a.v) - 10; if (yy < 끝 + 2) yy = 끝 + 2; 끝 = yy + a.h;
+                s2 += '<path d="M' + X1 + ' ' + y(a.v).toFixed(1) + ' L' + (X1 + 6) + ' ' + y(a.v).toFixed(1) + ' L' + (LX - 4) + ' ' + (yy + 10).toFixed(1) + '" stroke="' + a.c + '" fill="none" opacity=".6"/>';
+                s2 += '<text x="' + LX + '" y="' + (yy + 15).toFixed(1) + '">' + a.parts.map(function (q, n) { return '<tspan' + (n ? ' dx="8"' : '') + ' fill="' + q[3] + '" font-size="' + q[1] + '" font-weight="' + q[2] + '">' + AI_글(q[0]) + '</tspan>'; }).join('') + '</text>';
+                var ty = yy + 15;
+                if (a.tag) {
+                    var tw = AI_폭(a.tag, 12.5) + 14;
+                    s2 += '<rect x="' + (LX - 2) + '" y="' + (ty + 6).toFixed(1) + '" width="' + tw.toFixed(0) + '" height="19" rx="5" fill="' + (a.ok ? '#5ee08a' : '#f5c542') + '"/><text x="' + (LX + 5) + '" y="' + (ty + 20).toFixed(1) + '" fill="#1a1406" font-size="12.5" font-weight="800">' + AI_글((a.ok ? '✔ ' : '') + a.tag) + '</text>';
+                    ty += 22;
+                }
+                if (a.chk) { ty += 19; s2 += '<text x="' + LX + '" y="' + ty.toFixed(1) + '">' + a.chk.map(function (z, n) { return '<tspan' + (n ? ' dx="12"' : '') + ' fill="' + (z.ok ? '#5ee08a' : '#c9cfdc') + '" font-size="12.5" font-weight="700">' + (z.ok ? '✔ ' : '✖ ') + AI_글(z.글) + '</tspan>'; }).join('') + '</text>'; }
+            });
+            H = Math.max(H, 끝 + 22);
+            if (봉.length > 1) s2 += '<text x="' + X0 + '" y="' + (H - 4) + '" fill="#6c7488" font-size="11">' + AI_시분(AI_분(봉[0])) + '</text><text x="' + X1 + '" y="' + (H - 4) + '" text-anchor="end" fill="#6c7488" font-size="11">' + AI_시분(AI_분(봉[봉.length - 1])) + (열림 ? '' : ' · 마지막 정규장') + '</text>';
+            return '<svg class="ai-lad" viewBox="0 0 ' + W + ' ' + Math.ceil(H) + '" width="100%" preserveAspectRatio="xMinYMin meet">' + s2 + '</svg>';
+        }
+        // ── 가격 띠 (관망 · 계획 없음): ▼ 깨지면 ───●현재─── ▲ 넘으면 (현재가가 두 가격 사이 어디인지) ──
+        function AI_가격띠(t, 결, c) {
+            var 현 = AI_현재가(t), 보 = AI_보유(t), 위 = c.위, 아래 = c.아래; if (위 == null && 아래 == null) return '';
+            var 자리 = 위 != null && 아래 != null && 위 > 아래 && 현 > 0 ? Math.max(0, Math.min(100, (현 - 아래) / (위 - 아래) * 100)) : 위 == null ? 85 : 15;
+            function 퍼(a) { if (!(현 > 0)) return ''; var v = (a / 현 - 1) * 100; return (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(2) + '%'; }
+            var 끌 = 자리 < 12 ? 'translateX(-10%)' : 자리 > 88 ? 'translateX(-90%)' : 'translateX(-50%)';
+            var 줌 = ((1 + AI창.글자) / 2 / AI창.글자).toFixed(3);   // 다른 글자의 확대 비율 절반만
+            return '<div class="ai-band" style="zoom:' + 줌 + '"><div class="ttl">지켜볼 가격 · 닿으면 상황 변경 알림 → 다시 분석</div><div class="bar">' + (아래 != null ? '<i class="e dn"></i>' : '') + (위 != null ? '<i class="e up"></i>' : '') +
+                (현 > 0 ? '<i class="now" style="left:' + 자리.toFixed(1) + '%"></i><b class="nowl" style="left:' + 자리.toFixed(1) + '%;transform:' + 끌 + '">현재 ' + 현.toFixed(2) + '</b>' : '') + '</div>' +
+                '<div class="lab"><div class="dn">' + (아래 != null ? '<b>▼ ' + 아래.toFixed(2) + ' 깨지면</b><span><i>' + 퍼(아래) + '</i> · ' + (보 ? '보유 정리 검토' : '위험 신호') + '</span>' + (c.아래이유 ? '<span>근거: ' + AI_글(AI_짧은이유(c.아래이유, 아래)) + '</span>' : '') : '') + '</div>' +
+                '<div class="up">' + (위 != null ? '<b>' + 위.toFixed(2) + ' 넘으면 ▲</b><span>롱 검토 · <i>' + 퍼(위) + '</i></span>' + (c.위이유 ? '<span>근거: ' + AI_글(AI_짧은이유(c.위이유, 위)) + '</span>' : '') : '') + '</div></div></div>';
+        }
+        // ── 감시 줄: 줄 전체가 천천히 깜빡임 (감시 중) · 조건이 ✖→✔ 로 바뀐 칸은 2초 반짝 · 모두 맞으면 초록 · 무효면 회색 멈춤
+        //   다시 그려도 깜빡임 박자가 끊기지 않게 animation-delay 를 시각에 맞춤
+        function AI_감시줄(t, 결, c, 롱) {
+            if (!결.스냅) return '';
+            if (결.스냅.장외 && !결.무효) return '<div class="ai-mon wait"><span class="h">개장 대기</span><span class="pl n">개장 전 분석 · 정규장 개장 후 감시 시작</span><span class="pl n">개장 5분 뒤 다시 분석 권장</span></div>';
+            var 지금 = Date.now(), 박 = 'animation-delay:-' + (지금 % 1600) + 'ms', 시 = 결.체크at ? '<span class="tm">' + AI_시각(결.체크at, 'America/New_York').slice(11, 19) + ' ET</span>' : '';
+            if (결.무효) return '<div class="ai-mon off"><span class="h">감시 중지</span><span class="pl n">상황 변경 · 다시 분석 필요</span></div>';
+            if (롱) {
+                var k = 결.체크 || { 목: [] };
+                if (k.즉시) return '<div class="ai-mon ok"><span class="h">즉시 진입 계획</span><span class="pl y">진입 조건 없음</span>' + 시 + '</div>';
+                var 칸 = (k.목 || []).map(function (z) { var 반 = 결.반짝 && 결.반짝[z.키], f = 반 && 지금 - 반 < 2000; return '<span class="pl ' + (z.ok ? 'y' : 'n') + (f ? ' fl' : '') + '"' + (f ? ' style="animation-delay:-' + (지금 - 반) + 'ms"' : '') + ' title="' + AI_글(z.긴) + '">' + (z.ok ? '✔ ' : '✖ ') + AI_글(z.글) + '</span>'; }).join('');
+                if (결.충족) return '<div class="ai-mon ok"><span class="h">진입 조건 충족</span>' + 칸 + '<span class="tm">' + AI_시각(결.충족, 'America/New_York').slice(11, 19) + ' ET 충족</span></div>';
+                return '<div class="ai-mon" style="' + 박 + '"><span class="h">진입조건 감시중...</span>' + (칸 || '<span class="pl n">3분봉 자료 기다리는 중</span>') + (k.체결없음 ? '<span class="pl n" title="체결 자료가 없어 가격·거래량만 확인">체결 자료 없음</span>' : '') + 시 + '</div>';
+            }
+            var 현 = AI_현재가(t), p = [];
+            function 퍼(a) { if (!(현 > 0)) return ''; var v = (a / 현 - 1) * 100; return '까지 ' + (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(2) + '%'; }
+            if (c.위 != null) p.push('<span class="pl n">▲ ' + c.위.toFixed(2) + 퍼(c.위) + '</span>');
+            if (c.아래 != null) p.push('<span class="pl n">▼ ' + c.아래.toFixed(2) + 퍼(c.아래) + '</span>');
+            if (!p.length) return '';
+            return '<div class="ai-mon" style="' + 박 + '"><span class="h">지켜볼 가격 감시중...</span>' + p.join('') + 시 + '</div>';
+        }
+        function AI창_열기(i) {
+            var w = AI_창();
+            if (w) { AI창.i = i; AI창_그리기(); try { if (AI창.외) AI창.외.focus(); } catch (e) { } return; }
+            w = document.createElement('div'); w.id = 'ai-win'; w.className = 'ai-win'; document.body.appendChild(w); AI창.el = w;
+            // 지난번 위치 · 크기 (화면 밖이면 기본 자리)
+            var 저 = AI_저장읽기('sz_ai_win', null);
+            if (저 && 저.w > 280 && 저.h > 160 && 저.x < innerWidth - 80 && 저.y < innerHeight - 40 && 저.x > -저.w + 80 && 저.y >= 0) {
+                w.style.left = 저.x + 'px'; w.style.top = 저.y + 'px'; w.style.right = 'auto'; w.style.width = Math.min(저.w, innerWidth - 8) + 'px'; w.style.height = Math.min(저.h, innerHeight - 8) + 'px';
+            }
+            AI창_글자적용();
+            try { new ResizeObserver(function () { clearTimeout(w._rt); w._rt = setTimeout(AI창_자리저장, 300); }).observe(w); } catch (e) { }
+            w.addEventListener('click', AI창_누름); w.addEventListener('change', AI창_바꿈);
+            w.addEventListener('input', function (e) { if (e.target.matches && e.target.matches('textarea[data-ai="free"]')) { AI창.직접 = e.target.value; AI_저장('sz_ai_free', AI창.직접); } });
+            w.addEventListener('focusout', function (e) { if (e.target.matches && e.target.matches('textarea[data-ai="free"]')) setTimeout(AI창_그리기, 0); });
+            w.addEventListener('pointerdown', function (e) {
+                if (AI창.외 || !e.target.closest('.ai-hd') || e.target.closest('button,select')) return;   // 바깥 창이면 창 자체를 끌어서 옮김
+                var r = w.getBoundingClientRect(), dx = e.clientX - r.left, dy = e.clientY - r.top;
+                function 움(ev) { w.style.left = Math.max(0, Math.min(innerWidth - 120, ev.clientX - dx)) + 'px'; w.style.top = Math.max(0, Math.min(innerHeight - 40, ev.clientY - dy)) + 'px'; w.style.right = 'auto'; }
+                function 끝() { document.removeEventListener('pointermove', 움); document.removeEventListener('pointerup', 끝); AI창_자리저장(); }
+                document.addEventListener('pointermove', 움); document.addEventListener('pointerup', 끝);
+            });
+            AI창.i = i; AI창_그리기();
+            if (+AI_저장읽기('sz_ai_out', 0) === 1 && window.chrome && window.chrome.webview) AI_밖으로();   // 지난번에 밖으로 뺐으면 바로 밖으로
+        }
+        // ── 대시보드 밖으로 (데이터 PC 의 별도 작은 창 · 다른 모니터 · 항상 위에): 화면(노드)만 옮기고 계산·감시·알림은 대시보드가 계속 처리 ──
+        function AI_밖으로() {
+            var w = AI_창(); if (!w || AI창.외) return;
+            var r = w.getBoundingClientRect(), W = Math.max(380, Math.round(r.width)), H = Math.max(300, Math.round(r.height)), L = Math.round(window.screenX + r.left), T = Math.round(window.screenY + r.top);
+            var win = window.open('', 'sz_ext_ai', 'popup=yes,width=' + W + ',height=' + H + ',left=' + L + ',top=' + T);
+            if (!win) { try { 알림_잠깐('새 창을 열 수 없습니다'); } catch (e) { } return; }
+            try { win.document.open(); win.document.write('<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>STRIKEZONE AI 분석</title></head><body></body></html>'); win.document.close(); } catch (e) { }
+            var d = win.document;
+            Array.prototype.forEach.call(document.querySelectorAll('style, link[rel="stylesheet"]'), function (n) { d.head.appendChild(n.cloneNode(true)); });
+            d.body.style.cssText = 'margin:0;overflow:hidden;background:#10131b;color:#e7e9f0;font-family:' + getComputedStyle(document.body).fontFamily + ';';
+            w.classList.add('ai-ext'); d.body.appendChild(w); AI창.외 = win; AI_저장('sz_ai_out', 1);
+            try { win.setInterval(AI_감시, 2000); } catch (e) { }   // 대시보드 창이 가려져도 바깥 창에서 계속 갱신
+            win.addEventListener('pagehide', function () { if (AI창.외 !== win) return; AI창.외 = null; if (w.ownerDocument === d) { w.remove(); AI창.el = null; } });
+            w._h = ''; AI창_그리기();
+        }
+        function AI_안으로() {
+            var w = AI_창(), win = AI창.외; if (!w || !win) return;
+            AI창.외 = null; AI_저장('sz_ai_out', 0);
+            w.classList.remove('ai-ext'); document.body.appendChild(w);
+            try { win.close(); } catch (e) { }
+            w._h = ''; AI창_그리기();
+        }
+        window.addEventListener('pagehide', function () { if (AI창.외) { try { AI창.외.close(); } catch (e) { } } });
+        function AI창_자리저장() { var w = AI_창(); if (!w || AI창.외) return; var r = w.getBoundingClientRect(); if (r.width > 280 && r.height > 160) AI_저장('sz_ai_win', { x: Math.round(r.left), y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height) }); }
+        function AI창_글자적용() { var w = AI_창(); if (w) w.style.setProperty('--ai-z', String(AI창.글자)); }
+        function AI_분전(at) { var 분 = Math.floor((Date.now() - at) / 60000); return 분 < 1 ? '방금' : 분 + '분 전'; }
+        function AI_질문칸(키들, 보유) { return AI_질문목록.filter(function (z) { return 키들.indexOf(z[0]) >= 0; }).map(function (z) { var 뺌 = z[0] === '매도' && !보유; return '<label' + (뺌 ? ' class="off" title="보유가 없어 이 질문은 보내지 않습니다"' : '') + '><input type="checkbox" data-aq="' + z[0] + '"' + (AI창.고름.indexOf(z[0]) >= 0 ? ' checked' : '') + '> ' + z[1] + (뺌 ? ' <small>(보유 없음 → 제외)</small>' : '') + '</label>'; }).join(''); }
+        // 결과 제목 가격: 정규장 = 현재가 · 전일 대비 / 그 밖 = 정규장 종가 · 전일 대비 + 시간외 현재가 · 종가 대비 (대시보드와 같게)
+        function AI_제목가격(t, 현, rc) {
+            function 등(a, b) { if (!(a > 0 && b > 0)) return ''; var v = (a / b - 1) * 100; return '<span class="ch ' + (v > 0 ? 'up' : v < 0 ? 'dn' : '') + '">' + fmtPct(v) + '</span>'; }
+            var 장 = marketPhase(), 종 = rc && rc.regClose > 0 ? rc.regClose : 0, 전 = rc && rc.prevClose > 0 ? rc.prevClose : 0;
+            if (장.type === 'REG') return 현 > 0 ? '<span class="grp"><span class="px">' + 현.toFixed(2) + '</span>' + 등(현, 종) + '</span>' : '';
+            var 이름 = { PRE: '프리마켓', POST: '애프터마켓', NIGHT: '오버나이트' }[장.type] || '시간외';
+            return (종 > 0 ? '<span class="grp"><span class="lb">' + (rc.regDate ? AI_월일(rc.regDate) + ' ' : '') + '종가</span><span class="px">' + 종.toFixed(2) + '</span>' + 등(종, 전) + '</span>' : '') +
+                   (현 > 0 ? '<span class="grp"><span class="lb">' + 이름 + '</span><span class="px px2">' + 현.toFixed(2) + '</span>' + (종 > 0 ? 등(현, 종).replace('class="ch ', 'class="ch ch2 ') : '') + '</span>' : '');
+        }
+        function AI_요청요약(보) {
+            var 고 = AI창.고름.filter(function (k) { return !(k === '매도' && !보); }).map(function (k) { var z = AI_질문목록.filter(function (q) { return q[0] === k; })[0]; return z ? { 매수: '매수', 매도: '매도', 오늘: '오늘 흐름', 흐름: '30~60분', 시장: '시장' }[k] || k : k; });
+            return '방식 ' + AI창.방식 + ' · 질문 ' + (고.length ? 고.join('·') : '없음') + (String(AI창.직접 || '').trim() ? ' + 직접 질문' : '') + ' · ' + AI창.사용.map(AI_이름).join('+');
+        }
+        function AI창_그리기() {
+            var w = AI_창(); if (!w) return;
+            var 활 = w.ownerDocument.activeElement;
+            if (활 && w.contains(활) && (활.tagName === 'SELECT' || 활.tagName === 'TEXTAREA')) return;   // 종목 고르는 중 · 직접 질문 쓰는 중에는 다시 그리지 않음
+            var i = AI창.i, t = panelTickers[i] || '', 현 = AI_현재가(t), 보 = AI_보유(t), 결 = AI창.결과[t], 진 = AI창.진행;
+            var rc = t ? getRegClose(t) : null, 기준 = rc && rc.regClose > 0 ? rc.regClose : 0, 등 = 현 > 0 && 기준 > 0 ? (현 / 기준 - 1) * 100 : null;
+            var 옵 = panelTickers.map(function (x, k) { return x ? '<option value="' + k + '"' + (k === i ? ' selected' : '') + '>' + (k + 1) + '. ' + x + '</option>' : ''; }).join('');
+            var 웹뷰 = !!(window.chrome && window.chrome.webview);
+            var h = '<div class="ai-hd"><div class="ai-hd1"><select data-ai="i" title="분석할 차트">' + 옵 + '</select><span class="ai-ttl">AI 분석</span>' +
+                (웹뷰 ? '<button type="button" class="ai-vis' + (AI창.보기 ? ' on' : '') + '" data-ai="vis" title="ChatGPT · Gemini 브라우저 창 보이기 / 숨기기 (숨겨도 뒤에서 계속 동작 · 로그인·확인이 필요하면 자동으로 보임)">AI 창 ' + (AI창.보기 ? '보임' : '숨김') + '</button>' : '') +
+                '<span class="ai-fs"><button type="button" data-ai="fs-" title="글자 작게">가−</button><b>' + Math.round(AI창.글자 * 100) + '%</b><button type="button" data-ai="fs+" title="글자 크게">가+</button></span>' +
+                (웹뷰 ? '<button type="button" class="ai-out" data-ai="' + (AI창.외 ? 'in' : 'out') + '" title="' + (AI창.외 ? '대시보드 안으로 되돌리기' : '대시보드 밖으로 꺼내기 (다른 모니터 · 항상 위에)') + '">' + (AI창.외 ? '안으로' : '밖으로') + '</button>' : '') +
+                '<button type="button" class="ai-x" data-ai="close" title="닫기">✕</button></div></div>' +
+                '<div class="ai-bd"><div class="ai-in">' +
+                // ① 분석 요청 영역 (접을 수 있음 · 접으면 고른 내용 한 줄 요약)
+                '<section class="ai-req' + (AI창.요청접힘 ? ' fold' : '') + '"><div class="ai-sh"><span class="n">1</span><b>분석 요청</b>' +
+                (AI창.요청접힘 ? '<span class="sum">' + AI_글(AI_요청요약(보)) + '</span>' : '') +
+                '<button type="button" class="ai-tg ai-fold" data-ai="reqfold">' + (AI창.요청접힘 ? '▸ 펼치기' : '▾ 접기') + '</button></div>' +
+                (AI창.요청접힘 ? '' :
+                '<div class="ai-grp"><div class="gt">진입 판단</div><div class="ai-style"><span>내 매매 방식</span>' + AI_방식목록.map(function (m) { return '<label><input type="radio" name="ai-style" data-as="' + m + '"' + (AI창.방식 === m ? ' checked' : '') + '> ' + m + '</label>'; }).join('') + '</div>' +
+                '<div class="ai-qs">' + AI_질문칸(['매수', '매도'], !!보) + '</div></div>' +
+                '<div class="ai-grp"><div class="gt">흐름 · 시장</div><div class="ai-qs">' + AI_질문칸(['오늘', '흐름', '시장']) + '</div></div>' +
+                '<div class="ai-grp"><div class="gt">직접 질문 <small>(선택 · 체크한 질문과 함께 보냄 · 체크를 모두 끄면 이 질문만)</small></div><div class="ai-free"><textarea data-ai="free" rows="2" placeholder="예: 실적 발표 전까지 들고 가도 될까?">' + AI_글(AI창.직접) + '</textarea>' +
+                (AI창.직접 ? '<button type="button" class="ai-tg" data-ai="freeclr">지우기</button>' : '') + '</div></div>' +
+                (보 ? '<div class="ai-own">보유 중 (' + Number(보.가).toFixed(2) + ' · ' + 보.수 + '주) → 보유 관리 답변이 자동으로 맨 앞에 붙습니다</div>' : '') +
+                '<div class="ai-use"><span>사용할 AI</span>' + [['gpt', 'ChatGPT'], ['gemini', 'Gemini']].map(function (x) { return '<label><input type="checkbox" data-au="' + x[0] + '"' + (AI창.사용.indexOf(x[0]) >= 0 ? ' checked' : '') + '> ' + x[1] + '</label>'; }).join('') +
+                (AI창.사용.length > 1 ? '<span class="ai-both">두 AI 비교 · 결과를 규칙으로 합침</span>' : '') + '</div>') +
+                '<div class="ai-act"><button type="button" data-ai="go"' + (진 ? ' disabled' : '') + '>AI 분석 요청</button>' + (진 ? '<button type="button" class="ai-cancel" data-ai="cancel">취소</button>' : '') +
+                '<span class="ai-st' + (진 ? ' ing' : AI창.오류 ? ' err' : '') + '">' + (진 ? AI_글(진.종목 + ' · ' + 진.목록.map(function (k) { var 받 = 진.받음[k], 상 = 진.상태[k]; return AI_이름(k) + ' ' + (받 ? (받.오류 ? '실패' : '완료') : 상 ? 상.단계 + (상.초 ? ' ' + 상.초 + '초' : '') : '보내는 중'); }).join(' / ')) :
+                    AI창.오류 ? AI_글(AI창.오류) : 결 ? AI_시각(결.at, 'Asia/Seoul').slice(11, 19) + ' 결과 · ' + (결.개별 && 결.사용 && 결.사용.length > 1 ? 결.사용.map(function (k) { var x = 결.개별[k]; return AI_이름(k) + ' ' + (x && !x.오류 ? (x.초 || 0) + '초' : '실패'); }).join(' · ') : (결.초 || 0) + '초') : '질문을 고르거나 직접 질문을 쓰고 [AI 분석 요청]') + '</span></div></section>' +
+                // ② 분석 결과 영역
+                '<section class="ai-res"><div class="ai-tk"><span class="n">2</span><span class="ttl">AI 분석 결과</span><b class="tk">' + AI_글(t) + '</b><span class="nm">' + AI_글(tickerName(t)) + '</span>' +
+                AI_제목가격(t, 현, rc) +
+                (진 ? '<span class="none ing">분석 중…</span>' : !결 ? '<span class="none">결과 없음</span>' : '') + '</div>' +
+                (결 ? AI창_결과(결, t) : '<div class="ai-empty">' + (진 ? 'AI 가 분석하는 중입니다 · 결과가 오면 여기에 나옵니다' : '위에서 질문을 고르고 [AI 분석 요청] 을 누르면 결과가 여기에 나옵니다') + '</div>') + '</section></div></div>';
+            if (w._h !== h) { var sc = w.querySelector('.ai-bd'), y = sc ? sc.scrollTop : 0, x = sc ? sc.scrollLeft : 0; w.innerHTML = h; w._h = h; var sc2 = w.querySelector('.ai-bd'); if (sc2) { sc2.scrollTop = y; sc2.scrollLeft = x; } }
+        }
+        function AI_근거목록(목록, 목) {
+            목록 = 목록 || []; if (!목록.length) return '';
+            return '<ul>' + 목록.map(function (r) { var 인용 = 목 && AI_글숫자(r).some(function (n) { return n >= 0 && AI_있음(목, n); }); return '<li>' + AI_글(r) + (목 && !인용 ? ' <span class="ai-bad">(자료 숫자 인용 없음)</span>' : '') + '</li>'; }).join('') + '</ul>';
+        }
+        // 직접 질문만 보냈을 때의 답 카드
+        function AI_직접카드(d, 목, 원질문, 누구) {
+            var 가 = (d.관련가격 || []).map(function (x) { return { v: AI_숫자(x && x.가격), r: x && x.이유 }; }).filter(function (x) { return x.v != null; });
+            return '<div class="ai-card dq"><h5>' + (누구 ? AI_글(누구) + ' · ' : '') + '직접 질문 · ' + AI_글(원질문 || d.질문 || '') + '</h5>' +
+                (d.결론 ? '<div class="ai-cl fl">' + AI_글(d.결론) + '</div>' : '') + (d.답 ? '<div class="ai-p">' + AI_글(d.답) + '</div>' : '') + AI_근거목록(d.근거, 목) +
+                (가.length ? '<div class="ai-h6">관련 가격</div><ul class="ai-pl">' + 가.map(function (x) { var s3 = AI_이유상태(x.r, x.v); return '<li><b>' + x.v.toFixed(2) + '</b>' + (x.r ? ' · ' + AI_글(AI_짧은이유(x.r, x.v)) : '') + (목 && !AI_있음(목, x.v) ? ' <span class="ai-bad">(자료에 없는 가격)</span>' : !s3 ? ' <span class="ai-bad">(근거 없음)</span>' : ''); }).join('') + '</ul>' : '') + '</div>';
+        }
+        // 주의 · 자료 부족 · 계획 설명 (항목마다 한 줄) + 원문 · 보낸 자료 단추
+        function AI_꼬리(결, j, c, 목) {
+            var h = '', 주 = j.주의 || [], 부 = j.자료부족 || [];
+            if (주.length) h += '<div class="ai-h6">주의</div><ul class="ai-ul warn">' + 주.map(function (x) { return '<li>' + AI_글(x) + '</li>'; }).join('') + '</ul>';
+            if (부.length) h += '<div class="ai-h6">자료 부족</div><ul class="ai-ul">' + 부.map(function (x) { return '<li>' + AI_글(x) + '</li>'; }).join('') + '</ul>';
+            if (c) {
+                var 설명 = [];
+                if (c.진입조건) 설명.push(['진입 조건', AI_글(c.진입조건)]);
+                if (c.무효조건) 설명.push(['무효 조건', AI_글(c.무효조건)]);
+                var 비 = j.시스템비교; if (비 && 비.판단) 설명.push(['시스템 비교', '<b>' + AI_글(비.판단) + '</b>' + (비.이유 ? ' · ' + AI_글(비.이유) : '')]);
+                var 기준 = AI_숫자(j.기준가격); if (기준 != null) 설명.push(['기준 가격', '<b>' + 기준 + '</b>' + (목 && !AI_있음(목, 기준) ? ' <span class="ai-bad">· 보낸 자료에 없는 가격</span>' : '')]);
+                if (설명.length) h += '<div class="ai-h6">계획 설명</div><div class="ai-kv">' + 설명.map(function (x) { return '<div class="k">' + x[0] + '</div><div class="v">' + x[1] + '</div>'; }).join('') + '</div>';
+            }
+            h += '<div class="ai-secs"><button type="button" class="ai-tg" data-ai="raw">' + (AI창.원문 ? '원문 닫기' : '원문 보기') + '</button>' + (결.프롬 ? '<button type="button" class="ai-tg" data-ai="prompt">' + (AI창.보낸글 ? '보낸 자료 닫기' : '보낸 자료 보기') + '</button>' : '') + '</div>' +
+                 (AI창.원문 ? '<div class="ai-raw">' + AI_글(결.원문) + '</div>' : '') + (AI창.보낸글 && 결.프롬 ? '<div class="ai-raw">' + AI_글(결.프롬) + '</div>' : '');
+            return h;
+        }
+        function AI_펼침단추(k, 글) { return '<button type="button" class="ai-tg ai-sec" data-ai="sec" data-k="' + k + '">' + (AI창.펼침[k] ? '▾ ' : '▸ ') + 글 + '</button>'; }
+        function AI창_결과(결, t) {
+            var j = 결.결과, h = '', 목 = 결.프롬 ? AI_자료숫자(결.프롬) : null;
+            // 두 AI 비교: [합의] [ChatGPT] [Gemini] 탭 (개별 탭 = 그 AI 답 그대로 · 감시는 합의 기준)
+            if (결.사용 && 결.사용.length > 1 && 결.개별 && !결.직접만 && !결.보기전용) {
+                var 탭 = AI창.탭 || 'all';
+                h += '<div class="ai-tabs">' + [['all', '합의']].concat(결.사용.map(function (k) { return [k, AI_이름(k)]; })).map(function (x) { var 못 = x[0] !== 'all' && !(결.개별[x[0]] && 결.개별[x[0]].결과); return '<button type="button" class="ai-tab' + (탭 === x[0] ? ' on' : '') + '" data-ai="tab" data-k="' + x[0] + '"' + (못 ? ' disabled' : '') + '>' + x[1] + (못 ? ' (실패)' : '') + '</button>'; }).join('') + '</div>';
+                if (탭 !== 'all' && 결.개별[탭] && 결.개별[탭].결과) return h + AI창_결과({ at: 결.at, 결과: 결.개별[탭].결과, 원문: 결.개별[탭].원문, 초: 결.개별[탭].초, 프롬: 결.프롬, 방식: 결.방식, 보기전용: AI_이름(탭) }, t);
+            }
+            if (!j) return h + '<div class="ai-warn">JSON 으로 읽지 못해 원문을 보여 줍니다</div><div class="ai-raw">' + AI_글(결.원문) + '</div>';
+            if (j.직접답변들) return h + j.직접답변들.map(function (x) { return AI_직접카드(x.d || {}, 목, 결.직접, x.ai); }).join('') + AI_꼬리(결, j, null, 목);
+            if (결.직접만 || (j.직접답변 && !j.계획 && !j.결정)) return h + AI_직접카드(j.직접답변 || {}, 목, 결.직접, 결.사용 && 결.사용.length === 1 ? AI_이름(결.사용[0]) : '') + AI_꼬리(결, j, null, 목);
+            var c = AI_계획(j), 검 = AI_검사(c, 목, 결.방식), 무 = 결.무효;
+            // ① 보유 관리 (보유 중이면 맨 앞)
+            var 보 = j.보유관리;
+            if (보 && 보.결론) {
+                var 보가 = [['정리', AI_숫자(보.정리가격), 보.정리이유], ['익절', AI_숫자(보.익절가격), 보.익절이유]].filter(function (v) { return v[1] != null; });
+                h += '<div class="ai-card own' + (무 ? ' gone' : '') + '"><h5>보유 관리</h5><div><span class="ai-cl ' + AI_결론색(보.결론) + '">' + AI_글(보.결론) + '</span>' + (보.추가매수 ? '<span class="ai-cf">추가 매수 ' + AI_글(보.추가매수) + '</span>' : '') + '</div>' +
+                    ((보.이유 || []).length ? '<ul>' + 보.이유.map(function (r) { return '<li>' + AI_글(r) + '</li>'; }).join('') + '</ul>' : '') +
+                    (보가.length ? '<div class="ai-px3">' + 보가.map(function (v) { var s3 = AI_이유상태(v[2], v[1]); return v[0] + ' <b>' + v[1] + '</b>' + (v[2] ? ' · ' + AI_글(AI_짧은이유(v[2], v[1])) : '') + (목 && !AI_있음(목, v[1]) ? ' <span class="ai-bad">(자료에 없는 가격)</span>' : !s3 ? ' <span class="ai-bad">(근거 없음)</span>' : ''); }).join('<br>') + '</div>' : '') + '</div>';
+            }
+            // ② 결정 카드 (단타 기준)
+            var 결정 = String(j.결정 || ((j.답변 || []).filter(function (a) { return /매수/.test(a.질문); })[0] || {}).결론 || (검.롱 ? '조건부 매수' : '관망'));
+            var 종 = /금지/.test(결정) ? 'no' : /조건부/.test(결정) ? 'cond' : /매수/.test(결정) ? 'buy' : 'wait';
+            if ((종 === 'buy' || 종 === 'cond') && !검.롱) 종 = 'wait';
+            var 큰글 = '단타 ' + (종 === 'buy' ? '롱 진입 (지금)' : 종 === 'cond' ? '롱 진입 (조건부' + (c.유형 && c.유형 !== '즉시' ? ' · ' + c.유형 : '') + ')' : 종 === 'no' ? '매수 금지' : '관망');
+            var 칩 = [];
+            if (j.확신도) 칩.push('확신도 ' + AI_글(j.확신도));
+            if (검.롱 && 검.rr != null) 칩.push('손익비 1:' + 검.rr.toFixed(2));
+            if (결.방식) 칩.push('방식 ' + AI_글(결.방식));
+            if ((결.스냅 && 결.스냅.장외) || 결.개장전) 칩.push('개장 전 분석');
+            칩.push(AI_시각(결.at, 'America/New_York').slice(11, 16) + ' ET 분석 · ' + AI_분전(결.at));
+            var 상 = '';
+            if (결.보기전용) 상 = '<div class="ai-sm dim">' + AI_글(결.보기전용) + ' 답 그대로 보기 · 진입 감시와 무효 판단은 [합의] 기준</div>';
+            else if (무) 상 = '<div class="ai-inv">⚠ 상황 변경 — ' + AI_글(무.이유) + ' <button type="button" class="ai-again" data-ai="again" data-t="' + AI_글(t) + '">다시 분석</button></div>';
+            else if (!결.스냅) 상 = '<div class="ai-sm dim">상황 감시 없음 (이 창에서 요청한 분석이 아님) <button type="button" class="ai-again" data-ai="again" data-t="' + AI_글(t) + '">다시 분석</button></div>';
+            else if (검.롱 && !결.충족) {
+                var k = 결.체크 || { 목: [] }, 남 = (k.목 || []).filter(function (z) { return !z.ok; });
+                if (k.목 && k.목.length) 상 = '<div class="ai-sm">진입 조건 ' + (k.목.length - 남.length) + '/' + k.목.length + ' 충족' + (남.length ? ' · 남은 조건: ' + 남.map(function (z) { return AI_글(z.긴); }).join(' · ') : '') + '</div>';
+            }
+            var 새 = AI_새뉴스(t, 결.at);
+            var 합 = 결.합의, 합글 = 합 ? '<div class="ai-agree a-' + ({ '일치': 'ok', '부분 일치': 'part', '불일치': 'no' }[합.수준] || 'one') + '"><b>' + ({ '일치': '두 AI 일치', '부분 일치': '두 AI 부분 일치', '불일치': '두 AI 불일치 → 관망', '한쪽만': '한쪽 결과만' }[합.수준] || 합.수준) + '</b> · ' + AI_글(합.글) + '</div>' : '';
+            h += '<div class="ai-dec k-' + 종 + (무 ? ' gone' : '') + '">' + 합글 + '<div class="d1"><b>' + 큰글 + '</b>' + 칩.map(function (x) { return '<span class="ai-cf">' + x + '</span>'; }).join('') + '</div>' +
+                (j.요약 ? '<div class="d2">' + AI_글(j.요약) + '</div>' : '') + 상 +
+                (j.참고 && String(j.참고).trim() && !/없으면 빈 글/.test(j.참고) ? '<div class="ai-ref">참고 (다른 방식) · ' + AI_글(j.참고) + '</div>' : '') +
+                (!무 && 결.스냅 ? '<div class="ai-watch" title="분석할 때와 비교: 손절가 · 진입 전 목표1 · 종목 ±' + AI_기준.종목변동 + '% · QQQ/SPY ±' + AI_기준.지수변동 + '% · VIX +' + AI_기준.VIX상승 + '% · 관심종목 흐름 뒤집힘 · 시장 경보 · 체결 하락 이탈/거래 끊김 · 거래 ' + AI_기준.배수급증 + '배 급증 · 경제지표 발표/' + AI_기준.일정전분 + '분 전 · ' + AI_기준.오래됨분 + '분">상황 감시 중 · 시장·가격이 바뀌면 무효 알림</div>' : '') +
+                (새 ? '<div class="ai-news">분석 뒤 새 뉴스 ' + 새 + '건 (참고)</div>' : '') + '</div>';
+            // ③ 감시 줄 (깜빡임)
+            h += AI_감시줄(t, 결, c, 검.롱);
+            // ④ 롱 계획 = 가격 사다리 · 관망 = 가격 띠
+            var 그림 = ''; try { 그림 = 검.롱 ? AI_사다리(t, 결, c) : AI_가격띠(t, 결, c); } catch (e) { 그림 = ''; }
+            if (그림) h += 검.롱 ? '<div class="ai-ladw' + (무 ? ' gone' : '') + '">' + 그림 + '<div class="ai-cap">% = 진입가 대비 (목표 = 수익 · 손절 = 손실) · 회색 글 = 그 가격의 근거 · 3분봉' + (결.다른 ? ' · 옅은 점선 = 다른 AI 가격' : '') + '</div></div>' : (무 ? '<div class="gone">' + 그림 + '</div>' : 그림);
+            if (검.경.length) h += '<div class="ai-bad">⚠ ' + 검.경.map(AI_글).join(' · ') + '</div>';
+            // ⑤ 질문별 답 · 주의 · 자료 부족 · 계획 설명 = 모두 펼침 (원문 · 보낸 자료만 단추)
+            var 답 = j.답변 || [];
+            if (답.length) h += '<div class="ai-h6">질문별 답</div><div class="ai-ans">' + 답.map(function (a) {
+                return '<div class="row"><div class="q"><span class="qq">' + AI_글(a.질문) + '</span><span class="ai-cl ' + AI_결론색(a.결론) + '">' + AI_글(a.결론) + '</span>' + (a.확신도 ? '<span class="ai-cf">확신도 ' + AI_글(a.확신도) + '</span>' : '') + '</div>' +
+                    (a.답 ? '<div class="ai-p">' + AI_글(a.답) + '</div>' : '') + AI_근거목록(a.근거, 목) + '</div>';
+            }).join('') + '</div>';
+            h += AI_꼬리(결, j, c, 목);
+            return h;
+        }
+        // 보내기 (AI 분석 · 다시 분석 공통)
+        function AI_보내기(고른목) {
+            var i = AI창.i, t = panelTickers[i]; if (!t || AI창.진행) return false;
+            var 고른 = (고른목 || AI창.고름).filter(function (k) { return AI_질문목록.some(function (z) { return z[0] === k; }); }), 직접 = String(AI창.직접 || '').trim();
+            if (!AI_보유(t)) 고른 = 고른.filter(function (k) { return k !== '매도'; });   // 보유가 없으면 매도 타이밍 질문은 뺌
+            if (!고른.length && !직접) { AI창.오류 = AI창.고름.indexOf('매도') >= 0 && !AI_보유(t) ? '보유가 없어 매도 질문은 뺐습니다 · 다른 질문을 고르거나 직접 질문을 쓰세요' : '질문을 고르거나 직접 질문을 쓰세요'; AI창_그리기(); return false; }
+            var 프 = ''; try { 프 = AI_프롬프트(i, 고른, 직접); } catch (er) { AI창.오류 = '자료 정리 오류: ' + er.message; AI창_그리기(); return false; }
+            var 번호 = 'ai' + (++AI창.번호) + '-' + Date.now().toString(36), 사용 = AI창.사용.length ? AI창.사용.slice() : ['gpt'], 받음 = {};
+            사용.forEach(function (k) { if (!키움_보내기({ 종류: 'AI문의', 번호: 번호 + '-' + k, 종목: t, 프롬프트: 프, AI: k, 보기: AI창.보기 })) 받음[k] = { 오류: '데이터 PC 와 연결되지 않음' }; });   // 같은 자료 · 같은 프롬프트를 동시에
+            if (Object.keys(받음).length === 사용.length) { AI창.오류 = '데이터 PC 와 연결되지 않았습니다'; AI창_그리기(); return false; }
+            if (AI창.결과[t]) { delete AI창.결과[t]; AI_차트다시(t); }   // 새로 묻기 전에 이전 결과 · 차트 선 · 감시를 지움
+            AI창.오류 = ''; AI창.탭 = 'all'; AI창.원문 = false; AI창.보낸글 = false; AI창.진행 = { 번호: 번호, 종목: t, 목록: 사용, 상태: {}, 받음: 받음, 프롬: 프, 스냅: 고른.length ? AI_스냅(t) : null, 고른: 고른, 방식: AI창.방식, 직접: 직접, 직접만: !고른.length }; AI창_그리기();
+            return true;
+        }
+        function AI_다시(t) {
+            var i = panelTickers.indexOf(t);
+            if (i < 0) { try { 알림_잠깐('AI 다시 분석: ' + t + ' 가 지금 차트에 없습니다'); } catch (e) { } return; }
+            if (!AI_창()) AI창_열기(i); else AI창.i = i;
+            if (AI창.진행) { AI창.오류 = '다른 분석이 진행 중입니다. 끝난 뒤 다시 누르세요'; AI창_그리기(); return; }
+            var 결 = AI창.결과[t]; AI_보내기(결 && 결.고른 && 결.고른.length ? 결.고른 : null);
+        }
+        function AI창_누름(e) {
+            var b = e.target.closest('[data-ai]'); if (!b) return;
+            var a = b.getAttribute('data-ai');
+            if (a === 'close') { if (AI창.외) { var 외 = AI창.외; AI창.외 = null; try { 외.close(); } catch (e2) { } } var w = AI_창(); if (w) w.remove(); AI창.el = null; return; }
+            if (a === 'out') { AI_밖으로(); return; }
+            if (a === 'vis') { AI창.보기 = !AI창.보기; AI_저장('sz_ai_show', AI창.보기); 키움_보내기({ 종류: 'AI창보기', 보기: AI창.보기 }); AI창_그리기(); return; }
+            if (a === 'in') { AI_안으로(); return; }
+            if (a === 'reqfold') { AI창.요청접힘 = !AI창.요청접힘; AI_저장('sz_ai_reqfold', AI창.요청접힘); AI창_그리기(); return; }
+            if (a === 'freeclr') { AI창.직접 = ''; AI_저장('sz_ai_free', ''); AI창_그리기(); return; }
+            if (a === 'raw') { AI창.원문 = !AI창.원문; AI창_그리기(); return; }
+            if (a === 'prompt') { AI창.보낸글 = !AI창.보낸글; AI창_그리기(); return; }
+            if (a === 'sec') { var k = b.getAttribute('data-k'); AI창.펼침[k] = !AI창.펼침[k]; AI_저장('sz_ai_open', AI창.펼침); AI창_그리기(); return; }
+            if (a === 'again') { AI_다시(b.getAttribute('data-t')); return; }
+            if (a === 'fs-' || a === 'fs+') { AI창.글자 = Math.round(Math.max(0.8, Math.min(1.8, AI창.글자 + (a === 'fs+' ? 0.1 : -0.1))) * 10) / 10; AI_저장('sz_ai_fs', AI창.글자); AI창_글자적용(); AI창_그리기(); return; }
+            if (a === 'cancel') { var 진c = AI창.진행; if (진c) 진c.목록.forEach(function (k) { if (!진c.받음[k]) 키움_보내기({ 종류: 'AI취소', 번호: 진c.번호 + '-' + k }); }); return; }
+            if (a === 'tab') { AI창.탭 = b.getAttribute('data-k') || 'all'; AI창_그리기(); return; }
+            if (a === 'go') AI_보내기();
+        }
+        function AI창_바꿈(e) {
+            var c = e.target;
+            if (c.matches('select[data-ai="i"]')) { AI창.i = +c.value; AI창.오류 = ''; c.blur(); AI창_그리기(); return; }
+            if (c.matches('input[data-au]')) {
+                var k2 = c.getAttribute('data-au'), 목2 = AI창.사용.filter(function (x) { return x !== k2; }); if (c.checked) 목2.push(k2);
+                if (!목2.length) { c.checked = true; AI창.오류 = 'AI 는 하나 이상 골라야 합니다'; AI창_그리기(); return; }
+                AI창.사용 = ['gpt', 'gemini'].filter(function (x) { return 목2.indexOf(x) >= 0; }); AI_저장('sz_ai_use', AI창.사용); AI창.오류 = ''; AI창_그리기(); return;
+            }
+            if (c.matches('input[data-as]')) { AI창.방식 = c.getAttribute('data-as'); AI_저장('sz_ai_style', AI창.방식); AI창_그리기(); return; }
+            if (c.matches('input[data-aq]')) {
+                var k = c.getAttribute('data-aq'), 목 = AI창.고름.filter(function (x) { return x !== k; }); if (c.checked) 목.push(k);
+                AI창.고름 = AI_질문목록.map(function (z) { return z[0]; }).filter(function (x) { return 목.indexOf(x) >= 0; });
+                AI_저장('sz_ai_q', AI창.고름);
+            }
+        }
+        // ── 두 AI 결과 합치기 (규칙 · 바로): 보수적인 쪽을 따름 ──
+        //   둘 다 롱 + 같은 진입유형 → 진입 차이 0.3% 이하 '일치' / 넘으면 '부분 일치' → 근거 검사를 통과하고 손익비가 좋은 쪽 계획으로 감시
+        //   둘 다 롱인데 진입유형이 다름 = '부분 일치' → 관망 / 한쪽만 롱 = '불일치' → 관망 / 둘 다 롱 아님 = 더 보수적인 결정
+        var AI_결정글 = ['매수 금지', '관망', '조건부 매수', '매수'];
+        function AI_결정순(j, 검) { var d = String((j && j.결정) || ''), k = /금지/.test(d) ? 0 : /조건부/.test(d) ? 2 : /매수/.test(d) ? 3 : 1; return k >= 2 && !검.롱 ? 1 : k; }
+        function AI_확신순(v) { v = String(v || ''); return /상/.test(v) ? 2 : /중/.test(v) ? 1 : 0; }
+        function AI_합목록(a, b) { var 목 = []; (a || []).concat(b || []).forEach(function (x) { x = String(x || '').trim(); if (x && 목.indexOf(x) < 0) 목.push(x); }); return 목; }
+        function AI_합치기(A, B, 진) {
+            var 목 = AI_자료숫자(진.프롬), ja = A.결과, jb = B.결과, ca = AI_계획(ja), cb = AI_계획(jb), ka = AI_검사(ca, 목, 진.방식), kb = AI_검사(cb, 목, 진.방식);
+            var da = AI_결정순(ja, ka), db = AI_결정순(jb, kb), 최종 = Math.min(da, db), 수준, 고른 = null;
+            function 점수(k) { return k.경.length * 10 - (k.rr || 0); }
+            if (ka.롱 && kb.롱 && ca.유형 === cb.유형) { 수준 = Math.abs(ca.진입 / cb.진입 - 1) * 100 <= 0.3 ? '일치' : '부분 일치'; 고른 = 점수(ka) <= 점수(kb) ? 'gpt' : 'gemini'; }
+            else if (ka.롱 && kb.롱) { 수준 = '부분 일치'; 최종 = Math.min(최종, 1); }
+            else if (ka.롱 || kb.롱) { 수준 = '불일치'; 최종 = Math.min(최종, 1); }
+            else 수준 = da === db ? '일치' : '부분 일치';
+            var 바탕 = 고른 ? (고른 === 'gpt' ? ja : jb) : (da <= db ? ja : jb), o = JSON.parse(JSON.stringify(바탕));
+            o.결정 = AI_결정글[최종];
+            o.확신도 = ['하', '중', '상'][Math.min(AI_확신순(ja.확신도), AI_확신순(jb.확신도))];
+            if (!고른) {
+                // 계획 없음 → 지켜볼 가격: 보수적인 쪽 관찰 → 다른 쪽 관찰 → 롱 계획의 진입(위) · 손절(아래)
+                var 앞c = 바탕 === ja ? ca : cb, 뒤c = 바탕 === ja ? cb : ca, 위 = null, 위이유 = '', 아래 = null, 아래이유 = '';
+                [[앞c.위, 앞c.위이유], [뒤c.위, 뒤c.위이유], [AI_롱(앞c) ? 앞c.진입 : null, 앞c.진입이유], [AI_롱(뒤c) ? 뒤c.진입 : null, 뒤c.진입이유]].some(function (x) { if (x[0] != null) { 위 = x[0]; 위이유 = x[1]; return true; } return false; });
+                [[앞c.아래, 앞c.아래이유], [뒤c.아래, 뒤c.아래이유], [AI_롱(앞c) ? 앞c.손절 : null, 앞c.손절이유], [AI_롱(뒤c) ? 뒤c.손절 : null, 뒤c.손절이유]].some(function (x) { if (x[0] != null) { 아래 = x[0]; 아래이유 = x[1]; return true; } return false; });
+                o.계획 = { 방향: '없음' }; o.관찰 = { 위: 위, 위이유: 위이유, 아래: 아래, 아래이유: 아래이유 };
+            }
+            var 참 = [['ChatGPT', ja.참고], ['Gemini', jb.참고]].filter(function (x) { return x[1] && String(x[1]).trim() && !/없으면 빈 글/.test(x[1]); });
+            o.참고 = 참.map(function (x) { return x[0] + ': ' + x[1]; }).join(' / ');
+            var 답b = jb.답변 || [];
+            o.답변 = (ja.답변 || []).map(function (a, n) {
+                var b = 답b.filter(function (x) { return x.질문 === a.질문; })[0] || 답b[n] || {};
+                return { 질문: a.질문, 결론: a.결론 === b.결론 || !b.결론 ? a.결론 : 'ChatGPT ' + a.결론 + ' / Gemini ' + b.결론, 확신도: ['하', '중', '상'][Math.min(AI_확신순(a.확신도), b.확신도 ? AI_확신순(b.확신도) : 2)],
+                    답: [a.답 ? 'ChatGPT: ' + a.답 : '', b.답 ? 'Gemini: ' + b.답 : ''].filter(Boolean).join('\n'),
+                    근거: (function () { var 같 = a.결론 === b.결론 || !b.결론, ga = a.근거 || [], gb = b.근거 || []; if (같) { ga = ga.slice(0, 1); gb = gb.slice(0, 1); } return ga.map(function (x) { return 'ChatGPT · ' + x; }).concat(gb.map(function (x) { return 'Gemini · ' + x; })); })() };
+            });
+            o.주의 = AI_합목록(ja.주의, jb.주의); o.자료부족 = AI_합목록(ja.자료부족, jb.자료부족);
+            if (ja.보유관리 && jb.보유관리) {
+                var 순 = function (x) { x = String(x || ''); return /손절/.test(x) ? 3 : /전량/.test(x) ? 2 : /일부/.test(x) ? 1 : 0; };
+                var 보 = 순(ja.보유관리.결론) >= 순(jb.보유관리.결론) ? ja.보유관리 : jb.보유관리, 다보 = 보 === ja.보유관리 ? jb.보유관리 : ja.보유관리;
+                o.보유관리 = JSON.parse(JSON.stringify(보)); if (다보.결론 !== 보.결론) o.보유관리.이유 = (o.보유관리.이유 || []).concat([(보 === ja.보유관리 ? 'Gemini' : 'ChatGPT') + ' 의견: ' + 다보.결론]);
+            }
+            function 한줄(j, c, d, k) { return AI_결정글[d] + (k.롱 && c.유형 ? ' (' + c.유형 + ' ' + c.진입.toFixed(2) + ')' : ''); }
+            return { 결과: o, 합의: { 수준: 수준, 글: 'ChatGPT ' + 한줄(ja, ca, da, ka) + ' · Gemini ' + 한줄(jb, cb, db, kb) + (고른 ? ' · 감시 계획 = ' + AI_이름(고른) : ''), 고른: 고른 }, 다른: 고른 ? (고른 === 'gpt' ? cb : ca) : null };
+        }
+        function AI_마무리(진) {
+            var 목 = 진.목록, 받 = 진.받음, 좋 = 목.filter(function (k) { return 받[k] && !받[k].오류 && 받[k].결과; });
+            AI창.진행 = null; AI창.원문 = false; AI창.보낸글 = false; AI창.탭 = 'all';
+            if (!목.some(function (k) { return 받[k] && !받[k].오류; })) { AI창.오류 = 'AI 분석 실패: ' + 목.map(function (k) { return AI_이름(k) + ' ' + (받[k] ? 받[k].오류 : ''); }).join(' · '); return; }
+            var 결 = { at: Date.now(), 프롬: 진.프롬, 스냅: 진.스냅, 고른: 진.고른, 방식: 진.방식, 직접: 진.직접, 직접만: 진.직접만, 사용: 목.slice(), 개별: 받 };
+            var 원문들 = 목.map(function (k) { return '── ' + AI_이름(k) + ' ──\n' + (받[k].오류 ? '(실패: ' + 받[k].오류 + ')' : 받[k].원문 || ''); }).join('\n\n');
+            if (좋.length >= 2 && 진.직접만) {
+                결.결과 = { 직접답변들: 좋.map(function (k) { return { ai: AI_이름(k), d: 받[k].결과.직접답변 || {} }; }), 주의: AI_합목록(받.gpt.결과.주의, 받.gemini.결과.주의), 자료부족: AI_합목록(받.gpt.결과.자료부족, 받.gemini.결과.자료부족) };
+                결.원문 = 원문들; 결.초 = Math.max(받.gpt.초 || 0, 받.gemini.초 || 0);
+            } else if (좋.length >= 2) {
+                var 합 = AI_합치기(받.gpt, 받.gemini, 진); 결.결과 = 합.결과; 결.합의 = 합.합의; 결.다른 = 합.다른; 결.원문 = 원문들; 결.초 = Math.max(받.gpt.초 || 0, 받.gemini.초 || 0);
+            } else {
+                var 쓴 = 좋[0] || 목.filter(function (k) { return 받[k] && !받[k].오류; })[0], x = 받[쓴];
+                결.결과 = x.결과 || null; 결.원문 = 목.length > 1 ? 원문들 : x.원문; 결.초 = x.초;
+                if (목.length > 1) 결.합의 = { 수준: '한쪽만', 글: 목.filter(function (k) { return k !== 쓴; }).map(function (k) { return AI_이름(k) + (받[k].오류 ? ' 실패 (' + 받[k].오류 + ')' : ' JSON 못 읽음'); }).join(' · ') + ' → ' + AI_이름(쓴) + ' 결과만 사용' };
+            }
+            try { var c = AI_계획(결.결과); if (AI_롱(c) && c.유형 === '즉시') 결.진입닿음 = Date.now(); } catch (e) { }
+            AI창.결과[진.종목] = 결; AI_차트다시(진.종목);
+        }
+        // 데이터 PC 에서 오는 진행 · 결과 (키움_받기 → window.AI_받기) · 번호 = 요청번호-gpt / 요청번호-gemini
+        window.AI_받기 = function (m) {
+            var 진 = AI창.진행, 번 = String(m.번호 || ''), ai = m.AI === 'gemini' || /-gemini$/.test(번) ? 'gemini' : 'gpt';
+            if (!진 || !(번 === 진.번호 || 번.indexOf(진.번호 + '-') === 0)) { if (m.종류 === 'AI결과' && m.종목) { AI창.결과[m.종목] = { at: Date.now(), 결과: m.결과 || null, 원문: m.원문 || '', 초: m.초 }; AI_차트다시(m.종목); } return; }
+            if (진.목록.indexOf(ai) < 0) ai = 진.목록[0];
+            if (m.종류 === 'AI진행') 진.상태[ai] = { 단계: m.단계 || '', 초: m.초 || 0 };
+            else if (m.종류 === 'AI결과') 진.받음[ai] = { 결과: m.결과 || null, 원문: m.원문 || '', 초: m.초 };
+            else if (m.종류 === 'AI오류') 진.받음[ai] = { 오류: m.글 || '오류' };
+            if (진.목록.every(function (k) { return 진.받음[k]; })) AI_마무리(진);
+            AI창_그리기();
+        };
+        document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.kc-ai'); if (!b) return; e.stopPropagation(); AI창_열기(+b.getAttribute('data-i')); }, true);
         // ── 화면 만들기 (탭 줄 + 탭 화면) ──
         function 미만들기() {
             var cw = document.querySelector('.content-wrapper'); if (!cw || document.getElementById('us-tabbar')) return;
             var bar = document.createElement('div'); bar.className = 'us-tabbar'; bar.id = 'us-tabbar';
-            bar.innerHTML = '<div class="sz-live" id="sz-live" style="display:none"></div>' + 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + ({ 예측: '예측시장', 일정: '캘린더' }[t] || t) + '</button>'; }).join('') + (격 ? '' : '<div class="sz-brief" id="us-brief"></div>') + '<span class="us-stat" id="us-stat"></span><span class="sz-ver" title="대시보드 파일 판 (데이터 PC · 브라우저가 같은 파일인지 확인용)">판 2026.11.01e</span>';
+            bar.innerHTML = '<div class="sz-live" id="sz-live" style="display:none"></div>' + 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + ({ 예측: '예측시장', 일정: '캘린더' }[t] || t) + '</button>'; }).join('') + (격 ? '' : '<div class="sz-brief" id="us-brief"></div>') + '<span class="us-stat" id="us-stat"></span><span class="sz-ver" title="대시보드 파일 판 (데이터 PC · 브라우저가 같은 파일인지 확인용)">판 2026.11.03a</span>';
             // 대시보드2: 차트 자리를 줄이지 않도록 위 시황 줄(미장/국장 단추 옆)에 작게 2줄 / 대시보드1: 차트 위 한 줄
             var tb = document.querySelector('.top-bar'), sw = document.getElementById('mkt-sw');
             if (격 && tb && sw && sw.parentNode === tb) {
@@ -31246,6 +32293,7 @@
                 d.addEventListener('keydown', function (e) { if (e.key !== 'Escape') return; if (d.getElementById('kr-hmodal')) { 보유창닫기(); return; } 안으로(이름); });
                 d.addEventListener('pointerdown', function () { 창누름 = true; }, true);
                 d.addEventListener('click', 글자누름, true);
+                try { 종선_연결(d); } catch (e) { }   // 밖으로 뺀 창의 종목 콤보박스도 선택 창으로
                 d.addEventListener('pointerup', function () { setTimeout(function () { 창누름 = false; }, 150); }, true);
                 try { win.setInterval(function () { 창갱신(이름, true); }, 500); } catch (e) { }
                 win.addEventListener('pagehide', function () {
