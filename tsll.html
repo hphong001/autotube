@@ -96,8 +96,11 @@ tr.now td:first-child { background: var(--now); }
 .caution { margin-top: 14px; font-size: 15px; padding: 10px 12px; border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 4px; }
 .sellbox { margin: 8px 0; }
 
-/* 4. 메모 이미지 스타일 */
-.memo-img { max-width: 100%; border-radius: 8px; border: 1px solid var(--line); display: none; }
+/* 4. 메모 이미지 & 줌 컨트롤 스타일 */
+.zoom-ctrl { display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--muted); }
+.zoom-ctrl button { padding: 4px 12px; font-size: 16px; font-weight: bold; line-height: 1; border-radius: 4px; }
+.zoom-ctrl span#memoZoomText { display: inline-block; width: 45px; text-align: center; font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 500; }
+.memo-img { border-radius: 8px; border: 1px solid var(--line); display: none; max-width: none; } /* 원본크기 출력을 위해 max-width 해제 */
 </style>
 </head>
 <body>
@@ -207,23 +210,20 @@ tr.now td:first-child { background: var(--now); }
     </div>
   </section>
 
-  <section class="panel" aria-labelledby="fTitle">
-    <h2 id="fTitle">가정과 주의</h2>
-    <ul class="note" style="padding-left:18px;margin:0;display:flex;flex-direction:column;gap:4px">
-      <li>기본값은 2026-10-28 기준 값입니다. 현재가와 총평가를 바꾸면 모두 다시 계산됩니다.</li>
-      <li>기본 계산은 TSLL = TSLA 변동률의 레버리지 배수로 한 번에 움직인다는 단순 가정이고, 감쇠와 환율 변화는 반영하지 않습니다. 오르내림이 반복되면 같은 TSLA 가격에서도 TSLL은 표보다 낮을 수 있습니다.</li>
-      <li>감쇠 추정은 일 변동성과 기간으로 계산한 근사값입니다. 이 경우 경로를 매일 일정 비율로 움직이는 것으로 보고 로그 수익률에 변동성 감쇠를 뺍니다.</li>
-      <li>일부 매도의 확정 손실은 평균단가로 안분한 값입니다. 키움은 선입선출이라 실제 값은 다를 수 있습니다. 수수료는 반영하지 않았습니다.</li>
-      <li>양도세는 같은 해 이익과 손실만 합산하고 손실 이월은 되지 않는다는 가정입니다. 결제일 기준이라 미국 현지 12/30까지 체결분이 2026년, 12/31 체결분은 2027-01-04 결제로 2027년에 잡힐 수 있습니다(T+1 가정, 증권사에 확인).</li>
-      <li>이 도구는 매매 권유가 아니라 계산 보조용입니다. 세무 처리는 세무사나 증권사에 확인하세요.</li>
-    </ul>
-  </section>
-
-  <!-- 새롭게 추가된 메모 이미지 패널 -->
+  <!-- 새롭게 추가 및 업데이트된 메모 이미지 패널 -->
   <section class="panel" aria-labelledby="memoTitle">
-    <h2 id="memoTitle" style="margin-bottom:4px;">참고 이미지 메모</h2>
-    <p class="note" style="margin-top:0;">💡 이 HTML 파일과 같은 폴더에 <strong>tsll_이미지_1.png</strong> ~ <strong>tsll_이미지_10.png</strong> (또는 .jpg) 이름으로 이미지를 저장해 두면 아래에 자동으로 출력됩니다. (테슬라 뉴스, 차트 캡처 등을 손쉽게 저장해 보세요)</p>
-    <div id="memoImages" style="margin-top: 16px; display: flex; flex-direction: column; gap: 12px;"></div>
+    <div class="head">
+      <h2 id="memoTitle" style="margin-bottom:0;">참고 이미지 메모</h2>
+      <div class="zoom-ctrl">
+        <span>이미지 크기:</span>
+        <button type="button" id="memoZoomOut">-</button>
+        <span id="memoZoomText">100%</span>
+        <button type="button" id="memoZoomIn">+</button>
+      </div>
+    </div>
+    <p class="note" style="margin-top:8px;">💡 이 HTML 파일과 같은 폴더에 <strong>tsll_이미지_1.png</strong> ~ <strong>tsll_이미지_10.png</strong> (또는 .jpg) 이름으로 이미지를 저장해 두면 아래에 자동으로 출력됩니다.</p>
+    <!-- overflow-x: auto 를 주어 이미지가 커져도 이 영역 안에서만 가로 스크롤 생성 -->
+    <div id="memoImages" style="margin-top: 16px; display: flex; flex-direction: column; gap: 12px; overflow-x: auto;"></div>
   </section>
 
 </div>
@@ -497,12 +497,39 @@ tr.now td:first-child { background: var(--now); }
     if (src !== 'sell') $('sell').value = grp(Math.round(q * I0 * fx));
   }
   
-  // 5. 메모 이미지를 자동으로 찾아 불러오는 함수
+  // ==========================================
+  // 메모 이미지 줌(Zoom) 기능
+  // ==========================================
+  var memoZoom = 1.0; // 기본 100%
+  
+  function applyMemoZoom() {
+    $('memoZoomText').textContent = Math.round(memoZoom * 100) + '%';
+    var imgs = document.querySelectorAll('.memo-img');
+    imgs.forEach(function(img) {
+      if (img.naturalWidth) {
+        // 원본 픽셀 크기에 zoom 비율을 곱해 강제로 지정
+        img.style.width = (img.naturalWidth * memoZoom) + 'px';
+      }
+    });
+  }
+
+  $('memoZoomIn').addEventListener('click', function() {
+    memoZoom = Math.round((memoZoom + 0.2) * 10) / 10; // 20% 단위로 확대 (부동소수점 오류 방지)
+    applyMemoZoom();
+  });
+  
+  $('memoZoomOut').addEventListener('click', function() {
+    memoZoom = Math.max(0.2, Math.round((memoZoom - 0.2) * 10) / 10); // 최소 20% 제한
+    applyMemoZoom();
+  });
+
+  // ==========================================
+  // 메모 이미지 로드 기능
+  // ==========================================
   function loadMemoImages() {
     var container = $('memoImages');
     if (!container) return;
     
-    // 1번부터 10번까지 루프
     for (var i = 1; i <= 10; i++) {
       (function(idx) {
         var img = document.createElement('img');
@@ -510,24 +537,23 @@ tr.now td:first-child { background: var(--now); }
         
         var triedJpg = false;
         
-        // 이미지 로딩 성공 시 화면에 표시
         img.onload = function() {
           img.style.display = 'block';
+          // 불러오기 성공 시 현재 줌 배율 적용
+          if (img.naturalWidth) {
+            img.style.width = (img.naturalWidth * memoZoom) + 'px';
+          }
         };
         
-        // 이미지 로딩 실패 시 (파일이 없을 때)
         img.onerror = function() {
           if (!triedJpg) {
-            // 처음엔 png 시도, 실패하면 jpg 시도
             triedJpg = true;
             img.src = 'tsll_이미지_' + idx + '.jpg';
           } else {
-            // 둘 다 없으면 DOM에서 완전히 제거 (깨진 이미지 방지)
             img.remove();
           }
         };
         
-        // 첫 시도는 무조건 png
         img.src = 'tsll_이미지_' + idx + '.png';
         container.appendChild(img);
       })(i);
@@ -562,7 +588,7 @@ tr.now td:first-child { background: var(--now); }
   
   render();
   
-  // 스크립트 로드 완료 후 이미지 로더 실행
+  // 스크립트가 로드되면 이미지 불러오기 실행
   loadMemoImages();
 })();
 </script>
