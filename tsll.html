@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TSLL 손익 계산기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one narrow control column on top, stacked result tables below; numbers in tabular figures. */
+:root {
+  --bg: #f4f6f8;
+  --panel: #ffffff;
+  --ink: #17212b;
+  --muted: #5d6b79;
+  --line: #d9e0e7;
+  --accent: #1f5f8b;
+  --accent-soft: #e4eef6;
+  --pos: #12713f;
+  --neg: #b3261e;
+  --now: #fff4d6;
+  --font-body: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11171d; --panel: #19222b; --ink: #e6edf3; --muted: #93a1af; --line: #2c3946;
+    --accent: #6fb1dd; --accent-soft: #1e3242; --pos: #5fd08f; --neg: #ff8a80; --now: #3a3217;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11171d; --panel: #19222b; --ink: #e6edf3; --muted: #93a1af; --line: #2c3946;
+  --accent: #6fb1dd; --accent-soft: #1e3242; --pos: #5fd08f; --neg: #ff8a80; --now: #3a3217;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 20px 16px 48px; display: flex; flex-direction: column; gap: 18px; }
+h1 { font-size: 24px; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+h2 { font-size: 17px; margin: 0 0 10px; text-wrap: balance; }
+.sub { color: var(--muted); margin: 4px 0 0; font-size: 13px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+label { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--muted); }
+label small { font-size: 11.5px; color: var(--muted); }
+input[type=text], input[type=date], select, textarea {
+  font: inherit; font-size: 15px; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; width: 100%;
+  font-variant-numeric: tabular-nums;
+}
+textarea { resize: vertical; min-height: 54px; }
+input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.check { flex-direction: row; align-items: center; gap: 8px; color: var(--ink); font-size: 14px; }
+.check input { width: 18px; height: 18px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px; }
+button { font: inherit; font-size: 14px; border: 1px solid var(--accent); background: var(--accent-soft); color: var(--ink); border-radius: 6px; padding: 7px 12px; cursor: pointer; }
+button:hover { background: var(--accent); color: var(--bg); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+.tile { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--panel); }
+.tile .k { font-size: 12px; color: var(--muted); }
+.tile .v { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.tile .s { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: 14px; }
+th, td { padding: 7px 10px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--line); }
+th { background: var(--accent-soft); font-weight: 500; font-size: 12.5px; color: var(--ink); position: sticky; top: 0; }
+th:first-child, td:first-child { text-align: left; position: sticky; left: 0; background: var(--panel); }
+th:first-child { background: var(--accent-soft); }
+tr.now td { background: var(--now); font-weight: 700; }
+tr.now td:first-child { background: var(--now); }
+.neg { color: var(--neg); }
+.pos { color: var(--pos); }
+.note { font-size: 12.5px; color: var(--muted); margin: 8px 0 0; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.calc { border: 1px solid var(--line); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.calc .out { font-variant-numeric: tabular-nums; font-size: 14px; }
+.head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 8px; }
+.warn { background: var(--now); border-radius: 6px; padding: 8px 10px; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div>
+      <h1>TSLL 손익 계산기</h1>
+      <p class="sub">TSLA 가격별 TSLL 가격, 예상 평가금액, 일부 매도 후 손익, 양도세 비교. 입력을 바꾸면 바로 다시 계산합니다.</p>
+    </div>
+    <button type="button" id="resetBtn">기본값으로 되돌리기</button>
+  </div>
+
+  <section class="panel" aria-labelledby="inTitle">
+    <h2 id="inTitle">입력</h2>
+    <div class="grid">
+      <label for="asof">기준일 (메모)<input type="date" id="asof"></label>
+      <label for="t0">TSLA 현재가 ($)<input type="text" id="t0" inputmode="decimal"></label>
+      <label for="l0">TSLL 현재가 ($)<input type="text" id="l0" inputmode="decimal"></label>
+      <label for="cost">총매입금 (원)<input type="text" id="cost" inputmode="numeric"></label>
+      <label for="val">총평가 (원)<input type="text" id="val" inputmode="numeric"><small>수량과 환율을 둘 다 넣으면 수량 × TSLL × 환율로 계산합니다.</small></label>
+      <label for="qty">보유 수량 (주, 선택)<input type="text" id="qty" inputmode="decimal"></label>
+      <label for="fx">환율 (원/$, 선택)<input type="text" id="fx" inputmode="decimal"></label>
+      <label for="lev">레버리지 배수<input type="text" id="lev" inputmode="decimal"></label>
+      <label for="sell">일부 매도 금액 (원)<input type="text" id="sell" inputmode="numeric"><small>현재가로 팔아 현금화하는 금액. 0이면 전량 보유.</small></label>
+    </div>
+    <div class="grid" style="margin-top:12px">
+      <label for="levels" style="grid-column: span 2">시나리오 TSLA 가격 (쉼표로 구분)<textarea id="levels" rows="2"></textarea></label>
+      <label class="check" for="decay" style="align-self:end"><input type="checkbox" id="decay"> 감쇠 추정 사용 (근사)</label>
+      <label for="vol">일 변동성 (%)<input type="text" id="vol" inputmode="decimal"></label>
+      <label for="days">기간 (거래일)<input type="text" id="days" inputmode="numeric"></label>
+    </div>
+    <p class="note" id="srcNote"></p>
+  </section>
+
+  <section aria-labelledby="sumTitle">
+    <h2 id="sumTitle">현재 요약</h2>
+    <div class="tiles" id="tiles"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="aTitle">
+    <div class="head"><h2 id="aTitle">전량 보유 시 가격대별 예상</h2><button type="button" data-copy="tblA">표 복사</button></div>
+    <div class="scroll"><table id="tblA"></table></div>
+    <p class="note" id="noteA"></p>
+  </section>
+
+  <section class="panel" aria-labelledby="bTitle">
+    <div class="head"><h2 id="bTitle">일부 매도 후 가격대별 예상</h2><button type="button" data-copy="tblB">표 복사</button></div>
+    <div id="bWarn"></div>
+    <div class="scroll"><table id="tblB"></table></div>
+    <p class="note" id="noteB"></p>
+  </section>
+
+  <section class="panel" aria-labelledby="cTitle">
+    <h2 id="cTitle">수익률 기준점 (필요한 TSLA 가격)</h2>
+    <div class="scroll"><table id="tblC"></table></div>
+    <p class="note">전체 수익률은 총매입금 기준입니다. 일부 매도 후에는 확정 손실을 포함한 합계로 계산합니다.</p>
+  </section>
+
+  <section class="panel" aria-labelledby="dTitle">
+    <h2 id="dTitle">양도세 비교: 올해 손절 vs 내년 손절</h2>
+    <div class="grid">
+      <label for="scope">손절 범위
+        <select id="scope"><option value="all">전량 손절</option><option value="part">일부 매도분만</option></select>
+      </label>
+      <label for="g26">올해(2026) 해외주식 이익 (원)<input type="text" id="g26" inputmode="numeric"><small>이 건을 제외한 이익. 11~12월 재매매 이익 포함.</small></label>
+      <label for="rate">세율 (%)<input type="text" id="rate" inputmode="decimal"></label>
+      <label for="ded">기본공제 (원)<input type="text" id="ded" inputmode="numeric"></label>
+      <label for="g27">내년(2027) 순이익 시나리오 (만원, 쉼표)<textarea id="g27" rows="2"></textarea></label>
+    </div>
+    <div class="scroll" style="margin-top:12px"><table id="tblD"></table></div>
+    <p class="note" id="noteD"></p>
+  </section>
+
+  <section class="panel" aria-labelledby="eTitle">
+    <h2 id="eTitle">빠른 계산</h2>
+    <div class="two">
+      <div class="calc">
+        <strong>TSLA 가격 입력</strong>
+        <label for="q1">TSLA ($)<input type="text" id="q1" inputmode="decimal"></label>
+        <div class="out" id="q1out"></div>
+      </div>
+      <div class="calc">
+        <strong>TSLL 가격 입력</strong>
+        <label for="q2">TSLL ($)<input type="text" id="q2" inputmode="decimal"></label>
+        <div class="out" id="q2out"></div>
+      </div>
+      <div class="calc">
+        <strong>목표 전체 수익률 입력</strong>
+        <label for="q3">목표 수익률 (%)<input type="text" id="q3" inputmode="decimal"></label>
+        <div class="out" id="q3out"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="fTitle">
+    <h2 id="fTitle">가정과 주의</h2>
+    <ul class="note" style="padding-left:18px;margin:0;display:flex;flex-direction:column;gap:4px">
+      <li>기본값은 2026-10-28 기준 값입니다. 현재가와 총평가를 바꾸면 모두 다시 계산됩니다.</li>
+      <li>기본 계산은 TSLL = TSLA 변동률의 레버리지 배수로 한 번에 움직인다는 단순 가정이고, 감쇠와 환율 변화는 반영하지 않습니다. 오르내림이 반복되면 같은 TSLA 가격에서도 TSLL은 표보다 낮을 수 있습니다.</li>
+      <li>감쇠 추정은 일 변동성과 기간으로 계산한 근사값입니다. 이 경우 경로를 매일 일정 비율로 움직이는 것으로 보고 로그 수익률에 변동성 감쇠를 뺍니다.</li>
+      <li>일부 매도의 확정 손실은 평균단가로 안분한 값입니다. 키움은 선입선출이라 실제 값은 다를 수 있습니다. 수수료는 반영하지 않았습니다.</li>
+      <li>양도세는 같은 해 이익과 손실만 합산하고 손실 이월은 되지 않는다는 가정입니다. 결제일 기준이라 미국 현지 12/30까지 체결분이 2026년, 12/31 체결분은 2027-01-04 결제로 2027년에 잡힐 수 있습니다(T+1 가정, 증권사에 확인).</li>
+      <li>이 도구는 매매 권유가 아니라 계산 보조용입니다. 세무 처리는 세무사나 증권사에 확인하세요.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var KEY = 'tsll-calc-v2';
+  var DEFAULTS = {
+    asof: '2026-10-28', t0: '407.7', l0: '11.6402', cost: '32152053', val: '16248010', qty: '997', fx: '1350', lev: '2',
+    sell: '4500000', levels: '330, 350, 370, 390, 400, 410, 420, 430, 440, 450, 460, 480, 500, 530, 560, 600',
+    decay: false, vol: '4', days: '30', scope: 'all', g26: '1000000', rate: '22', ded: '2500000',
+    g27: '300, 700, 1500, 2500, 4000', q1: '460', q2: '14', q3: '-30'
+  };
+  var ids = Object.keys(DEFAULTS);
+  var $ = function (id) { return document.getElementById(id); };
+
+  function num(s) {
+    var v = parseFloat(String(s == null ? '' : s).replace(/,/g, '').trim());
+    return isFinite(v) ? v : NaN;
+  }
+  function list(s) {
+    return String(s || '').split(/[\s,]+/).map(num).filter(function (x) { return isFinite(x); });
+  }
+  function grp(n, d) {
+    d = d || 0;
+    n = Number(n.toFixed(d));
+    if (n === 0) n = 0; // avoid "-0"
+    return n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+  }
+  function won(n) { return grp(Math.round(n)) + '원'; }
+  function man(n) { return grp(Math.round(n / 10000)) + '만원'; }
+  function pct(x, d) { var v = x * 100; return (v > 0 ? '+' : '') + grp(v, d == null ? 1 : d) + '%'; }
+  function usd(n, d) { return '$' + grp(n, d == null ? 2 : d); }
+  function cls(n) { return n > 0 ? 'pos' : (n < 0 ? 'neg' : ''); }
+  function sp(txt, n) { return '<span class="' + cls(n) + '">' + txt + '</span>'; }
+
+  function load() {
+    var s = {};
+    try { s = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { s = {}; }
+    ids.forEach(function (id) {
+      var v = (s[id] !== undefined) ? s[id] : DEFAULTS[id];
+      if (id === 'decay') $(id).checked = !!v; else $(id).value = v;
+    });
+  }
+  function save() {
+    var s = {};
+    ids.forEach(function (id) { s[id] = (id === 'decay') ? $(id).checked : $(id).value; });
+    try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) { /* storage unavailable */ }
+  }
+
+  function readInputs() {
+    var I = {};
+    I.t0 = num($('t0').value); I.l0 = num($('l0').value);
+    I.P = num($('cost').value); I.lev = num($('lev').value);
+    I.qty = num($('qty').value); I.fx = num($('fx').value);
+    I.decay = $('decay').checked; I.vol = num($('vol').value) / 100; I.days = num($('days').value);
+    I.S = Math.max(0, num($('sell').value) || 0);
+    I.g26 = num($('g26').value) || 0; I.rate = (num($('rate').value) || 0) / 100; I.ded = num($('ded').value) || 0;
+    I.scope = $('scope').value;
+    if (isFinite(I.qty) && isFinite(I.fx) && I.qty > 0 && I.fx > 0 && I.l0 > 0) {
+      I.V = I.qty * I.l0 * I.fx; I.vSrc = 'qty';
+    } else {
+      I.V = num($('val').value); I.vSrc = 'val';
+    }
+    I.ok = [I.t0, I.l0, I.P, I.V, I.lev].every(function (x) { return isFinite(x) && x > 0; });
+    if (I.ok) {
+      I.S = Math.min(I.S, I.V);
+      I.dec = I.decay ? ((I.lev * I.lev - I.lev) / 2) * I.vol * I.vol * (isFinite(I.days) ? I.days : 0) : 0;
+    }
+    return I;
+  }
+
+  // TSLL value ratio (L/L0) for a TSLA price t
+  function lrat(I, t) {
+    if (!I.decay) return Math.max(0, 1 + I.lev * (t / I.t0 - 1));
+    return Math.exp(I.lev * Math.log(t / I.t0) - I.dec);
+  }
+  // TSLA price needed for TSLL ratio r
+  function tFor(I, r) {
+    if (!(r > 0)) return NaN;
+    if (!I.decay) { var t = I.t0 * (1 + (r - 1) / I.lev); return t > 0 ? t : NaN; }
+    return I.t0 * Math.exp((Math.log(r) + I.dec) / I.lev);
+  }
+
+  function levelsFor(I) {
+    var arr = list($('levels').value).filter(function (x) { return x > 0; });
+    arr.push(I.t0);
+    arr.sort(function (a, b) { return a - b; });
+    return arr.filter(function (x, i) { return i === 0 || Math.abs(x - arr[i - 1]) > 1e-9; });
+  }
+  function rowCls(I, t) { return Math.abs(t - I.t0) < 1e-9 ? ' class="now"' : ''; }
+  function tLabel(I, t) { return (Math.abs(t - I.t0) < 1e-9 ? '현재 ' : '') + usd(t, t % 1 ? 1 : 0); }
+
+  function render() {
+    var I = readInputs();
+    var tiles = $('tiles');
+    if (!I.ok) {
+      tiles.innerHTML = '<div class="warn">TSLA 현재가, TSLL 현재가, 총매입금, 총평가, 레버리지에 0보다 큰 숫자를 입력하세요.</div>';
+      ['tblA', 'tblB', 'tblC', 'tblD'].forEach(function (i) { $(i).innerHTML = ''; });
+      return;
+    }
+    var P = I.P, V = I.V, S = I.S, L0 = I.l0, T0 = I.t0;
+    var avg = L0 * P / V;
+    var pl0 = V - P, ret0 = V / P - 1;
+    var costSold = P * S / V, realized = S - costSold;
+    var remV = V - S, remCost = P - costSold;
+
+    $('srcNote').textContent = '계산에 쓴 총평가: ' + won(V) + (I.vSrc === 'qty' ? ' (수량 × TSLL × 환율)' : ' (직접 입력)') + '. 기준일 ' + ($('asof').value || '미입력') + '.';
+
+    // tiles
+    var t50 = tFor(I, P * 0.5 / V), t0 = tFor(I, P / V);
+    var tp = [];
+    tp.push('<div class="tile"><div class="k">평균단가 (TSLL)</div><div class="v">' + usd(avg, 2) + '</div><div class="s">현재가 ' + usd(L0, 4) + '</div></div>');
+    tp.push('<div class="tile"><div class="k">현재 수익률</div><div class="v">' + sp(pct(ret0, 2), ret0) + '</div><div class="s">평가손익 ' + sp(won(pl0), pl0) + '</div></div>');
+    tp.push('<div class="tile"><div class="k">수익률 -50% 지점 (TSLA)</div><div class="v">' + (isFinite(t50) ? usd(t50, 1) : '해당 없음') + '</div><div class="s">전량 보유 기준</div></div>');
+    tp.push('<div class="tile"><div class="k">본전 지점 (TSLA)</div><div class="v">' + (isFinite(t0) ? usd(t0, 1) : '해당 없음') + '</div><div class="s">TSLA ' + (isFinite(t0) ? pct(t0 / T0 - 1) : '') + ' 필요</div></div>');
+    if (S > 0) {
+      // total P&L zero: realized + remV*r - remCost = 0, so r = (remCost - realized) / remV
+      var tb0 = tFor(I, (remCost - realized) / remV);
+      tp.push('<div class="tile"><div class="k">일부 매도 후 확정 손실</div><div class="v">' + sp(man(realized), realized) + '</div><div class="s">남은 평가 ' + man(remV) + ' / 남은 원가 ' + man(remCost) + '</div></div>');
+      tp.push('<div class="tile"><div class="k">일부 매도 후 전체 본전 (TSLA)</div><div class="v">' + (isFinite(tb0) ? usd(tb0, 1) : '해당 없음') + '</div><div class="s">확정 손실 포함</div></div>');
+    }
+    tiles.innerHTML = tp.join('');
+
+    // table A
+    var lv = levelsFor(I);
+    var a = '<thead><tr><th>TSLA</th><th>TSLA 변화</th><th>TSLL</th><th>TSLL 변화</th><th>예상 평가금액</th><th>예상 손익</th><th>수익률</th></tr></thead><tbody>';
+    lv.forEach(function (t) {
+      var r = lrat(I, t), l = L0 * r, v = V * r, pl = v - P, rt = v / P - 1;
+      a += '<tr' + rowCls(I, t) + '><td>' + tLabel(I, t) + '</td><td>' + sp(pct(t / T0 - 1), t - T0) + '</td><td>' + usd(l, 2) + '</td><td>' + sp(pct(r - 1), r - 1) + '</td><td>' + man(v) + '</td><td>' + sp(man(pl), pl) + '</td><td>' + sp(pct(rt), rt) + '</td></tr>';
+    });
+    $('tblA').innerHTML = a + '</tbody>';
+    $('noteA').textContent = I.decay ? '감쇠 추정 사용 중: 일 변동성 ' + grp(I.vol * 100, 1) + '%, ' + grp(I.days) + '거래일 기준 근사값입니다.' : '단순 가정(TSLL = TSLA 변동률 × ' + grp(I.lev, 1) + ')이며 감쇠는 반영하지 않았습니다.';
+
+    // table B
+    if (S <= 0) {
+      $('bWarn').innerHTML = '<div class="warn">일부 매도 금액이 0이라 전량 보유와 같습니다. 위 입력에서 매도 금액을 넣어 보세요.</div>';
+    } else {
+      $('bWarn').innerHTML = '<p class="note" style="margin:0 0 8px">현재가로 ' + won(S) + '(총평가의 ' + grp(S / V * 100, 1) + '%)를 매도합니다. 확정 손실 ' + sp(won(realized), realized) + ', 남는 평가금액 ' + won(remV) + ', 남는 원가 ' + won(remCost) + '.</p>';
+    }
+    var b = '<thead><tr><th>TSLA</th><th>TSLL</th><th>남은 TSLL 예상 평가금액</th><th>남은 분 수익률</th><th>남은 분 평가손익</th><th>확정 손실</th><th>합계 손익</th><th>전체 수익률</th><th>총 자산 (남은+현금)</th><th>지금 팔기 - 전량 보유</th><th>나중에 팔기 - 지금 팔기</th></tr></thead><tbody>';
+    lv.forEach(function (t) {
+      var r = lrat(I, t), l = L0 * r, rv = remV * r, un = rv - remCost, tot = realized + un, hold = V * r - P, diff = tot - hold;
+      b += '<tr' + rowCls(I, t) + '><td>' + tLabel(I, t) + '</td><td>' + usd(l, 2) + '</td><td>' + man(rv) + '</td><td>' + sp(pct(remCost > 0 ? rv / remCost - 1 : 0), rv - remCost) + '</td><td>' + sp(man(un), un) + '</td><td>' + sp(man(realized), realized) + '</td><td>' + sp(man(tot), tot) + '</td><td>' + sp(pct(tot / P), tot) + '</td><td>' + man(rv + S) + '</td><td>' + sp(man(diff), diff) + '</td><td>' + sp(man(-diff), -diff) + '</td></tr>';
+    });
+    $('tblB').innerHTML = b + '</tbody>';
+    $('noteB').textContent = '"지금 팔기 - 전량 보유"는 팔아 둔 쪽이 얼마나 더 갖는지입니다. 가격이 내리면 +, 오르면 -입니다. "나중에 팔기 - 지금 팔기"는 그 반대 부호로, 연말에 필요한 현금을 나중에 마련할 때의 차이입니다.';
+
+    // table C
+    var targets = [-0.5, -0.4, -0.3, -0.2, -0.1, 0];
+    var c = '<thead><tr><th>목표 전체 수익률</th><th>전량 보유: 필요한 TSLL</th><th>전량 보유: 필요한 TSLA</th>' + (S > 0 ? '<th>일부 매도 후: 필요한 TSLL</th><th>일부 매도 후: 필요한 TSLA</th>' : '') + '</tr></thead><tbody>';
+    targets.forEach(function (tg) {
+      var r1 = P * (1 + tg) / V, t1 = tFor(I, r1);
+      c += '<tr><td>' + pct(tg, 0) + '</td><td>' + (r1 > 0 ? usd(L0 * r1, 2) : '-') + '</td><td>' + (isFinite(t1) ? usd(t1, 1) : '-') + '</td>';
+      if (S > 0) {
+        var r2 = (P * tg - realized + remCost) / remV, t2 = tFor(I, r2);
+        c += '<td>' + (r2 > 0 ? usd(L0 * r2, 2) : '-') + '</td><td>' + (isFinite(t2) ? usd(t2, 1) : '-') + '</td>';
+      }
+      c += '</tr>';
+    });
+    $('tblC').innerHTML = c + '</tbody>';
+
+    // table D (tax)
+    var loss = I.scope === 'all' ? Math.max(0, P - V) : Math.max(0, -realized);
+    var g27 = list($('g27').value);
+    var d = '<thead><tr><th>2027 순이익</th><th>올해 손절: 2026 세금</th><th>올해 손절: 2027 세금</th><th>올해 손절: 합계</th><th>내년 손절: 2026 세금</th><th>내년 손절: 2027 세금</th><th>내년 손절: 합계</th><th>내년으로 넘길 때 절세액</th></tr></thead><tbody>';
+    g27.forEach(function (gm) {
+      var G = gm * 10000;
+      var aT26 = I.rate * Math.max(0, I.g26 - loss - I.ded), aT27 = I.rate * Math.max(0, G - I.ded);
+      var bT26 = I.rate * Math.max(0, I.g26 - I.ded), bT27 = I.rate * Math.max(0, G - loss - I.ded);
+      d += '<tr><td>' + grp(gm) + '만원</td><td>' + man(aT26) + '</td><td>' + man(aT27) + '</td><td>' + man(aT26 + aT27) + '</td><td>' + man(bT26) + '</td><td>' + man(bT27) + '</td><td>' + man(bT26 + bT27) + '</td><td>' + sp(man((aT26 + aT27) - (bT26 + bT27)), (aT26 + aT27) - (bT26 + bT27)) + '</td></tr>';
+    });
+    $('tblD').innerHTML = d + '</tbody>';
+    $('noteD').textContent = '손절 금액 ' + won(loss) + '(' + (I.scope === 'all' ? '전량' : '일부 매도분') + ') 기준. 같은 해 이익과 손실만 합산하는 단순 계산이며, 절세 상한은 손절 금액 × 세율입니다(' + man(loss * I.rate) + ').';
+
+    quick(I);
+  }
+
+  function quick(I) {
+    if (!I.ok) return;
+    var q1 = num($('q1').value), q2 = num($('q2').value), q3 = num($('q3').value);
+    var P = I.P, V = I.V;
+    if (q1 > 0) {
+      var r = lrat(I, q1), v = V * r, pl = v - P;
+      $('q1out').innerHTML = 'TSLL ' + usd(I.l0 * r, 2) + ' (' + sp(pct(r - 1), r - 1) + ')<br>예상 평가금액 ' + man(v) + '<br>예상 손익 ' + sp(man(pl), pl) + ' / 수익률 ' + sp(pct(v / P - 1), v / P - 1);
+    } else $('q1out').textContent = 'TSLA 가격을 입력하세요.';
+    if (q2 > 0) {
+      var rr = q2 / I.l0, t = tFor(I, rr), v2 = V * rr;
+      $('q2out').innerHTML = (isFinite(t) ? '필요한 TSLA ' + usd(t, 1) + ' (' + sp(pct(t / I.t0 - 1), t - I.t0) + ')' : '해당 가격은 계산할 수 없습니다.') + '<br>예상 평가금액 ' + man(v2) + '<br>예상 손익 ' + sp(man(v2 - P), v2 - P);
+    } else $('q2out').textContent = 'TSLL 가격을 입력하세요.';
+    if (isFinite(q3) && q3 > -100) {
+      var r3 = P * (1 + q3 / 100) / V, t3 = tFor(I, r3);
+      $('q3out').innerHTML = isFinite(t3) ? '필요한 TSLL ' + usd(I.l0 * r3, 2) + '<br>필요한 TSLA ' + usd(t3, 1) + ' (' + sp(pct(t3 / I.t0 - 1), t3 - I.t0) + ')<br>전량 보유 기준' : '해당 수익률은 계산할 수 없습니다.';
+    } else $('q3out').textContent = '-100보다 큰 수익률을 입력하세요.';
+  }
+
+  function copyTable(id) {
+    var rows = Array.prototype.map.call($(id).querySelectorAll('tr'), function (tr) {
+      return Array.prototype.map.call(tr.children, function (c) { return c.textContent; }).join('\t');
+    }).join('\n');
+    try {
+      navigator.clipboard.writeText(rows).then(function () { flash(id, '복사했습니다'); }, function () { flash(id, '복사하지 못했습니다'); });
+    } catch (e) { flash(id, '복사하지 못했습니다'); }
+  }
+  function flash(id, msg) {
+    var btn = document.querySelector('[data-copy="' + id + '"]');
+    if (!btn) return;
+    var old = btn.textContent; btn.textContent = msg;
+    setTimeout(function () { btn.textContent = old; }, 1400);
+  }
+
+  function onChange() { save(); render(); }
+  load();
+  ids.forEach(function (id) { $(id).addEventListener('input', onChange); $(id).addEventListener('change', onChange); });
+  ['cost', 'val', 'sell', 'g26', 'ded'].forEach(function (id) {
+    $(id).addEventListener('blur', function () { var v = num($(id).value); if (isFinite(v)) { $(id).value = grp(Math.round(v)); save(); } });
+  });
+  document.querySelectorAll('[data-copy]').forEach(function (b) { b.addEventListener('click', function () { copyTable(b.getAttribute('data-copy')); }); });
+  $('resetBtn').addEventListener('click', function () {
+    try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ }
+    ids.forEach(function (id) { if (id === 'decay') $(id).checked = DEFAULTS[id]; else $(id).value = DEFAULTS[id]; });
+    ['cost', 'val', 'sell', 'g26', 'ded'].forEach(function (id) { $(id).value = grp(Math.round(num($(id).value))); });
+    render();
+  });
+  ['cost', 'val', 'sell', 'g26', 'ded'].forEach(function (id) { var v = num($(id).value); if (isFinite(v)) $(id).value = grp(Math.round(v)); });
+  render();
+})();
+</script>
+</body>
+</html>
