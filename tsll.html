@@ -78,6 +78,17 @@ tr.now td:first-child { background: var(--now); }
 .calc .out { font-variant-numeric: tabular-nums; font-size: 14px; }
 .head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 8px; }
 .warn { background: var(--now); border-radius: 6px; padding: 8px 10px; font-size: 13px; }
+
+.factors { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; font-size: 16.5px; line-height: 1.6; }
+.fcol { display: flex; flex-direction: column; gap: 14px; }
+.fcol h3 { margin: 0; font-size: 18px; padding-bottom: 6px; border-bottom: 3px solid var(--line); }
+.fcol.good h3 { border-bottom-color: var(--pos); color: var(--pos); }
+.fcol.bad h3 { border-bottom-color: var(--neg); color: var(--neg); }
+.fitem strong { display: block; font-size: 16.5px; }
+.fitem span { color: var(--ink); }
+.fitem .num { display: block; margin-top: 2px; font-variant-numeric: tabular-nums; font-weight: 700; }
+.caution { margin-top: 14px; font-size: 15px; padding: 10px 12px; border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 4px; }
+.sellbox { margin: 8px 0; }
 </style>
 </head>
 <body>
@@ -101,7 +112,7 @@ tr.now td:first-child { background: var(--now); }
       <label for="qty">보유 수량 (주, 선택)<input type="text" id="qty" inputmode="decimal"></label>
       <label for="fx">환율 (원/$, 선택)<input type="text" id="fx" inputmode="decimal"></label>
       <label for="lev">레버리지 배수<input type="text" id="lev" inputmode="decimal"></label>
-      <label for="sell">일부 매도 금액 (원)<input type="text" id="sell" inputmode="numeric"><small>현재가로 팔아 현금화하는 금액. 0이면 전량 보유.</small></label>
+      <label for="fee">매도 수수료율 (%)<input type="text" id="fee" inputmode="decimal"><small>기본 0.04%. 아래 일부 매도와 참고 패널에 모두 적용됩니다.</small></label>
     </div>
     <div class="grid" style="margin-top:12px">
       <label for="levels" style="grid-column: span 2">시나리오 TSLA 가격 (쉼표로 구분)<textarea id="levels" rows="2"></textarea></label>
@@ -117,6 +128,15 @@ tr.now td:first-child { background: var(--now); }
     <div class="tiles" id="tiles"></div>
   </section>
 
+  <section class="panel" aria-labelledby="fcTitle">
+    <h2 id="fcTitle" style="font-size:19px">참고: 수익률을 바꾸는 요인</h2>
+    <div class="factors" id="factors"></div>
+    <div class="caution" id="fxCaution"></div>
+    <h2 style="margin-top:16px">환율 민감도 (현재 TSLL 가격 기준)</h2>
+    <div class="scroll"><table id="tblFx"></table></div>
+    <p class="note" id="noteFx"></p>
+  </section>
+
   <section class="panel" aria-labelledby="aTitle">
     <div class="head"><h2 id="aTitle">전량 보유 시 가격대별 예상</h2><button type="button" data-copy="tblA">표 복사</button></div>
     <div class="scroll"><table id="tblA"></table></div>
@@ -125,6 +145,12 @@ tr.now td:first-child { background: var(--now); }
 
   <section class="panel" aria-labelledby="bTitle">
     <div class="head"><h2 id="bTitle">일부 매도 후 가격대별 예상</h2><button type="button" data-copy="tblB">표 복사</button></div>
+    <div class="grid sellbox">
+      <label for="sell">매도 금액 (원)<input type="text" id="sell" inputmode="numeric"></label>
+      <label for="sellUsd">매도 금액 ($)<input type="text" id="sellUsd" inputmode="decimal"></label>
+      <label for="sellQty">매도 수량 (주, 정수)<input type="text" id="sellQty" inputmode="numeric"></label>
+    </div>
+    <p class="note">셋 중 하나를 바꾸면 나머지가 현재가와 환율로 자동 계산됩니다. 원화나 달러를 넣으면 수량은 올림합니다. 0이면 전량 보유입니다.</p>
     <div id="bWarn"></div>
     <div class="scroll"><table id="tblB"></table></div>
     <p class="note" id="noteB"></p>
@@ -188,9 +214,9 @@ tr.now td:first-child { background: var(--now); }
 <script>
 (function () {
   'use strict';
-  var KEY = 'tsll-calc-v2';
+  var KEY = 'tsll-calc-v3';
   var DEFAULTS = {
-    asof: '2026-10-28', t0: '407.7', l0: '11.6402', cost: '32152053', val: '16248010', qty: '997', fx: '1350', lev: '2',
+    asof: '2026-10-28', t0: '407.7', l0: '11.6402', cost: '32152053', val: '16248010', qty: '997', fx: '1350', lev: '2', fee: '0.04', sellQty: '', sellUsd: '',
     sell: '4500000', levels: '330, 350, 370, 390, 400, 410, 420, 430, 440, 450, 460, 480, 500, 530, 560, 600',
     decay: false, vol: '4', days: '30', scope: 'all', g26: '1000000', rate: '22', ded: '2500000',
     g27: '300, 700, 1500, 2500, 4000', q1: '460', q2: '14', q3: '-30'
@@ -239,8 +265,12 @@ tr.now td:first-child { background: var(--now); }
     I.qty = num($('qty').value); I.fx = num($('fx').value);
     I.decay = $('decay').checked; I.vol = num($('vol').value) / 100; I.days = num($('days').value);
     I.S = Math.max(0, num($('sell').value) || 0);
+    var sq = num($('sellQty').value);
+    if (isFinite(sq) && sq >= 0 && I.l0 > 0 && I.fx > 0) I.S = Math.floor(sq) * I.l0 * I.fx;
+    I.sq = isFinite(sq) ? Math.floor(sq) : NaN;
     I.g26 = num($('g26').value) || 0; I.rate = (num($('rate').value) || 0) / 100; I.ded = num($('ded').value) || 0;
     I.scope = $('scope').value;
+    I.fee = (num($('fee').value) || 0) / 100;
     if (isFinite(I.qty) && isFinite(I.fx) && I.qty > 0 && I.fx > 0 && I.l0 > 0) {
       I.V = I.qty * I.l0 * I.fx; I.vSrc = 'qty';
     } else {
@@ -318,9 +348,9 @@ tr.now td:first-child { background: var(--now); }
 
     // table B
     if (S <= 0) {
-      $('bWarn').innerHTML = '<div class="warn">일부 매도 금액이 0이라 전량 보유와 같습니다. 위 입력에서 매도 금액을 넣어 보세요.</div>';
+      $('bWarn').innerHTML = '<div class="warn">일부 매도 금액이 0이라 전량 보유와 같습니다. 위 칸에 매도 금액이나 수량을 넣어 보세요.</div>';
     } else {
-      $('bWarn').innerHTML = '<p class="note" style="margin:0 0 8px">현재가로 ' + won(S) + '(총평가의 ' + grp(S / V * 100, 1) + '%)를 매도합니다. 확정 손실 ' + sp(won(realized), realized) + ', 남는 평가금액 ' + won(remV) + ', 남는 원가 ' + won(remCost) + '.</p>';
+      $('bWarn').innerHTML = '<p class="note" style="margin:0 0 8px">현재가로 ' + won(S) + '(총평가의 ' + grp(S / V * 100, 1) + '%, ' + (isFinite(I.sq) ? grp(I.sq) + '주' : '') + ')를 매도합니다. 수수료 ' + grp(I.fee * 100, 2) + '% 약 ' + won(S * I.fee) + ', 실수령 약 ' + won(S * (1 - I.fee)) + '. 확정 손실 ' + sp(won(realized), realized) + ', 남는 평가금액 ' + won(remV) + ', 남는 원가 ' + won(remCost) + '.</p>';
     }
     var b = '<thead><tr><th>TSLA</th><th>TSLL</th><th>남은 TSLL 예상 평가금액</th><th>남은 분 수익률</th><th>남은 분 평가손익</th><th>확정 손실</th><th>합계 손익</th><th>전체 수익률</th><th>총 자산 (남은+현금)</th><th>지금 팔기 - 전량 보유</th><th>나중에 팔기 - 지금 팔기</th></tr></thead><tbody>';
     lv.forEach(function (t) {
@@ -357,7 +387,54 @@ tr.now td:first-child { background: var(--now); }
     $('tblD').innerHTML = d + '</tbody>';
     $('noteD').textContent = '손절 금액 ' + won(loss) + '(' + (I.scope === 'all' ? '전량' : '일부 매도분') + ') 기준. 같은 해 이익과 손실만 합산하는 단순 계산이며, 절세 상한은 손절 금액 × 세율입니다(' + man(loss * I.rate) + ').';
 
+    factors(I);
     quick(I);
+  }
+
+  function factors(I) {
+    var fx = I.fx, hasFx = isFinite(fx) && fx > 0;
+    var step = 50;
+    var dK = hasFx ? I.V * step / fx : NaN, dP = hasFx ? step / fx : NaN;
+    var dec = ((I.lev * I.lev - I.lev) / 2) * I.vol * I.vol * (isFinite(I.days) ? I.days : 0);
+    var decOk = isFinite(I.vol) && I.vol > 0 && isFinite(I.days) && I.days > 0;
+    var decPct = decOk ? 1 - Math.exp(-dec) : NaN;
+    var feeK = I.V * I.fee;
+    var up = hasFx ? '환율 +' + step + '원이면 평가금액 약 ' + sp('+' + man(dK), 1) + ' (' + sp(pct(dP), 1) + ')' : '환율을 입력하면 계산합니다.';
+    var dn = hasFx ? '환율 -' + step + '원이면 평가금액 약 ' + sp('-' + man(dK), -1) + ' (' + sp(pct(-dP), -1) + ')' : '환율을 입력하면 계산합니다.';
+    var good = [
+      ['환율이 높을 때 매도', '원화 평가는 달러 평가에 환율을 곱한 값입니다. 같은 TSLL 가격에서도 환율이 높으면 원화로 더 받습니다.', up],
+      ['한 방향 상승이 이어질 때', '오르는 추세가 길면 복리 효과로 TSLL이 TSLA 상승률의 2배보다 더 오를 수 있습니다.', ''],
+      ['같은 해에 다른 이익이 있을 때', '손절 손실을 같은 해 이익과 합산해 양도세를 줄일 수 있습니다. 손실 이월은 되지 않습니다. 아래 양도세 비교를 보세요.', ''],
+      ['보유 기간이 짧을 때', '기간이 짧을수록 변동성 감쇠가 작습니다. 앞선 백테스트에서 TSLL +6% 도달 기간의 중앙값은 2거래일이었습니다.', '']
+    ];
+    var bad = [
+      ['환율이 낮을 때 매도', '매입 때보다 환율이 낮으면 달러로는 같아도 원화로는 손실이 커집니다.', dn],
+      ['변동성 감쇠', '오르내림이 크고 오래 들수록 TSLA가 제자리여도 TSLL이 깎입니다.', decOk ? '일 변동성 ' + grp(I.vol * 100, 1) + '%, ' + grp(I.days) + '거래일이면 약 ' + sp(pct(-decPct), -1) : '일 변동성과 기간을 입력하면 계산합니다.'],
+      ['횡보·진동 장세', '한 방향으로 가지 않고 위아래로 흔들리면 복리 효과가 반대로 작용합니다.', ''],
+      ['수수료와 환전 비용', '사고팔 때마다 비용이 생기고, 매매를 반복할수록 쌓입니다.', I.fee > 0 ? '지금 전량 매도 시 수수료 약 ' + won(feeK) + ' (' + grp(I.fee * 100, 2) + '%)' : '수수료율을 입력하면 계산합니다.'],
+      ['세금', '이익에는 22%(기본공제 250만원 후)가 붙고, 손실은 같은 해 이익과만 상계됩니다. 양도 시점은 결제일 기준입니다.', '']
+    ];
+    function col(cls, title, items) {
+      return '<div class="fcol ' + cls + '"><h3>' + title + '</h3>' + items.map(function (x) {
+        return '<div class="fitem"><strong>' + x[0] + '</strong><span>' + x[1] + '</span>' + (x[2] ? '<span class="num">' + x[2] + '</span>' : '') + '</div>';
+      }).join('') + '</div>';
+    }
+    $('factors').innerHTML = col('good', '수익률이 좋아지는 요인', good) + col('bad', '수익률이 나빠지는 요인', bad);
+    $('fxCaution').textContent = '환율을 보고 매도 시점을 늦추는 것은 환율과 TSLL 가격의 방향에 동시에 거는 일입니다. 환율이 오르는 시기에 주가가 내릴 수도 있어서, 환율이 높다는 이유만으로 유리하다고 볼 수는 없습니다.';
+    // fx sensitivity table
+    if (!hasFx) {
+      $('tblFx').innerHTML = '';
+      $('noteFx').textContent = '환율을 입력하면 환율별 평가금액이 표시됩니다.';
+      return;
+    }
+    var vUsd = I.V / fx;
+    var t = '<thead><tr><th>환율</th><th>평가금액</th><th>평가손익</th><th>수익률</th><th>현재 환율 대비</th></tr></thead><tbody>';
+    [-100, -50, 0, 50, 100].forEach(function (d) {
+      var f = fx + d, v = vUsd * f, pl = v - I.P;
+      t += '<tr' + (d === 0 ? ' class="now"' : '') + '><td>' + (d === 0 ? '현재 ' : '') + grp(f) + '원</td><td>' + man(v) + '</td><td>' + sp(man(pl), pl) + '</td><td>' + sp(pct(v / I.P - 1), pl) + '</td><td>' + (d === 0 ? '-' : sp((d > 0 ? '+' : '') + man(v - I.V), d)) + '</td></tr>';
+    });
+    $('tblFx').innerHTML = t + '</tbody>';
+    $('noteFx').textContent = '달러 평가금액 ' + usd(vUsd, 0) + '를 환율만 바꿔 원화로 환산한 값입니다. 총매입금은 원화로 고정입니다.';
   }
 
   function quick(I) {
@@ -393,9 +470,29 @@ tr.now td:first-child { background: var(--now); }
     setTimeout(function () { btn.textContent = old; }, 1400);
   }
 
-  function onChange() { save(); render(); }
+  function sync(src) {
+    var I0 = num($('l0').value), fx = num($('fx').value);
+    if (!(I0 > 0) || !(fx > 0)) return;
+    var q;
+    if (src === 'sell') { var w = num($('sell').value); q = isFinite(w) && w > 0 ? Math.ceil(w / (I0 * fx) - 1e-9) : 0; }
+    else if (src === 'sellUsd') { var d = num($('sellUsd').value); q = isFinite(d) && d > 0 ? Math.ceil(d / I0 - 1e-9) : 0; }
+    else { q = num($('sellQty').value); q = isFinite(q) && q > 0 ? Math.floor(q) : 0; }
+    var cap = num($('qty').value);
+    if (isFinite(cap) && cap > 0 && q > cap) q = Math.floor(cap);
+    $('sellQty').value = src === 'sellQty' ? $('sellQty').value : String(q);
+    if (src !== 'sellUsd') $('sellUsd').value = q ? grp(q * I0, 2) : '0';
+    if (src !== 'sell') $('sell').value = grp(Math.round(q * I0 * fx));
+  }
+  function fixAll() { sync('sellQty'); $('sellQty').value = String(Math.floor(num($('sellQty').value) || 0)); }
+  function onChange(e) {
+    var id = e && e.target && e.target.id;
+    if (id === 'sell' || id === 'sellUsd' || id === 'sellQty') sync(id);
+    else if (id === 'l0' || id === 'fx' || id === 'qty') sync('sellQty');
+    save(); render();
+  }
   load();
   ids.forEach(function (id) { $(id).addEventListener('input', onChange); $(id).addEventListener('change', onChange); });
+  ['sell', 'sellUsd', 'sellQty'].forEach(function (id) { $(id).addEventListener('blur', function () { sync('sellQty'); save(); render(); }); });
   ['cost', 'val', 'sell', 'g26', 'ded'].forEach(function (id) {
     $(id).addEventListener('blur', function () { var v = num($(id).value); if (isFinite(v)) { $(id).value = grp(Math.round(v)); save(); } });
   });
@@ -404,9 +501,11 @@ tr.now td:first-child { background: var(--now); }
     try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ }
     ids.forEach(function (id) { if (id === 'decay') $(id).checked = DEFAULTS[id]; else $(id).value = DEFAULTS[id]; });
     ['cost', 'val', 'sell', 'g26', 'ded'].forEach(function (id) { $(id).value = grp(Math.round(num($(id).value))); });
+    sync('sell');
     render();
   });
   ['cost', 'val', 'sell', 'g26', 'ded'].forEach(function (id) { var v = num($(id).value); if (isFinite(v)) $(id).value = grp(Math.round(v)); });
+  if (!$('sellQty').value) sync('sell'); else sync('sellQty');
   render();
 })();
 </script>
