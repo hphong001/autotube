@@ -37,7 +37,9 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; }
 body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; }
-.wrap { max-width: 1080px; margin: 0 auto; padding: 20px 16px 48px; display: flex; flex-direction: column; gap: 18px; }
+
+/* 1. 전체 컨테이너 가로폭 확대 (1080px -> 1400px) */
+.wrap { max-width: 1400px; margin: 0 auto; padding: 20px 16px 48px; display: flex; flex-direction: column; gap: 18px; }
 h1 { font-size: 24px; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
 h2 { font-size: 17px; margin: 0 0 10px; text-wrap: balance; }
 .sub { color: var(--muted); margin: 4px 0 0; font-size: 13px; }
@@ -63,8 +65,12 @@ button:hover { background: var(--accent); color: var(--bg); }
 .tile .v { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .tile .s { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
-table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: 14px; }
-th, td { padding: 7px 10px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--line); }
+
+/* 2. 표 글자 크기 축소 (14px -> 13px), 자간 좁힘 */
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: 13px; letter-spacing: -0.2px; }
+/* 3. 줄바꿈 안 함(nowrap) 복구 & 여백(padding) 축소 (7px 10px -> 6px 8px) */
+th, td { padding: 6px 8px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--line); }
+
 th { background: var(--accent-soft); font-weight: 500; font-size: 12.5px; color: var(--ink); position: sticky; top: 0; }
 th:first-child, td:first-child { text-align: left; position: sticky; left: 0; background: var(--panel); }
 th:first-child { background: var(--accent-soft); }
