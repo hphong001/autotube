@@ -38,7 +38,7 @@
 html, body { margin: 0; }
 body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; }
 
-/* 1. 전체 컨테이너 가로폭 확대 (1080px -> 1400px) */
+/* 1. 전체 컨테이너 가로폭 1400px 유지 */
 .wrap { max-width: 1400px; margin: 0 auto; padding: 20px 16px 48px; display: flex; flex-direction: column; gap: 18px; }
 h1 { font-size: 24px; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
 h2 { font-size: 17px; margin: 0 0 10px; text-wrap: balance; }
@@ -60,20 +60,17 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
 button { font: inherit; font-size: 14px; border: 1px solid var(--accent); background: var(--accent-soft); color: var(--ink); border-radius: 6px; padding: 7px 12px; cursor: pointer; }
 button:hover { background: var(--accent); color: var(--bg); }
 
-/* 현재 요약 타일 3개씩 2줄로 고정 */
+/* 2. 현재 요약 타일 3개씩 2줄로 고정 유지 */
 .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-
 .tile { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--panel); }
 .tile .k { font-size: 12px; color: var(--muted); }
 .tile .v { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .tile .s { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
 
-/* 2. 표 글자 크기 축소 (14px -> 13px), 자간 좁힘 */
+/* 3. 표 가로로 한줄 출력 (nowrap) 유지 */
 table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: 13px; letter-spacing: -0.2px; }
-/* 3. 줄바꿈 안 함(nowrap) 복구 & 여백(padding) 축소 (7px 10px -> 6px 8px) */
 th, td { padding: 6px 8px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--line); }
-
 th { background: var(--accent-soft); font-weight: 500; font-size: 12.5px; color: var(--ink); position: sticky; top: 0; }
 th:first-child, td:first-child { text-align: left; position: sticky; left: 0; background: var(--panel); }
 th:first-child { background: var(--accent-soft); }
@@ -98,6 +95,9 @@ tr.now td:first-child { background: var(--now); }
 .fitem .num { display: block; margin-top: 2px; font-variant-numeric: tabular-nums; font-weight: 700; }
 .caution { margin-top: 14px; font-size: 15px; padding: 10px 12px; border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 4px; }
 .sellbox { margin: 8px 0; }
+
+/* 4. 메모 이미지 스타일 */
+.memo-img { max-width: 100%; border-radius: 8px; border: 1px solid var(--line); display: none; }
 </style>
 </head>
 <body>
@@ -218,6 +218,14 @@ tr.now td:first-child { background: var(--now); }
       <li>이 도구는 매매 권유가 아니라 계산 보조용입니다. 세무 처리는 세무사나 증권사에 확인하세요.</li>
     </ul>
   </section>
+
+  <!-- 새롭게 추가된 메모 이미지 패널 -->
+  <section class="panel" aria-labelledby="memoTitle">
+    <h2 id="memoTitle" style="margin-bottom:4px;">참고 이미지 메모</h2>
+    <p class="note" style="margin-top:0;">💡 이 HTML 파일과 같은 폴더에 <strong>tsll_이미지_1.png</strong> ~ <strong>tsll_이미지_10.png</strong> (또는 .jpg) 이름으로 이미지를 저장해 두면 아래에 자동으로 출력됩니다. (테슬라 뉴스, 차트 캡처 등을 손쉽게 저장해 보세요)</p>
+    <div id="memoImages" style="margin-top: 16px; display: flex; flex-direction: column; gap: 12px;"></div>
+  </section>
+
 </div>
 
 <script>
@@ -293,12 +301,10 @@ tr.now td:first-child { background: var(--now); }
     return I;
   }
 
-  // TSLL value ratio (L/L0) for a TSLA price t
   function lrat(I, t) {
     if (!I.decay) return Math.max(0, 1 + I.lev * (t / I.t0 - 1));
     return Math.exp(I.lev * Math.log(t / I.t0) - I.dec);
   }
-  // TSLA price needed for TSLL ratio r
   function tFor(I, r) {
     if (!(r > 0)) return NaN;
     if (!I.decay) { var t = I.t0 * (1 + (r - 1) / I.lev); return t > 0 ? t : NaN; }
@@ -338,7 +344,6 @@ tr.now td:first-child { background: var(--now); }
     tp.push('<div class="tile"><div class="k">수익률 -50% 지점 (TSLA)</div><div class="v">' + (isFinite(t50) ? usd(t50, 1) : '해당 없음') + '</div><div class="s">전량 보유 기준</div></div>');
     tp.push('<div class="tile"><div class="k">본전 지점 (TSLA)</div><div class="v">' + (isFinite(t0) ? usd(t0, 1) : '해당 없음') + '</div><div class="s">TSLA ' + (isFinite(t0) ? pct(t0 / T0 - 1) : '') + ' 필요</div></div>');
     if (S > 0) {
-      // total P&L zero: realized + remV*r - remCost = 0, so r = (remCost - realized) / remV
       var tb0 = tFor(I, (remCost - realized) / remV);
       tp.push('<div class="tile"><div class="k">일부 매도 후 확정 손실</div><div class="v">' + sp(man(realized), realized) + '</div><div class="s">남은 평가 ' + man(remV) + ' / 남은 원가 ' + man(remCost) + '</div></div>');
       tp.push('<div class="tile"><div class="k">일부 매도 후 전체 본전 (TSLA)</div><div class="v">' + (isFinite(tb0) ? usd(tb0, 1) : '해당 없음') + '</div><div class="s">확정 손실 포함</div></div>');
@@ -430,7 +435,6 @@ tr.now td:first-child { background: var(--now); }
     }
     $('factors').innerHTML = col('good', '수익률이 좋아지는 요인', good) + col('bad', '수익률이 나빠지는 요인', bad);
     $('fxCaution').textContent = '환율을 보고 매도 시점을 늦추는 것은 환율과 TSLL 가격의 방향에 동시에 거는 일입니다. 환율이 오르는 시기에 주가가 내릴 수도 있어서, 환율이 높다는 이유만으로 유리하다고 볼 수는 없습니다.';
-    // fx sensitivity table
     if (!hasFx) {
       $('tblFx').innerHTML = '';
       $('noteFx').textContent = '환율을 입력하면 환율별 평가금액이 표시됩니다.';
@@ -492,13 +496,51 @@ tr.now td:first-child { background: var(--now); }
     if (src !== 'sellUsd') $('sellUsd').value = q ? grp(q * I0, 2) : '0';
     if (src !== 'sell') $('sell').value = grp(Math.round(q * I0 * fx));
   }
-  function fixAll() { sync('sellQty'); $('sellQty').value = String(Math.floor(num($('sellQty').value) || 0)); }
+  
+  // 5. 메모 이미지를 자동으로 찾아 불러오는 함수
+  function loadMemoImages() {
+    var container = $('memoImages');
+    if (!container) return;
+    
+    // 1번부터 10번까지 루프
+    for (var i = 1; i <= 10; i++) {
+      (function(idx) {
+        var img = document.createElement('img');
+        img.className = 'memo-img';
+        
+        var triedJpg = false;
+        
+        // 이미지 로딩 성공 시 화면에 표시
+        img.onload = function() {
+          img.style.display = 'block';
+        };
+        
+        // 이미지 로딩 실패 시 (파일이 없을 때)
+        img.onerror = function() {
+          if (!triedJpg) {
+            // 처음엔 png 시도, 실패하면 jpg 시도
+            triedJpg = true;
+            img.src = 'tsll_이미지_' + idx + '.jpg';
+          } else {
+            // 둘 다 없으면 DOM에서 완전히 제거 (깨진 이미지 방지)
+            img.remove();
+          }
+        };
+        
+        // 첫 시도는 무조건 png
+        img.src = 'tsll_이미지_' + idx + '.png';
+        container.appendChild(img);
+      })(i);
+    }
+  }
+
   function onChange(e) {
     var id = e && e.target && e.target.id;
     if (id === 'sell' || id === 'sellUsd' || id === 'sellQty') sync(id);
     else if (id === 'l0' || id === 'fx' || id === 'qty') sync('sellQty');
     save(); render();
   }
+  
   load();
   ids.forEach(function (id) { $(id).addEventListener('input', onChange); $(id).addEventListener('change', onChange); });
   ['sell', 'sellUsd', 'sellQty'].forEach(function (id) { $(id).addEventListener('blur', function () { sync('sellQty'); save(); render(); }); });
@@ -506,6 +548,7 @@ tr.now td:first-child { background: var(--now); }
     $(id).addEventListener('blur', function () { var v = num($(id).value); if (isFinite(v)) { $(id).value = grp(Math.round(v)); save(); } });
   });
   document.querySelectorAll('[data-copy]').forEach(function (b) { b.addEventListener('click', function () { copyTable(b.getAttribute('data-copy')); }); });
+  
   $('resetBtn').addEventListener('click', function () {
     try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ }
     ids.forEach(function (id) { if (id === 'decay') $(id).checked = DEFAULTS[id]; else $(id).value = DEFAULTS[id]; });
@@ -513,9 +556,14 @@ tr.now td:first-child { background: var(--now); }
     sync('sell');
     render();
   });
+  
   ['cost', 'val', 'sell', 'g26', 'ded'].forEach(function (id) { var v = num($(id).value); if (isFinite(v)) $(id).value = grp(Math.round(v)); });
   if (!$('sellQty').value) sync('sell'); else sync('sellQty');
+  
   render();
+  
+  // 스크립트 로드 완료 후 이미지 로더 실행
+  loadMemoImages();
 })();
 </script>
 </body>
