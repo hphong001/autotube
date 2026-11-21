@@ -101,6 +101,48 @@ tr.now td:first-child { background: var(--now); }
 .zoom-ctrl button { padding: 4px 12px; font-size: 16px; font-weight: bold; line-height: 1; border-radius: 4px; }
 .zoom-ctrl span#memoZoomText { display: inline-block; width: 45px; text-align: center; font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 500; }
 .memo-img { border-radius: 8px; border: 1px solid var(--line); display: none; max-width: none; } /* 원본크기 출력을 위해 max-width 해제 */
+
+/* ===== 탭 ===== */
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; position: sticky; top: 0; z-index: 20; background: var(--bg); padding: 6px 0; border-bottom: 2px solid var(--line); }
+.tabs [role=tab] { font-size: 15px; font-weight: 500; padding: 9px 16px; border-radius: 8px 8px 0 0; border: 1px solid var(--line); background: var(--panel); color: var(--muted); }
+.tabs [role=tab][aria-selected=true] { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 700; }
+.tabs [role=tab]:hover { background: var(--accent-soft); color: var(--ink); }
+.tabs [role=tab][aria-selected=true]:hover { background: var(--accent); color: var(--bg); }
+.tabpanel { display: flex; flex-direction: column; gap: 18px; }
+.tabpanel[hidden] { display: none; }
+.tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+
+/* ===== 단타 / 기록 공통 ===== */
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.sect { margin: 14px 0 6px; font-size: 14px; font-weight: 700; color: var(--accent); }
+.hint { font-size: 12px; color: var(--muted); }
+.big { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+button.danger { border-color: var(--neg); background: transparent; color: var(--neg); }
+button.danger:hover { background: var(--neg); color: var(--bg); }
+button.primary { background: var(--accent); color: var(--bg); font-weight: 700; }
+button.mini { padding: 2px 8px; font-size: 12px; }
+.chart { width: 100%; height: auto; aspect-ratio: 720 / 220; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+.chart text { fill: var(--muted); font-size: 9px; font-family: var(--font-body); }
+.chart .axis { stroke: var(--line); stroke-width: 1; }
+.chart .zero { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 3; }
+.chart .ln { fill: none; stroke: var(--accent); stroke-width: 2; }
+.chart .dot { fill: var(--accent); }
+.chart .ar { fill: var(--accent-soft); opacity: .6; }
+.empty { padding: 18px; text-align: center; color: var(--muted); }
+
+/* ===== 티커 사전 ===== */
+button.tk { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 13px; font-weight: 700; padding: 1px 7px; margin: 1px 2px 1px 0; border-radius: 4px; border: 1px solid var(--pos); background: transparent; color: var(--pos); }
+button.tk.inv { border-color: var(--neg); color: var(--neg); }
+button.tk.base { border-color: var(--accent); color: var(--accent); }
+button.tk.unv { border-style: dashed; opacity: .85; }
+button.tk:hover { background: var(--accent-soft); color: var(--ink); }
+.iss { font-size: 10.5px; color: var(--muted); margin-right: 6px; vertical-align: super; }
+#tkStocks th, #tkEtf th { text-align: left; }
+td.tkcell { white-space: normal; text-align: left; min-width: 150px; }
+td.nm, td.nt { text-align: left; }
+td.nt { white-space: normal; min-width: 160px; font-size: 12px; color: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12.5px; color: var(--muted); margin: 6px 0 0; }
+.star { color: #c98a00; font-weight: 700; margin-left: 2px; }
 </style>
 </head>
 <body>
@@ -110,8 +152,17 @@ tr.now td:first-child { background: var(--now); }
       <h1>TSLL 손익 계산기</h1>
       <p class="sub">TSLA 가격별 TSLL 가격, 예상 평가금액, 일부 매도 후 손익, 양도세 비교. 입력을 바꾸면 바로 다시 계산합니다.</p>
     </div>
-    <button type="button" id="resetBtn">기본값으로 되돌리기</button>
   </div>
+
+  <nav class="tabs" role="tablist" aria-label="계산기 탭">
+    <button type="button" role="tab" id="tabbtn-calc" data-tab="calc" aria-selected="true">1. 보유·매도 계산</button>
+    <button type="button" role="tab" id="tabbtn-dt" data-tab="dt" aria-selected="false" tabindex="-1">2. 단타 계산</button>
+    <button type="button" role="tab" id="tabbtn-log" data-tab="log" aria-selected="false" tabindex="-1">3. 매매 기록·누적</button>
+    <button type="button" role="tab" id="tabbtn-tk" data-tab="tk" aria-selected="false" tabindex="-1">4. 티커 사전</button>
+  </nav>
+
+  <div class="tabpanel" id="tab-calc" role="tabpanel">
+  <div class="tools"><span class="sub">보유 중인 TSLL의 손익, 일부 매도, 양도세를 계산합니다. 이 탭의 값은 다른 탭에서도 불러 씁니다.</span><button type="button" id="resetBtn">기본값으로 되돌리기</button></div>
 
   <section class="panel" aria-labelledby="inTitle">
     <h2 id="inTitle">입력</h2>
@@ -225,6 +276,140 @@ tr.now td:first-child { background: var(--now); }
     <!-- overflow-x: auto 를 주어 이미지가 커져도 이 영역 안에서만 가로 스크롤 생성 -->
     <div id="memoImages" style="margin-top: 16px; display: flex; flex-direction: column; gap: 12px; overflow-x: auto;"></div>
   </section>
+  </div>
+
+  <!-- ========== 탭 2: 단타 계산 ========== -->
+  <div class="tabpanel" id="tab-dt" role="tabpanel" hidden>
+    <section class="panel" aria-labelledby="dtTitle">
+      <div class="tools"><h2 id="dtTitle" style="margin:0">단타 계산기 (진입 전 설계)</h2><button type="button" id="dtReset">기본값으로 되돌리기</button></div>
+      <p class="note">1번 탭의 환율, 수수료율, TSLA·TSLL 현재가를 그대로 가져옵니다. 칸을 비워 두면 1번 탭 값을 씁니다. 예상 승률은 본인 가정이며 백테스트 결과가 아닙니다.</p>
+      <div class="grid3" style="margin-top:10px">
+        <label for="dtTicker">종목<input type="text" id="dtTicker"></label>
+        <label for="dtEntry">1차 진입가 ($)<input type="text" id="dtEntry" inputmode="decimal"></label>
+        <label for="dtBudget">1차 투자금 (원, 수수료 포함)<input type="text" id="dtBudget" inputmode="numeric"></label>
+        <label for="dtQty">1차 수량 (주, 정수)<input type="text" id="dtQty" inputmode="numeric"></label>
+        <label for="dtP2">2차 진입가 ($, 선택)<input type="text" id="dtP2" inputmode="decimal"></label>
+        <label for="dtQ2">2차 수량 (주, 선택)<input type="text" id="dtQ2" inputmode="numeric"></label>
+      </div>
+      <div class="grid3" style="margin-top:12px">
+        <label for="dtTarget">목표 수익률 (%)<input type="text" id="dtTarget" inputmode="decimal"></label>
+        <label for="dtStop">손절률 (%)<input type="text" id="dtStop" inputmode="decimal"></label>
+        <label for="dtWin">예상 승률 (%)<input type="text" id="dtWin" inputmode="decimal"></label>
+        <label for="dtRisk">1회 최대 감수 손실 (원)<input type="text" id="dtRisk" inputmode="numeric"></label>
+        <label for="dtFx">환율 (원/$)<input type="text" id="dtFx" inputmode="decimal"></label>
+        <label for="dtFee">수수료율 (%, 매수·매도 각각)<input type="text" id="dtFee" inputmode="decimal"></label>
+      </div>
+      <div class="row">
+        <button type="button" id="dtUseNow">1번 탭의 TSLL 현재가 사용</button>
+        <button type="button" id="dtToLog" class="primary">이 매매를 기록 탭으로 보내기</button>
+      </div>
+    </section>
+
+    <section aria-labelledby="dtSumTitle">
+      <h2 id="dtSumTitle">결과 요약</h2>
+      <div class="tiles" id="dtTiles"></div>
+      <div id="dtWarn" style="margin-top:10px"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="dtLadTitle">
+      <div class="head"><h2 id="dtLadTitle">매도가별 손익 (수수료 반영)</h2><button type="button" data-copy="dtLadder">표 복사</button></div>
+      <div class="scroll"><table id="dtLadder"></table></div>
+      <p class="note" id="dtLadNote"></p>
+    </section>
+  </div>
+
+  <!-- ========== 탭 3: 매매 기록 ========== -->
+  <div class="tabpanel" id="tab-log" role="tabpanel" hidden>
+    <section class="panel" aria-labelledby="lgTitle">
+      <h2 id="lgTitle">매매 기록 추가 (청산한 매매)</h2>
+      <div class="grid3">
+        <label for="lgDate">청산일<input type="date" id="lgDate"></label>
+        <label for="lgTicker">종목<input type="text" id="lgTicker"></label>
+        <label for="lgQty">수량 (주)<input type="text" id="lgQty" inputmode="decimal"></label>
+        <label for="lgBuy">매수가 ($)<input type="text" id="lgBuy" inputmode="decimal"></label>
+        <label for="lgSell">매도가 ($)<input type="text" id="lgSell" inputmode="decimal"></label>
+        <label for="lgFxB">매수 환율 (원/$)<input type="text" id="lgFxB" inputmode="decimal"></label>
+        <label for="lgFxS">매도 환율 (비우면 매수와 같음)<input type="text" id="lgFxS" inputmode="decimal"></label>
+        <label for="lgFee">수수료율 (%, 각 방향)<input type="text" id="lgFee" inputmode="decimal"></label>
+        <label for="lgMemo">메모<input type="text" id="lgMemo"></label>
+      </div>
+      <div class="row">
+        <button type="button" id="lgAdd" class="primary">기록 추가</button>
+        <span class="hint" id="lgMsg" role="status"></span>
+      </div>
+    </section>
+
+    <section aria-labelledby="lgSumTitle">
+      <h2 id="lgSumTitle">누적 요약</h2>
+      <div class="tiles" id="lgTiles"></div>
+      <p class="note" id="lgNote"></p>
+    </section>
+
+    <section class="panel" aria-labelledby="lgChartTitle">
+      <h2 id="lgChartTitle">누적 손익 곡선</h2>
+      <div id="lgChartBox"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="lgTblTitle">
+      <div class="head"><h2 id="lgTblTitle">기록과 누적 계산</h2><button type="button" data-copy="lgTable">표 복사</button></div>
+      <div class="scroll"><table id="lgTable"></table></div>
+      <p class="note">행마다 그 시점까지의 누적 손익, 누적 투자금, 누적 수익률(손익 합 ÷ 투자금 합), 누적 승률이 이어서 계산됩니다. 날짜가 같으면 입력 순서입니다.</p>
+      <div class="row">
+        <button type="button" id="lgExport">CSV 내보내기</button>
+        <label class="check" style="cursor:pointer"><span class="primary" style="padding:7px 12px;border:1px solid var(--accent);border-radius:6px;background:var(--accent-soft);color:var(--ink)">CSV 불러오기</span><input type="file" id="lgImport" accept=".csv,text/csv" style="display:none"></label>
+        <button type="button" id="lgTax">올해 확정 손익을 양도세 계산에 반영</button>
+        <button type="button" id="lgClear" class="danger">전체 삭제</button>
+      </div>
+      <p class="note">기록은 이 브라우저에만 저장됩니다. 브라우저 데이터를 지우거나 다른 기기에서 열면 보이지 않으니 CSV로 보관하세요.</p>
+    </section>
+  </div>
+
+  <!-- ========== 탭 4: 티커 사전 ========== -->
+  <div class="tabpanel" id="tab-tk" role="tabpanel" hidden>
+    <section class="panel" aria-labelledby="tkTitle">
+      <h2 id="tkTitle">티커 사전: 대형주, 레버리지·인버스, ETF</h2>
+      <p class="note">티커를 누르면 복사됩니다. 확인일 2026-11-21, 발행사 웹페이지와 기사 기준이며 상품은 자주 생기고 사라집니다. 주문 전에 증권사에서 종목 검색으로 다시 확인하세요.</p>
+      <div class="legend">
+        <span><button type="button" class="tk" tabindex="-1">롱</button> 2배 롱</span>
+        <span><button type="button" class="tk inv" tabindex="-1">인버스</button> 숏(배수 표기)</span>
+        <span><button type="button" class="tk base" tabindex="-1">본주</button> 본주 ETF</span>
+        <span><button type="button" class="tk unv" tabindex="-1">점선</button> 이번에 확인하지 못함</span>
+        <span>발행사: D Direxion, G GraniteShares, T Tradr, F Defiance, P ProShares</span>
+        <span><span class="star">★</span> 3개월 평균 거래량 상위 10위(기사 기준)</span>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="tkStTitle">
+      <div class="head"><h2 id="tkStTitle">대형주와 인기 종목</h2><span class="hint" id="tkCount"></span></div>
+      <div class="grid" style="margin-bottom:12px">
+        <label for="tkQ">검색 (티커, 종목명, 한글)<input type="text" id="tkQ" placeholder="예: NVDA, 엔비디아, TSLL"></label>
+        <label for="tkGroup">범위
+          <select id="tkGroup"><option value="all">전체</option><option value="top">시총 상위권</option><option value="foreign">해외(ADR 등)</option><option value="other">기타 인기 종목</option></select>
+        </label>
+        <label class="check" for="tkOnly" style="align-self:end"><input type="checkbox" id="tkOnly"> 2배 상품이 있는 종목만</label>
+      </div>
+      <div class="scroll" style="max-height:70vh"><table id="tkStocks"></table></div>
+      <p class="note" id="tkStNote"></p>
+    </section>
+
+    <section class="panel" aria-labelledby="tkEtfTitle">
+      <h2 id="tkEtfTitle">지수·섹터 ETF (본주, 2배, 3배, 인버스)</h2>
+      <div class="scroll"><table id="tkEtf"></table></div>
+      <p class="note" id="tkEtfNote"></p>
+    </section>
+
+    <section class="panel" aria-labelledby="tkWarnTitle">
+      <h2 id="tkWarnTitle">알아둘 점</h2>
+      <ul style="margin:0;padding-left:20px;font-size:14px;line-height:1.7">
+        <li>미국 개별주 레버리지는 2배까지만 있습니다. 3배는 지수와 섹터 ETF에만 있습니다.</li>
+        <li>발행사 한 곳의 개별주 인버스는 -1배인 경우가 많고(Direxion), GraniteShares와 Tradr는 -2배입니다. 배수는 칩 옆에 표시했습니다.</li>
+        <li>대부분 하루 단위로 수익률을 2배(3배)로 맞추는 상품입니다. 오래 들고 있으면 변동성 때문에 본주의 2배와 달라집니다. Tradr의 MQQQ, QQQP, SPYQ는 월·분기 단위 리셋 상품이라 구조가 다릅니다.</li>
+        <li>키움에서의 매매 가능 여부와 단일종목 레버리지 ETF의 주문 조건(예수금 3,000만원 등)은 이 표로 확인할 수 없습니다. 이전에 확인한 조건이 바뀌었을 수 있으니 주문 화면에서 확인하세요.</li>
+        <li>시총 순위는 2026-11-11~12일 기준 한 외부 집계 페이지를 따랐고, 그 집계에서 테슬라가 빠져 있어서 별도로 맨 위에 넣었습니다. 사우디 아람코처럼 미국에 상장되지 않은 종목은 제외했습니다.</li>
+        <li>발행사는 Direxion, GraniteShares, Tradr, 그리고 Defiance(SpaceX 상품 하나)만 담았고, 거래가 적은 소규모 발행사 상품은 뺐습니다.</li>
+      </ul>
+    </section>
+  </div>
 
 </div>
 
@@ -590,6 +775,516 @@ tr.now td:first-child { background: var(--now); }
   
   // 스크립트가 로드되면 이미지 불러오기 실행
   loadMemoImages();
+})();
+</script>
+<script>
+// 칩 형식: 티커:발행사[:배수][:u]  (u = 이번에 확인하지 못함)
+// 종목 형식: [그룹, 참고순위, 티커, 종목명, 국가, 롱, 인버스, 비고, 거래량상위티커목록]
+var STOCKS = [
+  ['top', '-', 'TSLA', '테슬라 Tesla', 'US', 'TSLL:D|TSLR:G', 'TSLS:D:-1|TSDD:G:-2|TSLQ:T:-2', '시총 집계 페이지에서 누락되어 별도 표기', 'TSLL'],
+  ['top', 1, 'AAPL', '애플 Apple', 'US', 'AAPU:D|AAPB:G', 'AAPD:D:-1', '', ''],
+  ['top', 2, 'NVDA', '엔비디아 Nvidia', 'US', 'NVDU:D|NVDL:G', 'NVDD:D:-1|NVD:G:-2|NVDS:T:-1.5', '', 'NVD'],
+  ['top', 3, 'MSFT', '마이크로소프트 Microsoft', 'US', 'MSFU:D|MSFL:G', 'MSFD:D:-1', '', ''],
+  ['top', 4, 'GOOGL', '알파벳 Alphabet (A주)', 'US', 'GGLL:D|GOU:G', 'GGLS:D:-1', '', ''],
+  ['top', 5, 'AMZN', '아마존 Amazon', 'US', 'AMZU:D|AMZZ:G', 'AMZD:D:-1|AMZO:T:-2', '', ''],
+  ['foreign', 6, 'TSM', '대만 TSMC', 'TW (미국 ADR)', 'TSMX:D|TSMU:G', 'TSMZ:D:-1', '', ''],
+  ['top', 7, 'SPCX', '스페이스X SpaceX', 'US', 'LOFF:D|SPAL:G|SPCM:T|SPCU:F', 'SNK:G:-2|SPCG:T:-2', '집계 페이지와 Direxion 상품 목록에 올라 있는 종목', ''],
+  ['top', 8, 'AVGO', '브로드컴 Broadcom', 'US', 'AVL:D|AVGU:G', 'AVS:D:-1', '', ''],
+  ['top', 10, 'META', '메타 Meta', 'US', 'METU:D|FBL:G', 'METD:D:-1|METQ:T:-2', '', ''],
+  ['top', 11, 'LLY', '일라이릴리 Eli Lilly', 'US', 'ELIL:D', '', '', ''],
+  ['top', 12, 'BRK.B', '버크셔 해서웨이 B', 'US', 'BRKU:D', '', 'Direxion 표기는 BRKB', ''],
+  ['foreign', 13, '000660', 'SK하이닉스 SK hynix', 'KR (한국거래소)', 'SKUU:G|SKHA:T', 'SKDD:G:-2|SKHN:T:-2', '미국 ADR이 아니라 한국 상장 종목이며, 레버리지 ETF는 미국에 상장됨', ''],
+  ['top', 14, 'WMT', '월마트 Walmart', 'US', '', '', '', ''],
+  ['top', 15, 'MU', '마이크론 Micron', 'US', 'MUU:D|MULL:G', 'MUD:D:-1', '', ''],
+  ['top', 16, 'JPM', 'JP모건 JPMorgan', 'US', '', '', '', ''],
+  ['top', 17, 'AMD', 'AMD', 'US', 'AMUU:D|AMDL:G', 'AMDD:D:-1', '', ''],
+  ['top', 18, 'V', '비자 Visa', 'US', '', '', '', ''],
+  ['top', 19, 'XOM', '엑슨모빌 ExxonMobil', 'US', 'XOMX:D', '', '', ''],
+  ['top', 20, 'JNJ', '존슨앤존슨', 'US', '', '', '', ''],
+  ['foreign', 21, 'ASML', 'ASML', 'NL (미국 나스닥 상장)', 'ASMU:D', '', '', ''],
+  ['top', 22, 'MA', '마스터카드', 'US', '', '', '', ''],
+  ['top', 23, 'ABBV', '애브비 AbbVie', 'US', '', '', '', ''],
+  ['top', 24, 'COST', '코스트코 Costco', 'US', '', '', '', ''],
+  ['top', 25, 'KO', '코카콜라', 'US', '', '', '', ''],
+  ['top', 26, 'CVX', '셰브론 Chevron', 'US', '', '', '', ''],
+  ['top', 27, 'PLTR', '팔란티어 Palantir', 'US', 'PLTU:D|PTIR:G', 'PLTD:D:-1', '', ''],
+  ['top', 28, 'ORCL', '오라클 Oracle', 'US', 'ORCU:D', 'ORCS:D:-1|ORCZ:T:-2', '', ''],
+  ['top', 29, 'CSCO', '시스코 Cisco', 'US', 'CSCL:D', 'CSCS:D:-1', '', ''],
+  ['top', 30, 'PG', 'P&G', 'US', '', '', '', ''],
+  ['top', 31, 'MRK', '머크 Merck', 'US', '', '', '', ''],
+  ['top', 32, 'UNH', '유나이티드헬스', 'US', 'UNHU:D', '', '', ''],
+  ['top', 33, 'GE', 'GE 에어로스페이스', 'US', '', '', '', ''],
+  ['top', 34, 'HD', '홈디포 Home Depot', 'US', '', '', '', ''],
+  ['top', 35, 'BAC', '뱅크오브아메리카', 'US', '', '', '', ''],
+  ['top', 36, 'INTC', '인텔 Intel', 'US', 'LINT:D|INTW:G', '', '', ''],
+  ['top', 37, 'AMAT', '어플라이드 머티어리얼즈', 'US', '', '', '', ''],
+  ['foreign', 38, 'HSBC', 'HSBC', 'UK (미국 ADR)', '', '', '', ''],
+  ['top', 39, 'PM', '필립모리스', 'US', '', '', '', ''],
+  ['foreign', 40, 'NVS', '노바티스 Novartis', 'CH (미국 ADR)', '', '', '', ''],
+  ['top', 41, 'MS', '모건스탠리', 'US', '', '', '', ''],
+  ['top', 42, 'LRCX', '램리서치 Lam Research', 'US', 'LRCU:T', '', '', ''],
+  ['foreign', 43, 'AZN', '아스트라제네카', 'UK (미국 ADR)', '', '', '', ''],
+  ['top', 44, 'TXN', '텍사스인스트루먼트', 'US', 'TXNU:D', '', '', ''],
+  ['foreign', 45, 'RY', '로열뱅크오브캐나다', 'CA (미국 NYSE 상장)', '', '', '', ''],
+  ['foreign', 46, 'SHEL', '셸 Shell', 'UK (미국 ADR)', '', '', '', ''],
+  ['top', 47, 'CAT', '캐터필러', 'US', '', '', '', ''],
+  ['top', 48, 'PANW', '팔로알토 네트웍스', 'US', 'PALU:D', 'PALD:D:-1', '', ''],
+  ['top', 49, 'RTX', 'RTX', 'US', '', '', '', ''],
+  ['foreign', 50, 'SAP', 'SAP', 'DE (미국 ADR)', '', '', '', ''],
+  ['top', 51, 'GS', '골드만삭스', 'US', '', '', '', ''],
+  ['top', 52, 'TMO', '써모 피셔', 'US', '', '', '', ''],
+  ['top', 53, 'NFLX', '넷플릭스 Netflix', 'US', 'NFXL:D', 'NFXS:D:-1', '', ''],
+  ['top', 54, 'WFC', '웰스파고', 'US', '', '', '', ''],
+  ['top', 55, 'AMGN', '암젠 Amgen', 'US', '', '', '', ''],
+  ['foreign', 56, 'BABA', '알리바바 Alibaba', 'CN (미국 ADR)', 'BABU:D|BABX:G', '', '', ''],
+  ['foreign', 57, 'TM', '도요타 Toyota', 'JP (미국 ADR)', '', '', '', ''],
+  ['top', 58, 'ANET', '아리스타 네트웍스', 'US', '', '', '', ''],
+  ['foreign', 59, 'MUFG', '미쓰비시 UFJ', 'JP (미국 ADR)', '', '', '', ''],
+  ['foreign', 60, 'LIN', '린데 Linde', 'UK/US 상장', '', '', '', ''],
+  ['top', 61, 'DELL', '델 Dell', 'US', 'DLLL:G', '', '', ''],
+  ['top', 62, 'IBM', 'IBM', 'US', 'IBX:T', '', '', ''],
+  ['top', 63, 'CRWD', '크라우드스트라이크', 'US', 'CRWL:G', '', '', ''],
+  ['foreign', 64, 'ARM', 'Arm 홀딩스', 'UK (미국 ADR)', '', '', '', ''],
+  ['top', 65, 'AXP', '아메리칸 익스프레스', 'US', '', '', '', ''],
+  ['top', 66, 'GEV', 'GE 버노바', 'US', 'GEVX:T', '', '', ''],
+  ['top', 67, 'GILD', '길리어드', 'US', '', '', '', ''],
+  ['top', 68, 'KLAC', 'KLA', 'US', '', '', '', ''],
+  ['foreign', 69, 'BHP', 'BHP', 'AU (미국 ADR)', '', '', '', ''],
+  ['top', 70, 'DIS', '디즈니 Disney', 'US', '', '', '', ''],
+  ['top', 71, 'C', '씨티그룹', 'US', '', '', '', ''],
+  ['foreign', 72, 'TD', '토론토도미니언뱅크', 'CA (미국 NYSE 상장)', '', '', '', ''],
+  ['top', 73, 'ADI', '아날로그디바이시스', 'US', '', '', '', ''],
+  ['top', 74, 'PEP', '펩시코', 'US', '', '', '', ''],
+  ['top', 75, 'APH', '암페놀', 'US', '', '', '', ''],
+  ['top', 76, 'MCD', '맥도날드', 'US', '', '', '', ''],
+  ['top', 77, 'VZ', '버라이즌', 'US', '', '', '', ''],
+  ['foreign', 78, 'TTE', '토탈에너지스', 'FR (미국 ADR)', '', '', '', ''],
+  ['foreign', 79, 'SHOP', '쇼피파이 Shopify', 'CA (미국 상장)', 'SHPU:D', '', '', ''],
+  ['top', 80, 'BLK', '블랙록', 'US', '', '', '', ''],
+  ['top', 81, 'ABT', '애보트', 'US', '', '', '', ''],
+  ['top', 82, 'QCOM', '퀄컴 Qualcomm', 'US', 'QCMU:D|QCML:G', 'QCMD:D:-1', '', ''],
+  ['top', 83, 'DE', '디어 Deere', 'US', '', '', '', ''],
+  ['top', 84, 'TMUS', 'T모바일 US', 'US', '', '', '', ''],
+  ['top', 85, 'WELL', '웰타워', 'US', '', '', '', ''],
+  ['foreign', 86, 'NVO', '노보노디스크', 'DK (미국 ADR)', '', '', '', ''],
+  ['top', 87, 'NEE', '넥스트에라 에너지', 'US', '', '', '', ''],
+  ['foreign', 88, 'SAN', '방코 산탄데르', 'ES (미국 ADR)', '', '', '', ''],
+  ['top', 89, 'UNP', '유니언 퍼시픽', 'US', '', '', '', ''],
+  ['top', 90, 'CRM', '세일즈포스 Salesforce', 'US', '', '', '', ''],
+  ['top', 91, 'PFE', '화이자 Pfizer', 'US', '', '', '', ''],
+  ['foreign', 92, 'BUD', 'AB인베브', 'BE (미국 ADR)', '', '', '', ''],
+  ['top', 93, 'DHR', '다나허', 'US', '', '', '', ''],
+  ['top', 94, 'COP', '코노코필립스', 'US', '', '', '', ''],
+  ['top', 95, 'SCHW', '찰스슈왑', 'US', '', '', '', ''],
+  ['top', 96, 'ISRG', '인튜이티브 서지컬', 'US', 'ISUL:G', '', '', ''],
+  ['foreign', 97, 'SMFG', '스미토모 미쓰이 FG', 'JP (미국 ADR)', '', '', '', ''],
+  ['foreign', 98, 'SONY', '소니 Sony', 'JP (미국 ADR)', '', '', '', ''],
+  ['top', 99, 'MRVL', '마벨 Marvell', 'US', 'MRVU:D|MVLL:G', '', '', ''],
+  ['top', 100, 'TJX', 'TJX', 'US', '', '', '', ''],
+  // 시총 순위권 밖이지만 단타로 자주 쓰이는 종목
+  ['other', '-', 'COIN', '코인베이스 Coinbase', 'US', 'CONX:D|CONL:G', 'CONI:G:-2', '', ''],
+  ['other', '-', 'HOOD', '로빈후드 Robinhood', 'US', 'HODU:D', '', '', ''],
+  ['other', '-', 'SOFI', '소파이 SoFi', 'US', 'SOFA:D', '', '', ''],
+  ['other', '-', 'MSTR', '스트래티지 MicroStrategy', 'US', 'MSTP:G', '', '', ''],
+  ['other', '-', 'SMCI', '슈퍼마이크로', 'US', 'SMCL:G', '', '', ''],
+  ['other', '-', 'PDD', '핀둬둬 PDD', 'US', 'PDDL:G', '', '', ''],
+  ['other', '-', 'UBER', '우버 Uber', 'US', 'UBRL:G', '', '', ''],
+  ['other', '-', 'NOW', '서비스나우 ServiceNow', 'US', 'NOWL:G', '', '', ''],
+  ['other', '-', 'VRT', '버티브 Vertiv', 'US', 'VRTL:G', '', '', ''],
+  ['other', '-', 'RDDT', '레딧 Reddit', 'US', 'RDTL:G', '', '', ''],
+  ['other', '-', 'IONQ', '아이온큐 IonQ', 'US', 'IONL:G', '', '', ''],
+  ['other', '-', 'SNDK', '샌디스크 Sandisk', 'US', 'SNXX:T', 'SNDQ:T:-2', '', 'SNXX'],
+  ['other', '-', 'APP', '앱러빈 AppLovin', 'US', 'APPX:T', '', '', ''],
+  ['other', '-', 'CEG', '컨스텔레이션 에너지', 'US', 'CEGX:T', '', '', ''],
+  ['other', '-', 'PYPL', '페이팔 PayPal', 'US', 'PYPU:D', '', '', ''],
+  ['other', '-', 'ADBE', '어도비 Adobe', 'US', 'ADBU:D', '', '', ''],
+  ['other', '-', 'BA', '보잉 Boeing', 'US', 'BOEU:D', '', '', ''],
+  ['other', '-', 'LMT', '록히드마틴', 'US', 'LMTL:D', '', '', ''],
+  ['other', '-', 'NBIS', '네비우스 Nebius', 'US', 'NBIL:G|NEBX:T', 'NBIZ:T:-2', '', ''],
+  ['other', '-', 'MARA', '마라 홀딩스', 'US', 'MRAL:G', '', '', ''],
+  ['other', '-', 'RIVN', '리비안 Rivian', 'US', 'RVNL:G', '', '', ''],
+  ['other', '-', 'CRWV', '코어위브 CoreWeave', 'US', 'CWVX:T', '', '', '']
+];
+
+// ETF 행: [분류, 본주 ETF, 2배 롱, 3배 롱, 인버스, 비고]
+var ETFS = [
+  ['나스닥100', 'QQQ:-', 'QLD:P:2|MQQQ:T:2', 'TQQQ:P:3', 'SQQQ:P:-3|PSQ:P:-1|QID:P:-2:u', 'MQQQ는 월 단위 리셋 상품. TQQQ, SQQQ는 거래량 상위권'],
+  ['S&P 500', 'SPY:-', 'SSO:P:2|SPYQ:T:2', 'UPRO:P:3|SPXL:D:3', 'SPXU:P:-3|SPXS:D:-3|SDS:P:-2|SH:P:-1', 'SPYQ는 분기 단위 리셋 상품'],
+  ['반도체', 'SOXX:-:u|SMH:-:u', '', 'SOXL:D:3', 'SOXS:D:-3', 'SOXL, SOXS는 거래량 상위권'],
+  ['기술 섹터', 'XLK:-:u', '', 'TECL:D:3', 'TECS:D:-3:u', ''],
+  ['소형주 (러셀2000)', 'IWM:-:u', 'UWM:P:2:u', 'TNA:D:3:u', 'TZA:D:-3:u', ''],
+  ['금융 섹터', 'XLF:-:u', '', 'FAS:D:3:u', 'FAZ:D:-3:u', ''],
+  ['바이오', 'XBI:-:u', '', 'LABU:D:3:u', 'LABD:D:-3:u', ''],
+  ['미국 장기국채', 'TLT:-:u', 'UBT:P:2:u', 'TMF:D:3:u', 'TBT:P:-2|TMV:D:-3:u', ''],
+  ['원유', 'USO:-:u', 'UCO:P:2:u', '', 'SCO:P:-2', ''],
+  ['비트코인', 'IBIT:-|BITO:-', 'BITX:-:2:u', '', '', 'IBIT, BITO는 거래량 상위권. 본주가 현물·선물 ETF라서 구조가 다름'],
+  ['변동성', '', '', '', 'UVXY:-:u', '변동성 상품은 구조가 특수하고 장기 보유 시 손실이 큼']
+];
+var ISSUERS = { D: 'Direxion', G: 'GraniteShares', T: 'Tradr', F: 'Defiance', P: 'ProShares' };
+var VOL_TOP = { TSLL: 1, SNXX: 1, NVD: 1, SOXL: 1, SOXS: 1, TQQQ: 1, SQQQ: 1, IBIT: 1, BITO: 1 };
+
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  function num(s) { var v = parseFloat(String(s == null ? '' : s).replace(/,/g, '').trim()); return isFinite(v) ? v : NaN; }
+  function grp(n, d) { d = d || 0; n = Number(n.toFixed(d)); if (n === 0) n = 0; return n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  function won(n) { return grp(Math.round(n)) + '원'; }
+  function man(n) { return grp(Math.round(n / 10000)) + '만원'; }
+  function pct(x, d) { var v = x * 100; return (v > 0 ? '+' : '') + grp(v, d == null ? 1 : d) + '%'; }
+  function usd(n, d) { return '$' + grp(n, d == null ? 2 : d); }
+  function cls(n) { return n > 0 ? 'pos' : (n < 0 ? 'neg' : ''); }
+  function sp(t, n) { return '<span class="' + cls(n) + '">' + t + '</span>'; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function put(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) { /* storage unavailable */ } }
+  function get(key, def) { try { var v = JSON.parse(localStorage.getItem(key)); return v == null ? def : v; } catch (e) { return def; } }
+  function today() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function flashBtn(btn, msg) { if (!btn) return; var o = btn.getAttribute('data-o') || btn.textContent; btn.setAttribute('data-o', o); btn.textContent = msg; setTimeout(function () { btn.textContent = o; }, 1300); }
+
+  /* ================= 탭 전환 ================= */
+  var NAMES = ['calc', 'dt', 'log', 'tk'];
+  var tabEls = Array.prototype.slice.call(document.querySelectorAll('.tabs [role=tab]'));
+  function showTab(name) {
+    if (NAMES.indexOf(name) < 0) name = 'calc';
+    tabEls.forEach(function (t) { var on = t.getAttribute('data-tab') === name; t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; });
+    NAMES.forEach(function (n) { $('tab-' + n).hidden = (n !== name); });
+    put('tsll-tab-v1', name);
+    if (name === 'log') renderLog();
+  }
+  tabEls.forEach(function (t, i) {
+    t.addEventListener('click', function () { showTab(t.getAttribute('data-tab')); });
+    t.addEventListener('keydown', function (e) {
+      var k = e.key, j = -1;
+      if (k === 'ArrowRight') j = (i + 1) % tabEls.length; else if (k === 'ArrowLeft') j = (i - 1 + tabEls.length) % tabEls.length;
+      if (j >= 0) { e.preventDefault(); tabEls[j].focus(); showTab(tabEls[j].getAttribute('data-tab')); }
+    });
+  });
+
+  /* ================= 1번 탭 값 읽기 ================= */
+  function top1() {
+    return { t0: num($('t0').value), l0: num($('l0').value), fx: num($('fx').value), lev: num($('lev').value) || 2, fee: (num($('fee').value) || 0) / 100 };
+  }
+
+  /* ================= 탭 2: 단타 계산 ================= */
+  var DT_KEY = 'tsll-dt-v1';
+  var DT_IDS = ['dtTicker', 'dtEntry', 'dtBudget', 'dtQty', 'dtP2', 'dtQ2', 'dtTarget', 'dtStop', 'dtWin', 'dtRisk', 'dtFx', 'dtFee'];
+  var DT_DEF = { dtTicker: 'TSLL', dtEntry: '', dtBudget: '3,000,000', dtQty: '', dtP2: '', dtQ2: '', dtTarget: '6', dtStop: '5', dtWin: '50', dtRisk: '300,000', dtFx: '', dtFee: '' };
+  function dtFx() { var v = num($('dtFx').value); return v > 0 ? v : top1().fx; }
+  function dtFee() { var v = num($('dtFee').value); return isFinite(v) ? v / 100 : top1().fee; }
+  function dtSync(src) {
+    var p1 = num($('dtEntry').value), fx = dtFx(), f = dtFee();
+    if (!(p1 > 0 && fx > 0)) return;
+    if (src === 'dtBudget') {
+      var b = num($('dtBudget').value);
+      $('dtQty').value = String(isFinite(b) && b > 0 ? Math.floor(b / (p1 * fx * (1 + f)) + 1e-9) : 0);
+    } else {
+      var q = Math.floor(num($('dtQty').value) || 0);
+      $('dtBudget').value = grp(Math.round(q * p1 * fx * (1 + f)));
+    }
+  }
+  function dtLoad() {
+    var s = get(DT_KEY, {});
+    DT_IDS.forEach(function (id) { $(id).value = (s[id] !== undefined) ? s[id] : DT_DEF[id]; });
+    if (s.dtEntry === undefined) $('dtEntry').value = $('l0').value;
+    if (s.dtQty === undefined) dtSync('dtBudget');
+  }
+  function dtSave() { var s = {}; DT_IDS.forEach(function (id) { s[id] = $(id).value; }); put(DT_KEY, s); }
+  var lastDt = null;
+
+  function dtCalc() {
+    var T = top1(), fx = dtFx(), f = dtFee();
+    $('dtFx').placeholder = '1번 탭: ' + (isFinite(T.fx) ? grp(T.fx) : '-');
+    $('dtFee').placeholder = '1번 탭: ' + grp(T.fee * 100, 2);
+    var p1 = num($('dtEntry').value), q1 = Math.floor(num($('dtQty').value) || 0);
+    var p2 = num($('dtP2').value), q2 = Math.floor(num($('dtQ2').value) || 0);
+    var tg = num($('dtTarget').value), st = num($('dtStop').value), win = num($('dtWin').value), risk = num($('dtRisk').value);
+    var tiles = $('dtTiles'), warn = $('dtWarn');
+    lastDt = null;
+    if (!(p1 > 0) || !(q1 > 0) || !(fx > 0) || !(tg > 0) || !(st > 0)) {
+      tiles.innerHTML = '<div class="warn" style="grid-column:1/-1">1차 진입가, 1차 수량(또는 투자금), 환율, 목표 수익률, 손절률에 0보다 큰 숫자를 넣으세요. 환율을 비워 두려면 1번 탭에 환율이 있어야 합니다.</div>';
+      warn.innerHTML = ''; $('dtLadder').innerHTML = ''; $('dtLadNote').textContent = ''; return;
+    }
+    var useP2 = p2 > 0 && q2 > 0;
+    var Q = q1 + (useP2 ? q2 : 0), cost = q1 * p1 + (useP2 ? q2 * p2 : 0), avg = cost / Q;
+    var buyK = cost * fx * (1 + f);
+    var tgtPx = avg * (1 + tg / 100), stpPx = avg * (1 - st / 100);
+    var netT = tgtPx * (1 - f) - avg * (1 + f), netS = stpPx * (1 - f) - avg * (1 + f);
+    var pnlT = Q * netT * fx, pnlS = Q * netS * fx, base = avg * (1 + f);
+    var payoff = (pnlT > 0 && pnlS < 0) ? pnlT / (-pnlS) : NaN;
+    var be = (pnlT > 0 && pnlS < 0) ? (-pnlS) / (pnlT - pnlS) : NaN;
+    var w = win / 100, ev = isFinite(w) ? w * pnlT + (1 - w) * pnlS : NaN;
+    var bePx = avg * (1 + f) / (1 - f);
+    var recQ = NaN, recCap = NaN;
+    if (netS < 0 && risk > 0) { recQ = Math.floor(risk / (-netS * fx)); recCap = recQ * avg * fx * (1 + f); }
+    var isTsll = String($('dtTicker').value).trim().toUpperCase() === 'TSLL' && T.t0 > 0 && T.l0 > 0;
+    function tsla(px) { return T.t0 * (1 + (px / T.l0 - 1) / T.lev); }
+    function tl(px) { return isTsll ? ' / TSLA ' + usd(tsla(px), 1) : ''; }
+    lastDt = { ticker: String($('dtTicker').value).trim() || 'TSLL', qty: Q, avg: avg, fx: fx, fee: f, tgtPx: tgtPx };
+
+    var t = [];
+    t.push('<div class="tile"><div class="k">평균 진입가' + (useP2 ? ' (2차 포함)' : '') + '</div><div class="v">' + usd(avg, 4) + '</div><div class="s">총 ' + grp(Q) + '주, 투자금 ' + won(buyK) + '</div></div>');
+    t.push('<div class="tile"><div class="k">목표가 (+' + grp(tg, 1) + '%)</div><div class="v">' + usd(tgtPx, 4) + '</div><div class="s">순손익 ' + sp(won(pnlT), pnlT) + ' (' + sp(pct(netT / base, 2), netT) + ')' + tl(tgtPx) + '</div></div>');
+    t.push('<div class="tile"><div class="k">손절가 (-' + grp(st, 1) + '%)</div><div class="v">' + usd(stpPx, 4) + '</div><div class="s">순손익 ' + sp(won(pnlS), pnlS) + ' (' + sp(pct(netS / base, 2), netS) + ')' + tl(stpPx) + '</div></div>');
+    t.push('<div class="tile"><div class="k">손익비 / 손익분기 승률</div><div class="v">' + (isFinite(payoff) ? grp(payoff, 2) + ' : 1' : '-') + '</div><div class="s">' + (isFinite(be) ? '이 손익비에서 ' + grp(be * 100, 1) + '% 넘게 이겨야 본전' : '목표·손절이 정상 범위가 아닙니다') + '</div></div>');
+    t.push('<div class="tile"><div class="k">기대값 (예상 승률 ' + (isFinite(win) ? grp(win, 0) + '%' : '-') + ')</div><div class="v">' + (isFinite(ev) ? sp(won(ev), ev) : '-') + '</div><div class="s">' + (isFinite(ev) ? '1회 평균, 투자금 대비 ' + sp(pct(ev / buyK, 2), ev) : '예상 승률을 넣으세요') + '</div></div>');
+    t.push('<div class="tile"><div class="k">감수 손실 ' + (risk > 0 ? man(risk) : '-') + ' 기준 권장 수량</div><div class="v">' + (isFinite(recQ) ? grp(recQ) + '주' : '-') + '</div><div class="s">' + (isFinite(recCap) ? '투자금 약 ' + won(recCap) + ' (손절 시 손실이 감수 한도 이내)' : '손절 시 손실이 있어야 계산됩니다') + '</div></div>');
+    tiles.innerHTML = t.join('');
+
+    var msgs = [];
+    msgs.push('수수료 ' + grp(f * 100, 2) + '%를 사고팔 때 각각 반영했습니다. 수수료만 만회하는 매도가는 ' + usd(bePx, 4) + '입니다.');
+    if (isFinite(be) && isFinite(w) && w < be) msgs.push('예상 승률이 손익분기 승률보다 낮아서 기대값이 음수입니다.');
+    if (isFinite(recQ) && q1 + (useP2 ? q2 : 0) > recQ) msgs.push('입력한 총 수량 ' + grp(Q) + '주는 권장 수량 ' + grp(recQ) + '주보다 커서, 손절이 나오면 감수 한도 ' + man(risk) + '를 넘습니다.');
+    if (st > 0 && tg > 0 && T.lev > 1 && isTsll) msgs.push('TSLL ' + grp(tg, 1) + '%는 TSLA 약 ' + grp(tg / T.lev, 2) + '%에 해당합니다(감쇠 미반영). 손절 ' + grp(st, 1) + '%는 TSLA 약 ' + grp(st / T.lev, 2) + '%입니다.');
+    warn.innerHTML = '<div class="warn">' + msgs.join('<br>') + '</div>';
+
+    var rows = [-10, -8, -6, -5, -4, -3, -2, 0, 2, 3, 4, 5, 6, 8, 10];
+    var h = '<thead><tr><th>평균가 대비</th><th>매도가</th><th>순손익</th><th>순수익률</th>' + (isTsll ? '<th>TSLA 환산 (감쇠 미반영)</th>' : '') + '</tr></thead><tbody>';
+    rows.forEach(function (rr) {
+      var px = avg * (1 + rr / 100), n$ = px * (1 - f) - avg * (1 + f), pk = Q * n$ * fx;
+      var mark = (rr === 0) ? ' class="now"' : '';
+      h += '<tr' + mark + '><td>' + sp((rr > 0 ? '+' : '') + rr + '%', rr) + '</td><td>' + usd(px, 4) + '</td><td>' + sp(won(pk), pk) + '</td><td>' + sp(pct(n$ / base, 2), n$) + '</td>' + (isTsll ? '<td>' + usd(tsla(px), 1) + ' (' + sp(pct(tsla(px) / T.t0 - 1, 2), px - T.l0) + ')</td>' : '') + '</tr>';
+    });
+    $('dtLadder').innerHTML = h + '</tbody>';
+    $('dtLadNote').textContent = '"평균가 대비 0%" 행이 수수료만 나가는 경우입니다. 손익은 입력한 수량 ' + grp(Q) + '주와 환율 ' + grp(fx) + '원, 매수·매도 같은 환율 기준입니다.' + (isTsll ? ' TSLA 환산은 1번 탭의 현재가와 레버리지로 단순 계산한 값입니다.' : '');
+  }
+
+  DT_IDS.forEach(function (id) {
+    $(id).addEventListener('input', function () {
+      if (id === 'dtBudget') dtSync('dtBudget');
+      else if (id === 'dtQty' || id === 'dtEntry' || id === 'dtFx' || id === 'dtFee') dtSync('dtQty');
+      dtSave(); dtCalc();
+    });
+  });
+  $('dtBudget').addEventListener('blur', function () { dtSync('dtQty'); dtSave(); dtCalc(); });
+  ['l0', 'fx', 'fee', 't0', 'lev'].forEach(function (id) { $(id).addEventListener('input', function () { dtSync('dtQty'); dtCalc(); }); });
+  $('dtUseNow').addEventListener('click', function () { $('dtEntry').value = $('l0').value; dtSync('dtQty'); dtSave(); dtCalc(); });
+  $('dtReset').addEventListener('click', function () {
+    try { localStorage.removeItem(DT_KEY); } catch (e) { /* ignore */ }
+    DT_IDS.forEach(function (id) { $(id).value = DT_DEF[id]; });
+    $('dtEntry').value = $('l0').value; dtSync('dtBudget'); dtCalc();
+  });
+  $('dtToLog').addEventListener('click', function () {
+    dtCalc();
+    if (!lastDt) { flashBtn($('dtToLog'), '입력을 먼저 채우세요'); return; }
+    $('lgTicker').value = lastDt.ticker; $('lgQty').value = String(lastDt.qty); $('lgBuy').value = String(Math.round(lastDt.avg * 10000) / 10000);
+    $('lgFxB').value = String(lastDt.fx); $('lgFee').value = String(Math.round(lastDt.fee * 100000) / 1000); $('lgFxS').value = ''; $('lgSell').value = '';
+    if (!$('lgDate').value) $('lgDate').value = today();
+    saveForm(); showTab('log'); $('lgSell').focus();
+  });
+
+  /* ================= 탭 3: 매매 기록 ================= */
+  var LG_KEY = 'tsll-trades-v1', LGF_KEY = 'tsll-trades-form-v1';
+  var trades = get(LG_KEY, []);
+  if (!Array.isArray(trades)) trades = [];
+  var LGF = ['lgDate', 'lgTicker', 'lgQty', 'lgBuy', 'lgSell', 'lgFxB', 'lgFxS', 'lgFee', 'lgMemo'];
+  function saveForm() { var s = {}; LGF.forEach(function (id) { s[id] = $(id).value; }); put(LGF_KEY, s); }
+  function loadForm() {
+    var s = get(LGF_KEY, {});
+    LGF.forEach(function (id) { $(id).value = s[id] !== undefined ? s[id] : ''; });
+    if (!$('lgDate').value) $('lgDate').value = today();
+    if (!$('lgTicker').value) $('lgTicker').value = 'TSLL';
+    if (!$('lgFxB').value) $('lgFxB').value = $('fx').value;
+    if (!$('lgFee').value) $('lgFee').value = $('fee').value;
+  }
+  LGF.forEach(function (id) { $(id).addEventListener('input', saveForm); });
+
+  function calcTrade(r) {
+    var buy = r.qty * r.buy * r.fxB * (1 + r.fee), sell = r.qty * r.sell * r.fxS * (1 - r.fee);
+    return { inv: buy, pnl: sell - buy, ret: (sell - buy) / buy };
+  }
+  function sorted() {
+    return trades.map(function (r, i) { return { r: r, i: i }; }).sort(function (a, b) {
+      return a.r.date < b.r.date ? -1 : (a.r.date > b.r.date ? 1 : a.i - b.i);
+    }).map(function (x) { return x.r; });
+  }
+  function addTrade(r) { r.id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6); trades.push(r); }
+
+  $('lgAdd').addEventListener('click', function () {
+    var r = { date: $('lgDate').value || today(), ticker: String($('lgTicker').value).trim().toUpperCase() || 'TSLL', qty: num($('lgQty').value), buy: num($('lgBuy').value), sell: num($('lgSell').value), fxB: num($('lgFxB').value), fxS: num($('lgFxS').value), fee: (num($('lgFee').value) || 0) / 100, memo: String($('lgMemo').value).trim() };
+    if (!(r.fxS > 0)) r.fxS = r.fxB;
+    var msg = $('lgMsg');
+    if (!(r.qty > 0) || !(r.buy > 0) || !(r.sell > 0) || !(r.fxB > 0)) { msg.textContent = '수량, 매수가, 매도가, 매수 환율에 0보다 큰 숫자를 넣으세요.'; return; }
+    addTrade(r); put(LG_KEY, trades);
+    $('lgSell').value = ''; $('lgMemo').value = ''; saveForm();
+    msg.textContent = '추가했습니다 (' + r.ticker + ' ' + (calcTrade(r).pnl >= 0 ? '+' : '') + won(calcTrade(r).pnl) + ').';
+    renderLog();
+  });
+
+  function renderLog() {
+    var S = sorted(), n = S.length;
+    var tilesEl = $('lgTiles'), tbl = $('lgTable');
+    if (!n) {
+      tilesEl.innerHTML = '<div class="warn" style="grid-column:1/-1">아직 기록이 없습니다. 위에서 청산한 매매를 추가하면 누적 승률과 수익률이 계산됩니다.</div>';
+      tbl.innerHTML = ''; $('lgChartBox').innerHTML = '<div class="empty">기록이 쌓이면 누적 손익 곡선이 표시됩니다.</div>'; $('lgNote').textContent = ''; return;
+    }
+    var cumP = 0, cumI = 0, wins = 0, losses = 0, gW = 0, gL = 0, comp = 1, peak = 0, mdd = 0, curSt = 0, maxW = 0, maxL = 0, runW = 0, runL = 0, sumRet = 0;
+    var best = -Infinity, worst = Infinity, pts = [0];
+    var h = '<thead><tr><th>#</th><th>청산일</th><th>종목</th><th>수량</th><th>매수가</th><th>매도가</th><th>투자금</th><th>손익</th><th>수익률</th><th>누적 손익</th><th>누적 투자금</th><th>누적 수익률</th><th>누적 승률</th><th>메모</th><th></th></tr></thead><tbody>';
+    S.forEach(function (r, i) {
+      var c = calcTrade(r);
+      cumP += c.pnl; cumI += c.inv; comp *= (1 + c.ret); sumRet += c.ret;
+      if (c.pnl > 0) { wins++; gW += c.pnl; runW++; runL = 0; } else if (c.pnl < 0) { losses++; gL += -c.pnl; runL++; runW = 0; } else { runW = 0; runL = 0; }
+      if (runW > maxW) maxW = runW; if (runL > maxL) maxL = runL;
+      peak = Math.max(peak, cumP); mdd = Math.max(mdd, peak - cumP);
+      best = Math.max(best, c.pnl); worst = Math.min(worst, c.pnl); pts.push(cumP);
+      h += '<tr><td>' + (i + 1) + '</td><td>' + esc(r.date) + '</td><td>' + esc(r.ticker) + '</td><td>' + grp(r.qty, r.qty % 1 ? 2 : 0) + '</td><td>' + usd(r.buy, 4) + '</td><td>' + usd(r.sell, 4) + '</td><td>' + won(c.inv) + '</td><td>' + sp(won(c.pnl), c.pnl) + '</td><td>' + sp(pct(c.ret, 2), c.pnl) + '</td><td>' + sp(won(cumP), cumP) + '</td><td>' + won(cumI) + '</td><td>' + sp(pct(cumP / cumI, 2), cumP) + '</td><td>' + grp(wins / (i + 1) * 100, 1) + '% (' + wins + '/' + (i + 1) + ')</td><td class="nm">' + esc(r.memo || '') + '</td><td><button type="button" class="mini danger" data-del="' + esc(r.id) + '">삭제</button></td></tr>';
+    });
+    tbl.innerHTML = h + '</tbody>';
+    var flat = n - wins - losses;
+    var avgW = wins ? gW / wins : NaN, avgL = losses ? gL / losses : NaN;
+    var curS = runW > 0 ? runW + '연승' : (runL > 0 ? runL + '연패' : '-');
+    var tl = [];
+    tl.push('<div class="tile"><div class="k">건수 승률</div><div class="v">' + grp(wins / n * 100, 1) + '%</div><div class="s">' + wins + '승 ' + losses + '패' + (flat ? ' ' + flat + '무' : '') + ' / 총 ' + n + '건</div></div>');
+    tl.push('<div class="tile"><div class="k">금액 승률 (이익 ÷ 이익+손실)</div><div class="v">' + ((gW + gL) > 0 ? grp(gW / (gW + gL) * 100, 1) + '%' : '-') + '</div><div class="s">이익 합 ' + won(gW) + ' / 손실 합 ' + won(-gL) + '</div></div>');
+    tl.push('<div class="tile"><div class="k">누적 손익</div><div class="v">' + sp(won(cumP), cumP) + '</div><div class="s">투자금 합계 ' + won(cumI) + '</div></div>');
+    tl.push('<div class="tile"><div class="k">누적 수익률 (손익 합 ÷ 투자금 합)</div><div class="v">' + sp(pct(cumP / cumI, 2), cumP) + '</div><div class="s">투자금 가중 평균 수익률</div></div>');
+    tl.push('<div class="tile"><div class="k">복리 수익률 (전액 재투자 가정)</div><div class="v">' + sp(pct(comp - 1, 2), comp - 1) + '</div><div class="s">매 건 수익률을 곱해서 계산, 단순 평균 ' + pct(sumRet / n, 2) + '</div></div>');
+    tl.push('<div class="tile"><div class="k">평균 이익 / 평균 손실</div><div class="v">' + (isFinite(avgW) && isFinite(avgL) ? grp(avgW / avgL, 2) + ' : 1' : '-') + '</div><div class="s">' + (isFinite(avgW) ? '평균 이익 ' + won(avgW) : '이익 없음') + ' / ' + (isFinite(avgL) ? '평균 손실 ' + won(-avgL) : '손실 없음') + '</div></div>');
+    tl.push('<div class="tile"><div class="k">기대값 (1건 평균 손익)</div><div class="v">' + sp(won(cumP / n), cumP) + '</div><div class="s">프로핏 팩터 ' + (gL > 0 ? grp(gW / gL, 2) : '손실 없음') + '</div></div>');
+    tl.push('<div class="tile"><div class="k">최대 낙폭 (누적 손익 고점 대비)</div><div class="v">' + sp(won(-mdd), -mdd) + '</div><div class="s">최고 ' + won(best) + ' / 최저 ' + won(worst) + '</div></div>');
+    tl.push('<div class="tile"><div class="k">연승·연패</div><div class="v">' + curS + '</div><div class="s">최대 연승 ' + maxW + ' / 최대 연패 ' + maxL + '</div></div>');
+    tilesEl.innerHTML = tl.join('');
+    $('lgNote').textContent = '손익은 매수·매도 수수료와 각 환율을 반영한 원화 기준입니다. 손익이 0인 건은 승패에 넣지 않습니다. 이 숫자는 입력한 기록만으로 계산되며 세금(양도세)은 빼지 않았습니다.';
+    drawChart(pts);
+    var yr = String(new Date().getFullYear()), ys = 0;
+    S.forEach(function (r) { if (String(r.date).slice(0, 4) === yr) ys += calcTrade(r).pnl; });
+    var tb = $('lgTax'); tb.setAttribute('data-sum', String(Math.round(ys))); tb.setAttribute('data-year', yr);
+    if (!tb.getAttribute('data-busy')) tb.textContent = yr + '년 확정 손익 ' + man(ys) + '을 양도세 계산(올해 이익)에 반영';
+  }
+
+  function drawChart(pts) {
+    var W = 720, H = 220, L = 70, R = 14, Tp = 16, B = 26;
+    var mn = Math.min.apply(null, pts.concat([0])), mx = Math.max.apply(null, pts.concat([0]));
+    if (mx === mn) { mx += 1; mn -= 1; }
+    var pad = (mx - mn) * 0.08; mx += pad; mn -= pad;
+    var N = pts.length - 1;
+    function X(i) { return L + (N === 0 ? 0 : i * (W - L - R) / N); }
+    function Y(v) { return Tp + (mx - v) / (mx - mn) * (H - Tp - B); }
+    var line = pts.map(function (v, i) { return X(i).toFixed(1) + ',' + Y(v).toFixed(1); }).join(' ');
+    var area = X(0).toFixed(1) + ',' + Y(0).toFixed(1) + ' ' + line + ' ' + X(N).toFixed(1) + ',' + Y(0).toFixed(1);
+    var dots = pts.map(function (v, i) { return '<circle class="dot" cx="' + X(i).toFixed(1) + '" cy="' + Y(v).toFixed(1) + '" r="3"><title>' + i + '번째 기록 후 누적 ' + won(v) + '</title></circle>'; }).join('');
+    var svg = '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="누적 손익 곡선">' +
+      '<line class="axis" x1="' + L + '" y1="' + Tp + '" x2="' + L + '" y2="' + (H - B) + '"/>' +
+      '<line class="zero" x1="' + L + '" y1="' + Y(0).toFixed(1) + '" x2="' + (W - R) + '" y2="' + Y(0).toFixed(1) + '"/>' +
+      '<polygon class="ar" points="' + area + '"/><polyline class="ln" points="' + line + '"/>' + dots +
+      (Math.abs(Y(0) - Tp) > 12 ? '<text x="' + (L - 6) + '" y="' + (Tp + 8) + '" text-anchor="end">' + man(mx) + '</text>' : '') +
+      (Math.abs(Y(0) - (H - B)) > 12 ? '<text x="' + (L - 6) + '" y="' + (H - B) + '" text-anchor="end">' + man(mn) + '</text>' : '') +
+      '<text x="' + (L - 6) + '" y="' + (Y(0) + 4).toFixed(1) + '" text-anchor="end">0</text>' +
+      '<text x="' + L + '" y="' + (H - 6) + '">시작</text><text x="' + (W - R) + '" y="' + (H - 6) + '" text-anchor="end">' + N + '번째 기록</text></svg>';
+    $('lgChartBox').innerHTML = svg;
+  }
+
+  $('lgTable').addEventListener('click', function (e) {
+    var id = e.target && e.target.getAttribute && e.target.getAttribute('data-del');
+    if (!id) return;
+    trades = trades.filter(function (r) { return r.id !== id; }); put(LG_KEY, trades); renderLog();
+  });
+
+  /* 위험한 동작은 두 번 눌러야 실행 */
+  var armed = {};
+  function twoStep(btn, msg, fn) {
+    btn.addEventListener('click', function () {
+      if (armed[btn.id]) { clearTimeout(armed[btn.id]); armed[btn.id] = 0; btn.removeAttribute('data-busy'); fn(); renderLog(); return; }
+      var o = btn.textContent; btn.setAttribute('data-busy', '1'); btn.textContent = msg;
+      armed[btn.id] = setTimeout(function () { armed[btn.id] = 0; btn.removeAttribute('data-busy'); btn.textContent = o; renderLog(); }, 3500);
+    });
+  }
+  twoStep($('lgClear'), '한 번 더 누르면 전체 삭제', function () { trades = []; put(LG_KEY, trades); $('lgClear').textContent = '전체 삭제'; });
+  twoStep($('lgTax'), '한 번 더 누르면 1번 탭 칸을 덮어씀', function () {
+    var v = Number($('lgTax').getAttribute('data-sum')) || 0;
+    $('g26').value = grp(v);
+    $('g26').dispatchEvent(new Event('input', { bubbles: true }));
+    $('lgMsg').textContent = $('lgTax').getAttribute('data-year') + '년 확정 손익 ' + won(v) + '을 1번 탭 "올해 해외주식 이익" 칸에 넣었습니다.';
+  });
+
+  /* CSV */
+  function csvEsc(s) { s = String(s == null ? '' : s); return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }
+  $('lgExport').addEventListener('click', function () {
+    var rows = ['date,ticker,qty,buy,sell,fxBuy,fxSell,feePct,memo'];
+    sorted().forEach(function (r) { rows.push([r.date, r.ticker, r.qty, r.buy, r.sell, r.fxB, r.fxS, Math.round(r.fee * 100000) / 1000, r.memo || ''].map(csvEsc).join(',')); });
+    var blob = new Blob(['﻿' + rows.join('\n')], { type: 'text/csv;charset=utf-8' });
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'tsll_trades_' + today() + '.csv';
+    document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  });
+  function parseCsv(t) {
+    var out = [], row = [], cur = '', q = false, i, c;
+    t = t.replace(/^﻿/, '');
+    for (i = 0; i < t.length; i++) {
+      c = t[i];
+      if (q) { if (c === '"') { if (t[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += c; }
+      else if (c === '"') q = true;
+      else if (c === ',') { row.push(cur); cur = ''; }
+      else if (c === '\n' || c === '\r') { if (c === '\r' && t[i + 1] === '\n') i++; row.push(cur); cur = ''; if (row.length > 1 || row[0] !== '') out.push(row); row = []; }
+      else cur += c;
+    }
+    if (cur !== '' || row.length) { row.push(cur); out.push(row); }
+    return out;
+  }
+  $('lgImport').addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0]; if (!f) return;
+    var rd = new FileReader();
+    rd.onload = function () {
+      var rows = parseCsv(String(rd.result)), added = 0, skipped = 0;
+      rows.slice(1).forEach(function (c) {
+        var r = { date: c[0], ticker: String(c[1] || '').toUpperCase(), qty: num(c[2]), buy: num(c[3]), sell: num(c[4]), fxB: num(c[5]), fxS: num(c[6]), fee: (num(c[7]) || 0) / 100, memo: c[8] || '' };
+        if (!(r.fxS > 0)) r.fxS = r.fxB;
+        if (/^\d{4}-\d{2}-\d{2}$/.test(r.date || '') && r.qty > 0 && r.buy > 0 && r.sell > 0 && r.fxB > 0) { addTrade(r); added++; } else skipped++;
+      });
+      put(LG_KEY, trades); $('lgMsg').textContent = 'CSV에서 ' + added + '건을 불러왔고 ' + skipped + '줄은 건너뛰었습니다. 이미 있는 기록과 중복되어도 그대로 추가되니, 중복이 생기면 삭제하세요.';
+      $('lgImport').value = ''; renderLog();
+    };
+    rd.readAsText(f);
+  });
+
+  /* ================= 탭 4: 티커 사전 ================= */
+  function chips(str, kind) {
+    if (!str) return '<span class="hint">없음</span>';
+    return str.split('|').map(function (s) {
+      var p = s.split(':'), tk = p[0], iss = p[1] && p[1] !== '-' ? p[1] : '', lev = '', unv = false, i;
+      for (i = 2; i < p.length; i++) { if (p[i] === 'u') unv = true; else if (p[i]) lev = p[i]; }
+      var c = 'tk' + (kind === 'inv' ? ' inv' : (kind === 'base' ? ' base' : '')) + (unv ? ' unv' : '');
+      var label = (iss ? iss : '') + (lev ? (iss ? ' ' : '') + lev + 'x' : '');
+      var ttl = (iss ? ISSUERS[iss] : '') + (lev ? ' ' + lev + 'x' : '') + (unv ? ' (확인 못 함)' : '');
+      return '<button type="button" class="' + c + '" data-t="' + esc(tk) + '" title="' + esc(ttl.trim()) + '">' + esc(tk) + '</button>' + (VOL_TOP[tk] ? '<span class="star" title="3개월 평균 거래량 상위 10위(기사 기준)">★</span>' : '') + (label ? '<span class="iss">' + esc(label) + '</span>' : '');
+    }).join('');
+  }
+  function renderStocks() {
+    var q = String($('tkQ').value).trim().toLowerCase(), g = $('tkGroup').value, only = $('tkOnly').checked;
+    var rows = STOCKS.filter(function (s) {
+      if (g !== 'all' && s[0] !== g) return false;
+      if (only && !s[5] && !s[6]) return false;
+      if (!q) return true;
+      return (s[2] + ' ' + s[3] + ' ' + s[4] + ' ' + s[5].replace(/:[^|]*/g, '') + ' ' + s[6].replace(/:[^|]*/g, '')).toLowerCase().indexOf(q) >= 0;
+    });
+    var h = '<thead><tr><th>티커</th><th>종목</th><th>참고순위</th><th>국가·상장</th><th>2배 롱</th><th>인버스</th><th>비고</th></tr></thead><tbody>';
+    rows.forEach(function (s) {
+      h += '<tr><td><button type="button" class="tk base" data-t="' + esc(s[2]) + '">' + esc(s[2]) + '</button></td><td class="nm">' + esc(s[3]) + '</td><td>' + esc(s[1]) + '</td><td class="nm">' + esc(s[4]) + '</td><td class="tkcell">' + chips(s[5], 'long') + '</td><td class="tkcell">' + chips(s[6], 'inv') + '</td><td class="nt">' + esc(s[7]) + '</td></tr>';
+    });
+    $('tkStocks').innerHTML = h + (rows.length ? '' : '<tr><td colspan="7" class="empty">조건에 맞는 종목이 없습니다.</td></tr>') + '</tbody>';
+    var withLev = rows.filter(function (s) { return s[5] || s[6]; }).length;
+    $('tkCount').textContent = rows.length + '개 표시, 레버리지 상품이 있는 종목 ' + withLev + '개';
+    $('tkStNote').textContent = '"없음"은 이번에 확인한 발행사(Direxion, GraniteShares, Tradr, Defiance)에서 찾지 못했다는 뜻입니다. 다른 발행사 상품이 있을 수 있습니다. 인버스의 배수는 칩 옆에 표시했습니다.';
+  }
+  function renderEtf() {
+    var h = '<thead><tr><th>분류</th><th>본주 ETF</th><th>2배 롱</th><th>3배 롱</th><th>인버스</th><th>비고</th></tr></thead><tbody>';
+    ETFS.forEach(function (e) {
+      h += '<tr><td class="nm">' + esc(e[0]) + '</td><td class="tkcell">' + (e[1] ? chips(e[1], 'base') : '<span class="hint">-</span>') + '</td><td class="tkcell">' + (e[2] ? chips(e[2], 'long') : '<span class="hint">-</span>') + '</td><td class="tkcell">' + (e[3] ? chips(e[3], 'long') : '<span class="hint">-</span>') + '</td><td class="tkcell">' + (e[4] ? chips(e[4], 'inv') : '<span class="hint">-</span>') + '</td><td class="nt">' + esc(e[5]) + '</td></tr>';
+    });
+    $('tkEtf').innerHTML = h + '</tbody>';
+    $('tkEtfNote').textContent = '점선 칩은 이번에 웹에서 확인하지 못하고 기억에 의존한 티커입니다. 주문 전에 반드시 증권사 검색으로 확인하세요. 거래량 ★는 한 기사의 3개월 평균 기준이며 시점이 지나면 달라집니다.';
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target && e.target.closest ? e.target.closest('button.tk[data-t]') : null;
+    if (!b) return;
+    var t = b.getAttribute('data-t'), o = b.textContent;
+    function done(ok) { b.textContent = ok ? '복사됨' : '복사 실패'; setTimeout(function () { b.textContent = o; }, 800); }
+    try { navigator.clipboard.writeText(t).then(function () { done(true); }, function () { done(false); }); } catch (err) { done(false); }
+  });
+  ['tkQ', 'tkGroup', 'tkOnly'].forEach(function (id) { $(id).addEventListener('input', renderStocks); $(id).addEventListener('change', renderStocks); });
+
+  /* ================= 시작 ================= */
+  dtLoad(); dtCalc(); loadForm(); renderStocks(); renderEtf();
+  var hash = (location.hash || '').replace('#', '');
+  showTab(NAMES.indexOf(hash) >= 0 ? hash : get('tsll-tab-v1', 'calc'));
 })();
 </script>
 </body>
