@@ -20719,6 +20719,15 @@
             var 타 = setTimeout(function () { if (컨) 컨.abort(); }, ms || 8000);
             return fetch(url, 컨 ? { cache: 'no-store', signal: 컨.signal } : { cache: 'no-store' }).then(function (r) { clearTimeout(타); return r; }, function (e) { clearTimeout(타); throw e; });
         }
+        // 장외 시간: Worker 가 가끔 정규장 종가 그대로를 줌 (야후 오버나이트 가격이 서버마다 360 / 345.82 번갈아 옴 · 확인 창으로 확인)
+        //   → 새 값이 종가 그대로이고 10분 안에 받은 정상(종가와 다른) 값이 있으면 그 값을 유지
+        function 종가튐막기(t, 새값, 종가, 옛) {
+            try {
+                if (marketPhase().type === 'REG' || !(종가 > 0) || !(새값 > 0) || Math.abs(새값 - 종가) >= 0.0001) return 새값;
+                if (옛 && 옛.price > 0 && Math.abs(옛.price - 종가) >= 0.0001 && Date.now() - (옛.정상때 || 옛.at || 옛.recvAt || 0) < 10 * 60000) return 옛.price;
+            } catch (e) { }
+            return 새값;
+        }
         function 관심_조회() {
             if (관심_조회중 && Date.now() - 관심_조회시각 > 20000) 관심_조회중 = false;   // 20초 넘게 "조회 중" = 매달린 요청 → 풀어 줌
             if (관심_조회중 || !CLOSE_WORKER_URL || CLOSE_WORKER_URL.indexOf('YOUR-ACCOUNT') >= 0) return;
@@ -20732,7 +20741,10 @@
             var 받은수 = 0;
             function 받기(j) {
                 var qs = (j && j.quotes) || {}, n = 0, now = Date.now();
-                Object.keys(qs).forEach(function (t) { var q = qs[t]; if (q && q.price > 0) { 관심Cache[t] = { price: q.price, changePct: q.changePct, regPrice: q.regPrice || 0, regPrevClose: q.regPrevClose || 0, at: now }; n++; } });
+                Object.keys(qs).forEach(function (t) { var q = qs[t]; if (q && q.price > 0) {
+                    var 옛 = 관심Cache[t] && !관심Cache[t].stale ? 관심Cache[t] : null, 값 = 종가튐막기(t, q.price, q.regPrice, 옛), 유지 = 값 !== q.price;
+                    관심Cache[t] = { price: 값, changePct: 유지 ? (q.regPrice > 0 ? (값 - q.regPrice) / q.regPrice * 100 : 옛.changePct) : q.changePct, regPrice: q.regPrice || 0, regPrevClose: q.regPrevClose || 0, at: now, 정상때: 유지 ? 옛.정상때 || 옛.at : now };
+                    n++; } });
                 받은수 += n;
                 if (n) 관심_가격표시();      // 묶음마다 바로 표시
                 return n;
@@ -20817,7 +20829,7 @@
             function 값(v) { return v > 0 ? Number(v).toFixed(4).replace(/0+$/, '').replace(/\.$/, '') : '없음'; }
             var 장 = marketPhase(), 줄 = [];
             var et = etNowParts();
-            줄.push('[시세 확인] ' + new Date().toLocaleString('ko-KR') + ' · 판 ' + '2026.11.21d');
+            줄.push('[시세 확인] ' + new Date().toLocaleString('ko-KR') + ' · 판 ' + '2026.11.21e');
             줄.push('장: ' + 장.type + ' · 뉴욕 ' + et.date + ' ' + Math.floor(et.m / 60) + ':' + ('0' + (et.m % 60)).slice(-2) + ' · 키움 연결(kiwoomAlive): ' + kiwoomAlive + ' · 데이터 PC 웹뷰: ' + !!(window.chrome && window.chrome.webview) + ' · 정지구간(staticSnapDay): ' + (staticSnapDay() || '없음'));
             var r = 시세확인_기록.관심;
             줄.push('관심 Worker 조회: ' + (!r ? '아직 없음' : '시작 ' + 초(r.시작) + ' · 장 ' + r.장 + ' · ' + (r.끝 ? '끝 (' + (r.끝 - r.시작) + 'ms) · 받은 종목 ' + r.받음 : '진행 중') + (r.실패.length ? ' · 실패: ' + r.실패.join(' / ') : '')) + ' · 조회 간격 ' + Math.round(관심_조회간격() / 1000) + '초 · 마지막 조회 ' + 초(관심_조회시각));
@@ -22115,8 +22127,9 @@
                     Object.keys(qs).forEach(function (t) {
                         var q = qs[t];
                         if (!(q.price > 0)) return;
+                        var 옛r = restCache[t], 값r = reg ? q.price : 종가튐막기(t, q.price, q.regPrice, 옛r), 유지r = 값r !== q.price;
                         restCache[t] = {
-                            price: q.price, change: q.change, changeRate: q.changePct,
+                            price: 값r, change: 유지r ? 값r - q.regPrice : q.change, changeRate: 유지r ? (값r - q.regPrice) / q.regPrice * 100 : q.changePct, 정상때: 유지r ? (옛r.정상때 || 옛r.recvAt) : now,
                             volume: reg ? (q.regVolume || 0) : 0,
                             dayHigh: 0, dayLow: 0, recvAt: now,
                             tradeAt: q.time > 0 ? Math.min(now, q.time * 1000) : 0     // 야후 체결 시각 (초 → ms)
@@ -28911,7 +28924,7 @@
             if (cw && !document.getElementById('kr-view')) {
                 var v = document.createElement('div'); v.className = 'kr-view'; v.id = 'kr-view';
                 function 카드(id, 제목, 작은, 넓게) { return '<div class="kr-card' + (넓게 ? ' kr-wide' : '') + '"><h4><span id="' + id + '-h">' + 제목 + '</span> <small id="' + id + '-t">' + (작은 || '') + '</small></h4><div id="' + id + '"></div></div>'; }
-                v.innerHTML = 글자바HTML('kr') + '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<div class="sz-brief" id="kr-brief"></div><span class="kr-stat" id="kr-stat"></span><span class="sz-ver">판 2026.11.21d</span></div>' +
+                v.innerHTML = 글자바HTML('kr') + '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<div class="sz-brief" id="kr-brief"></div><span class="kr-stat" id="kr-stat"></span><span class="sz-ver">판 2026.11.21e</span></div>' +
                     '<div class="kr-two" id="kr-two">' +
                     '<div class="kr-pane" data-t="시장">' +
                         카드('kr-pj', '오늘 장 판정', '', 1) +
@@ -30782,7 +30795,7 @@
         function 미만들기() {
             var cw = document.querySelector('.content-wrapper'); if (!cw || document.getElementById('us-tabbar')) return;
             var bar = document.createElement('div'); bar.className = 'us-tabbar'; bar.id = 'us-tabbar';
-            bar.innerHTML = '<div class="sz-live" id="sz-live" style="display:none"></div>' + 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + ({ 예측: '예측시장', 일정: '캘린더' }[t] || t) + '</button>'; }).join('') + (격 ? '' : '<div class="sz-brief" id="us-brief"></div>') + '<span class="us-stat" id="us-stat"></span><span class="sz-ver" title="대시보드 파일 판 (데이터 PC · 브라우저가 같은 파일인지 확인용)">판 2026.11.21d</span>';
+            bar.innerHTML = '<div class="sz-live" id="sz-live" style="display:none"></div>' + 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + ({ 예측: '예측시장', 일정: '캘린더' }[t] || t) + '</button>'; }).join('') + (격 ? '' : '<div class="sz-brief" id="us-brief"></div>') + '<span class="us-stat" id="us-stat"></span><span class="sz-ver" title="대시보드 파일 판 (데이터 PC · 브라우저가 같은 파일인지 확인용)">판 2026.11.21e</span>';
             // 대시보드2: 차트 자리를 줄이지 않도록 위 시황 줄(미장/국장 단추 옆)에 작게 2줄 / 대시보드1: 차트 위 한 줄
             var tb = document.querySelector('.top-bar'), sw = document.getElementById('mkt-sw');
             if (격 && tb && sw && sw.parentNode === tb) {
