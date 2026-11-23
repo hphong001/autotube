@@ -20792,7 +20792,16 @@
             }
             var 종가 = rc && rc.regClose > 0 ? rc.regClose : w && w.regPrice > 0 ? w.regPrice : sn && sn.regPrice > 0 ? sn.regPrice : 0;
             var 전일 = rc && rc.prevClose > 0 && rc.regClose === 종가 ? rc.prevClose : w && w.regPrevClose > 0 && Math.abs(w.regPrice - 종가) < 0.005 ? w.regPrevClose : sn && sn.regPrevClose > 0 && Math.abs(sn.regPrice - 종가) < 0.005 ? sn.regPrevClose : 0;
-            return { 정규: false, 종가: 종가, 종가등락: 종가 > 0 && 전일 > 0 ? (종가 - 전일) / 전일 * 100 : null, 현재: 현재, 등락: 종가 > 0 ? (현재 - 종가) / 종가 * 100 : null, 장: 장, 흐림: 흐림, 나이: 나이, 저장값: !!(w && w.stale) };
+            // ★ 장외 시간: 실시간 값(키움 · 야후 실시간)이 정규장 종가 그대로면 = 시간외 체결 정보가 없는 값
+            //   → Worker 조회 값(최근 2분 안 · 종가와 다름 = 실제 시간외 · 오버나이트 가격)을 씀 (관심 종목 시외가 0% 로 보이던 문제)
+            var 출처 = 실시간 ? '실시간' : w ? 'Worker' : sn ? '스냅샷' : '─', 실시간값 = 실시간 ? 실시간.price : 0;
+            var w나이 = w && w.at ? Date.now() - w.at : -1;
+            if (실시간 && 종가 > 0 && Math.abs(현재 - 종가) < 0.005 && w && !w.stale && w.price > 0 && w나이 >= 0 && w나이 <= 120000 && Math.abs(w.price - 종가) >= 0.005) {
+                현재 = w.price; 출처 = 'Worker (실시간 값이 종가 그대로라 대신 씀)';
+            }
+            var 진단 = '시외 출처: ' + 출처 + ' · Worker ' + (w && w.price > 0 ? w.price.toFixed(2) + (w.stale ? ' (지난 접속 값)' : w나이 >= 0 ? ' (' + Math.round(w나이 / 1000) + '초 전)' : '') : '없음') +
+                     ' · 실시간 ' + (실시간값 > 0 ? 실시간값.toFixed(2) : '없음') + ' · 기준 종가 ' + (종가 > 0 ? 종가.toFixed(2) : '없음') + (rc && rc.src ? ' (' + rc.src + ')' : '');
+            return { 진단: 진단, 정규: false, 종가: 종가, 종가등락: 종가 > 0 && 전일 > 0 ? (종가 - 전일) / 전일 * 100 : null, 현재: 현재, 등락: 종가 > 0 ? (현재 - 종가) / 종가 * 100 : null, 장: 장, 흐림: 흐림, 나이: 나이, 저장값: !!(w && w.stale) };
         }
         function 관심_가격표시() {
             function 칸(v, c, 라벨) {
@@ -20807,6 +20816,7 @@
                 if (el._html !== html) { el.innerHTML = html; el._html = html; }
                 var 흐 = !!(x && x.흐림), 설명 = !흐 ? '' : x.저장값 ? '지난 접속 때 값 · 새 시세 받는 중' : Math.max(1, Math.round(x.나이 / 60000)) + '분 전 값 · 새 시세 받는 중';
                 if (el._stale !== 흐) { el.classList.toggle('wl-stale', 흐); el._stale = 흐; }
+                if (x && x.진단) 설명 = (설명 ? 설명 + '\n' : '') + x.진단;   // 장외 시간: 시외 값 출처 (확인용)
                 if (el.title !== 설명) el.title = 설명;
                 // 상대 강도 (QQQ 대비) 작은 표시 · 정규장만
                 var rsEl = document.getElementById('wl-rs-' + w.ticker);
@@ -21930,31 +21940,7 @@
             return (이전 && 이전.recvAt) || 0;
         }
 
-        // 장외 시간: 고른 값이 정규장 종가와 똑같으면 (= 시간외 체결 정보가 없는 값)
-        //   · 키움: 시간외 체결이 없으면 종가를 '방금 받은 값'으로 계속 보냄
-        //   · 야후 실시간: 오버나이트 시간에 종가 그대로인 값을 계속 보냄 (Worker 조회는 실제 오버나이트 가격을 줌)
-        //   → 다른 출처에 종가와 다른 시간외 가격이 있으면 그중 가장 최근 것을 씀 (시외가 모두 0% 로 보이던 원인)
-        function 종가그대로(ticker, 값) {
-            try {
-                if (!(값 > 0) || marketPhase().type === 'REG') return false;
-                var rc = getRegClose(ticker); return !!(rc && rc.regClose > 0 && Math.abs(값 - rc.regClose) < 0.005);
-            } catch (e) { return false; }
-        }
         function pickQuote(ticker) {
-            var 고른 = pickQuote_기본(ticker);
-            try {
-                if (!고른 || marketPhase().type === 'REG') return 고른;
-                var rc = getRegClose(ticker); if (!rc || !(rc.regClose > 0) || Math.abs(고른.q.price - rc.regClose) >= 0.005) return 고른;
-                var 후보 = [], y = yahooCache[ticker], r = restCache[ticker], w = 관심Cache[ticker];
-                if (y && y.price > 0) 후보.push({ q: y, 때: y.tradeAt || y.recvAt || 0 });
-                if (r && r.price > 0) 후보.push({ q: r, 때: r.tradeAt || r.recvAt || 0 });
-                if (w && w.price > 0 && !w.stale) 후보.push({ q: { price: w.price, changeRate: w.changePct, change: 0, volume: 0, dayHigh: 0, dayLow: 0, recvAt: w.at || 0, _출처: '야후 (Worker 조회)' }, 때: w.at || 0 });
-                후보 = 후보.filter(function (c) { return Math.abs(c.q.price - rc.regClose) >= 0.005; }).sort(function (a, b) { return b.때 - a.때; });
-                if (후보.length) return { q: 후보[0].q, src: 'yahoo' };
-            } catch (e) { }
-            return 고른;
-        }
-        function pickQuote_기본(ticker) {
             var k = kiwoomCache[ticker], y = yahooCache[ticker], r = restCache[ticker];
             var yOk = y && y.price > 0, rOk = r && r.price > 0;
             // 주말·휴장일 (금 20:00 ET ~ 일 20:00 ET): 거래가 없으므로 애프터 마지막 가격 = 장 마감 스냅샷 → 야후 → 키움 순
@@ -22045,12 +22031,7 @@
         function restNeeded(t) {
             if (!t) return false;
             var k = kiwoomCache[t];
-            // 키움 시세 사용 중이면 조회 안 함 · 단 주말·휴장일, 또는 장외 시간에 지금 쓰는 값이 정규장 종가 그대로(키움·야후 실시간 모두)면
-            //   Worker 에서 실제 시간외 가격을 받음 (1분 간격)
-            var 기본 = null; try { 기본 = pickQuote_기본(t); } catch (e) { }
-            var 종가만 = !!(기본 && 기본.q && 종가그대로(t, 기본.q.price));
-            if (종가만) return !restLastAt[t] || Date.now() - restLastAt[t] >= 60000;
-            if (kiwoomAlive && k && k.price > 0 && !staticSnapDay()) return false;
+            if (kiwoomAlive && k && k.price > 0 && !staticSnapDay()) return false;   // 키움 시세 사용 중 (주말·휴장일은 아래 스냅샷 · 야후가 우선)
             if (snapFor(t)) return false;                                       // 주말·휴장일: 스냅샷 사용
             if (yahooWsAt[t]) return false;                                     // 이 종목은 WebSocket 으로 이미 받음
             if (!restLastAt[t]) return true;                                    // 처음 화면에 띄운 종목
@@ -28867,7 +28848,7 @@
             if (cw && !document.getElementById('kr-view')) {
                 var v = document.createElement('div'); v.className = 'kr-view'; v.id = 'kr-view';
                 function 카드(id, 제목, 작은, 넓게) { return '<div class="kr-card' + (넓게 ? ' kr-wide' : '') + '"><h4><span id="' + id + '-h">' + 제목 + '</span> <small id="' + id + '-t">' + (작은 || '') + '</small></h4><div id="' + id + '"></div></div>'; }
-                v.innerHTML = 글자바HTML('kr') + '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<div class="sz-brief" id="kr-brief"></div><span class="kr-stat" id="kr-stat"></span><span class="sz-ver">판 2026.11.23c</span></div>' +
+                v.innerHTML = 글자바HTML('kr') + '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<div class="sz-brief" id="kr-brief"></div><span class="kr-stat" id="kr-stat"></span><span class="sz-ver">판 2026.11.21b</span></div>' +
                     '<div class="kr-two" id="kr-two">' +
                     '<div class="kr-pane" data-t="시장">' +
                         카드('kr-pj', '오늘 장 판정', '', 1) +
@@ -30738,7 +30719,7 @@
         function 미만들기() {
             var cw = document.querySelector('.content-wrapper'); if (!cw || document.getElementById('us-tabbar')) return;
             var bar = document.createElement('div'); bar.className = 'us-tabbar'; bar.id = 'us-tabbar';
-            bar.innerHTML = '<div class="sz-live" id="sz-live" style="display:none"></div>' + 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + ({ 예측: '예측시장', 일정: '캘린더' }[t] || t) + '</button>'; }).join('') + (격 ? '' : '<div class="sz-brief" id="us-brief"></div>') + '<span class="us-stat" id="us-stat"></span><span class="sz-ver" title="대시보드 파일 판 (데이터 PC · 브라우저가 같은 파일인지 확인용)">판 2026.11.23c</span>';
+            bar.innerHTML = '<div class="sz-live" id="sz-live" style="display:none"></div>' + 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + ({ 예측: '예측시장', 일정: '캘린더' }[t] || t) + '</button>'; }).join('') + (격 ? '' : '<div class="sz-brief" id="us-brief"></div>') + '<span class="us-stat" id="us-stat"></span><span class="sz-ver" title="대시보드 파일 판 (데이터 PC · 브라우저가 같은 파일인지 확인용)">판 2026.11.21b</span>';
             // 대시보드2: 차트 자리를 줄이지 않도록 위 시황 줄(미장/국장 단추 옆)에 작게 2줄 / 대시보드1: 차트 위 한 줄
             var tb = document.querySelector('.top-bar'), sw = document.getElementById('mkt-sw');
             if (격 && tb && sw && sw.parentNode === tb) {
