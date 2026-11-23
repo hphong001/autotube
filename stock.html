@@ -20726,6 +20726,7 @@
             var 장 = marketPhase().type;
             if (장 === 'WEEKEND' || 장 === 'HOLIDAY') return;                   // 주말·휴장일 = 스냅샷 (Worker 호출 안 함)
             관심_조회중 = true; 관심_조회시각 = Date.now();
+            시세확인_기록.관심 = { 시작: Date.now(), 장: 장, 받음: 0, 실패: [], 끝: 0 };
             clearTimeout(관심_재시도);
             var 기본 = CLOSE_WORKER_URL.replace(/\/+$/, '') + '/quote';
             var 받은수 = 0;
@@ -20738,7 +20739,7 @@
             }
             function 나눠요청(목록) {
                 var 묶음 = []; for (var i = 0; i < 목록.length; i += 12) 묶음.push(목록.slice(i, i + 12));
-                return Promise.all(묶음.map(function (m) { return 제한fetch(기본 + '?s=' + encodeURIComponent(m.join(',')), 8000).then(function (r) { return r.json(); }).then(받기).catch(function () { }); }));
+                return Promise.all(묶음.map(function (m) { return 제한fetch(기본 + '?s=' + encodeURIComponent(m.join(',')), 8000).then(function (r) { return r.json(); }).then(받기).catch(function (e) { try { 시세확인_기록.관심.실패.push(m[0] + '… ' + ((e && (e.name || e.message)) || e)); } catch (x) { } }); }));
             }
             var 전체 = WATCH_LIST.map(function (w) { return w.ticker; });
             var 일 = 장 === 'NIGHT'
@@ -20753,6 +20754,7 @@
             일.catch(function (e) { console.warn('[관심종목] 시세 조회 실패', e); })
               .then(function () {
                   관심_조회중 = false; 관심_가격표시();
+                  try { 시세확인_기록.관심.받음 = 받은수; 시세확인_기록.관심.끝 = Date.now(); } catch (x) { }
                   if (받은수 > 0) 관심_저장();
                   else 관심_재시도 = setTimeout(관심_조회, 3000);   // 실패 → 3초 뒤 다시
               });
@@ -20803,6 +20805,64 @@
                      ' · 실시간 ' + (실시간값 > 0 ? 실시간값.toFixed(2) : '없음') + ' · 기준 종가 ' + (종가 > 0 ? 종가.toFixed(2) : '없음') + (rc && rc.src ? ' (' + rc.src + ')' : '');
             return { 진단: 진단, 정규: false, 종가: 종가, 종가등락: 종가 > 0 && 전일 > 0 ? (종가 - 전일) / 전일 * 100 : null, 현재: 현재, 등락: 종가 > 0 ? (현재 - 종가) / 종가 * 100 : null, 장: 장, 흐림: 흐림, 나이: 나이, 저장값: !!(w && w.stale) };
         }
+        // ════════════════════════════════════════════════════════
+        // ★ 시세 확인 창 (임시 · 원인 확인용): 주소에 &debug=1 또는 Ctrl+Shift+D
+        //   종목마다 출처별 값 · 기준 종가 · 화면이 고른 값 · 관심 종목 Worker 조회 기록 → [복사]로 글자 그대로 보내기
+        // ════════════════════════════════════════════════════════
+        var 시세확인_기록 = { 관심: null };
+        var 시세확인 = { 창: null, 타: 0 };
+        function 시세확인_글() {
+            var 지금 = Date.now();
+            function 초(t) { return t > 0 ? Math.round((지금 - t) / 1000) + '초 전' : '-'; }
+            function 값(v) { return v > 0 ? Number(v).toFixed(4).replace(/0+$/, '').replace(/\.$/, '') : '없음'; }
+            var 장 = marketPhase(), 줄 = [];
+            var et = etNowParts();
+            줄.push('[시세 확인] ' + new Date().toLocaleString('ko-KR') + ' · 판 ' + '2026.11.21c');
+            줄.push('장: ' + 장.type + ' · 뉴욕 ' + et.date + ' ' + Math.floor(et.m / 60) + ':' + ('0' + (et.m % 60)).slice(-2) + ' · 키움 연결(kiwoomAlive): ' + kiwoomAlive + ' · 데이터 PC 웹뷰: ' + !!(window.chrome && window.chrome.webview) + ' · 정지구간(staticSnapDay): ' + (staticSnapDay() || '없음'));
+            var r = 시세확인_기록.관심;
+            줄.push('관심 Worker 조회: ' + (!r ? '아직 없음' : '시작 ' + 초(r.시작) + ' · 장 ' + r.장 + ' · ' + (r.끝 ? '끝 (' + (r.끝 - r.시작) + 'ms) · 받은 종목 ' + r.받음 : '진행 중') + (r.실패.length ? ' · 실패: ' + r.실패.join(' / ') : '')) + ' · 조회 간격 ' + Math.round(관심_조회간격() / 1000) + '초 · 마지막 조회 ' + 초(관심_조회시각));
+            줄.push('');
+            var 목 = [], 본 = {};
+            panelTickers.slice(0, 3).concat(['TSLA', 'MARA', 'NVDA', 'SPCX', 'PLTR']).forEach(function (t) { if (t && !본[t] && 목.length < 8) { 본[t] = 1; 목.push(t); } });
+            목.forEach(function (t) {
+                var rc = null, pk = null, 관 = null; try { rc = getRegClose(t); } catch (e) { } try { pk = pickQuote(t); } catch (e) { } try { 관 = 관심_값(t); } catch (e) { }
+                var k = kiwoomCache[t], kb = 키움묶음[t], y = yahooCache[t], rr = restCache[t], w = 관심Cache[t], sn = null, sn원 = snapData && snapData.q && snapData.q[t];
+                try { sn = snapFor(t); } catch (e) { }
+                var 패널 = panelTickers.indexOf(t);
+                줄.push('■ ' + t + (패널 >= 0 ? ' (패널 ' + (패널 + 1) + ')' : '') + ' · 기준 종가 ' + (rc ? 값(rc.regClose) + ' [' + (rc.src || '?') + (rc.regDate ? ' ' + rc.regDate : '') + ']' : '없음') + (sessionCache[t] ? ' · 저장 종가 ' + 값(sessionCache[t].regClose) + ' ' + (sessionCache[t].regDate || '') + (sessionCache[t].받음 ? ' 받음' : ' 옛값') : ''));
+                줄.push('   키움(파이어베이스) ' + (k ? 값(k.price) + ' · ' + 초(k.recvAt) : '없음') + ' | 키움 묶음 ' + (kb ? 값(kb.price) + ' · ' + 초(kb.recvAt) : '없음') + ' | 야후 실시간 ' + (y ? 값(y.price) + ' · ' + 초(y.recvAt) + ' · 장구분 ' + (y.mh != null ? y.mh : '?') + ' · 체결 ' + (y.tradeAt ? 초(y.tradeAt) : '-') : '없음'));
+                줄.push('   Worker(패널용) ' + (rr ? 값(rr.price) + ' · ' + 초(rr.recvAt) : '없음') + ' | Worker(관심용) ' + (w ? 값(w.price) + ' · ' + 초(w.at) + (w.stale ? ' · 지난 접속 값' : '') : '없음') + ' | 스냅샷 ' + (sn원 ? 값(sn원.price) + ' ' + (sn원.session || '') + (sn원.postPrice ? ' 애프터 ' + 값(sn원.postPrice) : '') + (sn ? ' (사용 가능)' : ' (지금 안 씀)') : '없음'));
+                var 필 = null; for (var i in RT) if (RT[i] && RT[i].ticker === t && RT[i].필터) 필 = RT[i].필터;
+                줄.push('   → 패널이 고른 값: ' + (pk ? 값(pk.q.price) + ' [' + pk.src + (pk.q === restCache[t] ? ' Worker' : pk.q === yahooCache[t] ? ' 실시간' : pk.q === 키움묶음[t] ? ' 묶음' : pk.q === kiwoomCache[t] ? ' 파이어베이스' : '') + ']' : '없음') +
+                         ' | 관심이 고른 값: ' + (관 ? 값(관.현재) + (관.등락 != null ? ' (' + 관.등락.toFixed(2) + '%)' : '') : '없음') +
+                         (필 && 필.보류 && 필.보류.length ? ' | 급변 필터가 막은 값: ' + 필.보류.join(', ') + ' (최근 ' + (필.최근 || []).slice(-3).join(', ') + ')' : ''));
+                if (관 && 관.진단) 줄.push('   관심 판정: ' + 관.진단);
+            });
+            return 줄.join('\n');
+        }
+        function 시세확인_열기() {
+            if (시세확인.창) { 시세확인.창.remove(); 시세확인.창 = null; clearInterval(시세확인.타); return; }
+            var d = document.createElement('div'); 시세확인.창 = d;
+            d.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:99999;width:min(980px,calc(100vw - 16px));max-height:60vh;display:flex;flex-direction:column;background:#0b1020;border:2px solid #f5c542;border-radius:8px;box-shadow:0 6px 30px #000a;font:12.5px/1.45 Consolas,monospace;color:#e6edf3';
+            d.innerHTML = '<div style="display:flex;gap:8px;align-items:center;padding:6px 10px;border-bottom:1px solid #333;font-weight:700;color:#f5c542">시세 확인 (임시)<span style="flex:1"></span>' +
+                '<button data-k="복사" style="font:inherit;padding:3px 12px;border-radius:5px;border:0;background:#f5c542;color:#000;cursor:pointer">복사</button>' +
+                '<button data-k="닫기" style="font:inherit;padding:3px 10px;border-radius:5px;border:1px solid #666;background:transparent;color:#ccc;cursor:pointer">닫기</button></div>' +
+                '<pre style="margin:0;padding:8px 10px;overflow:auto;white-space:pre-wrap;word-break:break-all"></pre>';
+            var pre = d.querySelector('pre');
+            function 갱신() { try { pre.textContent = 시세확인_글(); } catch (e) { pre.textContent = '오류: ' + e; } }
+            d.addEventListener('click', function (e) {
+                var k = e.target && e.target.getAttribute && e.target.getAttribute('data-k'); if (!k) return;
+                if (k === '닫기') { 시세확인_열기(); return; }
+                var 글 = 시세확인_글();
+                function 됨() { e.target.textContent = '복사됨 ✓'; setTimeout(function () { e.target.textContent = '복사'; }, 1500); }
+                try { navigator.clipboard.writeText(글).then(됨, function () { 옛복사(); }); } catch (x) { 옛복사(); }
+                function 옛복사() { var ta = document.createElement('textarea'); ta.value = 글; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); 됨(); } catch (z) { } ta.remove(); }
+            });
+            document.body.appendChild(d); 갱신(); 시세확인.타 = setInterval(갱신, 1000);
+        }
+        document.addEventListener('keydown', function (e) { if (e.ctrlKey && e.shiftKey && (e.key === 'D' || e.key === 'd')) { e.preventDefault(); 시세확인_열기(); } });
+        if (/[?&]debug=1/.test(location.search)) setTimeout(시세확인_열기, 3000);
+
         function 관심_가격표시() {
             function 칸(v, c, 라벨) {
                 var cls = c == null ? '' : c > 0 ? ' up' : c < 0 ? ' dn' : '';
@@ -25624,7 +25684,7 @@
                         volume: Number(msg.dayVolume) > 0 ? Number(msg.dayVolume) : (prev.volume || 0),
                         dayHigh: Number(msg.dayHigh) > 0 ? Number(msg.dayHigh) : (prev.dayHigh || 0),
                         dayLow: Number(msg.dayLow) > 0 ? Number(msg.dayLow) : (prev.dayLow || 0),
-                        recvAt: Date.now(), tradeAt: 야후_체결시각(msg)
+                        recvAt: Date.now(), tradeAt: 야후_체결시각(msg), mh: mh
                     };
 
                     // 헤더(QQQ/SPY)
@@ -28848,7 +28908,7 @@
             if (cw && !document.getElementById('kr-view')) {
                 var v = document.createElement('div'); v.className = 'kr-view'; v.id = 'kr-view';
                 function 카드(id, 제목, 작은, 넓게) { return '<div class="kr-card' + (넓게 ? ' kr-wide' : '') + '"><h4><span id="' + id + '-h">' + 제목 + '</span> <small id="' + id + '-t">' + (작은 || '') + '</small></h4><div id="' + id + '"></div></div>'; }
-                v.innerHTML = 글자바HTML('kr') + '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<div class="sz-brief" id="kr-brief"></div><span class="kr-stat" id="kr-stat"></span><span class="sz-ver">판 2026.11.21b</span></div>' +
+                v.innerHTML = 글자바HTML('kr') + '<div class="kr-tabs" id="kr-tabs">' + 탭목록.map(function (t) { return '<button type="button" data-t="' + t + '">' + t + '</button>'; }).join('') + '<div class="sz-brief" id="kr-brief"></div><span class="kr-stat" id="kr-stat"></span><span class="sz-ver">판 2026.11.21c</span></div>' +
                     '<div class="kr-two" id="kr-two">' +
                     '<div class="kr-pane" data-t="시장">' +
                         카드('kr-pj', '오늘 장 판정', '', 1) +
@@ -30719,7 +30779,7 @@
         function 미만들기() {
             var cw = document.querySelector('.content-wrapper'); if (!cw || document.getElementById('us-tabbar')) return;
             var bar = document.createElement('div'); bar.className = 'us-tabbar'; bar.id = 'us-tabbar';
-            bar.innerHTML = '<div class="sz-live" id="sz-live" style="display:none"></div>' + 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + ({ 예측: '예측시장', 일정: '캘린더' }[t] || t) + '</button>'; }).join('') + (격 ? '' : '<div class="sz-brief" id="us-brief"></div>') + '<span class="us-stat" id="us-stat"></span><span class="sz-ver" title="대시보드 파일 판 (데이터 PC · 브라우저가 같은 파일인지 확인용)">판 2026.11.21b</span>';
+            bar.innerHTML = '<div class="sz-live" id="sz-live" style="display:none"></div>' + 미탭목록.map(function (t) { return '<button type="button" data-ut="' + t + '">' + ({ 예측: '예측시장', 일정: '캘린더' }[t] || t) + '</button>'; }).join('') + (격 ? '' : '<div class="sz-brief" id="us-brief"></div>') + '<span class="us-stat" id="us-stat"></span><span class="sz-ver" title="대시보드 파일 판 (데이터 PC · 브라우저가 같은 파일인지 확인용)">판 2026.11.21c</span>';
             // 대시보드2: 차트 자리를 줄이지 않도록 위 시황 줄(미장/국장 단추 옆)에 작게 2줄 / 대시보드1: 차트 위 한 줄
             var tb = document.querySelector('.top-bar'), sw = document.getElementById('mkt-sw');
             if (격 && tb && sw && sw.parentNode === tb) {
